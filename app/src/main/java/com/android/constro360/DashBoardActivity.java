@@ -8,19 +8,27 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 public class DashBoardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private boolean appBarExpanded = true;
-    private CollapsingToolbarLayout collapsingToolbar;
+    private AppBarLayout mAppbar;
+    private CollapsingToolbarLayout mCollapsingToolbar;
+    private ImageView mHeader;
+    private Toolbar mToolbar;
+    private RecyclerView mScrollableview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(getString(R.string.app_name));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getString(R.string.app_name));
         setSupportActionBar(toolbar);
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -31,15 +39,12 @@ public class DashBoardActivity extends AppCompatActivity implements NavigationVi
             }
         });*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(getString(R.string.app_name));
-        ((AppBarLayout) findViewById(R.id.appbar)).addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        /*((AppBarLayout) findViewById(R.id.appbar)).addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 //                Log.d(AnimateToolbar.class.getSimpleName(), "onOffsetChanged: verticalOffset: " + verticalOffset);
@@ -52,7 +57,22 @@ public class DashBoardActivity extends AppCompatActivity implements NavigationVi
                     invalidateOptionsMenu();
                 }
             }
-        });
+        });*/
+        //Calling function to initialize required views.
+        initializeViews();
+    }
+
+    /**
+     * <b>private void initializeViews()</b>
+     * <p>This function is used to initialize required views.</p>
+     * Created by - Rohit
+     */
+    private void initializeViews() {
+        mAppbar = (AppBarLayout) findViewById(R.id.appbar);
+        mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        mHeader = (ImageView) findViewById(R.id.header);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mScrollableview = (RecyclerView) findViewById(R.id.scrollableview);
     }
 
     @Override
