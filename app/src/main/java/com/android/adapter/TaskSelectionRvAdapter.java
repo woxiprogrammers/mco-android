@@ -2,9 +2,11 @@ package com.android.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.constro360.R;
 import com.android.models.AssignedTaskItem;
 
 import java.util.ArrayList;
@@ -23,7 +25,8 @@ public class TaskSelectionRvAdapter extends RecyclerView.Adapter<TaskSelectionRv
 
     @Override
     public TaskSelectionRvAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        View itemViewMain = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task_listing, parent, false);
+        return new ItemHolder(itemViewMain);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class TaskSelectionRvAdapter extends RecyclerView.Adapter<TaskSelectionRv
     class ItemHolder extends RecyclerView.ViewHolder {
         Context mContext;
 
-        public ItemHolder(View itemView) {
+        ItemHolder(View itemView) {
             super(itemView);
             mContext = itemView.getContext();
         }

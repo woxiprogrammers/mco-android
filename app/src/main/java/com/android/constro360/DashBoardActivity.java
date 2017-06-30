@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.adapter.TaskSelectionRvAdapter;
 import com.android.models.AssignedTaskItem;
@@ -70,10 +71,12 @@ public class DashBoardActivity extends AppCompatActivity implements NavigationVi
                 new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
+                        Toast.makeText(mContext, "Item Long Clicked", Toast.LENGTH_SHORT).show();
                     }
                 })
         );
