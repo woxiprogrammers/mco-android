@@ -67,6 +67,8 @@ public class DashBoardActivity extends AppCompatActivity implements NavigationVi
         TaskSelectionRvAdapter selectionRvAdapter = new TaskSelectionRvAdapter(mArrAssignedTaskItem);
         mRvTaskSelection.setLayoutManager(layoutManager);
         mRvTaskSelection.setAdapter(selectionRvAdapter);
+        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRvTaskSelection.getContext(), layoutManager.getOrientation());
+        mRvTaskSelection.addItemDecoration(dividerItemDecoration);*/
         mRvTaskSelection.addOnItemTouchListener(
                 new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
