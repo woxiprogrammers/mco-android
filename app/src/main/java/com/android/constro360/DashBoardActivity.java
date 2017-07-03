@@ -1,6 +1,7 @@
 package com.android.constro360;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.peticash.PetiCashListActivity;
 import com.android.adapter.TaskSelectionRvAdapter;
 import com.android.models.AssignedTaskItem;
 import com.android.utils.RecyclerItemClickListener;
@@ -73,7 +75,9 @@ public class DashBoardActivity extends AppCompatActivity implements NavigationVi
                 new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
+                        if (position == 0) {
+                            startActivity(new Intent(mContext, PetiCashListActivity.class));
+                        }
                     }
 
                     @Override
