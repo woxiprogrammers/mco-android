@@ -34,41 +34,119 @@
                 android:orientation="horizontal"
                 app:layout_collapseMode="parallax">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/background_circular_100">
+                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:layout_marginRight="@dimen/dimen_8dp"
+                    android:background="@drawable/background_circular_100"
+                    android:backgroundTint="#ffffff"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="ASD"/>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_circular_120">
+                        android:layout_gravity="center"
+                        android:text="Personal"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="18dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="ASD"/>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_circular_100">
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/dimen_2dp"
+                        android:layout_marginTop="@dimen/dimen_2dp"
+                        android:text="₹246"
+                        android:textColor="@color/colorText"
+                        android:textSize="20dp"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="ASD"/>
-                </RelativeLayout>
+                        android:layout_gravity="center"
+                        android:text="₹466"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="15dp"
+                        android:visibility="invisible"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:layout_marginRight="@dimen/dimen_8dp"
+                    android:background="@drawable/background_circular_120"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="July"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="25dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/dimen_2dp"
+                        android:layout_marginTop="@dimen/dimen_2dp"
+                        android:text="₹2546"
+                        android:textColor="@color/colorText"
+                        android:textSize="20dp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="₹216"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="15dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:layout_marginRight="@dimen/dimen_8dp"
+                    android:background="@drawable/background_circular_100"
+                    android:backgroundTint="#ffffff"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Balance"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="18dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/dimen_2dp"
+                        android:layout_marginTop="@dimen/dimen_2dp"
+                        android:text="₹5646"
+                        android:textColor="@color/colorText"
+                        android:textSize="20dp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="₹466"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="15dp"/>
+                </LinearLayout>
             </LinearLayout>
 
             <android.support.v7.widget.Toolbar
@@ -98,19 +176,21 @@
                 android:id="@+id/picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_50dp"
+                android:layout_marginRight="@dimen/dimen_50dp"
                 android:ellipsize="marquee"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:marqueeRepeatLimit="2"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
                 android:textColor="@color/colorText"
                 android:textSize="22sp"
-                app:dividerSize="10dp"
+                app:dividerSize="4dp"
                 app:sideItems="@integer/sideItems"
                 app:values="@array/values"/>
 
-            <com.whygraphics.multilineradiogroup.MultiLineRadioGroup
+            <com.rohitss.multilineradiogroup.MultiLineRadioGroup
                 xmlns:multi_line_radio_group="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/main_activity_multi_line_radio_group"
                 android:layout_width="match_parent"
