@@ -24,4 +24,92 @@
         <item name="android:shadowColor">@android:color/black</item>
     </style>
 
+    /////////////////////////////////////////////////
+    <style name="style_edit_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_44dp</item>
+        <item name="android:paddingLeft">@dimen/dimen_16dp</item>
+        <item name="android:paddingRight">@dimen/dimen_16dp</item>
+        <!--<item name="android:layout_marginTop">@dimen/dimen_10dp</item>-->
+        <!--<item name="android:background">@drawable/edittext_background_image</item>
+        <item name="android:textColor">@color/color_black</item>
+        <item name="android:textColorHint">@color/hint_text_light</item>
+        <item name="android:textSize">@dimen/textsize_normal_16dp</item>-->
+        <item name="android:inputType">textCapWords</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+
+    <style name="style_text_view_base">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/dimen_16dp</item>
+    </style>
+
+    <style name="style_text_view_30" parent="style_text_view_base">
+    </style>
+
+    <style name="style_text_view_25" parent="style_text_view_base">
+    </style>
+
+    <!--ExtraLargeTitle-->
+    <style name="style_text_view_22" parent="style_text_view_base">
+    </style>
+
+    <!--Info-->
+    <style name="style_text_view_14" parent="style_text_view_base">
+    </style>
+
+    <style name="style_text_view_20" parent="style_text_view_base">
+    </style>
+
+    <!--Title-->
+    <style name="style_text_view_18" parent="style_text_view_base">
+    </style>
+
+    <!--SubTitle or Normal Text-->
+    <style name="style_text_view_16" parent="style_text_view_base">
+    </style>
+
+    <style name="style_text_view_12" parent="style_text_view_base">
+    </style>
+
+    <!--Button Style-->
+    <style name="style_button_18">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_50dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+        <!--<item name="android:textSize">@dimen/textsize_normal_18dp</item>
+        <item name="android:background">@color/color_brown</item>
+        <item name="android:textColor">@color/color_white</item>-->
+    </style>
+
+
+    <style name="style_vertical_line">
+        <item name="android:layout_width">@dimen/dimen_1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <!--<item name="android:background">@color/hint_text_light</item>-->
+    </style>
+
+    <style name="style_horizontal_line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_1dp</item>
+        <!--<item name="android:background">@color/hint_text_light</item>-->
+    </style>
+
+    <style name="style_button_18_in_relative_layout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:paddingLeft">@dimen/dimen_16dp</item>
+        <item name="android:paddingRight">@dimen/dimen_16dp</item>
+        <item name="android:textAllCaps">true</item>
+        <!--<item name="android:textColor">@color/color_white</item>-->
+        <item name="android:textSize">@dimen/dimen_18dp</item>
+    </style>
+    /////////////////////////////////////////////////
+
 </resources>
