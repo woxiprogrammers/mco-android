@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="values">
+        <item>Item 1</item>
+        <item>Item 2</item>
+        <item>Item 3</item>
+        <item>Item 4 is really long</item>
+        <item>Item 5</item>
+        <item>Item 6</item>
+    </string-array>
+    <string-array name="radio_buttons">
+        <item>@string/button_1</item>
+        <item>@string/button_2</item>
+        <item>@string/button_3</item>
+        <item>@string/button_4</item>
+        <item>@string/button_5</item>
+        <item>@string/button_6</item>
+        <item>@string/button_7</item>
+        <item>@string/button_8</item>
+        <item>@string/button_9</item>
+        <item>@string/button_10</item>
+        <item>@string/button_11</item>
+        <item>@string/button_12</item>
+    </string-array>
+</resources>

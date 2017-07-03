@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.android.peticash.PetiCashListActivity">
 
+    <!--Collapsing AppBar-->
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_200dp"
@@ -22,7 +23,8 @@
             app:expandedTitleMarginEnd="16dp"
             app:expandedTitleMarginStart="16dp"
             app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded.Shadow"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:titleEnabled="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,21 +76,59 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="@string/activity_title_peticash"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_task_selection"
+    <!--Main Layout-->
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="12dp"
-        android:background="#eeeeee"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.wefika.horizontalpicker.HorizontalPicker
+                android:id="@+id/picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="2"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                android:textColor="@color/colorText"
+                android:textSize="22sp"
+                app:dividerSize="10dp"
+                app:sideItems="@integer/sideItems"
+                app:values="@array/values"/>
+
+            <com.whygraphics.multilineradiogroup.MultiLineRadioGroup
+                xmlns:multi_line_radio_group="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/main_activity_multi_line_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                multi_line_radio_group:default_button="button_2"
+                multi_line_radio_group:max_in_row="6"
+                multi_line_radio_group:radio_buttons="@array/radio_buttons"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_task_selection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="12dp"
+                android:background="#eeeeee"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

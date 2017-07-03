@@ -5,4 +5,19 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="activity_title_peticash">Peticash</string>
+
+
+    <string name="button_1">Jan</string>
+    <string name="button_2">Feb</string>
+    <string name="button_3">Mar</string>
+    <string name="button_4">Apr</string>
+    <string name="button_5">May</string>
+    <string name="button_6">Jun</string>
+    <string name="button_7">July</string>
+    <string name="button_8">Aug</string>
+    <string name="button_9">Sept</string>
+    <string name="button_10">Oct</string>
+    <string name="button_11">Nov</string>
+    <string name="button_12">Dec</string>
 </resources>
