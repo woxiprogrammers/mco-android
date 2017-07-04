@@ -9,7 +9,7 @@ import com.androidnetworking.AndroidNetworking;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class BaseActivity extends Application {
+public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

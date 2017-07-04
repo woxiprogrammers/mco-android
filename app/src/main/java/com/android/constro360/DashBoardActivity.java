@@ -8,7 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,14 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.peticash.PetiCashListActivity;
 import com.android.adapter.TaskSelectionRvAdapter;
 import com.android.models.AssignedTaskItem;
+import com.android.peticash.PetiCashListActivity;
+import com.android.utils.BaseActivity;
 import com.android.utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 
-public class DashBoardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
     private RecyclerView mRvTaskSelection;
 
@@ -69,8 +69,6 @@ public class DashBoardActivity extends AppCompatActivity implements NavigationVi
         TaskSelectionRvAdapter selectionRvAdapter = new TaskSelectionRvAdapter(mArrAssignedTaskItem);
         mRvTaskSelection.setLayoutManager(layoutManager);
         mRvTaskSelection.setAdapter(selectionRvAdapter);
-        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRvTaskSelection.getContext(), layoutManager.getOrientation());
-        mRvTaskSelection.addItemDecoration(dividerItemDecoration);*/
         mRvTaskSelection.addOnItemTouchListener(
                 new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
