@@ -51,7 +51,7 @@
                         android:layout_gravity="center"
                         android:text="Personal"
                         android:textColor="@color/colorTextLight"
-                        android:textSize="18dp"/>
+                        android:textSize="16dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                         android:layout_gravity="center"
                         android:text="Balance"
                         android:textColor="@color/colorTextLight"
-                        android:textSize="18dp"/>
+                        android:textSize="16dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -186,7 +186,7 @@
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
                 android:textColor="@color/colorText"
-                android:textSize="22sp"
+                android:textSize="20dp"
                 app:dividerSize="4dp"
                 app:sideItems="@integer/sideItems"
                 app:values="@array/values"/>
@@ -237,14 +237,41 @@
                         android:layout_height="wrap_content"
                         android:text="Tuesday 4 July"/>
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:text="Steel 2 Ton: ₹4355"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        android:layout_marginTop="@dimen/dimen_4dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorText"
+                                android:textSize="@dimen/dimen_16dp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorTextLight"
+                                android:textSize="@dimen/dimen_14dp"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/img_in"/>
+                    </LinearLayout>
 
                     <View
                         style="@style/style_horizontal_line"
@@ -253,81 +280,185 @@
                         android:layout_marginTop="@dimen/dimen_2dp"
                         android:background="@color/colorDivider"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:maxWidth="@dimen/dimen_250dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:background="#eeeeee"
-                        android:padding="@dimen/dimen_2dp"
-                        android:text="Steel 2 Ton Steel 2 Ton Steel 2 Ton: ₹4355"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:maxWidth="@dimen/dimen_250dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:background="#eeeeee"
-                        android:gravity="end"
-                        android:padding="@dimen/dimen_2dp"
-                        android:text="Steel 2 Ton: ₹4355"
-                        android:textColor="@color/colorTextDark_Black"
-                        android:textSize="@dimen/dimen_16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:maxWidth="@dimen/dimen_250dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:background="#eeeeee"
-                        android:padding="@dimen/dimen_2dp"
-                        android:text="Steel 2 Ton Steel 2 Ton Steel 2 Ton: ₹4355"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:maxWidth="@dimen/dimen_250dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:background="#eeeeee"
-                        android:padding="@dimen/dimen_2dp"
-                        android:text="Steel 2 Ton: ₹4355"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:maxWidth="@dimen/dimen_250dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_4dp"
                         android:layout_marginTop="@dimen/dimen_4dp"
-                        android:background="#eeeeee"
-                        android:padding="@dimen/dimen_2dp"
-                        android:text="Steel 2 Ton Steel 2 Ton Steel 2 Ton: ₹4355"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:maxWidth="@dimen/dimen_250dp"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorText"
+                                android:textSize="@dimen/dimen_16dp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorTextLight"
+                                android:textSize="@dimen/dimen_14dp"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/img_in"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
                         android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:background="#eeeeee"
-                        android:gravity="end"
-                        android:padding="@dimen/dimen_2dp"
-                        android:text="Steel 2 Ton Steel 2 Ton Steel 2 Ton: ₹4355"
-                        android:textColor="@color/colorTextDark_Black"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        android:layout_marginTop="@dimen/dimen_4dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorText"
+                                android:textSize="@dimen/dimen_16dp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorTextLight"
+                                android:textSize="@dimen/dimen_14dp"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/img_out"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dimen_2dp"
+                        android:layout_marginTop="@dimen/dimen_4dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorText"
+                                android:textSize="@dimen/dimen_16dp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorTextLight"
+                                android:textSize="@dimen/dimen_14dp"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/img_in"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dimen_2dp"
+                        android:layout_marginTop="@dimen/dimen_4dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorText"
+                                android:textSize="@dimen/dimen_16dp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorTextLight"
+                                android:textSize="@dimen/dimen_14dp"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/img_in"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dimen_2dp"
+                        android:layout_marginTop="@dimen/dimen_4dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorText"
+                                android:textSize="@dimen/dimen_16dp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Steel 2 Ton: ₹4355"
+                                android:textColor="@color/colorTextLight"
+                                android:textSize="@dimen/dimen_14dp"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/img_out"/>
+                    </LinearLayout>
 
                 </LinearLayout>
 
