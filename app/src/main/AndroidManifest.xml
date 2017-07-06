@@ -28,6 +28,8 @@
             android:name="com.android.peticash.PetiCashListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".NewActivity">
+        </activity>
     </application>
 
 </manifest>

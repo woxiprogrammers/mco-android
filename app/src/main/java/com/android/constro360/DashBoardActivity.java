@@ -11,10 +11,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.adapter.TaskSelectionRvAdapter;
 import com.android.models.AssignedTaskItem;
@@ -73,14 +71,16 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        if (position == 0) {
+                        if (position == 2) {
                             startActivity(new Intent(mContext, PetiCashListActivity.class));
+                        } else {
+                            startActivity(new Intent(mContext, NewActivity.class));
                         }
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
-                        Toast.makeText(mContext, "Item Long Clicked", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(mContext, "Item Long Clicked", Toast.LENGTH_SHORT).show();
                     }
                 })
         );
@@ -91,33 +91,33 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         AssignedTaskItem assignedTaskItem;
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 1");
-        assignedTaskItem.setStrDescription("Daily Site Report 1");
+        assignedTaskItem.setStrName("Purchase Management");
+        assignedTaskItem.setStrDescription("Create and manage purchases");
         mArrAssignedTaskItem.add(assignedTaskItem);
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 2");
-        assignedTaskItem.setStrDescription("Daily Site Report 2");
+        assignedTaskItem.setStrName("Inventory Management");
+        assignedTaskItem.setStrDescription("Create and manage inventories");
         mArrAssignedTaskItem.add(assignedTaskItem);
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 3");
-        assignedTaskItem.setStrDescription("Daily Site Report 3");
+        assignedTaskItem.setStrName("Peticash Management");
+        assignedTaskItem.setStrDescription("Create and manage peticash");
         mArrAssignedTaskItem.add(assignedTaskItem);
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 4");
-        assignedTaskItem.setStrDescription("Daily Site Report 4");
+        assignedTaskItem.setStrName("Checklist Management");
+        assignedTaskItem.setStrDescription("Create and manage checklists");
         mArrAssignedTaskItem.add(assignedTaskItem);
+        //New
+        assignedTaskItem = new AssignedTaskItem();
+        assignedTaskItem.setStrName("Workforce Management");
+        assignedTaskItem.setStrDescription("Create and manage workforce");
         //New
         assignedTaskItem = new AssignedTaskItem();
         assignedTaskItem.setStrName("Site Report 5");
         assignedTaskItem.setStrDescription("Daily Site Report 5");
         mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 6");
-        assignedTaskItem.setStrDescription("Daily Site Report 6");
         mArrAssignedTaskItem.add(assignedTaskItem);
         //New
         assignedTaskItem = new AssignedTaskItem();
@@ -177,7 +177,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         }
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.options_menu, menu);
@@ -188,7 +188,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
