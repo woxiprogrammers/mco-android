@@ -1,4 +1,4 @@
-package rohitss.com.horizontal_selector;
+package com.rohitss.horizontal_selector;
 
 import android.animation.ArgbEvaluator;
 import android.annotation.TargetApi;
@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class HorizontalSelector extends View {
-    public static final String TAG = "HorizontalTimePicker";
+    public static final String TAG = "HorizontalSelector";
     /**
      * The coefficient by which to adjust (divide) the max fling velocity.
      */
