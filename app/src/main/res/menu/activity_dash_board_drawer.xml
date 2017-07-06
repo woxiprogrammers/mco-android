@@ -3,17 +3,17 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_profile"
             android:title="Profile"/>
         <item
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Logout"/>
-        <item
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_setting"
             android:title="Settings"/>
         <item
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/ic_about"
             android:title="About"/>
+        <item
+            android:icon="@drawable/ic_logout"
+            android:title="Logout"/>
     </group>
 
 </menu>

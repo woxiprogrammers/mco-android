@@ -16,6 +16,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dimen_4dp"
+        android:layout_marginRight="@dimen/dimen_4dp"
         android:orientation="vertical">
 
         <com.rohitss.horizontal_selector.HorizontalSelector
@@ -69,8 +71,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="16dp"
-                android:rotation="270"
-                android:src="@android:drawable/arrow_down_float"/>
+                android:rotation="90"
+                android:src="@drawable/ic_arrow_up"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,120 +105,14 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel, Sand..."
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_14dp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>        <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:background="#ffffff"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="@dimen/dimen_4dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="16dp"
-            android:rotation="270"
-            android:src="@android:drawable/arrow_down_float"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="8dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="PR325324532535"
-                    android:textColor="@color/colorText"
-                    android:textSize="@dimen/dimen_16dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Monday, 22 July 2017"
-                    android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel, Sand..."
-                    android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>
-            </LinearLayout>
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:background="#ffffff"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="@dimen/dimen_4dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="16dp"
-                android:rotation="270"
-                android:src="@android:drawable/arrow_down_float"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingTop="8dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="PR325324532535"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_16dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Monday, 22 July 2017"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_14dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel, Sand..."
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel..."
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -230,8 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="16dp"
-                android:rotation="270"
-                android:src="@android:drawable/arrow_down_float"/>
+                android:rotation="90"
+                android:src="@drawable/ic_arrow_up"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -264,13 +160,14 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel, Sand..."
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone, Sand..."
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -284,8 +181,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="16dp"
-                android:rotation="270"
-                android:src="@android:drawable/arrow_down_float"/>
+                android:rotation="90"
+                android:src="@drawable/ic_arrow_up"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -318,7 +215,117 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel, Sand..."
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone, Sand..."
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_14dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="#ffffff"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="@dimen/dimen_4dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="16dp"
+                android:rotation="90"
+                android:src="@drawable/ic_arrow_up"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="PR325324532535"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_16dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Monday, 22 July 2017"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_14dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone, Sand..."
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_14dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="#ffffff"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="@dimen/dimen_4dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="16dp"
+                android:rotation="90"
+                android:src="@drawable/ic_arrow_up"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="PR325324532535"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_16dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Monday, 22 July 2017"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_14dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone, Sand..."
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>

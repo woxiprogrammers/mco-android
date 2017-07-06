@@ -32,6 +32,6 @@
         android:layout_height="wrap_content"
         android:drawableRight="@android:drawable/arrow_down_float"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:text="RSS Constructions"/>
+        android:text="Kunal Aspiree, Balewadi"/>
 
 </LinearLayout>

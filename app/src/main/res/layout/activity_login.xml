@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_splash"/>
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Manisha"
+            android:textColor="@color/colorWhite"
+            android:textSize="40dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80dp"
+            android:gravity="center_horizontal"
+            android:text="Construction"
+            android:textColor="@color/colorWhite"
+            android:textSize="40dp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal"
+            android:hint="User Name"
+            android:focusable="false"
+            android:textColorHint="@color/colorWhite"
+            android:textStyle="bold"/>
+
+        <View
+            style="@style/style_horizontal_line"
+            android:layout_marginBottom="20dp"
+            android:background="@color/colorWhite"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal"
+            android:hint="Password"
+            android:textColorHint="@color/colorWhite"
+            android:textStyle="bold"/>
+
+        <View
+            style="@style/style_horizontal_line"
+            android:layout_marginBottom="60dp"
+            android:background="@color/colorWhite"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/background_button_normal"
+            android:text="SIGN IN"
+            android:textSize="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Forgot Password?"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</FrameLayout>

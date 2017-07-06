@@ -31,9 +31,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(getString(R.string.app_name));
+//        collapsingToolbar.setTitle("Kunal Aspiree \nBalewadi \nKunal Builders");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
+        toolbar.setTitle("Kunal Aspiree, Balewadi");
         setSupportActionBar(toolbar);
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -91,27 +91,27 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         AssignedTaskItem assignedTaskItem;
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Purchase Management");
+        assignedTaskItem.setStrName("Purchase");
         assignedTaskItem.setStrDescription("Create and manage purchases");
         mArrAssignedTaskItem.add(assignedTaskItem);
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Inventory Management");
+        assignedTaskItem.setStrName("Inventory");
         assignedTaskItem.setStrDescription("Create and manage inventories");
         mArrAssignedTaskItem.add(assignedTaskItem);
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Peticash Management");
+        assignedTaskItem.setStrName("Peticash");
         assignedTaskItem.setStrDescription("Create and manage peticash");
         mArrAssignedTaskItem.add(assignedTaskItem);
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Checklist Management");
+        assignedTaskItem.setStrName("Checklist");
         assignedTaskItem.setStrDescription("Create and manage checklists");
         mArrAssignedTaskItem.add(assignedTaskItem);
         //New
         assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Workforce Management");
+        assignedTaskItem.setStrName("Workforce");
         assignedTaskItem.setStrDescription("Create and manage workforce");
         //New
         assignedTaskItem = new AssignedTaskItem();
