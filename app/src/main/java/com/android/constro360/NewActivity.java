@@ -12,10 +12,13 @@ public class NewActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
         setContentView(R.layout.activity_splash);*/
-        setContentView(R.layout.activity_create_purchase_request);
-        getSupportActionBar().setTitle("Create PR");
+        /*setContentView(R.layout.activity_create_purchase_request);
+        getSupportActionBar().setTitle("July 2017  ˅        Add Material");*/
         /*setContentView(R.layout.activity_purchase_request_list);
-        getSupportActionBar().setTitle("Purchase Request");*/
+        getSupportActionBar().setTitle("July 2017  ˅");*/
+
+        setContentView(R.layout.activity_purchase_process);
+        getSupportActionBar().setTitle("Purchase Summery");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
