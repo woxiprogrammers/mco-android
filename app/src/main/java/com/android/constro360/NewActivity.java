@@ -17,8 +17,10 @@ public class NewActivity extends AppCompatActivity {
         /*setContentView(R.layout.activity_purchase_request_list);
         getSupportActionBar().setTitle("July 2017  ˅");*/
 
-        setContentView(R.layout.activity_purchase_process);
-        getSupportActionBar().setTitle("Purchase Summery");
+        /*setContentView(R.layout.activity_purchase_process);
+        getSupportActionBar().setTitle("Purchase Summary");*/
+        setContentView(R.layout.activity_pay_with_peticash);
+        getSupportActionBar().setTitle("Pay with Paticash");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
