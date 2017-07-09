@@ -24,7 +24,7 @@ public class NewActivity extends AppCompatActivity {
         /*setContentView(R.layout.activity_inventory_list);
         getSupportActionBar().setTitle("Inventory               July 2017  ˅");*/
         setContentView(R.layout.activity_inventory_details);
-        getSupportActionBar().setTitle("Inventory Details");
+        getSupportActionBar().setTitle("Details                    July 2017 ˅");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
