@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ import java.util.List;
  * Created by Rohit.
  */
 public class SelectorAdapter extends RecyclerView.Adapter<SelectorAdapter.ViewHolder> {
-    private List<SelectorItem> data;
+    private List<String> data;
 
-    public SelectorAdapter(List<SelectorItem> data) {
+    public SelectorAdapter(List<String> data) {
         this.data = data;
     }
 
@@ -29,9 +29,7 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        /*Glide.with(holder.itemView.getContext())
-                .load(data.get(position).getImage())
-                .into(holder.image);*/
+        holder.text.setText(data.get(position));
     }
 
     @Override
@@ -40,11 +38,11 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorAdapter.ViewHo
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView image;
+        private TextView text;
 
         ViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.image);
+            text = (TextView) itemView.findViewById(R.id.text);
         }
     }
 }
