@@ -75,21 +75,23 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
 
     @Override
     public void setUserNameError() {
+        edUserName.requestFocus();
         edUserName.setError("UserName Empty");
     }
 
     @Override
     public void setPasswordError() {
+        edPassword.requestFocus();
         edPassword.setError("Password Empty");
     }
 
     @Override
-    public void navigatetoMain() {
+    public void loginSuccess() {
         startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
     }
 
     @Override
-    public void showAlert(String message) {
+    public void loginFailure(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 

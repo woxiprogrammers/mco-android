@@ -14,7 +14,7 @@ interface LoginInterface {
 
     void setPasswordError();
 
-    void navigatetoMain();
+    void loginSuccess();
 
-    void showAlert(String message);
+    void loginFailure(String message);
 }

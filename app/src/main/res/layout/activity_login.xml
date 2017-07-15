@@ -9,7 +9,7 @@
     <!-- Login progress -->
     <ProgressBar
         android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
+        style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -22,7 +22,7 @@
         android:src="@drawable/img_login_back"/>
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="@dimen/dimen_300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
@@ -30,7 +30,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="@dimen/dimen_30dp"
             android:gravity="center_horizontal"
             android:text="Manisha \nConstruction"
             android:textColor="@color/colorWhite"
@@ -40,27 +40,23 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="@dimen/dimen_16dp">
 
             <EditText
                 android:id="@+id/userName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
                 android:gravity="left"
                 android:hint="@string/prompt_user_name"
-                android:imeOptions="actionNext"
                 android:inputType="text"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_40dp"
-                android:textColor="@color/colorDivider"
-                android:textColorHint="@color/colorDivider"/>
+                android:paddingLeft="@dimen/dimen_40dp"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="@dimen/dimen_16dp">
 
             <EditText
                 android:id="@+id/password"
@@ -73,16 +69,14 @@
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:paddingLeft="@dimen/dimen_40dp"
-                android:textColor="@color/colorDivider"
-                android:textColorHint="@color/colorDivider"/>
+                android:paddingLeft="@dimen/dimen_40dp"/>
         </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/btnSignIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/dimen_8dp"
             android:background="@drawable/background_button_normal"
             android:text="SIGN IN"
             android:textSize="20sp"/>
@@ -91,9 +85,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:padding="@dimen/dimen_10dp"
             android:text="Forgot Password?"
             android:textColor="@color/colorDivider"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"/>
     </LinearLayout>
 </FrameLayout>

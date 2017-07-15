@@ -6,8 +6,8 @@ package com.android.login_mvp;
  * Created by Rohit.
  */
 public class LoginPresenter implements LoginPresenterInterface, LoginInteractor.onLoginFinishedListener {
-    LoginInterface mLoginView;
-    LoginInteractor mLoginInteractor;
+    private LoginInterface mLoginView;
+    private LoginInteractor mLoginInteractor;
 
     public LoginPresenter(LoginInterface mLoginView) {
         this.mLoginView = mLoginView;
@@ -49,7 +49,7 @@ public class LoginPresenter implements LoginPresenterInterface, LoginInteractor.
     public void onSuccess() {
         if (mLoginView != null) {
             mLoginView.hideProgress();
-            mLoginView.navigatetoMain();
+            mLoginView.loginSuccess();
         }
     }
 
@@ -57,7 +57,7 @@ public class LoginPresenter implements LoginPresenterInterface, LoginInteractor.
     public void onFailure(String message) {
         if (mLoginView != null) {
             mLoginView.hideProgress();
-            mLoginView.showAlert(message);
+            mLoginView.loginFailure(message);
         }
     }
 }
