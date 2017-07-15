@@ -7,7 +7,7 @@
 <ImageView
     android:layout_width="200dp"
     android:layout_gravity="center"
-    android:src="@drawable/img_manisha_construction"
+    android:src="@drawable/img_logo"
     android:scaleType="centerInside"
     android:layout_height="200dp"/>
 </FrameLayout>

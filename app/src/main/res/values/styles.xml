@@ -6,6 +6,19 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textViewStyle">@style/MyTextView</item>
+    </style>
+
+
+    <style name="MyTextView" parent="android:Widget.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColorHint">@color/colorTextLight</item>
+        <item name="android:typeface">sans</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -25,6 +38,7 @@
     </style>
 
     /////////////////////////////////////////////////
+
     <style name="style_edit_text">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/dimen_44dp</item>
@@ -110,6 +124,5 @@
         <!--<item name="android:textColor">@color/color_white</item>-->
         <item name="android:textSize">@dimen/dimen_18dp</item>
     </style>
-    /////////////////////////////////////////////////
 
 </resources>

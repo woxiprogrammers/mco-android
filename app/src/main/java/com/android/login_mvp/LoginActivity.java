@@ -21,7 +21,6 @@ import com.android.constro360.R;
  * Created by Rohit.
  */
 public class LoginActivity extends AppCompatActivity implements LoginInterface {
-    // UI references.
     private EditText edUserName;
     private EditText edPassword;
     private ProgressBar pbLoad;
@@ -31,8 +30,17 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
-        edUserName = (EditText) findViewById(R.id.email);
+        //Calling function to initialize required views.
+        initializeViews();
+    }
+
+    /**
+     * <b>private void initializeViews()</b>
+     * <p>This function is used to initialize required views.</p>
+     * Created by - Rohit
+     */
+    private void initializeViews() {
+        edUserName = (EditText) findViewById(R.id.userName);
         edPassword = (EditText) findViewById(R.id.password);
         pbLoad = (ProgressBar) findViewById(R.id.login_progress);
         mLoginPresenter = new LoginPresenter(this);
@@ -55,11 +63,42 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         });
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
+    @Override
+    public void showProgress() {
+        pbLoad.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        pbLoad.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setUserNameError() {
+        edUserName.setError("UserName Empty");
+    }
+
+    @Override
+    public void setPasswordError() {
+        edPassword.setError("Password Empty");
+    }
+
+    @Override
+    public void navigatetoMain() {
+        startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
+    }
+
+    @Override
+    public void showAlert(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLoginPresenter.onDestroy();
+    }
+}
     /*private void attemptLogin() {
         // Reset errors.
         mEmailView.setError(null);
@@ -97,40 +136,3 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
             mAuthTask.execute((Void) null);*//*
         }
     }*/
-    @Override
-    public void showProgress() {
-        pbLoad.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgress() {
-        pbLoad.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setUserNameError() {
-        edUserName.setError("UserName Empty");
-    }
-
-    @Override
-    public void setPasswordError() {
-        edPassword.setError("Password Empty");
-    }
-
-    @Override
-    public void navigatetoMain() {
-        startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
-    }
-
-    @Override
-    public void showAlert(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mLoginPresenter.onDestroy();
-    }
-}
-
