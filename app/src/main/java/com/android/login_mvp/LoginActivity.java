@@ -1,17 +1,18 @@
 package com.android.login_mvp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.constro360.DashBoardActivity;
 import com.android.constro360.R;
 
 /**
@@ -21,39 +22,37 @@ import com.android.constro360.R;
  */
 public class LoginActivity extends AppCompatActivity implements LoginInterface {
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-    private LoginPresenter loginPresenter;
+    private EditText edUserName;
+    private EditText edPassword;
+    private ProgressBar pbLoad;
+    private LoginPresenter mLoginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login2);
+        setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-//        populateAutoComplete();
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        edUserName = (EditText) findViewById(R.id.email);
+        edPassword = (EditText) findViewById(R.id.password);
+        pbLoad = (ProgressBar) findViewById(R.id.login_progress);
+        mLoginPresenter = new LoginPresenter(this);
+        Button btnDone = (Button) findViewById(R.id.btnSignIn);
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLoginPresenter.validateCred(edUserName.getText().toString().trim(), edPassword.getText().toString().trim());
+            }
+        });
+        edPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    mLoginPresenter.validateCred(edUserName.getText().toString().trim(), edPassword.getText().toString().trim());
                     return true;
                 }
                 return false;
             }
         });
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -61,7 +60,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    /*private void attemptLogin() {
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -93,44 +92,45 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            /*showProgress(true);
+            *//*showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);*/
+            mAuthTask.execute((Void) null);*//*
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-
+    }*/
     @Override
     public void showProgress() {
+        pbLoad.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
+        pbLoad.setVisibility(View.GONE);
     }
 
     @Override
     public void setUserNameError() {
+        edUserName.setError("UserName Empty");
     }
 
     @Override
     public void setPasswordError() {
+        edPassword.setError("Password Empty");
     }
 
     @Override
     public void navigatetoMain() {
+        startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
     }
 
     @Override
     public void showAlert(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLoginPresenter.onDestroy();
     }
 }
 
