@@ -173,7 +173,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.rohitss.horizontal_selector.HorizontalSelector
+            <!--<com.rohitss.horizontal_selector.HorizontalSelector
                 android:id="@+id/picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -189,7 +189,7 @@
                 android:textSize="20dp"
                 app:dividerSize="4dp"
                 app:sideItems="@integer/sideItems"
-                app:values="@array/values"/>
+                app:values="@array/values"/>-->
 
             <View
                 style="@style/style_horizontal_line"

@@ -313,6 +313,7 @@
             android:layout_margin="16dp"
             android:orientation="vertical">
 
+<!--
             <com.rohitss.horizontal_selector.HorizontalSelector
                 android:id="@+id/picker"
                 android:layout_width="match_parent"
@@ -330,6 +331,7 @@
                 app:dividerSize="4dp"
                 app:sideItems="@integer/sideItems"
                 app:values="@array/values"/>
+-->
 
             <View
                 style="@style/style_horizontal_line"
@@ -351,6 +353,7 @@
                 android:layout_marginBottom="@dimen/dimen_8dp"
                 android:background="@color/colorDivider"/>
 
+<!--
             <com.rohitss.horizontal_selector.HorizontalSelector
                 android:id="@+id/pickerMonth"
                 android:layout_width="match_parent"
@@ -366,6 +369,7 @@
                 app:dividerSize="4dp"
                 app:sideItems="3"
                 app:values="@array/valueMonth"/>
+-->
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
