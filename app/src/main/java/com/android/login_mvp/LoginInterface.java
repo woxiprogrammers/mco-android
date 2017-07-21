@@ -10,9 +10,13 @@ interface LoginInterface {
 
     void hideProgress();
 
-    void setUserNameError();
+    void setUserNameEmptyError(String strError);
 
-    void setPasswordError();
+    void setPasswordEmptyError(String strError);
+
+    void setUserNameValidationError(String strError);
+
+    void setPasswordValidationError(String strError);
 
     void loginSuccess();
 

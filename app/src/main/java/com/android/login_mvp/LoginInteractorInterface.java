@@ -7,9 +7,13 @@ package com.android.login_mvp;
  */
 public interface LoginInteractorInterface {
     interface onLoginFinishedListener {
-        void onUserNameError();
+        void onUserNameEmptyError(String strError);
 
-        void onPasswordError();
+        void onPasswordEmptyError(String strError);
+
+        void onUserNameValidationError(String strError);
+
+        void onPasswordValidationError(String strError);
 
         void onSuccess();
 

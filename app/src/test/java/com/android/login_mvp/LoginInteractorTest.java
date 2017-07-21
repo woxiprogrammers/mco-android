@@ -1,5 +1,6 @@
 package com.android.login_mvp;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -10,6 +11,6 @@ import org.junit.Test;
 public class LoginInteractorTest {
     @Test
     public void login() throws Exception {
-//        assertEquals(4, 3 + 2);
+        Assert.assertEquals(4, 1 + 1 + 2);
     }
 }

@@ -12,9 +12,13 @@ public class LoginInteractor implements LoginInteractorInterface {
     @Override
     public void login(String username, String password, final onLoginFinishedListener listener) {
         if (TextUtils.isEmpty(username))
-            listener.onUserNameError();
+            listener.onUserNameEmptyError("User Name Empty");
+        else if (username.length() < 3)
+            listener.onUserNameValidationError("Invalid User Name");
         else if (TextUtils.isEmpty(password))
-            listener.onPasswordError();
+            listener.onPasswordEmptyError("Password Empty");
+        else if (password.length() < 3)
+            listener.onPasswordValidationError("Invalid Password");
         else if (username.equals("admin") && password.equals("12345")) {
             new Handler().postDelayed(new Runnable() {
                 @Override

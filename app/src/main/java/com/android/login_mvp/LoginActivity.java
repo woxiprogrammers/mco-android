@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,8 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.dashboard.DashBoardActivity;
 import com.android.constro360.R;
+import com.android.dashboard.DashBoardActivity;
 
 /**
  * <b></b>
@@ -29,6 +31,8 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
         //Calling function to initialize required views.
         initializeViews();
@@ -44,8 +48,8 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         edPassword = (EditText) findViewById(R.id.password);
         pbLoad = (ProgressBar) findViewById(R.id.login_progress);
         mLoginPresenter = new LoginPresenter(this);
-        Button btnDone = (Button) findViewById(R.id.btnSignIn);
-        btnDone.setOnClickListener(new View.OnClickListener() {
+        Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mLoginPresenter.validateCred(edUserName.getText().toString().trim(), edPassword.getText().toString().trim());
@@ -74,15 +78,27 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     }
 
     @Override
-    public void setUserNameError() {
+    public void setUserNameEmptyError(String strError) {
         edUserName.requestFocus();
-        edUserName.setError("UserName Empty");
+        edUserName.setError(strError);
     }
 
     @Override
-    public void setPasswordError() {
+    public void setPasswordEmptyError(String strError) {
         edPassword.requestFocus();
-        edPassword.setError("Password Empty");
+        edPassword.setError(strError);
+    }
+
+    @Override
+    public void setUserNameValidationError(String strError) {
+        edUserName.requestFocus();
+        edUserName.setError(strError);
+    }
+
+    @Override
+    public void setPasswordValidationError(String strError) {
+        edPassword.requestFocus();
+        edPassword.setError(strError);
     }
 
     @Override

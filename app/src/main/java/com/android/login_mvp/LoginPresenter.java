@@ -30,18 +30,34 @@ public class LoginPresenter implements LoginPresenterInterface, LoginInteractor.
     }
 
     @Override
-    public void onUserNameError() {
+    public void onUserNameEmptyError(String strError) {
         if (mLoginView != null) {
             mLoginView.hideProgress();
-            mLoginView.setUserNameError();
+            mLoginView.setUserNameEmptyError(strError);
         }
     }
 
     @Override
-    public void onPasswordError() {
+    public void onPasswordEmptyError(String strError) {
         if (mLoginView != null) {
             mLoginView.hideProgress();
-            mLoginView.setPasswordError();
+            mLoginView.setPasswordEmptyError(strError);
+        }
+    }
+
+    @Override
+    public void onUserNameValidationError(String strError) {
+        if (mLoginView != null) {
+            mLoginView.hideProgress();
+            mLoginView.setUserNameValidationError(strError);
+        }
+    }
+
+    @Override
+    public void onPasswordValidationError(String strError) {
+        if (mLoginView != null) {
+            mLoginView.hideProgress();
+            mLoginView.setPasswordValidationError(strError);
         }
     }
 
