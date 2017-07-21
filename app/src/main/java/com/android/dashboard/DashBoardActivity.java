@@ -1,4 +1,4 @@
-package com.android.constro360;
+package com.android.dashboard;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.android.adapter.TaskSelectionRvAdapter;
+import com.android.constro360.NewActivity;
+import com.android.constro360.R;
 import com.android.models.AssignedTaskItem;
 import com.android.peticash.PetiCashListActivity;
 import com.android.utils.BaseActivity;

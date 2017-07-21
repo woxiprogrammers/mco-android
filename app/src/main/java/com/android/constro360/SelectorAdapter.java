@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,8 +17,25 @@ import java.util.List;
 public class SelectorAdapter extends RecyclerView.Adapter<SelectorAdapter.ViewHolder> {
     private List<String> data;
 
-    public SelectorAdapter(List<String> data) {
-        this.data = data;
+    public SelectorAdapter() {
+        this.data = getListData();
+    }
+
+    private List<String> getListData() {
+        List<String> selectorItems = new ArrayList<>();
+        selectorItems.add("Jan");
+        selectorItems.add("Feb");
+        selectorItems.add("Mar");
+        selectorItems.add("Apr");
+        selectorItems.add("May");
+        selectorItems.add("Jun");
+        selectorItems.add("Jul");
+        selectorItems.add("Aug");
+        selectorItems.add("Sept");
+        selectorItems.add("Oct");
+        selectorItems.add("Nov");
+        selectorItems.add("Dec");
+        return selectorItems;
     }
 
     @Override

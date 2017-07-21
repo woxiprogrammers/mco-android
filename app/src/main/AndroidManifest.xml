@@ -28,7 +28,7 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".DashBoardActivity"
+            android:name="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
