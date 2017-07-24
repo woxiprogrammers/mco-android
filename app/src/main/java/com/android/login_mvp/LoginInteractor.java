@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.android.utils.AppURL;
 import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
@@ -38,6 +39,8 @@ public class LoginInteractor implements LoginInteractorInterface {
         AndroidNetworking.post(AppURL.API_USER_LOGIN)
                 .addBodyParameter("email", "admin@mconstruction.co.in")
                 .addBodyParameter("password", "mco@1234")
+                .setTag("requestLoginAPI")
+                .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
