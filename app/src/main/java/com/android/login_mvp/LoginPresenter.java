@@ -62,10 +62,10 @@ public class LoginPresenter implements LoginPresenterInterface, LoginInteractor.
     }
 
     @Override
-    public void onSuccess() {
+    public void onSuccess(String message) {
         if (mLoginView != null) {
             mLoginView.hideProgress();
-            mLoginView.loginSuccess();
+            mLoginView.loginSuccess(message);
         }
     }
 

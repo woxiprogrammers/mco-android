@@ -102,7 +102,8 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     }
 
     @Override
-    public void loginSuccess() {
+    public void loginSuccess(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
     }
 

@@ -15,7 +15,7 @@ public interface LoginInteractorInterface {
 
         void onPasswordValidationError(String strError);
 
-        void onSuccess();
+        void onSuccess(String message);
 
         void onFailure(String message);
     }

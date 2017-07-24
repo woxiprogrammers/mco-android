@@ -18,7 +18,7 @@ interface LoginInterface {
 
     void setPasswordValidationError(String strError);
 
-    void loginSuccess();
+    void loginSuccess(String message);
 
     void loginFailure(String message);
 }
