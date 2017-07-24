@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 26
@@ -33,6 +34,18 @@ android {
             resValue "string", "app_name", "Construction"
         }
     }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
 }
 
 dependencies {
@@ -50,5 +63,6 @@ dependencies {
     compile 'com.android.support:design:26.0.0-alpha1'
     //Fast-Android-Networking Library
     compile 'com.amitshekhar.android:android-networking:1.0.0'
+    compile 'com.amitshekhar.android:jackson-android-networking:1.0.0'
     compile 'com.yarolegovich:discrete-scrollview:1.2.0'
 }

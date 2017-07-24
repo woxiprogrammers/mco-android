@@ -3,13 +3,12 @@ package com.android.login_mvp;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.models.LoginResponse;
 import com.android.utils.AppURL;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-
-import org.json.JSONObject;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 
 /**
  * <b></b>
@@ -42,7 +41,40 @@ public class LoginInteractor implements LoginInteractorInterface {
                 .setTag("requestLoginAPI")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
+                .getAsObject(LoginResponse.class, new ParsedRequestListener<LoginResponse>() {
+                    @Override
+                    public void onResponse(final LoginResponse response) {
+                        Log.d(TAG, "onResponse response : " + String.valueOf(response));
+                        listener.onSuccess("Login Success");
+                        Log.d(TAG, "onResponse getToken : " + response.getToken());
+                        //////////////////
+                        /*Realm realm = null;
+                        try { // I could use try-with-resources here
+                            realm = Realm.getDefaultInstance();
+                            realm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate((RealmModel) response);
+                                }
+                            });
+                        } finally {
+                            if(realm != null) {
+                                realm.close();
+                            }
+                        }*/
+                        /////////////////
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        Log.d(TAG, "onError errorCode : " + String.valueOf(error.getErrorCode()));
+                        Log.d(TAG, "onError errorBody : " + String.valueOf(error.getErrorBody()));
+                        listener.onFailure("Invalid credentials");
+                    }
+                });
+
+
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, "onResponse response : " + String.valueOf(response));
@@ -55,6 +87,6 @@ public class LoginInteractor implements LoginInteractorInterface {
                         Log.d(TAG, "onError errorBody : " + String.valueOf(error.getErrorBody()));
                         listener.onFailure("Invalid credentials");
                     }
-                });
+                });*/
     }
 }
