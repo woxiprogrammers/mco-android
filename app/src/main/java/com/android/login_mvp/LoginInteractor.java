@@ -8,7 +8,9 @@ import com.android.utils.AppURL;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.androidnetworking.interfaces.StringRequestListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * <b></b>
@@ -41,14 +43,25 @@ public class LoginInteractor implements LoginInteractorInterface {
                 .setTag("requestLoginAPI")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsObject(LoginResponse.class, new ParsedRequestListener<LoginResponse>() {
+                .getAsString(new StringRequestListener() {
                     @Override
-                    public void onResponse(final LoginResponse response) {
+                    public void onResponse(String response) {
                         Log.d(TAG, "onResponse response : " + String.valueOf(response));
                         listener.onSuccess("Login Success");
-                        Log.d(TAG, "onResponse getToken : " + response.getToken());
-                        //////////////////
-                        /*Realm realm = null;
+                        Gson gson = new GsonBuilder().create();
+                        LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
+                        Log.d(TAG, "onResponse: getToken : " + loginResponse.getToken());
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        Log.d(TAG, "onError errorCode : " + String.valueOf(error.getErrorCode()));
+                        Log.d(TAG, "onError errorBody : " + String.valueOf(error.getErrorBody()));
+                        listener.onFailure("Invalid credentials");
+                    }
+                });
+
+                /*Realm realm = null;
                         try { // I could use try-with-resources here
                             realm = Realm.getDefaultInstance();
                             realm.executeTransaction(new Realm.Transaction() {
@@ -62,31 +75,5 @@ public class LoginInteractor implements LoginInteractorInterface {
                                 realm.close();
                             }
                         }*/
-                        /////////////////
-                    }
-
-                    @Override
-                    public void onError(ANError error) {
-                        Log.d(TAG, "onError errorCode : " + String.valueOf(error.getErrorCode()));
-                        Log.d(TAG, "onError errorBody : " + String.valueOf(error.getErrorBody()));
-                        listener.onFailure("Invalid credentials");
-                    }
-                });
-
-
-                /*.getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "onResponse response : " + String.valueOf(response));
-                        listener.onSuccess("Login Success");
-                    }
-
-                    @Override
-                    public void onError(ANError error) {
-                        Log.d(TAG, "onError errorCode : " + String.valueOf(error.getErrorCode()));
-                        Log.d(TAG, "onError errorBody : " + String.valueOf(error.getErrorBody()));
-                        listener.onFailure("Invalid credentials");
-                    }
-                });*/
     }
 }

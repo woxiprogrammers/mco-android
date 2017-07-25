@@ -52,8 +52,10 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':multiLine-radio-group-rohitss')
     //MultiLine Radio Group
-    testCompile 'junit:junit:4.12'//For JUnit Testing
-    compile 'org.mockito:mockito-core:2.8.47'//For JUnit Testing
+    testCompile 'junit:junit:4.12'
+    //For JUnit Testing
+    compile 'org.mockito:mockito-core:2.8.47'
+    //For JUnit Testing
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -63,6 +65,6 @@ dependencies {
     compile 'com.android.support:design:26.0.0-alpha1'
     //Fast-Android-Networking Library
     compile 'com.amitshekhar.android:android-networking:1.0.0'
-    compile 'com.amitshekhar.android:jackson-android-networking:1.0.0'
     compile 'com.yarolegovich:discrete-scrollview:1.2.0'
+    compile 'com.google.code.gson:gson:2.8.1'
 }

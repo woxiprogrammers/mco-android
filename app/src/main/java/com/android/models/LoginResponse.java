@@ -1,13 +1,13 @@
 package com.android.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 public class LoginResponse {
-    @JsonProperty("data")
+    @SerializedName("data")
     private Data data;
-    @JsonProperty("message")
+    @SerializedName("message")
     private String message;
-    @JsonProperty("token")
+    @SerializedName("token")
     private String token;
 
     public void setData(Data data) {
@@ -34,35 +34,22 @@ public class LoginResponse {
         return token;
     }
 
-    @Override
-    public String toString() {
-        return
-                "LoginResponse{" +
-                        "data = '" + data + '\'' +
-                        ",message = '" + message + '\'' +
-                        ",token = '" + token + '\'' +
-                        "}";
-    }
-
-    /**
-     * private class Data
-     */
     private class Data {
-        @JsonProperty("is_active")
+        @SerializedName("is_active")
         private boolean isActive;
-        @JsonProperty("gender")
+        @SerializedName("gender")
         private String gender;
-        @JsonProperty("dob")
+        @SerializedName("dob")
         private String dob;
-        @JsonProperty("mobile")
+        @SerializedName("mobile")
         private String mobile;
-        @JsonProperty("last_name")
+        @SerializedName("last_name")
         private String lastName;
-        @JsonProperty("id")
+        @SerializedName("id")
         private int id;
-        @JsonProperty("first_name")
+        @SerializedName("first_name")
         private String firstName;
-        @JsonProperty("email")
+        @SerializedName("email")
         private String email;
 
         public void setIsActive(boolean isActive) {
@@ -127,21 +114,6 @@ public class LoginResponse {
 
         public String getEmail() {
             return email;
-        }
-
-        @Override
-        public String toString() {
-            return
-                    "Data{" +
-                            "is_active = '" + isActive + '\'' +
-                            ",gender = '" + gender + '\'' +
-                            ",dob = '" + dob + '\'' +
-                            ",mobile = '" + mobile + '\'' +
-                            ",last_name = '" + lastName + '\'' +
-                            ",id = '" + id + '\'' +
-                            ",first_name = '" + firstName + '\'' +
-                            ",email = '" + email + '\'' +
-                            "}";
         }
     }
 }
