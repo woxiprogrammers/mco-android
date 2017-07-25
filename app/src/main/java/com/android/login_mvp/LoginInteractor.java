@@ -8,9 +8,11 @@ import com.android.utils.AppURL;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.StringRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONObject;
 
 import io.realm.Realm;
 
@@ -45,30 +47,28 @@ public class LoginInteractor implements LoginInteractorInterface {
                 .setTag("requestLoginAPI")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsString(new StringRequestListener() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(final JSONObject response) {
                         Log.d(TAG, "onResponse response : " + String.valueOf(response));
-                        listener.onSuccess("Login Success");
                         Gson gson = new GsonBuilder().create();
-                        final LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
+                        final LoginResponse loginResponse = gson.fromJson(String.valueOf(response), LoginResponse.class);
                         Log.d(TAG, "onResponse: getToken : " + loginResponse.getToken());
-                        //////////////////////////////
-                        Realm realm = null;
+                        /*Realm realm = null;
                         try {
                             realm = Realm.getDefaultInstance();
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    LoginResponse realmUser = realm.copyToRealm(loginResponse);
+                                    realm.createObjectFromJson(LoginResponse.class, response);
                                 }
                             });
                         } finally {
                             if (realm != null) {
                                 realm.close();
                             }
-                        }
-                        /////////////////////////////////
+                        }*/
+                        listener.onSuccess("Login Success");
                     }
 
                     @Override

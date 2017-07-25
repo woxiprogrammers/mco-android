@@ -20,7 +20,7 @@ public class MyApplication extends Application {
         // initialize Realm
         Realm.init(getApplicationContext());
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
-                .name(Realm.DEFAULT_REALM_NAME)
+                .name(getString(R.string.realm_database_name))
                 .schemaVersion(0)
                 .deleteRealmIfMigrationNeeded()
                 .build();

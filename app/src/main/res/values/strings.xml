@@ -32,4 +32,5 @@
         completions."
     </string>
     <string name="prompt_user_name">User Name</string>
+    <string name="realm_database_name">RealmLocalDatabase.realm</string>
 </resources>

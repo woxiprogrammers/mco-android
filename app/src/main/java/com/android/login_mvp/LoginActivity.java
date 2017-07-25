@@ -3,6 +3,7 @@ package com.android.login_mvp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +17,10 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.dashboard.DashBoardActivity;
+import com.android.models.LoginResponse;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * <b></b>
@@ -105,6 +110,21 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     public void loginSuccess(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
+        /*Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmResults loginResponse = realm.where(LoginResponse.class).findAll();
+                    Log.d("Realm", "execute: " + loginResponse);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }*/
     }
 
     @Override
@@ -118,40 +138,10 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         mLoginPresenter.onDestroy();
     }
 }
-    /*private void attemptLogin() {
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        boolean cancel = false;
-        View focusView = null;
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
+
+/*RealmConfiguration config = Realm.getDefaultInstance().getConfiguration();
+        if (new File(config.getPath()).exists()) {
+            Log.d("LoginActivity", "onResponse: success");
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            *//*showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);*//*
-        }
-    }*/
+            Log.d("LoginActivity", "onResponse: failure");
+        }*/
