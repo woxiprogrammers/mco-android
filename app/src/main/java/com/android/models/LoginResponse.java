@@ -2,12 +2,16 @@ package com.android.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LoginResponse {
+import io.realm.RealmObject;
+import io.realm.annotations.Required;
+
+public class LoginResponse extends RealmObject {
     @SerializedName("data")
     private Data data;
     @SerializedName("message")
     private String message;
     @SerializedName("token")
+    @Required
     private String token;
 
     public void setData(Data data) {

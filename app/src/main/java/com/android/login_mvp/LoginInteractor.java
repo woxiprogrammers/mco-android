@@ -12,6 +12,8 @@ import com.androidnetworking.interfaces.StringRequestListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.realm.Realm;
+
 /**
  * <b></b>
  * <p>This class is used to </p>
@@ -49,8 +51,24 @@ public class LoginInteractor implements LoginInteractorInterface {
                         Log.d(TAG, "onResponse response : " + String.valueOf(response));
                         listener.onSuccess("Login Success");
                         Gson gson = new GsonBuilder().create();
-                        LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
+                        final LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
                         Log.d(TAG, "onResponse: getToken : " + loginResponse.getToken());
+                        //////////////////////////////
+                        Realm realm = null;
+                        try {
+                            realm = Realm.getDefaultInstance();
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    LoginResponse realmUser = realm.copyToRealm(loginResponse);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                        /////////////////////////////////
                     }
 
                     @Override
@@ -60,20 +78,5 @@ public class LoginInteractor implements LoginInteractorInterface {
                         listener.onFailure("Invalid credentials");
                     }
                 });
-
-                /*Realm realm = null;
-                        try { // I could use try-with-resources here
-                            realm = Realm.getDefaultInstance();
-                            realm.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.insertOrUpdate((RealmModel) response);
-                                }
-                            });
-                        } finally {
-                            if(realm != null) {
-                                realm.close();
-                            }
-                        }*/
     }
 }
