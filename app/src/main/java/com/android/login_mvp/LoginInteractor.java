@@ -54,20 +54,20 @@ public class LoginInteractor implements LoginInteractorInterface {
                         Gson gson = new GsonBuilder().create();
                         final LoginResponse loginResponse = gson.fromJson(String.valueOf(response), LoginResponse.class);
                         Log.d(TAG, "onResponse: getToken : " + loginResponse.getToken());
-                        /*Realm realm = null;
+                        Realm realm = null;
                         try {
                             realm = Realm.getDefaultInstance();
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.createObjectFromJson(LoginResponse.class, response);
+                                    realm.copyToRealmOrUpdate(loginResponse);
                                 }
                             });
                         } finally {
                             if (realm != null) {
                                 realm.close();
                             }
-                        }*/
+                        }
                         listener.onSuccess("Login Success");
                     }
 

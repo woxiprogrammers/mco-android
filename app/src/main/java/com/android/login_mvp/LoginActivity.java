@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
     public void loginSuccess(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
-        /*Realm realm = null;
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
             if (realm != null) {
                 realm.close();
             }
-        }*/
+        }
     }
 
     @Override
