@@ -67,4 +67,5 @@ dependencies {
     compile 'com.amitshekhar.android:android-networking:1.0.0'
     compile 'com.yarolegovich:discrete-scrollview:1.2.0'
     compile 'com.google.code.gson:gson:2.8.1'
+    debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:0.0.14'
 }

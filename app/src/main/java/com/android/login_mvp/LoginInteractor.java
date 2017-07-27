@@ -35,9 +35,6 @@ public class LoginInteractor implements LoginInteractorInterface {
         else if (password.length() < 3)
             listener.onPasswordValidationError("Invalid Password");
         else requestLoginAPI(listener);
-        /*if (username.equals("admin") && password.equals("12345")) {
-        } else {
-        }*/
     }
 
     private void requestLoginAPI(final onLoginFinishedListener listener) {
@@ -62,13 +59,22 @@ public class LoginInteractor implements LoginInteractorInterface {
                                 public void execute(Realm realm) {
                                     realm.copyToRealmOrUpdate(loginResponse);
                                 }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    listener.onSuccess("Login Success");
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    listener.onFailure("Failed to fetch local database.");
+                                }
                             });
                         } finally {
                             if (realm != null) {
                                 realm.close();
                             }
                         }
-                        listener.onSuccess("Login Success");
                     }
 
                     @Override

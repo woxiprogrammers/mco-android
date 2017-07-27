@@ -3,6 +3,7 @@ package com.android.models;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * <b></b>
@@ -10,6 +11,8 @@ import io.realm.RealmObject;
  * Created by Rohit.
  */
 public class LoginResponseData extends RealmObject {
+    @PrimaryKey
+    private int index = 0;
     @SerializedName("is_active")
     private boolean isActive;
     @SerializedName("gender")

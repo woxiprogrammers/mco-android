@@ -9,12 +9,16 @@ import android.view.WindowManager;
 
 import com.android.login_mvp.LoginActivity;
 
+import de.jonasrottmann.realmbrowser.RealmBrowser;
+
 public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //Start Realm Browser
+        RealmBrowser.showRealmFilesNotification(getApplicationContext());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

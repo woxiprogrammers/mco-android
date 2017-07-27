@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.androidnetworking.AndroidNetworking;
 
+import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -25,5 +26,7 @@ public class MyApplication extends Application {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
+        //Realm Browser Notification Shortcut
+        RealmBrowser.addFilesShortcut(getApplicationContext());
     }
 }
