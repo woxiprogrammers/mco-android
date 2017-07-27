@@ -5,7 +5,7 @@ package com.android.login_mvp;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public interface LoginInteractorInterface {
+interface LoginInteractorInterface {
     interface onLoginFinishedListener {
         void onUserNameEmptyError(String strError);
 

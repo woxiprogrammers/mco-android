@@ -21,7 +21,7 @@ import io.realm.Realm;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class LoginInteractor implements LoginInteractorInterface {
+class LoginInteractor implements LoginInteractorInterface {
     private static final String TAG = "LoginInteractor";
 
     @Override

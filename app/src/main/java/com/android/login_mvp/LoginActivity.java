@@ -3,6 +3,7 @@ package com.android.login_mvp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -16,13 +17,17 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.dashboard.DashBoardActivity;
+import com.android.models.LoginResponse;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * <b></b>
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class LoginActivity extends AppCompatActivity implements LoginInterface {
+public class LoginActivity extends AppCompatActivity implements LoginView {
     private EditText edUserName;
     private EditText edPassword;
     private ProgressBar pbLoad;
@@ -69,11 +74,15 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
 
     @Override
     public void showProgress() {
+        edUserName.setEnabled(false);
+        edPassword.setEnabled(false);
         pbLoad.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
+        edUserName.setEnabled(true);
+        edPassword.setEnabled(true);
         pbLoad.setVisibility(View.GONE);
     }
 
@@ -106,6 +115,21 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
         finish();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmResults loginResponse = realm.where(LoginResponse.class).findAll();
+                    Log.d("Realm", "execute: " + loginResponse);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 
     @Override

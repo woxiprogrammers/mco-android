@@ -5,7 +5,7 @@ package com.android.login_mvp;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-interface LoginInterface {
+interface LoginView {
     void showProgress();
 
     void hideProgress();

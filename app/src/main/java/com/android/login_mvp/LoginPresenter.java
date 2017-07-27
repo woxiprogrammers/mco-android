@@ -5,11 +5,11 @@ package com.android.login_mvp;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class LoginPresenter implements LoginPresenterInterface, LoginInteractor.onLoginFinishedListener {
-    private LoginInterface mLoginView;
+class LoginPresenter implements LoginPresenterInterface, LoginInteractor.onLoginFinishedListener {
+    private LoginView mLoginView;
     private LoginInteractor mLoginInteractor;
 
-    public LoginPresenter(LoginInterface mLoginView) {
+    LoginPresenter(LoginView mLoginView) {
         this.mLoginView = mLoginView;
         mLoginInteractor = new LoginInteractor();
     }
