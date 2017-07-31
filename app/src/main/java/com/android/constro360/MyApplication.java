@@ -26,7 +26,9 @@ public class MyApplication extends Application {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
-        //Realm Browser Notification Shortcut
-        RealmBrowser.addFilesShortcut(getApplicationContext());
+        if (BuildConfig.DEBUG) {
+            //Realm Browser Notification Shortcut
+            RealmBrowser.addFilesShortcut(getApplicationContext());
+        }
     }
 }

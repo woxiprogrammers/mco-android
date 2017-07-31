@@ -46,7 +46,7 @@ class LoginInteractor implements LoginInteractorInterface {
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(final JSONObject response) {
+                    public void onResponse(JSONObject response) {
                         Log.d(TAG, "onResponse response : " + String.valueOf(response));
                         Gson gson = new GsonBuilder().create();
                         final LoginResponse loginResponse = gson.fromJson(String.valueOf(response), LoginResponse.class);
@@ -57,12 +57,14 @@ class LoginInteractor implements LoginInteractorInterface {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.copyToRealmOrUpdate(loginResponse);
+                                    LoginResponse un_managedLoginResponse = realm.copyToRealmOrUpdate(loginResponse);
+                                    Log.d(TAG, "execute: " + un_managedLoginResponse);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
                                     listener.onSuccess("Login Success");
+                                    testDataInsertion();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -84,5 +86,23 @@ class LoginInteractor implements LoginInteractorInterface {
                         listener.onFailure("Invalid credentials");
                     }
                 });
+    }
+
+    private void testDataInsertion() {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
+                    Log.d("Realm", "execute: " + loginResponse.getToken());
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 }

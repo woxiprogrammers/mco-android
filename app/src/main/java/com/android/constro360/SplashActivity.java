@@ -17,8 +17,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        //Start Realm Browser
-        RealmBrowser.showRealmFilesNotification(getApplicationContext());
+        if (BuildConfig.DEBUG) {
+            //Start Realm Browser
+            RealmBrowser.showRealmFilesNotification(getApplicationContext());
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
