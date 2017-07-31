@@ -2,14 +2,12 @@ package com.android.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-/**
- * <b></b>
- * <p>This class is used to </p>
- * Created by Rohit.
- */
 public class LoginResponseData extends RealmObject {
     @PrimaryKey
     private int index = 0;
@@ -29,6 +27,8 @@ public class LoginResponseData extends RealmObject {
     private String firstName;
     @SerializedName("email")
     private String email;
+    @SerializedName("modules")
+    private RealmList<ModulesItem> modules;
 
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
@@ -93,5 +93,12 @@ public class LoginResponseData extends RealmObject {
     public String getEmail() {
         return email;
     }
-}
 
+    public void setModules(RealmList<ModulesItem> modules) {
+        this.modules = modules;
+    }
+
+    public List<ModulesItem> getModules() {
+        return modules;
+    }
+}

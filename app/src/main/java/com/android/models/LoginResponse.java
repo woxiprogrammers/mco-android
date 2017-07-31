@@ -4,25 +4,25 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
 
 public class LoginResponse extends RealmObject {
     @PrimaryKey
     private int index = 0;
     @SerializedName("data")
-    private LoginResponseData data;
+    private LoginResponseData loginResponseData;
     @SerializedName("message")
     private String message;
+    @SerializedName("logged_in_at")
+    private String loggedInAt;
     @SerializedName("token")
-    @Required
     private String token;
 
-    public void setData(LoginResponseData data) {
-        this.data = data;
+    public void setLoginResponseData(LoginResponseData loginResponseData) {
+        this.loginResponseData = loginResponseData;
     }
 
-    public LoginResponseData getData() {
-        return data;
+    public LoginResponseData getLoginResponseData() {
+        return loginResponseData;
     }
 
     public void setMessage(String message) {
@@ -31,6 +31,14 @@ public class LoginResponse extends RealmObject {
 
     public String getMessage() {
         return message;
+    }
+
+    public void setLoggedInAt(String loggedInAt) {
+        this.loggedInAt = loggedInAt;
+    }
+
+    public String getLoggedInAt() {
+        return loggedInAt;
     }
 
     public void setToken(String token) {
