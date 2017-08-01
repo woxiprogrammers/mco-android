@@ -3,6 +3,7 @@ package com.android.dashboard;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,18 +12,26 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.adapter.TaskSelectionRvAdapter;
 import com.android.constro360.NewActivity;
 import com.android.constro360.R;
+import com.android.login_mvp.LoginActivity;
 import com.android.models.AssignedTaskItem;
+import com.android.models.LoginResponse;
 import com.android.peticash.PetiCashListActivity;
+import com.android.utils.AppConstants;
+import com.android.utils.AppUtils;
 import com.android.utils.BaseActivity;
 import com.android.utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
 
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
@@ -192,13 +201,43 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }*/
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch (id) {
+            case R.id.actionLogout:
+                AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
+                Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                finish();
+                startActivity(intentLogin);
+                break;
+            case R.id.actionSetting:
+            case R.id.actionAbout:
+            case R.id.actionProfile:
+                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
+                break;
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void testDataInsertion() {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
+                    Log.d("Realm", "execute: " + loginResponse.getToken());
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 }

@@ -6,4 +6,5 @@ package com.android.utils;
  * Created by Rohit.
  */
 public interface AppConstants {
+    String PREFS_IS_LOGGED_IN = "isLoggedIn";
 }

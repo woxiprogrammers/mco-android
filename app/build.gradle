@@ -24,6 +24,7 @@ android {
         dev {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
+            minSdkVersion 21
             buildConfigField "String", "BASE_URL", '"http://testapi.mconstruction.co.in/"'
             resValue "string", "app_name", "ConstructionDev"
         }
@@ -68,4 +69,5 @@ dependencies {
     compile 'com.yarolegovich:discrete-scrollview:1.2.0'
     compile 'com.google.code.gson:gson:2.8.1'
     debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:0.0.14'
+    compile 'com.jakewharton.timber:timber:4.5.1'
 }

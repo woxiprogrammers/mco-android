@@ -7,7 +7,9 @@ import com.android.models.LoginResponse;
 import com.android.models.LoginResponseData;
 import com.android.models.ModulesItem;
 import com.android.models.PermissionsItem;
+import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -132,7 +134,7 @@ class LoginInteractor implements LoginInteractorInterface {
                                 @Override
                                 public void onSuccess() {
                                     listener.onSuccess("Login Success");
-                                    testDataInsertion();
+                                    AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, true);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -154,23 +156,5 @@ class LoginInteractor implements LoginInteractorInterface {
                         listener.onFailure("Invalid credentials");
                     }
                 });
-    }
-
-    private void testDataInsertion() {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
-                    Log.d("Realm", "execute: " + loginResponse.getToken());
-                }
-            });
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }
     }
 }

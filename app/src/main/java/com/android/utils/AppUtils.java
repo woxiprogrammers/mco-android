@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
  * Created by Rohit.
  */
 public class AppUtils {
-    private static String DEFAULT_SHARED_PREFS_NAME = "app_preferences";
     private static SharedPreferences preference;
     private static SharedPreferences.Editor editor;
     public static AppUtils instance;
@@ -68,6 +67,7 @@ public class AppUtils {
         if (context == null) {
             throw new IllegalArgumentException("Preference name can not be null");
         }
+        String DEFAULT_SHARED_PREFS_NAME = "app_preferences";
         preference = context.getSharedPreferences(DEFAULT_SHARED_PREFS_NAME, context.MODE_PRIVATE);
         editor = preference.edit();
         mContext = context;
@@ -116,24 +116,24 @@ public class AppUtils {
         return preference.getStringSet(key, defaultValue);
     }
 
-    public boolean getBoolean(String key, boolean defalutValue) {
-        return preference.getBoolean(key, defalutValue);
+    public boolean getBoolean(String key, boolean defaultValue) {
+        return preference.getBoolean(key, defaultValue);
     }
 
-    public String getString(String key, String defalutValue) {
-        return preference.getString(key, defalutValue);
+    public String getString(String key, String defaultValue) {
+        return preference.getString(key, defaultValue);
     }
 
-    public int getInt(String key, int defalutValue) {
-        return preference.getInt(key, defalutValue);
+    public int getInt(String key, int defaultValue) {
+        return preference.getInt(key, defaultValue);
     }
 
-    public float getFloat(String key, float defalutValue) {
-        return preference.getFloat(key, defalutValue);
+    public float getFloat(String key, float defaultValue) {
+        return preference.getFloat(key, defaultValue);
     }
 
-    public long getLong(String key, long defalutValue) {
-        return preference.getLong(key, defalutValue);
+    public long getLong(String key, long defaultValue) {
+        return preference.getLong(key, defaultValue);
     }
 
     /**

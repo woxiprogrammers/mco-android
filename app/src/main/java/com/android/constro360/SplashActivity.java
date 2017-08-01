@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.android.dashboard.DashBoardActivity;
 import com.android.login_mvp.LoginActivity;
+import com.android.utils.AppConstants;
+import com.android.utils.AppUtils;
 
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 
@@ -24,7 +27,12 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
+                if (isLoggedIn) {
+                    startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
+                } else {
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                }
                 finish();
             }
         }, 1000);
