@@ -5,17 +5,17 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 
 public class ProjectsItem extends RealmObject {
-    @SerializedName("project_tag")
-    private String projectTag;
+    @SerializedName("id")
+    private int id;
     @SerializedName("project_name")
     private String projectName;
 
-    public void setProjectTag(String projectTag) {
-        this.projectTag = projectTag;
+    public void setProjectTag(int id) {
+        this.id = id;
     }
 
-    public String getProjectTag() {
-        return projectTag;
+    public int getProjectTag() {
+        return id;
     }
 
     public void setProjectName(String projectName) {

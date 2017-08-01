@@ -70,4 +70,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.1'
     debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:0.0.14'
     compile 'com.jakewharton.timber:timber:4.5.1'
+//    compile('com.mikepenz:materialdrawer:5.9.5@aar') {
+//        transitive = true
+//    }
 }

@@ -1,13 +1,8 @@
 package com.android.login_mvp;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.models.LoginResponse;
-import com.android.models.LoginResponseData;
-import com.android.models.ModulesItem;
-import com.android.models.PermissionsItem;
-import com.android.models.ProjectsItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -21,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONObject;
 
 import io.realm.Realm;
+import timber.log.Timber;
 
 /**
  * <b></b>
@@ -53,7 +49,7 @@ class LoginInteractor implements LoginInteractorInterface {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, "onResponse response : " + String.valueOf(response));
+                        Timber.d(String.valueOf(response));
                         Gson gson = new GsonBuilder().create();
                         final String tempResp = "{\n" +
                                 "  \"data\": {\n" +
@@ -91,11 +87,11 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "    \"projects\": [\n" +
                                 "      {\n" +
                                 "        \"project_name\": \"Sai Constructions\",\n" +
-                                "        \"project_tag\": \"Sai\"\n" +
+                                "        \"id\": 123\n" +
                                 "      },\n" +
                                 "      {\n" +
                                 "        \"project_name\": \"Raj Constructions\",\n" +
-                                "        \"project_tag\": \"Raj\"\n" +
+                                "        \"id\": 345\n" +
                                 "      }\n" +
                                 "    ],\n" +
                                 "    \"is_active\": true\n" +
@@ -105,20 +101,19 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "  \"message\": \"Logged in successfully!!\"\n" +
                                 "}";
                         final LoginResponse loginResponse = gson.fromJson(String.valueOf(tempResp), LoginResponse.class);
-                        Log.d(TAG, "onResponse: getToken : " + loginResponse.getToken());
                         Realm realm = null;
                         try {
                             realm = Realm.getDefaultInstance();
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(ModulesItem.class);
-                                    realm.delete(LoginResponse.class);
-                                    realm.delete(LoginResponseData.class);
-                                    realm.delete(PermissionsItem.class);
-                                    realm.delete(ProjectsItem.class);
+//                                    realm.delete(ModulesItem.class);
+//                                    realm.delete(LoginResponse.class);
+//                                    realm.delete(LoginResponseData.class);
+//                                    realm.delete(PermissionsItem.class);
+//                                    realm.delete(ProjectsItem.class);
+                                    realm.deleteAll();
                                     LoginResponse un_managedLoginResponse = realm.copyToRealm(loginResponse);
-                                    Log.d(TAG, "execute: " + un_managedLoginResponse);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
@@ -141,8 +136,8 @@ class LoginInteractor implements LoginInteractorInterface {
 
                     @Override
                     public void onError(ANError error) {
-                        Log.d(TAG, "onError errorCode : " + String.valueOf(error.getErrorCode()));
-                        Log.d(TAG, "onError errorBody : " + String.valueOf(error.getErrorBody()));
+                        Timber.d(String.valueOf(error.getErrorCode()));
+                        Timber.d(String.valueOf(error.getErrorBody()));
                         listener.onFailure("Invalid credentials");
                     }
                 });

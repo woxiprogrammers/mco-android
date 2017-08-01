@@ -207,10 +207,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.actionLogout:
-                AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
-                Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                finish();
-                startActivity(intentLogin);
+                logoutAndClearAllData();
                 break;
             case R.id.actionSetting:
             case R.id.actionAbout:
@@ -221,6 +218,27 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logoutAndClearAllData() {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.deleteAll();
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
+        Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finish();
+        startActivity(intentLogin);
     }
 
     private void testDataInsertion() {
