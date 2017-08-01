@@ -2,8 +2,6 @@ package com.android.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -17,7 +15,7 @@ public class ModulesItem extends RealmObject {
         this.permissions = permissions;
     }
 
-    public List<PermissionsItem> getPermissions() {
+    public RealmList<PermissionsItem> getPermissions() {
         return permissions;
     }
 

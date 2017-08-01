@@ -7,6 +7,7 @@ import com.android.models.LoginResponse;
 import com.android.models.LoginResponseData;
 import com.android.models.ModulesItem;
 import com.android.models.PermissionsItem;
+import com.android.models.ProjectsItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -74,20 +75,8 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "            \"can_access\": \"create_purchase_order\"\n" +
                                 "          }\n" +
                                 "        ]\n" +
-                                "      },{\n" +
-                                "        \"module_name\": \"Purchase\",\n" +
-                                "        \"permissions\": [\n" +
-                                "          {\n" +
-                                "            \"can_access\": \"create_purchase_request\"\n" +
-                                "          },\n" +
-                                "          {\n" +
-                                "            \"can_access\": \"create_purchase_order\"\n" +
-                                "          },\n" +
-                                "          {\n" +
-                                "            \"can_access\": \"update_purchase_order\"\n" +
-                                "          }\n" +
-                                "        ]\n" +
-                                "      },{\n" +
+                                "      },\n" +
+                                "      {\n" +
                                 "        \"module_name\": \"Purchase\",\n" +
                                 "        \"permissions\": [\n" +
                                 "          {\n" +
@@ -97,16 +86,16 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "            \"can_access\": \"create_purchase_order\"\n" +
                                 "          }\n" +
                                 "        ]\n" +
-                                "      },{\n" +
-                                "        \"module_name\": \"Purchase\",\n" +
-                                "        \"permissions\": [\n" +
-                                "          {\n" +
-                                "            \"can_access\": \"create_purchase_request\"\n" +
-                                "          },\n" +
-                                "          {\n" +
-                                "            \"can_access\": \"create_purchase_order\"\n" +
-                                "          }\n" +
-                                "        ]\n" +
+                                "      }\n" +
+                                "    ],\n" +
+                                "    \"projects\": [\n" +
+                                "      {\n" +
+                                "        \"project_name\": \"Sai Constructions\",\n" +
+                                "        \"project_tag\": \"Sai\"\n" +
+                                "      },\n" +
+                                "      {\n" +
+                                "        \"project_name\": \"Raj Constructions\",\n" +
+                                "        \"project_tag\": \"Raj\"\n" +
                                 "      }\n" +
                                 "    ],\n" +
                                 "    \"is_active\": true\n" +
@@ -127,7 +116,8 @@ class LoginInteractor implements LoginInteractorInterface {
                                     realm.delete(LoginResponse.class);
                                     realm.delete(LoginResponseData.class);
                                     realm.delete(PermissionsItem.class);
-                                    LoginResponse un_managedLoginResponse = realm.copyToRealmOrUpdate(loginResponse);
+                                    realm.delete(ProjectsItem.class);
+                                    LoginResponse un_managedLoginResponse = realm.copyToRealm(loginResponse);
                                     Log.d(TAG, "execute: " + un_managedLoginResponse);
                                 }
                             }, new Realm.Transaction.OnSuccess() {

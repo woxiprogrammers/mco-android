@@ -3,11 +3,8 @@ package com.android.models;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
-public class LoginResponse extends RealmObject {
-    @PrimaryKey
-    private int index = 0;
+public class LoginResponse extends RealmObject{
     @SerializedName("data")
     private LoginResponseData loginResponseData;
     @SerializedName("message")
