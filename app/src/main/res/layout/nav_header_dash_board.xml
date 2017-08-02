@@ -27,11 +27,10 @@
         android:text="Rohit Surwase"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
-    <TextView
+    <Spinner
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableRight="@android:drawable/arrow_down_float"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:text="Kunal Aspiree, Balewadi"/>
+        android:layout_height="30dp"
+        android:text="Kunal Aspiree, Balewadi"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
 </LinearLayout>
