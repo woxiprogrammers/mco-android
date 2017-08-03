@@ -17,12 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.adapter.TaskSelectionRvAdapter;
+import com.android.adapter.ModulesAdapter;
 import com.android.constro360.NewActivity;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.AssignedTaskItem;
 import com.android.models.LoginResponse;
+import com.android.models.LoginResponseData;
 import com.android.peticash.PetiCashListActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
@@ -36,6 +37,7 @@ import io.realm.Realm;
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
     private RecyclerView mRvTaskSelection;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +74,11 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private void initializeViews() {
         mContext = DashBoardActivity.this;
         mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-        ArrayList<AssignedTaskItem> mArrAssignedTaskItem = new ArrayList<>();
-        mArrAssignedTaskItem = getDummyData();
-        TaskSelectionRvAdapter selectionRvAdapter = new TaskSelectionRvAdapter(mArrAssignedTaskItem);
-        mRvTaskSelection.setLayoutManager(layoutManager);
-        mRvTaskSelection.setAdapter(selectionRvAdapter);
+        realm = Realm.getDefaultInstance();
+        ModulesAdapter modulesAdapter = new ModulesAdapter(realm.where(LoginResponseData.class).findFirst().getModules());
+        mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvTaskSelection.setAdapter(modulesAdapter);
+        mRvTaskSelection.setHasFixedSize(true);
         mRvTaskSelection.addOnItemTouchListener(
                 new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -239,6 +240,18 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         finish();
         startActivity(intentLogin);
+    }
+
+    /*
+     * It is good practice to null the reference from the view to the adapter when it is no longer needed.
+     * Because the <code>RealmRecyclerViewAdapter</code> registers itself as a <code>RealmResult.ChangeListener</code>
+     * the view may still be reachable if anybody is still holding a reference to the <code>RealmResult>.
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRvTaskSelection.setAdapter(null);
+        realm.close();
     }
 
     private void testDataInsertion() {
