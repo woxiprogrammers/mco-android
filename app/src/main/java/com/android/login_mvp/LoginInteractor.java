@@ -63,6 +63,7 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "    \"modules\": [\n" +
                                 "      {\n" +
                                 "        \"module_name\": \"Purchase\",\n" +
+                                "        \"module_description\": \"Manage Purchase\",\n" +
                                 "        \"permissions\": [\n" +
                                 "          {\n" +
                                 "            \"can_access\": \"create_purchase_request\"\n" +
@@ -74,6 +75,7 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "      },\n" +
                                 "      {\n" +
                                 "        \"module_name\": \"Purchase\",\n" +
+                                "        \"module_description\": \"Manage Purchase\",\n" +
                                 "        \"permissions\": [\n" +
                                 "          {\n" +
                                 "            \"can_access\": \"create_purchase_request\"\n" +
