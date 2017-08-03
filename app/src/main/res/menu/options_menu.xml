@@ -3,14 +3,14 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:orderInCategory="100"
-        android:title="Create Amendment"
+        android:title="Add Material"
         app:showAsAction="never"/>
     <item
         android:orderInCategory="100"
-        android:title="Pay From Peticash"
+        android:title="Add Diesel"
         app:showAsAction="never"/>
     <item
         android:orderInCategory="100"
-        android:title="Upload Bill"
+        android:title="Add Asset"
         app:showAsAction="never"/>
 </menu>
