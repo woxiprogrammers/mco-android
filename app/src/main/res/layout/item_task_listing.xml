@@ -9,41 +9,62 @@
     app:cardCornerRadius="4dp"
     app:cardElevation="@dimen/dimen_4dp">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|right"
-        android:layout_marginRight="16dp"
-        android:rotation="90"
-        android:src="@drawable/ic_arrow_up"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|left"
-        android:layout_marginLeft="16dp"
-        android:src="@drawable/ic_purchase"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="16dp"
-        android:paddingLeft="80dp"
-        android:paddingTop="16dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_Name"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorText"
-            android:textSize="@dimen/dimen_16dp"/>
+            android:layout_gravity="top">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="16dp"
+                android:rotation="90"
+                android:src="@drawable/ic_arrow_up"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|left"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_purchase"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="16dp"
+                android:paddingLeft="80dp"
+                android:paddingTop="16dp">
+
+                <TextView
+                    android:id="@+id/tv_Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_16dp"/>
+
+                <TextView
+                    android:id="@+id/tv_Description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_14dp"/>
+            </LinearLayout>
+        </FrameLayout>
 
         <TextView
-            android:id="@+id/tv_Description"
+            android:id="@+id/tvSubModule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTextLight"
-            android:textSize="@dimen/dimen_14dp"/>
+            android:background="#eee"
+            android:gravity="center"
+            android:padding="@dimen/dimen_8dp"
+            android:text="Request Material"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

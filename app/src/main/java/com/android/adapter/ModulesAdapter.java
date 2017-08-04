@@ -38,6 +38,14 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
 //        holder.data = obj;
         //noinspection ConstantConditions
         holder.title.setText(obj.getModuleName());
+        holder.moduleDescription.setText(modulesItemOrderedRealmCollection.get(position).getModule_description());
+        if (position == 0) {
+            holder.tvSubModule.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvSubModule.setVisibility(View.GONE);
+            holder.title.setText("Inventory");
+            holder.moduleDescription.setText("Manage Inventory");
+        }
     }
 
     /*@Override
@@ -47,12 +55,14 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }*/
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView title;
+        private TextView title, moduleDescription, tvSubModule;
 //        public ModulesItem data;
 
         MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.tv_Name);
+            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
+            tvSubModule = (TextView) view.findViewById(R.id.tvSubModule);
         }
     }
 }
