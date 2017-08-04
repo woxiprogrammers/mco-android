@@ -1,15 +1,21 @@
 package com.android.adapter;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.models.ModulesItem;
+import com.android.models.SubModulesItem;
 
 import io.realm.OrderedRealmCollection;
+import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 
 /**
@@ -23,7 +29,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     public ModulesAdapter(OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection) {
         super(modulesItemOrderedRealmCollection, true);
         this.modulesItemOrderedRealmCollection = modulesItemOrderedRealmCollection;
-//        setHasStableIds(true);
+        setHasStableIds(true);
     }
 
     @Override
@@ -34,35 +40,44 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final ModulesItem obj = modulesItemOrderedRealmCollection.get(position);
-//        holder.data = obj;
-        //noinspection ConstantConditions
-        holder.title.setText(obj.getModuleName());
-        holder.moduleDescription.setText(modulesItemOrderedRealmCollection.get(position).getModule_description());
-        if (position == 0) {
-            holder.tvSubModule.setVisibility(View.VISIBLE);
-        } else {
-            holder.tvSubModule.setVisibility(View.GONE);
-            holder.title.setText("Inventory");
-            holder.moduleDescription.setText("Manage Inventory");
+        final ModulesItem modulesItem = modulesItemOrderedRealmCollection.get(position);
+        RealmList<SubModulesItem> modulesItemRealmList = modulesItem.getSubModules();
+        for (int size = 0; size < modulesItemRealmList.size(); size++) {
+            if (size == 0) {
+                //noinspection ConstantConditions
+                holder.moduleName.setText(modulesItem.getSubModules().get(size).getSubModuleName());
+                holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
+            } else {
+                TextView textView = new TextView(holder.context);
+                textView.setPadding(0, 20, 0, 20);
+                textView.setGravity(Gravity.CENTER);
+                textView.setBackground(ContextCompat.getDrawable(holder.context, R.drawable.background_sub_module_text));
+//                textView.setBackgroundColor(ContextCompat.getColor(holder.context, R.color.colorSubModuleBackground));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                holder.linearLayout_Modules.addView(textView, layoutParams);
+                textView.setText(modulesItem.getSubModules().get(size).getSubModuleName());
+            }
         }
     }
 
-    /*@Override
+    @Override
     public long getItemId(int index) {
         //noinspection ConstantConditions
-        return 0;
-    }*/
+        return getItem(index).getId();
+    }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView title, moduleDescription, tvSubModule;
-//        public ModulesItem data;
+        private TextView moduleName, moduleDescription;
+        private Context context;
+        private LinearLayout linearLayout_Modules;
 
         MyViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.tv_Name);
+            moduleName = (TextView) view.findViewById(R.id.tv_moduleName);
             moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
-            tvSubModule = (TextView) view.findViewById(R.id.tvSubModule);
+//            subModuleName = (TextView) view.findViewById(R.id.tvSubModule);
+            linearLayout_Modules = (LinearLayout) view.findViewById(R.id.linearLayout_Modules);
+            context = view.getContext();
         }
     }
 }

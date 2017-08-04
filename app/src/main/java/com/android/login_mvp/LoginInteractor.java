@@ -63,25 +63,65 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "    \"modules\": [\n" +
                                 "      {\n" +
                                 "        \"module_name\": \"Purchase\",\n" +
-                                "        \"module_description\": \"Manage Purchase\",\n" +
-                                "        \"permissions\": [\n" +
+                                "        \"id\": 11321,\n" +
+                                "        \"sub_modules\": [\n" +
                                 "          {\n" +
-                                "            \"can_access\": \"create_purchase_request\"\n" +
+                                "            \"sub_module_name\": \"Purchase\",\n" +
+                                "            \"id\": 11,\n" +
+                                "            \"module_description\": \"Manage Purchase\",\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
                                 "          },\n" +
                                 "          {\n" +
-                                "            \"can_access\": \"create_purchase_order\"\n" +
+                                "            \"sub_module_name\": \"Request Material\",\n" +
+                                "            \"id\": 13,\n" +
+                                "            \"module_description\": \"Manage Inventory\",\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Send Material\",\n" +
+                                "            \"id\": 13,\n" +
+                                "            \"module_description\": \"Manage Inventory\",\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
                                 "          }\n" +
                                 "        ]\n" +
                                 "      },\n" +
                                 "      {\n" +
-                                "        \"module_name\": \"Purchase\",\n" +
-                                "        \"module_description\": \"Manage Purchase\",\n" +
-                                "        \"permissions\": [\n" +
+                                "        \"module_name\": \"Inventory\",\n" +
+                                "        \"id\": 13,\n" +
+                                "        \"sub_modules\": [\n" +
                                 "          {\n" +
-                                "            \"can_access\": \"create_purchase_request\"\n" +
-                                "          },\n" +
-                                "          {\n" +
-                                "            \"can_access\": \"create_purchase_order\"\n" +
+                                "            \"sub_module_name\": \"Inventory\",\n" +
+                                "            \"id\": 11,\n" +
+                                "            \"module_description\": \"Manage Inventory\",\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
                                 "          }\n" +
                                 "        ]\n" +
                                 "      }\n" +
@@ -109,13 +149,8 @@ class LoginInteractor implements LoginInteractorInterface {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    realm.delete(ModulesItem.class);
-//                                    realm.delete(LoginResponse.class);
-//                                    realm.delete(LoginResponseData.class);
-//                                    realm.delete(PermissionsItem.class);
-//                                    realm.delete(ProjectsItem.class);
                                     realm.deleteAll();
-                                    LoginResponse un_managedLoginResponse = realm.copyToRealm(loginResponse);
+                                    realm.copyToRealm(loginResponse);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override

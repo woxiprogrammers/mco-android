@@ -11,4 +11,5 @@
     <color name="colorTextLight">#757575</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorDivider">#BDBDBD</color>
+    <color name="colorSubModuleBackground">#ddd</color>
 </resources>

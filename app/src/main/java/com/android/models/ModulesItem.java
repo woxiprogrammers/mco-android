@@ -6,19 +6,19 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class ModulesItem extends RealmObject {
-    @SerializedName("permissions")
-    private RealmList<PermissionsItem> permissions;
+    @SerializedName("sub_modules")
+    private RealmList<SubModulesItem> subModules;
     @SerializedName("module_name")
     private String moduleName;
-    @SerializedName("module_description")
-    private String module_description;
+    @SerializedName("id")
+    private int id;
 
-    public void setPermissions(RealmList<PermissionsItem> permissions) {
-        this.permissions = permissions;
+    public void setSubModules(RealmList<SubModulesItem> subModules) {
+        this.subModules = subModules;
     }
 
-    public RealmList<PermissionsItem> getPermissions() {
-        return permissions;
+    public RealmList<SubModulesItem> getSubModules() {
+        return subModules;
     }
 
     public void setModuleName(String moduleName) {
@@ -29,11 +29,11 @@ public class ModulesItem extends RealmObject {
         return moduleName;
     }
 
-    public String getModule_description() {
-        return module_description;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setModule_description(String module_description) {
-        this.module_description = module_description;
+    public int getId() {
+        return id;
     }
 }

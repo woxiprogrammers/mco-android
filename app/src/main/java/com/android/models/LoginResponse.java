@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class LoginResponse extends RealmObject{
+public class LoginResponse extends RealmObject {
     @SerializedName("data")
     private LoginResponseData loginResponseData;
     @SerializedName("message")
