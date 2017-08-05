@@ -48,11 +48,14 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                 holder.moduleName.setText(modulesItem.getSubModules().get(size).getSubModuleName());
                 holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
             } else {
+                View dividerVIew = new View(holder.context);
+                ViewGroup.LayoutParams layoutParam = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
+                dividerVIew.setBackgroundColor(ContextCompat.getColor(holder.context, R.color.colorDivider));
+                holder.linearLayout_Modules.addView(dividerVIew, layoutParam);
                 TextView textView = new TextView(holder.context);
                 textView.setPadding(0, 20, 0, 20);
                 textView.setGravity(Gravity.CENTER);
-                textView.setBackground(ContextCompat.getDrawable(holder.context, R.drawable.background_sub_module_text));
-//                textView.setBackgroundColor(ContextCompat.getColor(holder.context, R.color.colorSubModuleBackground));
+//                textView.setBackground(ContextCompat.getDrawable(holder.context, R.drawable.background_sub_module_text));
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                 holder.linearLayout_Modules.addView(textView, layoutParams);
                 textView.setText(modulesItem.getSubModules().get(size).getSubModuleName());

@@ -14,6 +14,34 @@
         android:layout_marginTop="@dimen/dimen_4dp"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="Assign To: "
+                android:textSize="@dimen/dimen_20dp"/>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@android:drawable/editbox_background">
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </LinearLayout>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,7 +95,6 @@
                             android:textColor="#ff0000"
                             android:textSize="@dimen/dimen_14dp"/>
                     </LinearLayout>
-
                     <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -112,10 +139,8 @@
                             android:src="@drawable/ic_menu_gallery"
                             android:tint="@color/colorTextLight"/>
                     </LinearLayout>-->
-
                 </LinearLayout>
             </LinearLayout>
-
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -172,7 +197,6 @@
                             android:textSize="@dimen/dimen_14dp"
                             android:visibility="invisible"/>
                     </LinearLayout>
-
                     <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -217,10 +241,8 @@
                             android:src="@drawable/ic_menu_gallery"
                             android:tint="@color/colorTextLight"/>
                     </LinearLayout>-->
-
                 </LinearLayout>
             </LinearLayout>
-
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -277,7 +299,6 @@
                             android:textSize="@dimen/dimen_14dp"
                             android:visibility="invisible"/>
                     </LinearLayout>
-
                     <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -322,10 +343,8 @@
                             android:src="@drawable/ic_menu_gallery"
                             android:tint="@color/colorTextLight"/>
                     </LinearLayout>-->
-
                 </LinearLayout>
             </LinearLayout>
-
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -381,7 +400,6 @@
                             android:textColor="#ff0000"
                             android:textSize="@dimen/dimen_14dp"/>
                     </LinearLayout>
-
                     <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -426,10 +444,8 @@
                             android:src="@drawable/ic_menu_gallery"
                             android:tint="@color/colorTextLight"/>
                     </LinearLayout>-->
-
                 </LinearLayout>
             </LinearLayout>
-
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -485,7 +501,6 @@
                             android:textColor="#ff0000"
                             android:textSize="@dimen/dimen_14dp"/>
                     </LinearLayout>
-
                     <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -530,10 +545,8 @@
                             android:src="@drawable/ic_menu_gallery"
                             android:tint="@color/colorTextLight"/>
                     </LinearLayout>-->
-
                 </LinearLayout>
             </LinearLayout>
-
         </android.support.v7.widget.CardView>
 
         <Button
@@ -544,9 +557,7 @@
             android:background="@drawable/background_button_pressed"
             android:text="SUBMIT"
             android:textSize="20dp"/>
-
     </LinearLayout>
-
     <!--<android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -555,7 +566,6 @@
         android:layout_marginRight="@dimen/dimen_16dp"
         android:src="@drawable/ic_add"
         app:fabSize="normal"/>-->
-
     <android.support.v7.widget.CardView
         android:layout_width="320dp"
         android:layout_height="450dp"
@@ -671,7 +681,6 @@
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
                 </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout

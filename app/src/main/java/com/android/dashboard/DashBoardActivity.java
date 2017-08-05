@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -22,7 +21,6 @@ import com.android.constro360.NewActivity;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.AssignedTaskItem;
-import com.android.models.LoginResponse;
 import com.android.models.LoginResponseData;
 import com.android.peticash.PetiCashListActivity;
 import com.android.utils.AppConstants;
@@ -225,7 +223,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransactionAsync(new Realm.Transaction() {
+            realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     realm.deleteAll();
@@ -234,12 +232,12 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         } finally {
             if (realm != null) {
                 realm.close();
+                AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
+                Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                finish();
+                startActivity(intentLogin);
             }
         }
-        AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
-        Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        finish();
-        startActivity(intentLogin);
     }
 
     /*
@@ -252,23 +250,5 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         super.onDestroy();
         mRvTaskSelection.setAdapter(null);
         realm.close();
-    }
-
-    private void testDataInsertion() {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
-                    Log.d("Realm", "execute: " + loginResponse.getToken());
-                }
-            });
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }
     }
 }
