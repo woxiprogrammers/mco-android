@@ -26,9 +26,10 @@ public class NewActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Inventory");*/
         /*setContentView(R.layout.activity_inventory_details);
         getSupportActionBar().setTitle("Details                    July 2017 ˅");*/
-        setContentView(R.layout.activity_invertory_asset_details);
+        /*setContentView(R.layout.activity_invertory_asset_details);
         getSupportActionBar().setTitle("Asset Details");
-//        getSupportActionBar().setTitle("Material Details");
+        getSupportActionBar().setTitle("July 2017 ˅");
+        getSupportActionBar().setTitle("Material Details");*/
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

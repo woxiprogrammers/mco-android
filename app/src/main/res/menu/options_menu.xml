@@ -7,10 +7,6 @@
         app:showAsAction="never"/>
     <item
         android:orderInCategory="100"
-        android:title="Add Amendment"
-        app:showAsAction="never"/>
-    <item
-        android:orderInCategory="100"
         android:title="Request Maintenance"
         app:showAsAction="never"/>
 </menu>
