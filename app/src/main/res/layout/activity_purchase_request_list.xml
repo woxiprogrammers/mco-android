@@ -7,12 +7,6 @@
     android:layout_height="match_parent"
     tools:context="com.android.constro360.NewActivity">
 
-    <!--Main Layout-->
-    <!--<android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,13 +24,17 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="@dimen/dimen_4dp">
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="16dp"
-                android:rotation="90"
-                android:src="@drawable/ic_arrow_up"/>
+                android:layout_gravity="top|right"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/background_button_pressed"
+                android:backgroundTint="@color/colorTextLight"
+                android:padding="@dimen/dimen_4dp"
+                android:text="Approve"
+                android:textColor="@color/colorWhite"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,13 +83,17 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="@dimen/dimen_4dp">
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="16dp"
-                android:rotation="90"
-                android:src="@drawable/ic_arrow_up"/>
+                android:layout_gravity="top|right"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/background_button_pressed"
+                android:backgroundTint="@color/colorTextLight"
+                android:padding="@dimen/dimen_4dp"
+                android:text="Approve"
+                android:textColor="@color/colorWhite"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -124,7 +126,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Steel, Sand, Stone, Steel, Sand, Stone, Sand..."
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel..."
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>
@@ -140,13 +142,17 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="@dimen/dimen_4dp">
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="16dp"
-                android:rotation="90"
-                android:src="@drawable/ic_arrow_up"/>
+                android:layout_gravity="top|right"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/background_button_pressed"
+                android:backgroundTint="@color/colorTextLight"
+                android:padding="@dimen/dimen_4dp"
+                android:text="Approve"
+                android:textColor="@color/colorWhite"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -179,7 +185,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Steel, Sand, Stone, Steel, Sand, Stone, Sand..."
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel..."
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>
@@ -195,13 +201,15 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="@dimen/dimen_4dp">
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="16dp"
-                android:rotation="90"
-                android:src="@drawable/ic_arrow_up"/>
+                android:layout_gravity="top|right"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:padding="@dimen/dimen_4dp"
+                android:text="Approved"
+                android:textColor="@color/colorAccentLight"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -234,7 +242,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Steel, Sand, Stone, Steel, Sand, Stone, Sand..."
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel..."
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>
@@ -250,13 +258,17 @@
             app:cardCornerRadius="8dp"
             app:cardElevation="@dimen/dimen_4dp">
 
-            <ImageView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="16dp"
-                android:rotation="90"
-                android:src="@drawable/ic_arrow_up"/>
+                android:layout_gravity="top|right"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/background_button_pressed"
+                android:backgroundTint="@color/colorTextLight"
+                android:padding="@dimen/dimen_4dp"
+                android:text="Approve"
+                android:textColor="@color/colorWhite"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -289,7 +301,64 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Steel, Sand, Stone, Steel, Sand, Stone, Sand..."
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel..."
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_14dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="#ffffff"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="@dimen/dimen_4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:padding="@dimen/dimen_4dp"
+                android:text="Approved"
+                android:textColor="@color/colorAccentLight"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="PR325324532535"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_16dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Monday, 22 July 2017"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_14dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Steel, Sand, Stone, Steel, Sand, Stone,Steel..."
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>
@@ -298,9 +367,8 @@
         </android.support.v7.widget.CardView>
 
     </LinearLayout>
-    <!--</android.support.v4.widget.NestedScrollView>-->
 
-    <android.support.v7.widget.CardView
+    <!--<android.support.v7.widget.CardView
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -313,7 +381,7 @@
             android:layout_margin="16dp"
             android:orientation="vertical">
 
-<!--
+&lt;!&ndash;
             <com.rohitss.horizontal_selector.HorizontalSelector
                 android:id="@+id/picker"
                 android:layout_width="match_parent"
@@ -331,7 +399,7 @@
                 app:dividerSize="4dp"
                 app:sideItems="@integer/sideItems"
                 app:values="@array/values"/>
--->
+&ndash;&gt;
 
             <View
                 style="@style/style_horizontal_line"
@@ -353,26 +421,8 @@
                 android:layout_marginBottom="@dimen/dimen_8dp"
                 android:background="@color/colorDivider"/>
 
-<!--
-            <com.rohitss.horizontal_selector.HorizontalSelector
-                android:id="@+id/pickerMonth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:marqueeRepeatLimit="2"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:textColor="@color/colorText"
-                android:textSize="16dp"
-                app:dividerSize="4dp"
-                app:sideItems="3"
-                app:values="@array/valueMonth"/>
--->
-
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>-->
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
