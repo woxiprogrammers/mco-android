@@ -59,7 +59,6 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 holder.linearLayout_Modules.addView(textView, layoutParams);
                 textView.setText(modulesItem.getSubModules().get(size).getSubModuleName());
-//                textView.setOnClickListener(this);
             }
         }
     }
