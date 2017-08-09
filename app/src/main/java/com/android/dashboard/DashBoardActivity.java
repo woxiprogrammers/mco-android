@@ -77,7 +77,13 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));
         mRvTaskSelection.setAdapter(modulesAdapter);
         mRvTaskSelection.setHasFixedSize(true);
-        mRvTaskSelection.addOnItemTouchListener(
+        /*modulesAdapter.setOnItemClickListener(new ModulesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                Toast.makeText(mContext, "Hi Toast", Toast.LENGTH_SHORT).show();
+            }
+        });*/
+        /*mRvTaskSelection.addOnItemTouchListener(
                 new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
@@ -93,7 +99,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 //                        Toast.makeText(mContext, "Item Long Clicked", Toast.LENGTH_SHORT).show();
                     }
                 })
-        );
+        );*/
     }
 
     private ArrayList<AssignedTaskItem> getDummyData() {
