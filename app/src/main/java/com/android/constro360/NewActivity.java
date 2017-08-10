@@ -41,7 +41,10 @@ public class NewActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("July 2017 ˅");
         getSupportActionBar().setTitle("Material Details");*/
 
-        setContentView(R.layout.activity_asset_maintenance);
+        /*setContentView(R.layout.activity_asset_maintenance);
+        getSupportActionBar().setTitle("Asset Maintenance");*/
+
+        setContentView(R.layout.activity_asset_summary);
         getSupportActionBar().setTitle("Asset Maintenance");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

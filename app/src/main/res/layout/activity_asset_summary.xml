@@ -2,10 +2,8 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.android.constro360.NewActivity">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,199 +12,17 @@
         android:layout_marginTop="@dimen/dimen_4dp"
         android:orientation="vertical">
 
-        <!--<LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:text="Assign To: "
-                android:textSize="@dimen/dimen_20dp"/>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:background="@android:drawable/editbox_background">
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_8dp"
-            android:layout_marginRight="@dimen/dimen_8dp"
-            android:background="#aaeeeeee"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_8dp"
-                android:layout_marginLeft="@dimen/dimen_4dp"
-                android:layout_marginTop="@dimen/dimen_4dp"
-                android:text="Current Request"/>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#ffffff"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="@dimen/dimen_4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@android:drawable/ic_menu_delete"
-                            android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
-                            android:textColor="@color/colorText"
-                            android:textSize="@dimen/dimen_16dp"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_2dp"
-                android:background="#ffffff"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="@dimen/dimen_4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@android:drawable/ic_menu_delete"
-                            android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
-                            android:textColor="@color/colorText"
-                            android:textSize="@dimen/dimen_16dp"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_2dp"
-                android:background="#ffffff"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="@dimen/dimen_4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@android:drawable/ic_menu_delete"
-                            android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
-                            android:textColor="@color/colorText"
-                            android:textSize="@dimen/dimen_16dp"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_2dp"
-                android:background="#ffffff"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="@dimen/dimen_4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@android:drawable/ic_menu_delete"
-                            android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
-                            android:textColor="@color/colorText"
-                            android:textSize="@dimen/dimen_16dp"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-
-        <Button
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/background_button_pressed"
-            android:backgroundTint="@color/colorAccent"
-            android:text="SUBMIT"
-            android:textColor="@color/colorWhite"
-            android:textSize="20dp"/>-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#aaeeeeee"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dimen_8dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dimen_16dp"
                 android:layout_marginTop="@dimen/dimen_4dp"
                 android:text="30 July"/>
@@ -237,7 +53,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
+                            android:text="JCB"
                             android:textColor="@color/colorText"
                             android:textSize="@dimen/dimen_16dp"/>
 
@@ -250,7 +66,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="357 units"
+                                android:text="200 KM"
                                 android:textColor="@color/colorTextLight"
                                 android:textSize="@dimen/dimen_14dp"/>
 
@@ -261,7 +77,8 @@
                                 android:gravity="right"
                                 android:text="Approved"
                                 android:textColor="#ff0000"
-                                android:textSize="@dimen/dimen_14dp"/>
+                                android:textSize="@dimen/dimen_14dp"
+                                android:visibility="invisible"/>
                         </LinearLayout>
                         <!--<LinearLayout
                             android:layout_width="match_parent"
@@ -317,11 +134,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_16dp"
             android:background="#eeeeee"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dimen_8dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dimen_16dp"
                 android:layout_marginTop="@dimen/dimen_4dp"
                 android:text="25 July"/>
@@ -353,7 +172,7 @@
                             android:layout_height="wrap_content"
 
                             android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
+                            android:text="Roller"
                             android:textColor="@color/colorText"
                             android:textSize="@dimen/dimen_16dp"/>
 
@@ -366,7 +185,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="357 units"
+                                android:text="300 KM"
                                 android:textColor="@color/colorTextLight"
                                 android:textSize="@dimen/dimen_14dp"/>
 
@@ -377,107 +196,8 @@
                                 android:gravity="right"
                                 android:text="Complete"
                                 android:textColor="#ff0000"
-                                android:textSize="@dimen/dimen_14dp"/>
-                        </LinearLayout>
-                        <!--<LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dimen_8dp"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_menu_gallery"
-                                android:tint="@color/colorTextLight"/>
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dimen_8dp"
-                                android:layout_marginRight="@dimen/dimen_8dp"
-                                android:src="@drawable/ic_menu_gallery"
-                                android:tint="@color/colorTextLight"/>
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dimen_8dp"
-                                android:layout_marginRight="@dimen/dimen_8dp"
-                                android:src="@drawable/ic_menu_gallery"
-                                android:tint="@color/colorTextLight"/>
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dimen_8dp"
-                                android:layout_marginRight="@dimen/dimen_8dp"
-                                android:src="@drawable/ic_menu_gallery"
-                                android:tint="@color/colorTextLight"/>
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dimen_8dp"
-                                android:layout_marginRight="@dimen/dimen_8dp"
-                                android:src="@drawable/ic_menu_gallery"
-                                android:tint="@color/colorTextLight"/>
-                        </LinearLayout>-->
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="#ffffff"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="@dimen/dimen_4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingBottom="8dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:paddingTop="8dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
-                            android:textColor="@color/colorText"
-                            android:textSize="@dimen/dimen_16dp"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="357 units"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="@dimen/dimen_14dp"/>
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="right"
-                                android:text="Pending"
-                                android:textColor="#ff0000"
-                                android:textSize="@dimen/dimen_14dp"/>
+                                android:textSize="@dimen/dimen_14dp"
+                                android:visibility="invisible"/>
                         </LinearLayout>
                         <!--<LinearLayout
                             android:layout_width="match_parent"
@@ -533,11 +253,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_16dp"
             android:background="#aaeeeeee"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dimen_8dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dimen_16dp"
                 android:layout_marginTop="@dimen/dimen_4dp"
                 android:text="23 July"/>
@@ -568,7 +290,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
+                            android:text="JCB"
                             android:textColor="@color/colorText"
                             android:textSize="@dimen/dimen_16dp"/>
 
@@ -581,7 +303,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="357 units"
+                                android:text="400 KM"
                                 android:textColor="@color/colorTextLight"
                                 android:textSize="@dimen/dimen_14dp"/>
 
@@ -592,7 +314,8 @@
                                 android:gravity="right"
                                 android:text="For Indent"
                                 android:textColor="#ff0000"
-                                android:textSize="@dimen/dimen_14dp"/>
+                                android:textSize="@dimen/dimen_14dp"
+                                android:visibility="invisible"/>
                         </LinearLayout>
                         <!--<LinearLayout
                             android:layout_width="match_parent"
@@ -648,11 +371,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_16dp"
             android:background="#aaeeeeee"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dimen_8dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/dimen_16dp"
                 android:layout_marginTop="@dimen/dimen_4dp"
                 android:text="22 July"/>
@@ -683,7 +408,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:drawableTint="@color/colorTextLight"
-                            android:text="Wooden Ply Shaded Door"
+                            android:text="Roller"
                             android:textColor="@color/colorText"
                             android:textSize="@dimen/dimen_16dp"/>
 
@@ -696,7 +421,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="357 units"
+                                android:text="100 KM"
                                 android:textColor="@color/colorTextLight"
                                 android:textSize="@dimen/dimen_14dp"/>
 
@@ -707,7 +432,8 @@
                                 android:gravity="right"
                                 android:text="Disapproved"
                                 android:textColor="#ff0000"
-                                android:textSize="@dimen/dimen_14dp"/>
+                                android:textSize="@dimen/dimen_14dp"
+                                android:visibility="invisible"/>
                         </LinearLayout>
                         <!--<LinearLayout
                             android:layout_width="match_parent"
@@ -757,5 +483,44 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
+
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="History"
+            android:textColor="@color/colorDivider"
+            android:textSize="@dimen/dimen_20dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Readings"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/dimen_20dp"/>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/dimen_80dp"
+        android:layout_marginRight="@dimen/dimen_16dp"
+        android:src="@drawable/ic_add"
+        app:fabSize="normal"/>
+
 </android.support.design.widget.CoordinatorLayout>

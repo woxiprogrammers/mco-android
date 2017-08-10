@@ -1,22 +1,16 @@
 package com.android.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.models.ModulesItem;
 import com.android.models.SubModulesItem;
-import com.android.peticash.PetiCashListActivity;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
@@ -27,19 +21,19 @@ import io.realm.RealmRecyclerViewAdapter;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, ModulesAdapter.MyViewHolder> implements View.OnClickListener {
+public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, ModulesAdapter.MyViewHolder> {
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     // Define listener member variable
     private OnItemClickListener listener;
     private Context context;
-    @Override
+    /*@Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.ll:
                 context.startActivity(new Intent(context, PetiCashListActivity.class));
                 break;
         }
-    }
+    }*/
 
     // Define the listener interface
     public interface OnItemClickListener {
@@ -67,7 +61,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final ModulesItem modulesItem = modulesItemOrderedRealmCollection.get(position);
         this.context=holder.context;
-        holder.ll.setOnClickListener(this);
+//        holder.ll.setOnClickListener(this);
         RealmList<SubModulesItem> modulesItemRealmList = modulesItem.getSubModules();
         for (int size = 0; size < modulesItemRealmList.size(); size++) {
             if (size == 0) {
@@ -105,14 +99,13 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             }
 
         }
-        holder.tvSubModuleName.setOnClickListener(new View.OnClickListener() {
+        /*holder.tvSubModuleName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Toast.makeText(holder.context,"Hello",Toast.LENGTH_SHORT).show();
                 Log.i("@@","click");
             }
-        });
+        });*/
     }
 
     @Override
