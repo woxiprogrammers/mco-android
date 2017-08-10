@@ -1,7 +1,9 @@
 package com.android.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,15 +27,6 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     // Define listener member variable
     private OnItemClickListener listener;
-    private Context context;
-    /*@Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.ll:
-                context.startActivity(new Intent(context, PetiCashListActivity.class));
-                break;
-        }
-    }*/
 
     // Define the listener interface
     public interface OnItemClickListener {
@@ -58,54 +51,41 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         final ModulesItem modulesItem = modulesItemOrderedRealmCollection.get(position);
-        this.context=holder.context;
-//        holder.ll.setOnClickListener(this);
         RealmList<SubModulesItem> modulesItemRealmList = modulesItem.getSubModules();
         for (int size = 0; size < modulesItemRealmList.size(); size++) {
             if (size == 0) {
                 //noinspection ConstantConditions
                 holder.moduleName.setText(modulesItem.getSubModules().get(size).getSubModuleName());
                 holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
-                holder.tvSubModuleName.setVisibility(View.GONE);
-
             } else {
-                holder.tvSubModuleName.setVisibility(View.VISIBLE);
-                holder.tvSubModuleName.setText(modulesItem.getSubModules().get(size).getSubModuleName());
-//                View dividerVIew = new View(holder.context);
-//                ViewGroup.LayoutParams layoutParam = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 8);
-//                dividerVIew.setBackgroundColor(ContextCompat.getColor(holder.context, R.color.colorDivider));
-//                holder.linearLayout_Modules.addView(dividerVIew, layoutParam);
-//                final TextView textView = new TextView(holder.context);
-//                textView.setPadding(0, 20, 0, 20);
-//                textView.setGravity(Gravity.CENTER);
+                /*View dividerVIew = new View(holder.context);
+                ViewGroup.LayoutParams layoutParam = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 8);
+                dividerVIew.setBackgroundColor(ContextCompat.getColor(holder.context, R.color.colorDivider));
+                holder.linearLayout_Modules.addView(dividerVIew, layoutParam);
+                final TextView textView = new TextView(holder.context);
+                textView.setPadding(0, 20, 0, 20);
+                textView.setCompoundDrawables(null,null,ContextCompat.getDrawable(holder.context, R.drawable.ic_arrow_up),null);
+                textView.setGravity(Gravity.CENTER);
 //                textView.setBackground(ContextCompat.getDrawable(holder.context, R.drawable.background_sub_module_text));
-//                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//                holder.linearLayout_Modules.addView(textView, layoutParams);
-//                textView.setText(modulesItem.getSubModules().get(size).getSubModuleName());
-//                textView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View itemView) {
-//                        // Triggers click upwards to the adapter on click
-//                        if (listener != null) {
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                holder.linearLayout_Modules.addView(textView, layoutParams);
+                textView.setText(modulesItem.getSubModules().get(size).getSubModuleName());
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View itemView) {
+                        // Triggers click upwards to the adapter on click
+                        if (listener != null) {
 //                           int position = getAdapterPosition();
-//                            if (position != RecyclerView.NO_POSITION) {
-//                                listener.onItemClick(textView, position);
-//                            }
-//                        }
-//                    }
-//                });
+                            if (position != RecyclerView.NO_POSITION) {
+                                listener.onItemClick(textView, position);
+                            }
+                        }
+                    }
+                });*/
             }
-
         }
-        /*holder.tvSubModuleName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(holder.context,"Hello",Toast.LENGTH_SHORT).show();
-                Log.i("@@","click");
-            }
-        });*/
     }
 
     @Override
@@ -115,21 +95,33 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView moduleName, moduleDescription,tvSubModuleName;
+        private TextView moduleName, moduleDescription;
         private Context context;
-        private LinearLayout linearLayout_Modules,ll;
+        private LinearLayout ll_sub_modules;
 
         MyViewHolder(View view) {
             super(view);
-            context=view.getContext();
+            context = view.getContext();
             moduleName = (TextView) view.findViewById(R.id.tv_moduleName);
             moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
-            tvSubModuleName=(TextView)view.findViewById(R.id.tvSubModuleName);
-//          subModuleName = (TextView) view.findViewById(R.id.tvSubModule);
-            ll=view.findViewById(R.id.ll);
-            linearLayout_Modules = (LinearLayout) view.findViewById(R.id.linearLayout_Modules);
-            context = view.getContext();
-
+            ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_sub_modules);
+            int intMaxSize = 0;
+            for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
+                int intMaxSizeTemp = modulesItemOrderedRealmCollection.get(index).getSubModules().size();
+                if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
+            }
+            for (int indexView = 0; indexView < intMaxSize; indexView++) {
+                View dividerView = new View(context);
+                ViewGroup.LayoutParams layoutParam = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 8);
+                dividerView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorDivider));
+                ll_sub_modules.addView(dividerView, layoutParam);
+                TextView textView = new TextView(context);
+                textView.setPadding(0, 20, 0, 20);
+                textView.setGravity(Gravity.CENTER);
+//                textView.setBackground(ContextCompat.getDrawable(holder.context, R.drawable.background_sub_module_text));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                ll_sub_modules.addView(textView, layoutParams);
+            }
         }
     }
 }

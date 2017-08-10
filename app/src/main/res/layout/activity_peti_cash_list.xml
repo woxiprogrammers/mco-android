@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.android.peticash.PetiCashListActivity">
-
     <!--Collapsing AppBar-->
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -157,11 +156,8 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title="@string/activity_title_peticash"/>
-
         </android.support.design.widget.CollapsingToolbarLayout>
-
     </android.support.design.widget.AppBarLayout>
-
     <!--Main Layout-->
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -172,7 +168,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
             <!--<com.rohitss.horizontal_selector.HorizontalSelector
                 android:id="@+id/picker"
                 android:layout_width="match_parent"
@@ -190,11 +185,9 @@
                 app:dividerSize="4dp"
                 app:sideItems="@integer/sideItems"
                 app:values="@array/values"/>-->
-
             <View
                 style="@style/style_horizontal_line"
-                android:layout_height="@dimen/dimen_2dp"
-                android:background="@color/colorDivider"/>
+                android:layout_height="@dimen/dimen_2dp"/>
 
             <com.rohitss.multilineradiogroup.MultiLineRadioGroup
                 xmlns:multi_line_radio_group="http://schemas.android.com/apk/res-auto"
@@ -204,7 +197,6 @@
                 multi_line_radio_group:default_button="button_2"
                 multi_line_radio_group:max_in_row="6"
                 multi_line_radio_group:radio_buttons="@array/radio_buttons"/>
-
             <!--<android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_task_selection"
                 android:layout_width="match_parent"
@@ -217,8 +209,7 @@
             <View
                 style="@style/style_horizontal_line"
                 android:layout_height="@dimen/dimen_2dp"
-                android:layout_marginBottom="@dimen/dimen_8dp"
-                android:background="@color/colorDivider"/>
+                android:layout_marginBottom="@dimen/dimen_8dp"/>
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -275,10 +266,8 @@
 
                     <View
                         style="@style/style_horizontal_line"
-                        android:layout_height="@dimen/dimen_1dp"
                         android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:background="@color/colorDivider"/>
+                        android:layout_marginTop="@dimen/dimen_2dp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -459,9 +448,7 @@
                             android:layout_gravity="center_vertical"
                             android:src="@drawable/img_out"/>
                     </LinearLayout>
-
                 </LinearLayout>
-
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -474,5 +461,4 @@
         android:layout_marginRight="@dimen/dimen_16dp"
         android:src="@drawable/ic_add"
         app:fabSize="normal"/>
-
 </android.support.design.widget.CoordinatorLayout>
