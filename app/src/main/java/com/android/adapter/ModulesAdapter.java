@@ -28,7 +28,7 @@ import io.realm.RealmRecyclerViewAdapter;
 public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, ModulesAdapter.MyViewHolder> {
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     // Define listener member variable
-    private OnItemClickListener listener;
+    private OnItemClickListener clickListener;
 
     // Define the listener interface
     public interface OnItemClickListener {
@@ -37,7 +37,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
 
     // Define the method that allows the parent activity or fragment to define the listener
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+        this.clickListener = listener;
     }
 
     public ModulesAdapter(OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection) {
@@ -58,7 +58,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         final ModulesItem modulesItem = modulesItemOrderedRealmCollection.get(position);
         RealmList<SubModulesItem> modulesItemRealmList = modulesItem.getSubModules();
         holder.moduleName.setText(modulesItem.getModuleName());
@@ -74,6 +74,14 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         for (int textViewIndex = 0; textViewIndex < noOfSubModules; textViewIndex++) {
             TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(textViewIndex);
             currentTextView.setText(modulesItemRealmList.get(textViewIndex).getSubModuleName());
+            currentTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (clickListener != null) {
+                        clickListener.onItemClick(view, holder.getAdapterPosition());
+                    }
+                }
+            });
         }
         holder.ll_sub_modules.setVisibility(View.GONE);
         holder.fl_mainModuleFrame.setOnClickListener(new View.OnClickListener() {

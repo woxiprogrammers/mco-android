@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.adapter.ModulesAdapter;
@@ -20,18 +21,21 @@ import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.AssignedTaskItem;
 import com.android.models.LoginResponseData;
+import com.android.models.ModulesItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.android.utils.BaseActivity;
 
 import java.util.ArrayList;
 
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
     private RecyclerView mRvTaskSelection;
     private Realm realm;
+    private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +46,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Kunal Aspiree, Balewadi");
         setSupportActionBar(toolbar);
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -69,28 +65,19 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         mContext = DashBoardActivity.this;
         mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
         realm = Realm.getDefaultInstance();
-        ModulesAdapter modulesAdapter = new ModulesAdapter(realm.where(LoginResponseData.class).findFirst().getModules());
+        modulesItemOrderedRealmCollection = realm.where(LoginResponseData.class).findFirst().getModules();
+        ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection);
         mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));
         mRvTaskSelection.setAdapter(modulesAdapter);
         mRvTaskSelection.setHasFixedSize(true);
-
-        /*mRvTaskSelection.addOnItemTouchListener(
-                new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        if (position == 2) {
-                            startActivity(new Intent(mContext, PetiCashListActivity.class));
-                        } else {
-                            startActivity(new Intent(mContext, NewActivity.class));
-                        }
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-//                        Toast.makeText(mContext, "Item Long Clicked", Toast.LENGTH_SHORT).show();
-                    }
-                })
-        );*/
+        modulesAdapter.setOnItemClickListener(new ModulesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int modulePosition) {
+                int subModuleIndex = itemView.getId();
+                String strSubModuleName = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules().get(subModuleIndex).getSubModuleName();
+                Toast.makeText(mContext, "Hi: " + strSubModuleName + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private ArrayList<AssignedTaskItem> getDummyData() {
