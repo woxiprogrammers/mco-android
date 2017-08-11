@@ -54,6 +54,26 @@ public class SlideAnimationUtil {
     }
 
     /**
+     * Animates a view so that it slides in the from the right of it's container.
+     *
+     * @param context
+     * @param view
+     */
+    public static void slideInFromTop(Context context, View view) {
+        runSimpleAnimation(context, view, R.anim.slide_from_top);
+    }
+
+    /**
+     * Animates a view so that it slides from its current position, out of view to the right.
+     *
+     * @param context
+     * @param view
+     */
+    public static void slideOutToBottom(Context context, View view) {
+        runSimpleAnimation(context, view, R.anim.slide_to_bottom);
+    }
+
+    /**
      * Runs a simple animation on a View with no extra parameters.
      *
      * @param context

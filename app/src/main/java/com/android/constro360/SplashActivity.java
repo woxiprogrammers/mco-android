@@ -96,9 +96,8 @@ public class SplashActivity extends AppCompatActivity {
                                 "        \"id\": 11321,\n" +
                                 "        \"sub_modules\": [\n" +
                                 "          {\n" +
-                                "            \"sub_module_name\": \"Purchase\",\n" +
+                                "            \"sub_module_name\": \"Create Purchase\",\n" +
                                 "            \"id\": 11,\n" +
-                                "            \"module_description\": \"Manage Purchase\",\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
                                 "                \"can_access\": \"create_purchase_request\"\n" +
@@ -110,8 +109,55 @@ public class SplashActivity extends AppCompatActivity {
                                 "          },\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Request Material\",\n" +
+                                "            \"id\": 12,\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Approve Material\",\n" +
                                 "            \"id\": 13,\n" +
-                                "            \"module_description\": \"Manage Inventory\",\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Create Order\",\n" +
+                                "            \"id\": 14,\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Manage Bill\",\n" +
+                                "            \"id\": 15,\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Approve Purchase\",\n" +
+                                "            \"id\": 16,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
                                 "                \"can_access\": \"create_purchase_request\"\n" +
@@ -125,12 +171,23 @@ public class SplashActivity extends AppCompatActivity {
                                 "      },\n" +
                                 "      {\n" +
                                 "        \"module_name\": \"Inventory\",\n" +
-                                "        \"id\": 13,\n" +
+                                "        \"id\": 17,\n" +
                                 "        \"sub_modules\": [\n" +
                                 "          {\n" +
-                                "            \"sub_module_name\": \"Inventory\",\n" +
-                                "            \"id\": 11,\n" +
-                                "            \"module_description\": \"Manage Inventory\",\n" +
+                                "            \"sub_module_name\": \"Manage Inventory\",\n" +
+                                "            \"id\": 18,\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Approve Inventory\",\n" +
+                                "            \"id\": 19,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
                                 "                \"can_access\": \"create_purchase_request\"\n" +

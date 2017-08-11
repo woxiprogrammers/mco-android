@@ -7,12 +7,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.models.ModulesItem;
 import com.android.models.SubModulesItem;
+import com.android.utils.SlideAnimationUtil;
 
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
@@ -42,6 +44,11 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         super(modulesItemOrderedRealmCollection, true);
         this.modulesItemOrderedRealmCollection = modulesItemOrderedRealmCollection;
         setHasStableIds(true);
+        int intMaxSize = 0;
+        for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
+            int intMaxSizeTemp = modulesItemOrderedRealmCollection.get(index).getSubModules().size();
+            if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
+        }
     }
 
     @Override
@@ -51,41 +58,36 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final ModulesItem modulesItem = modulesItemOrderedRealmCollection.get(position);
         RealmList<SubModulesItem> modulesItemRealmList = modulesItem.getSubModules();
-        for (int size = 0; size < modulesItemRealmList.size(); size++) {
-            if (size == 0) {
-                //noinspection ConstantConditions
-                holder.moduleName.setText(modulesItem.getSubModules().get(size).getSubModuleName());
-                holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
-            } else {
-                /*View dividerVIew = new View(holder.context);
-                ViewGroup.LayoutParams layoutParam = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 8);
-                dividerVIew.setBackgroundColor(ContextCompat.getColor(holder.context, R.color.colorDivider));
-                holder.linearLayout_Modules.addView(dividerVIew, layoutParam);
-                final TextView textView = new TextView(holder.context);
-                textView.setPadding(0, 20, 0, 20);
-                textView.setCompoundDrawables(null,null,ContextCompat.getDrawable(holder.context, R.drawable.ic_arrow_up),null);
-                textView.setGravity(Gravity.CENTER);
-//                textView.setBackground(ContextCompat.getDrawable(holder.context, R.drawable.background_sub_module_text));
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                holder.linearLayout_Modules.addView(textView, layoutParams);
-                textView.setText(modulesItem.getSubModules().get(size).getSubModuleName());
-                textView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View itemView) {
-                        // Triggers click upwards to the adapter on click
-                        if (listener != null) {
-//                           int position = getAdapterPosition();
-                            if (position != RecyclerView.NO_POSITION) {
-                                listener.onItemClick(textView, position);
-                            }
-                        }
-                    }
-                });*/
+        holder.moduleName.setText(modulesItem.getModuleName());
+//        holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
+        int noOfTextViews = holder.ll_sub_modules.getChildCount();
+        int noOfSubModules = modulesItemRealmList.size();
+        if (noOfSubModules < noOfTextViews) {
+            for (int index = noOfSubModules; index < noOfTextViews; index++) {
+                TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(index);
+                currentTextView.setVisibility(View.GONE);
             }
         }
+        for (int textViewIndex = 0; textViewIndex < noOfSubModules; textViewIndex++) {
+            TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(textViewIndex);
+            currentTextView.setText(modulesItemRealmList.get(textViewIndex).getSubModuleName());
+        }
+        holder.ll_sub_modules.setVisibility(View.GONE);
+        holder.fl_mainModuleFrame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (holder.ll_sub_modules.getVisibility() == View.VISIBLE) {
+//                    SlideAnimationUtil.slideOutToLeft(holder.context, holder.ll_sub_modules);
+                    holder.ll_sub_modules.setVisibility(View.GONE);
+                } else {
+                    SlideAnimationUtil.slideInFromRight(holder.context, holder.ll_sub_modules);
+                    holder.ll_sub_modules.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
@@ -98,12 +100,14 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         private TextView moduleName, moduleDescription;
         private Context context;
         private LinearLayout ll_sub_modules;
+        private FrameLayout fl_mainModuleFrame;
 
         MyViewHolder(View view) {
             super(view);
             context = view.getContext();
             moduleName = (TextView) view.findViewById(R.id.tv_moduleName);
             moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
+            fl_mainModuleFrame = (FrameLayout) view.findViewById(R.id.fl_mainModuleFrame);
             ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_sub_modules);
             int intMaxSize = 0;
             for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
@@ -111,54 +115,14 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                 if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
             }
             for (int indexView = 0; indexView < intMaxSize; indexView++) {
-                View dividerView = new View(context);
-                ViewGroup.LayoutParams layoutParam = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 8);
-                dividerView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorDivider));
-                ll_sub_modules.addView(dividerView, layoutParam);
                 TextView textView = new TextView(context);
+                textView.setId(indexView);
                 textView.setPadding(0, 20, 0, 20);
                 textView.setGravity(Gravity.CENTER);
-//                textView.setBackground(ContextCompat.getDrawable(holder.context, R.drawable.background_sub_module_text));
+                textView.setBackground(ContextCompat.getDrawable(context, R.drawable.background_sub_module_text));
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 ll_sub_modules.addView(textView, layoutParams);
             }
         }
     }
 }
-/*
-public class ModulesAdapter extends RecyclerView.Adapter<ModulesAdapter.ItemHolder> {
-    private ArrayList<AssignedTaskItem> mArrAssignedTaskItem;
-
-    public ModulesAdapter(ArrayList<AssignedTaskItem> mArrAssignedTaskItem) {
-        this.mArrAssignedTaskItem = mArrAssignedTaskItem;
-    }
-
-    @Override
-    public ModulesAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemViewMain = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task_listing, parent, false);
-        return new ItemHolder(itemViewMain);
-    }
-
-    @Override
-    public void onBindViewHolder(ModulesAdapter.ItemHolder holder, int position) {
-        holder.tvName.setText(mArrAssignedTaskItem.get(position).getStrName());
-        holder.tvDescription.setText(mArrAssignedTaskItem.get(position).getStrDescription());
-    }
-
-    @Override
-    public int getItemCount() {
-        return mArrAssignedTaskItem.size();
-    }
-
-    class ItemHolder extends RecyclerView.ViewHolder {
-        Context mContext;
-        TextView tvName, tvDescription;
-
-        ItemHolder(View itemView) {
-            super(itemView);
-            mContext = itemView.getContext();
-            tvName = (TextView) itemView.findViewById(R.id.tv_Name);
-            tvDescription = (TextView) itemView.findViewById(R.id.tv_Description);
-        }
-    }
-}*/

@@ -13,20 +13,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.android.adapter.ModulesAdapter;
-import com.android.constro360.NewActivity;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.AssignedTaskItem;
 import com.android.models.LoginResponseData;
-import com.android.peticash.PetiCashListActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.android.utils.BaseActivity;
-import com.android.utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 
@@ -77,6 +73,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));
         mRvTaskSelection.setAdapter(modulesAdapter);
         mRvTaskSelection.setHasFixedSize(true);
+
         /*mRvTaskSelection.addOnItemTouchListener(
                 new RecyclerItemClickListener(mContext, mRvTaskSelection, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
