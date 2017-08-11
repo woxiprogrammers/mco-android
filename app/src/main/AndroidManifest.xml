@@ -34,12 +34,16 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".NewActivity">
-            <!--<intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".SelectorActivity">
+        </activity>
+        <activity android:name=".DummyActivity">
         </activity>
     </application>
 </manifest>

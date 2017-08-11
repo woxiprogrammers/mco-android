@@ -22,6 +22,8 @@ import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.Realm;
 import timber.log.Timber;
@@ -35,6 +37,10 @@ public class SplashActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) {
             //Start Realm Browser
             RealmBrowser.showRealmFilesNotification(getApplicationContext());
+        }
+        boolean notFirstTime = AppUtils.getInstance().getBoolean(AppConstants.IS_APP_FIRST_TIME, false);
+        if (!notFirstTime) {
+            storeAclKeyValueToLocal();
         }
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -112,10 +118,10 @@ public class SplashActivity extends AppCompatActivity {
                                 "            \"id\": 12,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"request_material\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"edit_material\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          },\n" +
@@ -124,10 +130,10 @@ public class SplashActivity extends AppCompatActivity {
                                 "            \"id\": 13,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"approve_material\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"disapprove_material\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          },\n" +
@@ -136,10 +142,10 @@ public class SplashActivity extends AppCompatActivity {
                                 "            \"id\": 14,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"create_order_request\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"edit_order_order\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          },\n" +
@@ -148,10 +154,10 @@ public class SplashActivity extends AppCompatActivity {
                                 "            \"id\": 15,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"generate_bill_request\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"edit_bill_request\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          },\n" +
@@ -160,10 +166,10 @@ public class SplashActivity extends AppCompatActivity {
                                 "            \"id\": 16,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"approve_purchase_request\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"disapprove_purchase_request\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          }\n" +
@@ -178,10 +184,10 @@ public class SplashActivity extends AppCompatActivity {
                                 "            \"id\": 18,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"create_inventory\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"edit_inventory\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          },\n" +
@@ -190,10 +196,10 @@ public class SplashActivity extends AppCompatActivity {
                                 "            \"id\": 19,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"approve_inventory\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"disapprove_inventory\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          }\n" +
@@ -242,5 +248,29 @@ public class SplashActivity extends AppCompatActivity {
                         Timber.d(String.valueOf(error.getErrorBody()));
                     }
                 });
+    }
+
+    private void storeAclKeyValueToLocal() {
+        HashMap<String, Object> aclKeyValuePair = new HashMap<String, Object>();
+        aclKeyValuePair.put("create_purchase_request", DummyActivity.class);
+        aclKeyValuePair.put("create_purchase_order", "value2");
+        aclKeyValuePair.put("request_material", NewActivity.class);
+        aclKeyValuePair.put("edit_material", "value2");
+        aclKeyValuePair.put("approve_material", "value2");
+        aclKeyValuePair.put("disapprove_material", "value2");
+        aclKeyValuePair.put("create_order_request", "value2");
+        aclKeyValuePair.put("edit_order_order", "value2");
+        aclKeyValuePair.put("generate_bill_request", "value2");
+        aclKeyValuePair.put("edit_bill_request", "value2");
+        aclKeyValuePair.put("approve_purchase_request", "value");
+        aclKeyValuePair.put("disapprove_purchase_request", "value12");
+        aclKeyValuePair.put("create_inventory", "value13");
+        aclKeyValuePair.put("edit_inventory", "value14");
+        aclKeyValuePair.put("approve_inventory", "value15");
+        aclKeyValuePair.put("disapprove_inventory", "value16");
+        Gson gson = new Gson();
+        String hashMapString = gson.toJson(aclKeyValuePair);
+        AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
+        AppUtils.getInstance().put(AppConstants.IS_APP_FIRST_TIME, true);
     }
 }

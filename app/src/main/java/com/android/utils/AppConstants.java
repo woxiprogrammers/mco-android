@@ -7,4 +7,5 @@ package com.android.utils;
  */
 public interface AppConstants {
     String PREFS_IS_LOGGED_IN = "isLoggedIn";
+    String IS_APP_FIRST_TIME = "isAppFirstTime";
 }

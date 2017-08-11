@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context="com.android.dashboard.DashBoardActivity">
 
     <include layout="@layout/app_toolbar"/>
@@ -17,5 +18,4 @@
         android:layout_marginTop="12dp"
         android:background="#eeeeee"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
 </android.support.design.widget.CoordinatorLayout>
