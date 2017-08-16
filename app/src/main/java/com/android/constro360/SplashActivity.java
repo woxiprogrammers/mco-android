@@ -251,10 +251,10 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void storeAclKeyValueToLocal() {
-        HashMap<String, Object> aclKeyValuePair = new HashMap<String, Object>();
-        aclKeyValuePair.put("create_purchase_request", DummyActivity.class);
+        HashMap<String, String> aclKeyValuePair = new HashMap<String, String>();
+        aclKeyValuePair.put("create_purchase_request", DummyActivity.class.getSimpleName());
+        aclKeyValuePair.put("request_material", NewActivity.class.getSimpleName());
         aclKeyValuePair.put("create_purchase_order", "value2");
-        aclKeyValuePair.put("request_material", NewActivity.class);
         aclKeyValuePair.put("edit_material", "value2");
         aclKeyValuePair.put("approve_material", "value2");
         aclKeyValuePair.put("disapprove_material", "value2");

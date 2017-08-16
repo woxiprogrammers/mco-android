@@ -81,9 +81,8 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 int subModuleIndex = itemView.getId();
                 String strSubModuleName = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules().get(subModuleIndex).getSubModuleName();
                 Toast.makeText(mContext, "Hi: " + strSubModuleName + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
-                HashMap<String, Object> aclKeyValuePair = retrieveAclKeyValueFromLocal();
-                aclKeyValuePair.get("create_purchase_request");
-                //TODO : Get and Use this value
+                HashMap<String, String> aclKeyValuePair = retrieveAclKeyValueFromLocal();
+                Timber.d(aclKeyValuePair.get("create_purchase_request"));
             }
         });
     }
@@ -244,12 +243,12 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         realm.close();
     }
 
-    private HashMap<String, Object> retrieveAclKeyValueFromLocal() {
+    private HashMap<String, String> retrieveAclKeyValueFromLocal() {
         Gson gson = new Gson();
         String hashMapString = AppUtils.getInstance().getString("aclKeyValuePair", "");
-        Type type = new TypeToken<HashMap<String, Object>>() {
+        Type type = new TypeToken<HashMap<String, String>>() {
         }.getType();
-        HashMap<String, Object> aclKeyValuePair = gson.fromJson(hashMapString, type);
+        HashMap<String, String> aclKeyValuePair = gson.fromJson(hashMapString, type);
         Timber.d(String.valueOf(aclKeyValuePair));
         return aclKeyValuePair;
     }
