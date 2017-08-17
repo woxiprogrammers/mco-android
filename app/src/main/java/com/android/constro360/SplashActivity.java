@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import com.android.dashboard.DashBoardActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.LoginResponse;
+import com.android.peticash.PetiCashListActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -103,6 +104,7 @@ public class SplashActivity extends AppCompatActivity {
                                 "        \"sub_modules\": [\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Create Purchase\",\n" +
+                                "            \"sub_module_tag\": \"create_purchase\",\n" +
                                 "            \"id\": 11,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
@@ -115,6 +117,7 @@ public class SplashActivity extends AppCompatActivity {
                                 "          },\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Request Material\",\n" +
+                                "            \"sub_module_tag\": \"request_material\",\n" +
                                 "            \"id\": 12,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
@@ -127,6 +130,7 @@ public class SplashActivity extends AppCompatActivity {
                                 "          },\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Approve Material\",\n" +
+                                "            \"sub_module_tag\": \"approve_material\",\n" +
                                 "            \"id\": 13,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
@@ -139,6 +143,7 @@ public class SplashActivity extends AppCompatActivity {
                                 "          },\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Create Order\",\n" +
+                                "            \"sub_module_tag\": \"create_order\",\n" +
                                 "            \"id\": 14,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
@@ -151,6 +156,7 @@ public class SplashActivity extends AppCompatActivity {
                                 "          },\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Manage Bill\",\n" +
+                                "            \"sub_module_tag\": \"manage_bill\",\n" +
                                 "            \"id\": 15,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
@@ -163,6 +169,7 @@ public class SplashActivity extends AppCompatActivity {
                                 "          },\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Approve Purchase\",\n" +
+                                "            \"sub_module_tag\": \"approve_purchase\",\n" +
                                 "            \"id\": 16,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
@@ -181,6 +188,7 @@ public class SplashActivity extends AppCompatActivity {
                                 "        \"sub_modules\": [\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Manage Inventory\",\n" +
+                                "            \"sub_module_tag\": \"manage_inventory\",\n" +
                                 "            \"id\": 18,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
@@ -193,6 +201,7 @@ public class SplashActivity extends AppCompatActivity {
                                 "          },\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Approve Inventory\",\n" +
+                                "            \"sub_module_tag\": \"approve_inventory\",\n" +
                                 "            \"id\": 19,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
@@ -252,22 +261,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private void storeAclKeyValueToLocal() {
         HashMap<String, String> aclKeyValuePair = new HashMap<String, String>();
-        aclKeyValuePair.put("create_purchase_request", DummyActivity.class.getName());
+        aclKeyValuePair.put("create_purchase", DummyActivity.class.getName());
         aclKeyValuePair.put("request_material", NewActivity.class.getName());
-        aclKeyValuePair.put("create_purchase_order", "value2");
-        aclKeyValuePair.put("edit_material", "value2");
-        aclKeyValuePair.put("approve_material", "value2");
-        aclKeyValuePair.put("disapprove_material", "value2");
-        aclKeyValuePair.put("create_order_request", "value2");
-        aclKeyValuePair.put("edit_order_order", "value2");
-        aclKeyValuePair.put("generate_bill_request", "value2");
-        aclKeyValuePair.put("edit_bill_request", "value2");
-        aclKeyValuePair.put("approve_purchase_request", "value");
-        aclKeyValuePair.put("disapprove_purchase_request", "value12");
-        aclKeyValuePair.put("create_inventory", "value13");
-        aclKeyValuePair.put("edit_inventory", "value14");
-        aclKeyValuePair.put("approve_inventory", "value15");
-        aclKeyValuePair.put("disapprove_inventory", "value16");
+        aclKeyValuePair.put("approve_material", PetiCashListActivity.class.getName());
+        aclKeyValuePair.put("create_order", SelectorActivity.class.getName());
+        aclKeyValuePair.put("manage_bill", NewActivity.class.getName());
+        aclKeyValuePair.put("approve_purchase", PetiCashListActivity.class.getName());
+        aclKeyValuePair.put("manage_inventory", SelectorActivity.class.getName());
+        aclKeyValuePair.put("approve_inventory", DummyActivity.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);

@@ -17,11 +17,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.adapter.ModulesAdapter;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
-import com.android.models.AssignedTaskItem;
 import com.android.models.LoginResponseData;
 import com.android.models.ModulesItem;
+import com.android.models.SubModulesItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.android.utils.BaseActivity;
@@ -29,7 +30,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.realm.OrderedRealmCollection;
@@ -79,97 +79,26 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             @Override
             public void onItemClick(View itemView, int modulePosition) {
                 int subModuleIndex = itemView.getId();
-                String strSubModuleName = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules().get(subModuleIndex).getSubModuleName();
-                Toast.makeText(mContext, "Hi: " + strSubModuleName + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
-                HashMap<String, String> aclKeyValuePair = retrieveAclKeyValueFromLocal();
-                Timber.d(aclKeyValuePair.get("create_purchase_request"));
-//                String string = "com.android.constro360.NewActivity";
-                Intent intent = new Intent();
-                intent.setClassName(getApplicationContext(), aclKeyValuePair.get("create_purchase_request"));
-                startActivity(intent);
+                SubModulesItem subModulesItem = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules().get(subModuleIndex);
+                if (BuildConfig.DEBUG) {
+                    String strSubModuleTag = subModulesItem.getSubModuleTag();
+                    Toast.makeText(mContext, "Hi: " + strSubModuleTag + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
+                }
+                startCorrespondingAclActivity(subModulesItem);
             }
         });
     }
 
-    private ArrayList<AssignedTaskItem> getDummyData() {
-        ArrayList<AssignedTaskItem> mArrAssignedTaskItem = new ArrayList<>();
-        AssignedTaskItem assignedTaskItem;
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Purchase");
-        assignedTaskItem.setStrDescription("Create and manage purchases");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Inventory");
-        assignedTaskItem.setStrDescription("Create and manage inventories");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Peticash");
-        assignedTaskItem.setStrDescription("Create and manage peticash");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Checklist");
-        assignedTaskItem.setStrDescription("Create and manage checklists");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Workforce");
-        assignedTaskItem.setStrDescription("Create and manage workforce");
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 5");
-        assignedTaskItem.setStrDescription("Daily Site Report 5");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 7");
-        assignedTaskItem.setStrDescription("Daily Site Report 7");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 8");
-        assignedTaskItem.setStrDescription("Daily Site Report 8");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 9");
-        assignedTaskItem.setStrDescription("Daily Site Report 9");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 10");
-        assignedTaskItem.setStrDescription("Daily Site Report 10");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 11");
-        assignedTaskItem.setStrDescription("Daily Site Report 11");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 12");
-        assignedTaskItem.setStrDescription("Daily Site Report 12");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 13");
-        assignedTaskItem.setStrDescription("Daily Site Report 13");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 14");
-        assignedTaskItem.setStrDescription("Daily Site Report 14");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        //New
-        assignedTaskItem = new AssignedTaskItem();
-        assignedTaskItem.setStrName("Site Report 15");
-        assignedTaskItem.setStrDescription("Daily Site Report 15");
-        mArrAssignedTaskItem.add(assignedTaskItem);
-        return mArrAssignedTaskItem;
+    private void startCorrespondingAclActivity(SubModulesItem subModulesItem) {
+        HashMap<String, String> aclKeyValuePair = retrieveAclKeyValueFromLocal();
+        Intent intent = new Intent();
+//        Gson gson = new Gson();
+//        String strPermissions = gson.toJson(subModulesItem.getPermissions().toArray());
+//        Bundle bundleExtras = new Bundle();
+//        bundleExtras.putSerializable("strPermissions", strPermissions);
+//        intent.putExtras(bundleExtras);
+        intent.setClassName(getApplicationContext(), aclKeyValuePair.get(subModulesItem.getSubModuleTag()));
+        startActivity(intent);
     }
 
     @Override

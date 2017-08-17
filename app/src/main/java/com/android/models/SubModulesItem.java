@@ -2,8 +2,6 @@ package com.android.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -14,6 +12,8 @@ public class SubModulesItem extends RealmObject {
     private RealmList<PermissionsItem> permissions;
     @SerializedName("sub_module_name")
     private String subModuleName;
+    @SerializedName("sub_module_tag")
+    private String subModuleTag;
     @SerializedName("id")
     private int id;
 
@@ -39,6 +39,14 @@ public class SubModulesItem extends RealmObject {
 
     public String getSubModuleName() {
         return subModuleName;
+    }
+
+    public String getSubModuleTag() {
+        return subModuleTag;
+    }
+
+    public void setSubModuleTag(String subModuleTag) {
+        this.subModuleTag = subModuleTag;
     }
 
     public void setId(int id) {
