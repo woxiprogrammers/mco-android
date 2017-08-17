@@ -83,6 +83,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 Toast.makeText(mContext, "Hi: " + strSubModuleName + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
                 HashMap<String, String> aclKeyValuePair = retrieveAclKeyValueFromLocal();
                 Timber.d(aclKeyValuePair.get("create_purchase_request"));
+//                String string = "com.android.constro360.NewActivity";
+                Intent intent = new Intent();
+                intent.setClassName(getApplicationContext(), aclKeyValuePair.get("create_purchase_request"));
+                startActivity(intent);
             }
         });
     }

@@ -33,7 +33,7 @@
             android:name="com.android.peticash.PetiCashListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".NewActivity">
+        <activity android:name="com.android.constro360.NewActivity">
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -41,9 +41,9 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".SelectorActivity">
+        <activity android:name="com.android.constro360.SelectorActivity">
         </activity>
-        <activity android:name=".DummyActivity">
+        <activity android:name="com.android.constro360.DummyActivity">
         </activity>
     </application>
 </manifest>
