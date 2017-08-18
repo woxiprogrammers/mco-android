@@ -10,12 +10,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.android.constro360.R;
 import com.android.models.ModulesItem;
 import com.android.models.SubModulesItem;
 import com.android.utils.SlideAnimationUtil;
-
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;

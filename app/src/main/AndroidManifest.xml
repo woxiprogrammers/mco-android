@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.android.constro360">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.android.constro360">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -17,27 +18,23 @@
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.android.login_mvp.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.android.dashboard.DashBoardActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.android.peticash.PetiCashListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name="com.android.constro360.NewActivity">
-        </activity>
-        <activity android:name="com.android.constro360.SelectorActivity">
-        </activity>
-        <activity android:name="com.android.constro360.DummyActivity">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NewActivity" />
+        <activity android:name=".SelectorActivity" />
+        <activity android:name="com.android.inventory.MaterialListing"></activity>
     </application>
+
 </manifest>
