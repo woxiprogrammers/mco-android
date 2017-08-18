@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.android.constro360.SelectorActivity">
+    tools:context="com.android.constro360.com.android.dummy.SelectorActivity">
 
     <com.yarolegovich.discretescrollview.DiscreteScrollView
         android:id="@+id/recyclerPicker"

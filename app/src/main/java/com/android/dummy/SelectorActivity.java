@@ -1,8 +1,10 @@
-package com.android.constro360;
+package com.android.dummy;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.android.constro360.R;
+import com.android.constro360.SelectorAdapter;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 

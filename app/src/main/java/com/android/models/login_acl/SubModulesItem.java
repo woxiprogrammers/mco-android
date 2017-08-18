@@ -1,4 +1,4 @@
-package com.android.models;
+package com.android.models.login_acl;
 
 import com.google.gson.annotations.SerializedName;
 

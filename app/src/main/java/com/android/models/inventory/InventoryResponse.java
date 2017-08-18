@@ -1,4 +1,4 @@
-package com.android.inventory;
+package com.android.models.inventory;
 
 import com.google.gson.annotations.SerializedName;
 

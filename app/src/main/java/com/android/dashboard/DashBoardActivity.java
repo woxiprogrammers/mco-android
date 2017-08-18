@@ -20,9 +20,9 @@ import com.android.adapter.ModulesAdapter;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
-import com.android.models.LoginResponseData;
-import com.android.models.ModulesItem;
-import com.android.models.SubModulesItem;
+import com.android.models.login_acl.LoginResponseData;
+import com.android.models.login_acl.ModulesItem;
+import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.android.utils.BaseActivity;
@@ -97,7 +97,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 //        Bundle bundleExtras = new Bundle();
 //        bundleExtras.putSerializable("strPermissions", strPermissions);
 //        intent.putExtras(bundleExtras);
-        intent.setClassName(getApplicationContext(), aclKeyValuePair.get(subModulesItem.getSubModuleTag()));
+        String strClassName = aclKeyValuePair.get(subModulesItem.getSubModuleTag());
+        Timber.d("Activity Started: " + strClassName);
+        intent.setClassName(getApplicationContext(), strClassName);
         startActivity(intent);
     }
 
@@ -181,8 +183,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         String hashMapString = AppUtils.getInstance().getString("aclKeyValuePair", "");
         Type type = new TypeToken<HashMap<String, String>>() {
         }.getType();
-        HashMap<String, String> aclKeyValuePair = gson.fromJson(hashMapString, type);
-        Timber.d(String.valueOf(aclKeyValuePair));
-        return aclKeyValuePair;
+        return gson.fromJson(hashMapString, type);
     }
 }

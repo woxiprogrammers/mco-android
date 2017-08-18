@@ -1,8 +1,10 @@
-package com.android.constro360;
+package com.android.dummy;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+
+import com.android.constro360.R;
 
 public class NewActivity extends AppCompatActivity {
     @Override

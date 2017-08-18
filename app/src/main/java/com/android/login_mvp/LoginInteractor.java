@@ -2,7 +2,7 @@ package com.android.login_mvp;
 
 import android.text.TextUtils;
 
-import com.android.models.LoginResponse;
+import com.android.models.login_acl.LoginResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -24,7 +24,6 @@ import timber.log.Timber;
  * Created by Rohit.
  */
 class LoginInteractor implements LoginInteractorInterface {
-    private static final String TAG = "LoginInteractor";
 
     @Override
     public void login(String username, String password, final onLoginFinishedListener listener) {
@@ -66,9 +65,9 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "        \"id\": 11321,\n" +
                                 "        \"sub_modules\": [\n" +
                                 "          {\n" +
-                                "            \"sub_module_name\": \"Purchase\",\n" +
+                                "            \"sub_module_name\": \"Create Purchase\",\n" +
+                                "            \"sub_module_tag\": \"create_purchase\",\n" +
                                 "            \"id\": 11,\n" +
-                                "            \"module_description\": \"Manage Purchase\",\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
                                 "                \"can_access\": \"create_purchase_request\"\n" +
@@ -80,27 +79,66 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "          },\n" +
                                 "          {\n" +
                                 "            \"sub_module_name\": \"Request Material\",\n" +
-                                "            \"id\": 13,\n" +
-                                "            \"module_description\": \"Manage Inventory\",\n" +
+                                "            \"sub_module_tag\": \"request_material\",\n" +
+                                "            \"id\": 12,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"request_material\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"edit_material\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          },\n" +
                                 "          {\n" +
-                                "            \"sub_module_name\": \"Send Material\",\n" +
+                                "            \"sub_module_name\": \"Approve Material\",\n" +
+                                "            \"sub_module_tag\": \"approve_material\",\n" +
                                 "            \"id\": 13,\n" +
-                                "            \"module_description\": \"Manage Inventory\",\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"approve_material\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"disapprove_material\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Create Order\",\n" +
+                                "            \"sub_module_tag\": \"create_order\",\n" +
+                                "            \"id\": 14,\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"create_order_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"edit_order_order\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Manage Bill\",\n" +
+                                "            \"sub_module_tag\": \"manage_bill\",\n" +
+                                "            \"id\": 15,\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"generate_bill_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"edit_bill_request\"\n" +
+                                "              }\n" +
+                                "            ]\n" +
+                                "          },\n" +
+                                "          {\n" +
+                                "            \"sub_module_name\": \"Approve Purchase\",\n" +
+                                "            \"sub_module_tag\": \"approve_purchase\",\n" +
+                                "            \"id\": 16,\n" +
+                                "            \"permissions\": [\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"approve_purchase_request\"\n" +
+                                "              },\n" +
+                                "              {\n" +
+                                "                \"can_access\": \"disapprove_purchase_request\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          }\n" +
@@ -108,18 +146,18 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "      },\n" +
                                 "      {\n" +
                                 "        \"module_name\": \"Inventory\",\n" +
-                                "        \"id\": 13,\n" +
+                                "        \"id\": 17,\n" +
                                 "        \"sub_modules\": [\n" +
                                 "          {\n" +
-                                "            \"sub_module_name\": \"Inventory\",\n" +
-                                "            \"id\": 11,\n" +
-                                "            \"module_description\": \"Manage Inventory\",\n" +
+                                "            \"sub_module_name\": \"Manage Inventory\",\n" +
+                                "            \"sub_module_tag\": \"manage_inventory\",\n" +
+                                "            \"id\": 18,\n" +
                                 "            \"permissions\": [\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_request\"\n" +
+                                "                \"can_access\": \"create_inventory\"\n" +
                                 "              },\n" +
                                 "              {\n" +
-                                "                \"can_access\": \"create_purchase_order\"\n" +
+                                "                \"can_access\": \"edit_inventory\"\n" +
                                 "              }\n" +
                                 "            ]\n" +
                                 "          }\n" +
