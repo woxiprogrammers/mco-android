@@ -25,15 +25,16 @@
         </activity>
         <activity
             android:name="com.android.login_mvp.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.android.dashboard.DashBoardActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.android.peticash.PetiCashListActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".NewActivity"></activity>
-        <activity android:name=".SelectorActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NewActivity" />
+        <activity android:name=".SelectorActivity" />
+        <activity android:name="com.android.inventory.MaterialListing"></activity>
     </application>
 
 </manifest>
