@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_margin="@dimen/dimen_16dp"
     android:elevation="@dimen/dimen_5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="@dimen/dimen_10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,38 +19,47 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tvMaterialName"
+                android:id="@+id/textview_MaterialName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.90"
+                android:layout_margin="@dimen/dimen_5dp"
+                android:layout_weight="0.95"
+                android:textSize="@dimen/dimen_16dp"
                 android:text="fdgfdgfgfgf" />
 
             <Button
-                android:id="@+id/btnRemoveMaterial"
+                android:id="@+id/button_RemoveMaterial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.10"
-                android:background="@drawable/ic_menu_camera"
-                 />
+                android:layout_margin="@dimen/dimen_5dp"
+                android:layout_weight="0.05"
+                android:background="@drawable/ic_remove_material" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="1">
-            <EditText
-                android:id="@+id/etQuantity"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter Quantity"
-                android:layout_weight="0.5"/>
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <EditText
+                android:id="@+id/editText_Quantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:hint="Enter Units"/>
+                android:inputType="number"
+                android:digits="0123456789"
+                android:hint="@string/edittext_hint_quantity" />
+
+            <EditText
+                android:id="@+id/editText_Units"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:inputType="number"
+                android:digits="0123456789"
+                android:hint="@string/edittext_hint_units" />
 
         </LinearLayout>
     </LinearLayout>
