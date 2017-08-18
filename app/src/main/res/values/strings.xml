@@ -25,9 +25,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="prompt_user_name">User Name</string>
     <string name="realm_database_name">RealmLocalDatabase.realm</string>
     <string name="edittext_hint_quantity">Enter Quantity</string>

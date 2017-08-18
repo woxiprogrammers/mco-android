@@ -17,11 +17,11 @@
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
         <activity
             android:name="com.android.login_mvp.LoginActivity"
@@ -34,14 +34,6 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".NewActivity"></activity>
         <activity android:name=".SelectorActivity"></activity>
-        <activity android:name=".DummyActivity"></activity>
-        <activity android:name="com.android.Dummy">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
