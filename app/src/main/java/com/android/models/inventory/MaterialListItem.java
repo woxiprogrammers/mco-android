@@ -9,6 +9,9 @@ public class MaterialListItem extends RealmObject{
 	@SerializedName("quantity_out")
 	private String quantityOut;
 
+	@SerializedName("id")
+	private int id;
+
 	@SerializedName("quantity_in")
 	private String quantityIn;
 
@@ -34,6 +37,14 @@ public class MaterialListItem extends RealmObject{
 		return quantityIn;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public void setMaterialName(String materialName){
 		this.materialName = materialName;
 	}
@@ -49,4 +60,5 @@ public class MaterialListItem extends RealmObject{
 	public String getQuantityAvailable(){
 		return quantityAvailable;
 	}
+
 }
