@@ -6,7 +6,7 @@ import io.realm.RealmObject;
 
 public class InventoryResponse extends RealmObject {
 
-	@SerializedName("inventoryDataResponse")
+	@SerializedName("data")
 	private InventoryDataResponse inventoryDataResponse;
 
 	@SerializedName("next_url")
