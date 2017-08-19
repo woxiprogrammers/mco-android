@@ -33,5 +33,7 @@
         <activity android:name="com.android.dummy.NewActivity"/>
         <activity android:name="com.android.dummy.SelectorActivity"/>
         <activity android:name="com.android.inventory.InventoryHomeActivity"/>
+        <activity android:name="com.android.purchase.PurchaseHomeActivity">
+        </activity>
     </application>
 </manifest>

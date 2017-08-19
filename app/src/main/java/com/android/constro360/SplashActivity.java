@@ -8,12 +8,10 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.android.dashboard.DashBoardActivity;
-import com.android.dummy.NewActivity;
-import com.android.dummy.SelectorActivity;
 import com.android.inventory.InventoryHomeActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.login_acl.LoginResponse;
-import com.android.peticash.PetiCashListActivity;
+import com.android.purchase.PurchaseHomeActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -264,12 +262,12 @@ public class SplashActivity extends AppCompatActivity {
 
     private void storeAclKeyValueToLocal() {
         HashMap<String, String> aclKeyValuePair = new HashMap<String, String>();
-        aclKeyValuePair.put("create_purchase", SelectorActivity.class.getName());
-        aclKeyValuePair.put("request_material", NewActivity.class.getName());
-        aclKeyValuePair.put("approve_material", PetiCashListActivity.class.getName());
-        aclKeyValuePair.put("create_order", SelectorActivity.class.getName());
-        aclKeyValuePair.put("manage_bill", NewActivity.class.getName());
-        aclKeyValuePair.put("approve_purchase", PetiCashListActivity.class.getName());
+        aclKeyValuePair.put("create_purchase", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("request_material", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("approve_material", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("create_order", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("manage_bill", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("approve_purchase", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("manage_inventory", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("approve_inventory", InventoryHomeActivity.class.getName());
         Gson gson = new Gson();
