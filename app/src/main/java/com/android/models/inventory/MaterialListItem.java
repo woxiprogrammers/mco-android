@@ -21,6 +21,16 @@ public class MaterialListItem extends RealmObject{
 	@SerializedName("quantity_available")
 	private String quantityAvailable;
 
+	private boolean isSelected;
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean selected) {
+		isSelected = selected;
+	}
+
 	public void setQuantityOut(String quantityOut){
 		this.quantityOut = quantityOut;
 	}

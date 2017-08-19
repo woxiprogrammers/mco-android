@@ -3,9 +3,14 @@ package com.android.inventory;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.adapter.MaterialListAdapter;
@@ -17,6 +22,7 @@ import com.android.models.login_acl.LoginResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.BaseActivity;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -38,22 +44,43 @@ import static android.support.v7.widget.LinearLayoutManager.*;
 /**
  * Created by Sharvari on 18/8/17.
  */
-public class InventoryHomeActivity extends AppCompatActivity {
+public class InventoryHomeActivity extends BaseActivity {
 
     private MaterialListAdapter materialListAdapter;
     private Context mContext;
-    @BindView(R.id.rv_material_list) RecyclerView rv_material_list;
+    @BindView(R.id.rv_material_list)
+    RecyclerView rv_material_list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_material_listing);
+        mContext = InventoryHomeActivity.this;
         ButterKnife.bind(this);
-        mContext=InventoryHomeActivity.this;
+        if(getSupportActionBar() !=null){
+            getSupportActionBar().setHomeButtonEnabled(true);
+            setTitle("Inventory");
+        }
         requestInventoryResponse();
 
     }
 
-    private void requestInventoryResponse(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void requestInventoryResponse() {
         AndroidNetworking.get(AppURL.INVENTORY_DATA_URL)
                 /*.addBodyParameter("email", "admin@mconstruction.co.in")
                 .addBodyParameter("password", "mco@1234")*/
@@ -65,7 +92,7 @@ public class InventoryHomeActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         Gson gson = new GsonBuilder().create();
-                        final String tempResponse="{\n" +
+                        final String tempResponse = "{\n" +
                                 "  \"data\": {\n" +
                                 "    \"material_list\": [\n" +
                                 "      {\n" +
@@ -123,7 +150,7 @@ public class InventoryHomeActivity extends AppCompatActivity {
                                 "  \"message\": \"Sucess\"\n" +
                                 "}";
 
-                        final InventoryResponse inventoryResponse=gson.fromJson(String.valueOf(tempResponse), InventoryResponse.class);
+                        final InventoryResponse inventoryResponse = gson.fromJson(String.valueOf(tempResponse), InventoryResponse.class);
                         Realm realm = null;
                         try {
                             realm = Realm.getDefaultInstance();
@@ -135,7 +162,7 @@ public class InventoryHomeActivity extends AppCompatActivity {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(InventoryHomeActivity.this,"Success",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(InventoryHomeActivity.this, "Success", Toast.LENGTH_SHORT).show();
                                     setAdapterForMaterialList();
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -160,18 +187,28 @@ public class InventoryHomeActivity extends AppCompatActivity {
                 });
     }
 
-    private void setAdapterForMaterialList(){
-        Realm realm=Realm.getDefaultInstance();
-        OrderedRealmCollection<MaterialListItem> materialListItems=realm.where(InventoryDataResponse.class).findFirst().getMaterialList();
-        materialListAdapter=new MaterialListAdapter(materialListItems,false);
+    private void setAdapterForMaterialList() {
+        final Realm realm = Realm.getDefaultInstance();
+        final OrderedRealmCollection<MaterialListItem> materialListItems = realm.where(InventoryDataResponse.class).findFirst().getMaterialList();
+        materialListAdapter = new MaterialListAdapter(materialListItems, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv_material_list.setLayoutManager(linearLayoutManager);
         rv_material_list.setAdapter(materialListAdapter);
-        rv_material_list.addOnItemTouchListener(new RecyclerItemClickListener(mContext,rv_material_list, new RecyclerItemClickListener.OnItemClickListener() {
+        rv_material_list.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rv_material_list, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-
+            public void onItemClick(View view, final int position) {
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        materialListItems.get(position).setSelected(true);
+                    }
+                });
+                View itemView= rv_material_list.getRootView();
+                 LinearLayout cardView = ButterKnife.findById(itemView, R.id.cardView);
+                cardView.setSelected(true);
+                rv_material_list.getAdapter().notifyDataSetChanged();
+                Toast.makeText(mContext, "Selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
