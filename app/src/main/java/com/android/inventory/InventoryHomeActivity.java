@@ -1,7 +1,11 @@
 package com.android.inventory;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,10 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.adapter.MaterialListAdapter;
 import com.android.constro360.R;
+import com.android.dashboard.DashBoardActivity;
 import com.android.models.inventory.InventoryDataResponse;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
@@ -59,7 +65,7 @@ public class InventoryHomeActivity extends BaseActivity {
         ButterKnife.bind(this);
         if(getSupportActionBar() !=null){
             getSupportActionBar().setHomeButtonEnabled(true);
-            setTitle("Inventory");
+            setTitle(getString(R.string.inventory));
         }
         requestInventoryResponse();
 
@@ -208,7 +214,26 @@ public class InventoryHomeActivity extends BaseActivity {
                  LinearLayout cardView = ButterKnife.findById(itemView, R.id.cardView);
                 cardView.setSelected(true);
                 rv_material_list.getAdapter().notifyDataSetChanged();
-                Toast.makeText(mContext, "Selected", Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar
+                        .make(view, "Select Materials", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Ok", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent=new Intent(InventoryHomeActivity.this, InventoryDetails.class);
+                                startActivity(intent);
+                            }
+                        });
+
+                // Changing message text color
+                snackbar.setActionTextColor(getColor(R.color.colorAccent));
+
+                // Changing action button text color
+                View sbView = snackbar.getView();
+                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(Color.YELLOW);
+
+                snackbar.show();
+
             }
 
             @Override

@@ -30,4 +30,5 @@
     <string name="realm_database_name">RealmLocalDatabase.realm</string>
     <string name="edittext_hint_quantity">Enter Quantity</string>
     <string name="edittext_hint_units">Enter Units</string>
+    <string name="inventory">Inventory</string>
 </resources>
