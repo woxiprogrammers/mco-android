@@ -4,13 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,14 +16,10 @@ import android.widget.Toast;
 
 import com.android.adapter.MaterialListAdapter;
 import com.android.constro360.R;
-import com.android.dashboard.DashBoardActivity;
 import com.android.models.inventory.InventoryDataResponse;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
-import com.android.models.login_acl.LoginResponse;
-import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
-import com.android.utils.AppUtils;
 import com.android.utils.BaseActivity;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
@@ -39,13 +31,13 @@ import com.google.gson.GsonBuilder;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import timber.log.Timber;
-
-import static android.support.v7.widget.LinearLayoutManager.*;
 
 /**
  * Created by Sharvari on 18/8/17.
@@ -56,6 +48,7 @@ public class InventoryHomeActivity extends BaseActivity {
     private Context mContext;
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
+    private ArrayList<String> strMaterialName=new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +187,14 @@ public class InventoryHomeActivity extends BaseActivity {
     }
 
     private void setAdapterForMaterialList() {
+        strMaterialName.add("1516");
+        strMaterialName.add("1517");
+        strMaterialName.add("1518");
+        strMaterialName.add("1519");
+        strMaterialName.add("1520");
+        strMaterialName.add("1521");
+        strMaterialName.add("1522");
+        strMaterialName.add("1523");
         final Realm realm = Realm.getDefaultInstance();
         final OrderedRealmCollection<MaterialListItem> materialListItems = realm.where(InventoryDataResponse.class).findFirst().getMaterialList();
         materialListAdapter = new MaterialListAdapter(materialListItems, false);
@@ -220,7 +221,8 @@ public class InventoryHomeActivity extends BaseActivity {
                             @Override
                             public void onClick(View view) {
                                 Intent intent=new Intent(InventoryHomeActivity.this, InventoryDetails.class);
-                                startActivity(intent);
+                                intent.putExtra("Array",strMaterialName);
+                               startActivity(intent);
                             }
                         });
 
