@@ -2,25 +2,29 @@ package com.android.purchase;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.android.constro360.R;
-import com.android.utils.AppUtils;
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.android.interfaces.FragmentInterface;
 
-import org.json.JSONObject;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class PurchaseHomeActivity extends AppCompatActivity {
+    @BindView(R.id.tavLayout)
+    TabLayout mTabLayout_purchaseHome;
+    @BindView(R.id.homeViewPager)
+    ViewPager mViewPager_purchaseHome;
     private Context mContext;
+    private PurchaseHomeViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_home);
-        functionForGettingData();
+        ButterKnife.bind(this);
         //Calling function to initialize required views.
         initializeViews();
     }
@@ -32,30 +36,25 @@ public class PurchaseHomeActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         mContext = PurchaseHomeActivity.this;
-    }
+        viewPagerAdapter = new PurchaseHomeViewPagerAdapter(getSupportFragmentManager());
+        mViewPager_purchaseHome.setAdapter(viewPagerAdapter);
+        mTabLayout_purchaseHome.setupWithViewPager(mViewPager_purchaseHome);
+        mViewPager_purchaseHome.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from local DB
+            @Override
+            public void onPageSelected(int position) {
+                FragmentInterface fragment = (FragmentInterface) viewPagerAdapter.instantiateItem(mViewPager_purchaseHome, position);
+                if (fragment != null) {
+                    fragment.fragmentBecameVisible();
+                }
+            }
 
-        } else {
-            //Get data from Server
-            requestPrListOnline();
-        }
-    }
-
-    private void requestPrListOnline() {
-        AndroidNetworking.get("")
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                    }
-                });
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 }

@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import io.realm.Realm;
+
 /**
  * <b></b>
  * <p>This class is used to </p>
@@ -27,6 +29,7 @@ public class AppUtils {
     private static SharedPreferences.Editor editor;
     public static AppUtils instance;
     public static Context mContext;
+    private Realm realm;
     private final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
             "[a-zA-Z0-9+._%-+]{1,256}" +
                     "@" +
@@ -318,5 +321,12 @@ public class AppUtils {
             throw new NullPointerException(message);
         }
         return object;
+    }
+
+    public Realm getRealmInstance() {
+        if (realm == null || realm.isClosed()) {
+            realm = Realm.getDefaultInstance();
+        }
+        return realm;
     }
 }

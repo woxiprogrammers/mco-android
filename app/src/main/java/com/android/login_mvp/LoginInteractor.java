@@ -49,7 +49,6 @@ class LoginInteractor implements LoginInteractorInterface {
                     @Override
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
-                        Gson gson = new GsonBuilder().create();
                         final String tempResp = "{\n" +
                                 "  \"data\": {\n" +
                                 "    \"id\": 1,\n" +
@@ -180,6 +179,7 @@ class LoginInteractor implements LoginInteractorInterface {
                                 "  \"logged_in_at\": \"27/07/2017\",\n" +
                                 "  \"message\": \"Logged in successfully!!\"\n" +
                                 "}";
+                        Gson gson = new GsonBuilder().create();
                         final LoginResponse loginResponse = gson.fromJson(String.valueOf(tempResp), LoginResponse.class);
                         Realm realm = null;
                         try {
