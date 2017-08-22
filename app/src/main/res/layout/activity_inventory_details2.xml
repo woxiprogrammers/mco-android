@@ -330,11 +330,11 @@
                     android:src="@drawable/ic_right"
                     android:tint="@color/colorPrimaryDark"/>
 
-                <TextView
+                <ToggleButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Move Out"
+                    android:textOff="Move Out"
                     android:textColor="#f00"
                     android:textSize="16dp"/>
             </LinearLayout>

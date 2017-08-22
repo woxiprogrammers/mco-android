@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -254,13 +255,13 @@ public class InventoryHomeActivity extends BaseActivity {
                         .setAction("Ok", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent(InventoryHomeActivity.this, InventoryDetails.class);
+                                Intent intent = new Intent(InventoryHomeActivity.this, BottomNavigateView.class);
                                 intent.putExtra("Array", strMaterialName);
                                 startActivity(intent);
                             }
                         });
                 // Changing message text color
-//                snackbar.setActionTextColor("#ffffff");
+                //snackbar.setActionTextColor("#ffffff");
                 // Changing action button text color
                 View sbView = snackbar.getView();
                 TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
