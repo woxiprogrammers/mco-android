@@ -32,6 +32,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
+import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import timber.log.Timber;
@@ -46,6 +47,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        if (BuildConfig.DEBUG) {
+            //Start Realm Browser
+            RealmBrowser.showRealmFilesNotification(getApplicationContext());
+        }
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 //        collapsingToolbar.setTitle("Kunal Aspiree \nBalewadi \nKunal Builders");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

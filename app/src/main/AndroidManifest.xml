@@ -18,10 +18,10 @@
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>-->
+            </intent-filter>
         </activity>
         <activity
             android:name="com.android.login_mvp.LoginActivity"
@@ -36,10 +36,8 @@
         <activity android:name="com.android.dummy.SelectorActivity"/>
         <activity android:name="com.android.inventory.InventoryHomeActivity"/>
         <activity android:name="com.android.purchase.PurchaseHomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+        </activity>
+        <activity android:name="com.android.inventory.InventoryDetails">
         </activity>
     </application>
 </manifest>

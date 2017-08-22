@@ -3,11 +3,16 @@ package com.android.models.inventory;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class MaterialListItem extends RealmObject{
 
 	@SerializedName("quantity_out")
 	private String quantityOut;
+
+	@PrimaryKey
+	@SerializedName("id")
+	private int id;
 
 	@SerializedName("quantity_in")
 	private String quantityIn;
@@ -17,6 +22,16 @@ public class MaterialListItem extends RealmObject{
 
 	@SerializedName("quantity_available")
 	private String quantityAvailable;
+
+	private boolean isSelected;
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean selected) {
+		isSelected = selected;
+	}
 
 	public void setQuantityOut(String quantityOut){
 		this.quantityOut = quantityOut;
@@ -34,6 +49,14 @@ public class MaterialListItem extends RealmObject{
 		return quantityIn;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public void setMaterialName(String materialName){
 		this.materialName = materialName;
 	}
@@ -49,4 +72,5 @@ public class MaterialListItem extends RealmObject{
 	public String getQuantityAvailable(){
 		return quantityAvailable;
 	}
+
 }

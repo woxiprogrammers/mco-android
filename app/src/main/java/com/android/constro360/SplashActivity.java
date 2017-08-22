@@ -26,7 +26,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.Realm;
 import timber.log.Timber;
 
@@ -36,10 +35,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (BuildConfig.DEBUG) {
-            //Start Realm Browser
-            RealmBrowser.showRealmFilesNotification(getApplicationContext());
-        }
         boolean notFirstTime = AppUtils.getInstance().getBoolean(AppConstants.IS_APP_FIRST_TIME, false);
         if (!notFirstTime) {
             storeAclKeyValueToLocal();
