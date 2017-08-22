@@ -18,11 +18,8 @@ import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -54,9 +51,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void checkForAclUpdates() {
-        Realm realm = null;
+        Realm realm = AppUtils.getInstance().getRealmInstance();
         try {
-            realm = Realm.getDefaultInstance();
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -79,7 +75,35 @@ public class SplashActivity extends AppCompatActivity {
                 .setTag("requestLatestAcl")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
+                .getAsObject(LoginResponse.class, new ParsedRequestListener<LoginResponse>() {
+                    @Override
+                    public void onResponse(final LoginResponse response) {
+                        Realm realm = AppUtils.getInstance().getRealmInstance();
+                        try {
+                            realm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.deleteAll();
+                                    realm.copyToRealm(response);
+                                    startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
+                                    finish();
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        Timber.d(String.valueOf(error.getErrorCode()));
+                        Timber.d(String.valueOf(error.getErrorBody()));
+                    }
+                });
+
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
@@ -252,7 +276,7 @@ public class SplashActivity extends AppCompatActivity {
                         Timber.d(String.valueOf(error.getErrorCode()));
                         Timber.d(String.valueOf(error.getErrorBody()));
                     }
-                });
+                });*/
     }
 
     private void storeAclKeyValueToLocal() {

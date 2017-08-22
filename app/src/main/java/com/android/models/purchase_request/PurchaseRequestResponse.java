@@ -12,27 +12,27 @@ public class PurchaseRequestResponse extends RealmObject {
     @SerializedName("purchaseRequestRespData")
     private PurchaseRequestRespData purchaseRequestRespData;
 
-    public void setNextUrl(String nextUrl) {
-        this.nextUrl = nextUrl;
-    }
-
     public String getNextUrl() {
         return nextUrl;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setNextUrl(String nextUrl) {
+        this.nextUrl = nextUrl;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setPurchaseRequestRespData(PurchaseRequestRespData purchaseRequestRespData) {
-        this.purchaseRequestRespData = purchaseRequestRespData;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public PurchaseRequestRespData getPurchaseRequestRespData() {
         return purchaseRequestRespData;
+    }
+
+    public void setPurchaseRequestRespData(PurchaseRequestRespData purchaseRequestRespData) {
+        this.purchaseRequestRespData = purchaseRequestRespData;
     }
 }

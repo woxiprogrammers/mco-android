@@ -5,72 +5,65 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class MaterialListItem extends RealmObject{
+public class MaterialListItem extends RealmObject {
+    @SerializedName("quantity_out")
+    private String quantityOut;
+    @PrimaryKey
+    @SerializedName("id")
+    private int id;
+    @SerializedName("quantity_in")
+    private String quantityIn;
+    @SerializedName("material_name")
+    private String materialName;
+    @SerializedName("quantity_available")
+    private String quantityAvailable;
+    private boolean isSelected;
 
-	@SerializedName("quantity_out")
-	private String quantityOut;
+    public boolean isSelected() {
+        return isSelected;
+    }
 
-	@PrimaryKey
-	@SerializedName("id")
-	private int id;
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
-	@SerializedName("quantity_in")
-	private String quantityIn;
+    public String getQuantityOut() {
+        return quantityOut;
+    }
 
-	@SerializedName("material_name")
-	private String materialName;
+    public void setQuantityOut(String quantityOut) {
+        this.quantityOut = quantityOut;
+    }
 
-	@SerializedName("quantity_available")
-	private String quantityAvailable;
+    public String getQuantityIn() {
+        return quantityIn;
+    }
 
-	private boolean isSelected;
+    public void setQuantityIn(String quantityIn) {
+        this.quantityIn = quantityIn;
+    }
 
-	public boolean isSelected() {
-		return isSelected;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setSelected(boolean selected) {
-		isSelected = selected;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setQuantityOut(String quantityOut){
-		this.quantityOut = quantityOut;
-	}
+    public String getMaterialName() {
+        return materialName;
+    }
 
-	public String getQuantityOut(){
-		return quantityOut;
-	}
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
+    }
 
-	public void setQuantityIn(String quantityIn){
-		this.quantityIn = quantityIn;
-	}
+    public String getQuantityAvailable() {
+        return quantityAvailable;
+    }
 
-	public String getQuantityIn(){
-		return quantityIn;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public void setMaterialName(String materialName){
-		this.materialName = materialName;
-	}
-
-	public String getMaterialName(){
-		return materialName;
-	}
-
-	public void setQuantityAvailable(String quantityAvailable){
-		this.quantityAvailable = quantityAvailable;
-	}
-
-	public String getQuantityAvailable(){
-		return quantityAvailable;
-	}
-
+    public void setQuantityAvailable(String quantityAvailable) {
+        this.quantityAvailable = quantityAvailable;
+    }
 }

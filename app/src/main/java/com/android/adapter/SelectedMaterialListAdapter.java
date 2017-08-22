@@ -20,12 +20,12 @@ import io.realm.RealmRecyclerViewAdapter;
 /**
  * Created by Sharvari on 22/8/17.
  */
-
 public class SelectedMaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListItem, SelectedMaterialListAdapter.MyViewHolder> {
     private OrderedRealmCollection<MaterialListItem> materialListItemCollection;
+
     public SelectedMaterialListAdapter(@Nullable OrderedRealmCollection<MaterialListItem> data, boolean autoUpdate) {
         super(data, autoUpdate);
-        materialListItemCollection=data;
+        materialListItemCollection = data;
     }
 
     @Override
@@ -38,32 +38,26 @@ public class SelectedMaterialListAdapter extends RealmRecyclerViewAdapter<Materi
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final MaterialListItem materialListItem = materialListItemCollection.get(position);
         holder.text_view_MaterialName.setText(materialListItem.getMaterialName());
-
-
     }
+
     @Override
     public long getItemId(int index) {
         return materialListItemCollection.get(index).getId();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_view_MaterialName)
         TextView text_view_MaterialName;
-
         @BindView(R.id.button_RemoveMaterial)
         Button button_RemoveMaterial;
-
         @BindView(R.id.editText_Quantity)
         EditText editText_Quantity;
-
         @BindView(R.id.editText_Units)
         EditText editText_Units;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
-
+            ButterKnife.bind(this, itemView);
         }
     }
 }

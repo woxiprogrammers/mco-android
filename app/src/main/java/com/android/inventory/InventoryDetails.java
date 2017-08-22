@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.adapter.SelectedMaterialListAdapter;
@@ -17,7 +16,6 @@ import com.android.models.inventory.MaterialListItem;
 import com.android.utils.BaseActivity;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,12 +24,10 @@ import io.realm.Realm;
 import io.realm.RealmList;
 
 public class InventoryDetails extends BaseActivity implements View.OnClickListener {
-
-    private ArrayList<Integer> arrayList = new ArrayList<Integer>();
-    private int intMaterialCount;
-
     @BindView(R.id.textview_materialCount)
     TextView text_view_materialCount;
+    private ArrayList<Integer> arrayList = new ArrayList<Integer>();
+    private int intMaterialCount;
     private Context mContext;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;
     private RealmList<MaterialListItem> materialListItems = new RealmList<MaterialListItem>();
@@ -41,7 +37,6 @@ public class InventoryDetails extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_details2);
         initializeViews();
-
     }
 
     @Override
@@ -51,7 +46,6 @@ public class InventoryDetails extends BaseActivity implements View.OnClickListen
                 openMaterialListDialog();
                 break;
         }
-
     }
 
     private void initializeViews() {
@@ -77,9 +71,7 @@ public class InventoryDetails extends BaseActivity implements View.OnClickListen
             materialListItems.add(materialListItem);
         }*/
         Integer[] integers = {1516, 1517, 1518, 1519, 1520, 1521, 1522, 1523};
-
         OrderedRealmCollection<MaterialListItem> materialListItems1 = realm.where(MaterialListItem.class).in("id", integers).findAll();
-
         selectedMaterialListAdapter = new SelectedMaterialListAdapter(materialListItems1, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -87,6 +79,5 @@ public class InventoryDetails extends BaseActivity implements View.OnClickListen
         rv_material_list.setAdapter(selectedMaterialListAdapter);
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
-
     }
 }

@@ -14,35 +14,35 @@ public class LoginResponse extends RealmObject {
     @SerializedName("token")
     private String token;
 
-    public void setLoginResponseData(LoginResponseData loginResponseData) {
-        this.loginResponseData = loginResponseData;
-    }
-
     public LoginResponseData getLoginResponseData() {
         return loginResponseData;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setLoginResponseData(LoginResponseData loginResponseData) {
+        this.loginResponseData = loginResponseData;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setLoggedInAt(String loggedInAt) {
-        this.loggedInAt = loggedInAt;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getLoggedInAt() {
         return loggedInAt;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setLoggedInAt(String loggedInAt) {
+        this.loggedInAt = loggedInAt;
     }
 
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

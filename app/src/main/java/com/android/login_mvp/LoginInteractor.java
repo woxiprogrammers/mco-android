@@ -9,11 +9,7 @@ import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONObject;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -24,7 +20,6 @@ import timber.log.Timber;
  * Created by Rohit.
  */
 class LoginInteractor implements LoginInteractorInterface {
-
     @Override
     public void login(String username, String password, final onLoginFinishedListener listener) {
         if (TextUtils.isEmpty(username))
@@ -45,7 +40,45 @@ class LoginInteractor implements LoginInteractorInterface {
                 .setTag("requestLoginAPI")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
+                .getAsObject(LoginResponse.class, new ParsedRequestListener<LoginResponse>() {
+                    @Override
+                    public void onResponse(final LoginResponse response) {
+                        Realm realm = AppUtils.getInstance().getRealmInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.deleteAll();
+                                    realm.copyToRealm(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    listener.onSuccess("Login Success");
+                                    AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, true);
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    listener.onFailure("Failed to fetch local database.");
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        Timber.d(String.valueOf(error.getErrorCode()));
+                        Timber.d(String.valueOf(error.getErrorBody()));
+                        listener.onFailure("Invalid credentials");
+                    }
+                });
+
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
@@ -215,6 +248,6 @@ class LoginInteractor implements LoginInteractorInterface {
                         Timber.d(String.valueOf(error.getErrorBody()));
                         listener.onFailure("Invalid credentials");
                     }
-                });
+                });*/
     }
 }

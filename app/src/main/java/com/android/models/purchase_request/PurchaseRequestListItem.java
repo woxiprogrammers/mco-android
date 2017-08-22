@@ -14,35 +14,35 @@ public class PurchaseRequestListItem extends RealmObject {
     @SerializedName("status")
     private String status;
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getDate() {
         return date;
     }
 
-    public void setPurchaseRequestId(String purchaseRequestId) {
-        this.purchaseRequestId = purchaseRequestId;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getPurchaseRequestId() {
         return purchaseRequestId;
     }
 
-    public void setMaterials(String materials) {
-        this.materials = materials;
+    public void setPurchaseRequestId(String purchaseRequestId) {
+        this.purchaseRequestId = purchaseRequestId;
     }
 
     public String getMaterials() {
         return materials;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setMaterials(String materials) {
+        this.materials = materials;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

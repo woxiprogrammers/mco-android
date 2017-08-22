@@ -20,16 +20,13 @@ import com.android.models.inventory.InventoryDataResponse;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
 import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
 import com.android.utils.BaseActivity;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONObject;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import java.util.ArrayList;
 
@@ -43,12 +40,11 @@ import timber.log.Timber;
  * Created by Sharvari on 18/8/17.
  */
 public class InventoryHomeActivity extends BaseActivity {
-
-    private MaterialListAdapter materialListAdapter;
-    private Context mContext;
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
-    private ArrayList<Integer> strMaterialName=new ArrayList<Integer>();
+    private MaterialListAdapter materialListAdapter;
+    private Context mContext;
+    private ArrayList<Integer> strMaterialName = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +52,11 @@ public class InventoryHomeActivity extends BaseActivity {
         setContentView(R.layout.activity_material_listing);
         mContext = InventoryHomeActivity.this;
         ButterKnife.bind(this);
-        if(getSupportActionBar() !=null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
             setTitle(getString(R.string.inventory));
         }
         requestInventoryResponse();
-
     }
 
     @Override
@@ -71,7 +66,7 @@ public class InventoryHomeActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
@@ -81,12 +76,46 @@ public class InventoryHomeActivity extends BaseActivity {
 
     private void requestInventoryResponse() {
         AndroidNetworking.get(AppURL.INVENTORY_DATA_URL)
-                /*.addBodyParameter("email", "admin@mconstruction.co.in")
-                .addBodyParameter("password", "mco@1234")*/
                 .setTag("requestInventoryData")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
+                .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
+                    @Override
+                    public void onResponse(final InventoryResponse response) {
+                        Realm realm = AppUtils.getInstance().getRealmInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.copyToRealm(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Toast.makeText(InventoryHomeActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                    setAdapterForMaterialList();
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    Timber.d("Error");
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Timber.d(String.valueOf(anError.getErrorCode()));
+                        Timber.d(String.valueOf(anError.getErrorBody()));
+                    }
+                });
+
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
@@ -156,7 +185,6 @@ public class InventoryHomeActivity extends BaseActivity {
                                 "  \"next_url\": \"\",\n" +
                                 "  \"message\": \"Sucess\"\n" +
                                 "}";
-
                         final InventoryResponse inventoryResponse = gson.fromJson(String.valueOf(tempResponse), InventoryResponse.class);
                         Realm realm = null;
                         try {
@@ -175,7 +203,6 @@ public class InventoryHomeActivity extends BaseActivity {
                             }, new Realm.Transaction.OnError() {
                                 @Override
                                 public void onError(Throwable error) {
-
                                     Timber.d(String.valueOf(error));
                                 }
                             });
@@ -189,9 +216,8 @@ public class InventoryHomeActivity extends BaseActivity {
                     @Override
                     public void onError(ANError anError) {
                         Timber.d(String.valueOf(anError));
-
                     }
-                });
+                });*/
     }
 
     private void setAdapterForMaterialList() {
@@ -219,8 +245,8 @@ public class InventoryHomeActivity extends BaseActivity {
                         materialListItems.get(position).setSelected(true);
                     }
                 });
-                View itemView= rv_material_list.getRootView();
-                 LinearLayout cardView = ButterKnife.findById(itemView, R.id.cardView);
+                View itemView = rv_material_list.getRootView();
+                LinearLayout cardView = ButterKnife.findById(itemView, R.id.cardView);
                 cardView.setSelected(true);
                 rv_material_list.getAdapter().notifyDataSetChanged();
                 Snackbar snackbar = Snackbar
@@ -228,30 +254,23 @@ public class InventoryHomeActivity extends BaseActivity {
                         .setAction("Ok", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent=new Intent(InventoryHomeActivity.this, InventoryDetails.class);
-                                intent.putExtra("Array",strMaterialName);
-                               startActivity(intent);
+                                Intent intent = new Intent(InventoryHomeActivity.this, InventoryDetails.class);
+                                intent.putExtra("Array", strMaterialName);
+                                startActivity(intent);
                             }
                         });
-
                 // Changing message text color
 //                snackbar.setActionTextColor("#ffffff");
-
                 // Changing action button text color
                 View sbView = snackbar.getView();
                 TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setTextColor(Color.YELLOW);
-
                 snackbar.show();
-
             }
 
             @Override
             public void onLongItemClick(View view, int position) {
-
             }
         }));
-
     }
-
 }

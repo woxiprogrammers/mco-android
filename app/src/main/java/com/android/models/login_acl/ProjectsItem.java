@@ -10,19 +10,19 @@ public class ProjectsItem extends RealmObject {
     @SerializedName("project_name")
     private String projectName;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getId() {
         return id;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getProjectName() {
         return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 }

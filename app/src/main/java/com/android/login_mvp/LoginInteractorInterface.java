@@ -6,6 +6,8 @@ package com.android.login_mvp;
  * Created by Rohit.
  */
 interface LoginInteractorInterface {
+    void login(String username, String password, onLoginFinishedListener listener);
+
     interface onLoginFinishedListener {
         void onUserNameEmptyError(String strError);
 
@@ -19,6 +21,4 @@ interface LoginInteractorInterface {
 
         void onFailure(String message);
     }
-
-    void login(String username, String password, onLoginFinishedListener listener);
 }

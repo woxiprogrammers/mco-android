@@ -13,27 +13,27 @@ public class ModulesItem extends RealmObject {
     @SerializedName("id")
     private int id;
 
-    public void setSubModules(RealmList<SubModulesItem> subModules) {
-        this.subModules = subModules;
-    }
-
     public RealmList<SubModulesItem> getSubModules() {
         return subModules;
     }
 
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
+    public void setSubModules(RealmList<SubModulesItem> subModules) {
+        this.subModules = subModules;
     }
 
     public String getModuleName() {
         return moduleName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

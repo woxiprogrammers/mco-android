@@ -15,10 +15,7 @@ import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -79,7 +76,43 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPrListOnline")
                 .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
+                .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
+                    @Override
+                    public void onResponse(final PurchaseRequestResponse response) {
+                        Realm realm = AppUtils.getInstance().getRealmInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.copyToRealm(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    setUpPrAdapter();
+                                    Timber.d("Success");
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    Timber.d("Error");
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Timber.d(String.valueOf(anError.getErrorCode()));
+                        Timber.d(String.valueOf(anError.getErrorBody()));
+                    }
+                });
+
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
@@ -142,7 +175,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         Timber.d(String.valueOf(anError.getErrorCode()));
                         Timber.d(String.valueOf(anError.getErrorBody()));
                     }
-                });
+                });*/
     }
 
     private void setUpPrAdapter() {
