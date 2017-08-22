@@ -48,7 +48,7 @@ public class InventoryHomeActivity extends BaseActivity {
     private Context mContext;
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
-    private ArrayList<String> strMaterialName=new ArrayList<String>();
+    private ArrayList<Integer> strMaterialName=new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,51 +96,59 @@ public class InventoryHomeActivity extends BaseActivity {
                                 "    \"material_list\": [\n" +
                                 "      {\n" +
                                 "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
+                                "        \"id\":1516,\n" +
                                 "        \"quantity_in\": \"123\",\n" +
                                 "        \"quantity_out\": \"567\",\n" +
                                 "        \"quantity_available\": \"788\"\n" +
                                 "      },\n" +
                                 "      {\n" +
-                                "        \"material_name\": \"Bits\",\n" +
-                                "        \"quantity_in\": \"1030\",\n" +
-                                "        \"quantity_out\": \"290\",\n" +
-                                "        \"quantity_available\": \"10\"\n" +
+                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
+                                "        \"id\":1517,\n" +
+                                "        \"quantity_in\": \"123\",\n" +
+                                "        \"quantity_out\": \"567\",\n" +
+                                "        \"quantity_available\": \"788\"\n" +
                                 "      },\n" +
                                 "      {\n" +
-                                "        \"material_name\": \"Bits-Two\",\n" +
-                                "        \"quantity_in\": \"100\",\n" +
-                                "        \"quantity_out\": \"200\",\n" +
-                                "        \"quantity_available\": \"10\"\n" +
+                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
+                                "        \"id\":1518,\n" +
+                                "        \"quantity_in\": \"123\",\n" +
+                                "        \"quantity_out\": \"567\",\n" +
+                                "        \"quantity_available\": \"788\"\n" +
                                 "      },\n" +
                                 "      {\n" +
-                                "        \"material_name\": \"Bits-Three\",\n" +
-                                "        \"quantity_in\": \"180\",\n" +
-                                "        \"quantity_out\": \"240\",\n" +
-                                "        \"quantity_available\": \"10\"\n" +
+                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
+                                "        \"id\":1519,\n" +
+                                "        \"quantity_in\": \"123\",\n" +
+                                "        \"quantity_out\": \"567\",\n" +
+                                "        \"quantity_available\": \"788\"\n" +
                                 "      },\n" +
                                 "      {\n" +
-                                "        \"material_name\": \"Bits-Four\",\n" +
-                                "        \"quantity_in\": \"190\",\n" +
-                                "        \"quantity_out\": \"200\",\n" +
-                                "        \"quantity_available\": \"10\"\n" +
+                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
+                                "        \"id\":1520,\n" +
+                                "        \"quantity_in\": \"123\",\n" +
+                                "        \"quantity_out\": \"567\",\n" +
+                                "        \"quantity_available\": \"788\"\n" +
                                 "      },\n" +
                                 "      {\n" +
-                                "        \"material_name\": \"Bits-Five\",\n" +
-                                "        \"quantity_in\": \"1070\",\n" +
-                                "        \"quantity_out\": \"200\",\n" +
-                                "        \"quantity_available\": \"10\"\n" +
+                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
+                                "        \"id\":1521,\n" +
+                                "        \"quantity_in\": \"123\",\n" +
+                                "        \"quantity_out\": \"567\",\n" +
+                                "        \"quantity_available\": \"788\"\n" +
                                 "      },\n" +
                                 "      {\n" +
-                                "        \"material_name\": \"Bits-Six\",\n" +
-                                "        \"quantity_in\": \"10\",\n" +
-                                "        \"quantity_out\": \"20\",\n" +
-                                "        \"quantity_available\": \"890\"\n" +
+                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
+                                "        \"id\":1522,\n" +
+                                "        \"quantity_in\": \"123\",\n" +
+                                "        \"quantity_out\": \"567\",\n" +
+                                "        \"quantity_available\": \"788\"\n" +
                                 "      },\n" +
                                 "      {\n" +
-                                "        \"material_name\": \"Bits-Seven\",\n" +
-                                "        \"quantity_in\": \"900\",\n" +
-                                "        \"quantity_out\": \"20\",\n" +
-                                "        \"quantity_available\": \"10\"\n" +
+                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
+                                "        \"id\":1523,\n" +
+                                "        \"quantity_in\": \"123\",\n" +
+                                "        \"quantity_out\": \"567\",\n" +
+                                "        \"quantity_available\": \"788\"\n" +
                                 "      }\n" +
                                 "    ]\n" +
                                 "    \n" +
@@ -187,14 +195,14 @@ public class InventoryHomeActivity extends BaseActivity {
     }
 
     private void setAdapterForMaterialList() {
-        strMaterialName.add("1516");
-        strMaterialName.add("1517");
-        strMaterialName.add("1518");
-        strMaterialName.add("1519");
-        strMaterialName.add("1520");
-        strMaterialName.add("1521");
-        strMaterialName.add("1522");
-        strMaterialName.add("1523");
+        strMaterialName.add(1516);
+        strMaterialName.add(1517);
+        strMaterialName.add(1518);
+        strMaterialName.add(1519);
+        strMaterialName.add(1520);
+        strMaterialName.add(1521);
+        strMaterialName.add(1522);
+        strMaterialName.add(1523);
         final Realm realm = Realm.getDefaultInstance();
         final OrderedRealmCollection<MaterialListItem> materialListItems = realm.where(InventoryDataResponse.class).findFirst().getMaterialList();
         materialListAdapter = new MaterialListAdapter(materialListItems, false);
@@ -227,7 +235,7 @@ public class InventoryHomeActivity extends BaseActivity {
                         });
 
                 // Changing message text color
-                snackbar.setActionTextColor(getColor(R.color.colorAccent));
+//                snackbar.setActionTextColor("#ffffff");
 
                 // Changing action button text color
                 View sbView = snackbar.getView();

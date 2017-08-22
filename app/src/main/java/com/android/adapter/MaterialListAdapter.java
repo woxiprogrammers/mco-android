@@ -35,14 +35,14 @@ public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListIt
     }
 
     @Override
-    public MaterialListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_material_list, parent, false);
 
         return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(MaterialListAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, int position) {
         final MaterialListItem materialListItem = materialListItemCollection.get(position);
         holder.textview_material_name.setText(materialListItem.getMaterialName());
         holder.textview_quantity_in.setText(materialListItem.getQuantityIn());

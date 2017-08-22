@@ -3,12 +3,14 @@ package com.android.models.inventory;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class MaterialListItem extends RealmObject{
 
 	@SerializedName("quantity_out")
 	private String quantityOut;
 
+	@PrimaryKey
 	@SerializedName("id")
 	private int id;
 
