@@ -3,8 +3,12 @@ package com.android.models.purchase_request;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class PurchaseRequestListItem extends RealmObject {
+    @PrimaryKey
+    @SerializedName("id")
+    private int id;
     @SerializedName("date")
     private String date;
     @SerializedName("purchase_request_id")
@@ -13,6 +17,14 @@ public class PurchaseRequestListItem extends RealmObject {
     private String materials;
     @SerializedName("status")
     private String status;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getDate() {
         return date;

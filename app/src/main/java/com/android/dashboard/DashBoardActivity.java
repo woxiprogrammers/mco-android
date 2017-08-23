@@ -74,7 +74,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private void initializeViews() {
         mContext = DashBoardActivity.this;
         mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
-        realm = Realm.getDefaultInstance();
+        realm = AppUtils.getInstance().getRealmInstance();
         modulesItemOrderedRealmCollection = realm.where(LoginResponseData.class).findFirst().getModules();
         ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection);
         mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));

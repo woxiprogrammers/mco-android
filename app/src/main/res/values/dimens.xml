@@ -31,4 +31,5 @@
     <dimen name="dimen_220dp">220dp</dimen>
     <dimen name="dimen_250dp">250dp</dimen>
     <dimen name="dimen_300dp">300dp</dimen>
+    <dimen name="text_14sp">14sp</dimen>
 </resources>

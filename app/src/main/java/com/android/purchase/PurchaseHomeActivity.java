@@ -50,6 +50,7 @@ public class PurchaseHomeActivity extends AppCompatActivity {
                 if (fragment != null) {
                     fragment.fragmentBecameVisible();
                 }
+//                mViewPager_purchaseHome.setCurrentItem(position, true);
             }
 
             @Override
