@@ -8,15 +8,20 @@ import io.realm.annotations.PrimaryKey;
 public class MaterialListItem extends RealmObject {
     @SerializedName("quantity_out")
     private String quantityOut;
-    @PrimaryKey
+
     @SerializedName("id")
+    @PrimaryKey
     private int id;
+
     @SerializedName("quantity_in")
     private String quantityIn;
+
     @SerializedName("material_name")
     private String materialName;
+
     @SerializedName("quantity_available")
     private String quantityAvailable;
+
     private boolean isSelected;
 
     public boolean isSelected() {

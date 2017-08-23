@@ -91,14 +91,15 @@ public class MaterialListFragment extends Fragment implements FragmentInterface{
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
+                    Realm realm = AppUtils.getInstance().getRealmInstance();
                     @Override
                     public void onResponse(final InventoryResponse response) {
-                        Realm realm = AppUtils.getInstance().getRealmInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.copyToRealm(response);
+                                    Timber.d("Execute");
+                                    realm.copyToRealmOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
@@ -109,6 +110,8 @@ public class MaterialListFragment extends Fragment implements FragmentInterface{
                             }, new Realm.Transaction.OnError() {
                                 @Override
                                 public void onError(Throwable error) {
+                                    Timber.d(error);
+
                                     Timber.d("Error");
                                 }
                             });
