@@ -8,7 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.android.dashboard.DashBoardActivity;
-import com.android.inventory.InventoryHomeActivity;
+import com.android.inventory.BottomNavigateViewActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.login_acl.LoginResponse;
 import com.android.purchase.PurchaseHomeActivity;
@@ -287,8 +287,8 @@ public class SplashActivity extends AppCompatActivity {
         aclKeyValuePair.put("create_order", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("manage_bill", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("approve_purchase", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("manage_inventory", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("approve_inventory", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("manage_inventory", BottomNavigateViewActivity.class.getName());
+        aclKeyValuePair.put("approve_inventory", BottomNavigateViewActivity.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);

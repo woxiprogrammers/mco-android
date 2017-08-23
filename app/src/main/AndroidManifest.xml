@@ -38,7 +38,7 @@
         <activity android:name="com.android.inventory.InventoryHomeActivity" />
         <activity android:name="com.android.purchase.PurchaseHomeActivity"></activity>
         <activity android:name="com.android.inventory.InventoryDetails"></activity>
-        <activity android:name="com.android.inventory.BottomNavigateView"></activity>
+        <activity android:name="com.android.inventory.BottomNavigateViewActivity"></activity>
     </application>
 
 </manifest>
