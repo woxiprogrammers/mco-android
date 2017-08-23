@@ -56,6 +56,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        ButterKnife.bind(this,mParentView);
         return mParentView;
     }
 

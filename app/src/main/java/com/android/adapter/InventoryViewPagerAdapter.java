@@ -4,7 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.android.inventory.material.AssetListFragment;
 import com.android.inventory.material.MaterialListFragment;
+
+import java.util.ArrayList;
 
 /**
  * Created by Sharvari on 23/8/17.
@@ -12,6 +15,7 @@ import com.android.inventory.material.MaterialListFragment;
 
 public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
 
+    private String[] arrBottomTitle={"Bottom1","Bottom2"};
     public InventoryViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -21,9 +25,9 @@ public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
     {
         switch (position) {
             case 0:
-                return new  MaterialListFragment().newInstance();
+                return MaterialListFragment.newInstance();
             case 1:
-                return null;
+                return AssetListFragment.newInstance();
             default:
                 return null;
         }
@@ -32,6 +36,6 @@ public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return arrBottomTitle.length;
     }
 }
