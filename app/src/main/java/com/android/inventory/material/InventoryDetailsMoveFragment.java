@@ -2,8 +2,6 @@ package com.android.inventory.material;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -22,7 +23,6 @@ import android.widget.Toast;
 import com.android.adapter.SelectedMaterialListAdapter;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.InventoryDetails;
 import com.android.models.inventory.MaterialListItem;
 
 import java.util.ArrayList;
@@ -58,6 +58,30 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     @BindView(R.id.ll_forSupplierInOutTime)
     LinearLayout ll_forSupplierInOutTime;
+
+    @BindView(R.id.checkbox_moveInOut)
+    CheckBox checkboxMoveInOut;
+
+    @BindView(R.id.text_view_project_name)
+    Spinner textViewProjectName;
+
+    @BindView(R.id.edit_text_vehicleNumber)
+    EditText editTextVehicleNumber;
+
+    @BindView(R.id.text_view_selected_des)
+    EditText textViewSelectedDes;
+
+    @BindView(R.id.edit_text_ChallanNumber)
+    EditText editTextChallanNumber;
+
+    @BindView(R.id.ll_challanNumber)
+    LinearLayout llChallanNumber;
+
+    @BindView(R.id.text_view_addNote)
+    TextView textViewAddNote;
+
+    @BindView(R.id.button_move)
+    Button buttonMove;
 
     private View mParentView;
     private int intMaterialCount;
@@ -101,6 +125,17 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void initializeViews() {
         mContext = getActivity();
         text_view_materialCount.setOnClickListener(this);
+        checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+
+                }else {
+                    llChallanNumber.setVisibility(View.GONE);
+                }
+
+            }
+        });
         spinnerDestinations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
@@ -154,7 +189,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         switch (view.getId()) {
             case R.id.textview_materialCount:
                 openMaterialListDialog();
-                Toast.makeText(mContext,"onClick",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "onClick", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

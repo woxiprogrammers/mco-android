@@ -323,22 +323,14 @@
                 android:orientation="horizontal"
                 android:padding="4dp">
 
-                <ImageView
+                <CheckBox
+                    android:id="@+id/checkbox_moveInOut"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="4dp"
-                    android:src="@drawable/ic_right"
-                    android:tint="@color/colorPrimaryDark"/>
-
-                <ToggleButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="#f00"
-                    android:textOff="@string/move_out"
-                    android:textOn="@string/move_in"
-                    android:textSize="16dp"/>
+                    android:textSize="16dp"
+                    android:checked="true"
+                    android:text="@string/move_in"/>
             </LinearLayout>
 
             <LinearLayout

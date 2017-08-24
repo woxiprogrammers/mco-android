@@ -45,6 +45,7 @@ public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListIt
         holder.textview_quantity_current.setText(materialListItem.getQuantityAvailable());
     }
 
+
     @Override
     public long getItemId(int index) {
         return materialListItemCollection.get(index).getId();
