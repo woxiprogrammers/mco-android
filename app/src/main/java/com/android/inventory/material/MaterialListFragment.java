@@ -20,6 +20,7 @@ import com.android.adapter.MaterialListAdapter;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.BottomNavigateViewActivity;
+import com.android.inventory.InventoryDetails;
 import com.android.models.inventory.InventoryDataResponse;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
@@ -99,7 +100,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface{
                                 @Override
                                 public void execute(Realm realm) {
                                     Timber.d("Execute");
-                                    realm.copyToRealmOrUpdate(response);
+                                    realm.copyToRealm(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
@@ -165,7 +166,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface{
                         .setAction("Ok", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent(mContext, BottomNavigateViewActivity.class);
+                                Intent intent = new Intent(mContext, InventoryDetails.class);
                                 intent.putExtra("Array", strMaterialName);
                                 startActivity(intent);
                             }

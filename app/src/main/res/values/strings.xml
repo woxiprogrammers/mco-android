@@ -35,4 +35,18 @@
     <string name="inventory">Inventory</string>
     <string name="text_material">Material</string>
     <string name="text_assets">Assets</string>
+    <string name="text_move">Move</string>
+    <string name="text_history">History</string>
+    <string name="destination_prompt">Choose a country</string>
+    <string name="move_in">Move In</string>
+    <string name="move_out">Move Out</string>
+    <string name="project_name">Select Project Name</string>
+
+    <string-array name="destination_array">
+        <item>Site</item>
+        <item>Client</item>
+        <item>Labour</item>
+        <item>Sub-contracter</item>
+        <item>Supplier</item>
+    </string-array>
 </resources>

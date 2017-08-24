@@ -8,7 +8,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.adapter.SelectedMaterialListAdapter;
 import com.android.constro360.R;
@@ -22,10 +25,15 @@ import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmList;
+import timber.log.Timber;
 
 public class InventoryDetails extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.textview_materialCount)
     TextView text_view_materialCount;
+
+    @BindView(R.id.destination_spinner)
+    Spinner spinnerDestinations;
+
     private ArrayList<Integer> arrayList = new ArrayList<Integer>();
     private int intMaterialCount;
     private Context mContext;
@@ -56,6 +64,29 @@ public class InventoryDetails extends BaseActivity implements View.OnClickListen
         intMaterialCount = arrayList.size();
         text_view_materialCount.setText(intMaterialCount + " " + "Item(s) selected");
         text_view_materialCount.setOnClickListener(this);
+
+        spinnerDestinations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
+                switch (selectedItemIndex){
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     private void openMaterialListDialog() {
@@ -80,4 +111,6 @@ public class InventoryDetails extends BaseActivity implements View.OnClickListen
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
     }
+
+
 }
