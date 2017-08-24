@@ -443,20 +443,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:prompt="@string/project_name"
+                    android:prompt="@string/text_move"
                     android:textColor="@color/colorTextLight"/>
 
                 <Spinner
                     android:id="@+id/text_view_project_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"/>
+                    android:layout_weight="0.5"
+                    android:prompt="@string/text_move"/>
             </LinearLayout>
 
             <LinearLayout
@@ -464,7 +466,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -487,7 +490,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -643,6 +647,7 @@
             </android.support.v7.widget.CardView>
 
             <Button
+                android:id="@+id/button_move"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
@@ -656,17 +661,5 @@
         </LinearLayout>
     </ScrollView>
 
-    <View
-        android:id="@+id/viewDivider"
-        style="@style/style_horizontal_line"/>
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bottom_navigation_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:itemBackground="?attr/selectableItemBackground"
-        app:itemTextColor="@drawable/nav_item_color_state"
-        app:menu="@menu/bottom_menu_material_details"/>
 
 </LinearLayout>

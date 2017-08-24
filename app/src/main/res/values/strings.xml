@@ -41,6 +41,12 @@
     <string name="move_in">Move In</string>
     <string name="move_out">Move Out</string>
     <string name="project_name">Select Project Name</string>
+    <string name="tap_too_add_note">TAP TO ADD NOTE</string>
+    <string name="client_name">Client Name</string>
+    <string name="site_name">Site Name</string>
+    <string name="labour_name">Labour Name</string>
+    <string name="sub_contracter_name">Sub Contracter Name</string>
+    <string name="supplier_name">Supplier Name</string>
 
     <string-array name="destination_array">
         <item>Site</item>

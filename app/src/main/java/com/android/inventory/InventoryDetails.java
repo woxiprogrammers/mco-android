@@ -4,17 +4,32 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.adapter.InventoryViewPagerAdapter;
 import com.android.adapter.SelectedMaterialListAdapter;
 import com.android.constro360.R;
+import com.android.interfaces.FragmentInterface;
+import com.android.inventory.material.AssetListFragment;
+import com.android.inventory.material.InventoryDetailsMoveFragment;
+import com.android.inventory.material.MaterialHistoryFragment;
+import com.android.inventory.material.MaterialListFragment;
 import com.android.models.inventory.MaterialListItem;
 import com.android.utils.BaseActivity;
 
@@ -27,90 +42,118 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import timber.log.Timber;
 
-public class InventoryDetails extends BaseActivity implements View.OnClickListener {
-    @BindView(R.id.textview_materialCount)
-    TextView text_view_materialCount;
+public class InventoryDetails extends BaseActivity {
 
-    @BindView(R.id.destination_spinner)
-    Spinner spinnerDestinations;
 
+
+
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottom_navigation;
+
+    @BindView(R.id.view_pager)
+    ViewPager viewPagerInventory;
+
+    MenuItem prevMenuItem;
     private ArrayList<Integer> arrayList = new ArrayList<Integer>();
-    private int intMaterialCount;
-    private Context mContext;
-    private SelectedMaterialListAdapter selectedMaterialListAdapter;
-    private RealmList<MaterialListItem> materialListItems = new RealmList<MaterialListItem>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inventory_details2);
-        initializeViews();
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.textview_materialCount:
-                openMaterialListDialog();
-                break;
-        }
-    }
-
-    private void initializeViews() {
-        mContext = InventoryDetails.this;
+        setContentView(R.layout.activity_bottom_view);
         ButterKnife.bind(this);
-        Intent intent = getIntent();
-        arrayList = intent.getIntegerArrayListExtra("Array");
-        intMaterialCount = arrayList.size();
-        text_view_materialCount.setText(intMaterialCount + " " + "Item(s) selected");
-        text_view_materialCount.setOnClickListener(this);
-
-        spinnerDestinations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        Intent intent =getIntent();
+        if(intent !=null) {
+            arrayList = intent.getIntegerArrayListExtra("Array");
+        }
+        callFragment();
+        viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
-                switch (selectedItemIndex){
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        break;
-                }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            public void onPageSelected(int position) {
+                if (prevMenuItem != null) {
+                    prevMenuItem.setChecked(false);
+                }
+                else
+                {
+                    bottom_navigation.getMenu().getItem(0).setChecked(false);
+                }
+                bottom_navigation.getMenu().getItem(position).setChecked(true);
+                prevMenuItem = bottom_navigation.getMenu().getItem(position);
 
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        bottom_navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_move:
+                        viewPagerInventory.setCurrentItem(0);
+                        break;
+                    case R.id.action_history:
+                        viewPagerInventory.setCurrentItem(1);
+                        break;
+
+                }
+                return false;
             }
         });
     }
 
-    private void openMaterialListDialog() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.activity_material_listing, null);
-        dialogBuilder.setView(dialogView);
-        RecyclerView rv_material_list = ButterKnife.findById(dialogView, R.id.rv_material_list);
-        final Realm realm = Realm.getDefaultInstance();
-        /*for (int i = 0; i < arrayList.size(); i++) {
-            int strId = arrayList.get(i);
-            final MaterialListItem materialListItem = realm.where(MaterialListItem.class).equalTo("id", strId).findFirst();
-            materialListItems.add(materialListItem);
-        }*/
-        Integer[] integers = {1516, 1517, 1518, 1519, 1520, 1521, 1522, 1523};
-        OrderedRealmCollection<MaterialListItem> materialListItems1 = realm.where(MaterialListItem.class).in("id", integers).findAll();
-        selectedMaterialListAdapter = new SelectedMaterialListAdapter(materialListItems1, false);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_material_list.setLayoutManager(linearLayoutManager);
-        rv_material_list.setAdapter(selectedMaterialListAdapter);
-        AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
+    private void callFragment(){
+        final InventoryDetailsViewPagerAdapter inventoryViewPagerAdapter=new InventoryDetailsViewPagerAdapter(getSupportFragmentManager());
+        viewPagerInventory.setAdapter(inventoryViewPagerAdapter);
+        viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                FragmentInterface fragment = (FragmentInterface) inventoryViewPagerAdapter.instantiateItem(viewPagerInventory, position);
+                if (fragment != null) {
+                    fragment.fragmentBecameVisible();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
     }
 
+    private class InventoryDetailsViewPagerAdapter extends FragmentPagerAdapter {
+        private String[] arrBottomTitle={"Bottom1","Bottom2"};
 
+        public InventoryDetailsViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return InventoryDetailsMoveFragment.newInstance(arrayList);
+                case 1:
+                    return MaterialHistoryFragment.newInstance();
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return arrBottomTitle.length;
+        }
+    }
 }
