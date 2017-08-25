@@ -1,7 +1,10 @@
 package com.android.inventory.material;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,7 +28,9 @@ import android.widget.Toast;
 import com.android.adapter.SelectedMaterialListAdapter;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.inventory.ImageUtilityHelper;
 import com.android.models.inventory.MaterialListItem;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 
@@ -90,19 +96,24 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.edit_text_outTime)
     EditText editTextOutTime;
 
+    @BindView(R.id.ivChooseImage)
+    ImageView selectImage;
 
-
+    @BindView(R.id.choosedImage)
+    ImageView choosed_Image;
 
     private View mParentView;
     private int intMaterialCount;
     private String strSouceName, strDate, strVehicleNumber, strInTime, strOutTime,strBillNumber;
     private boolean isChecked;
+    private ImageUtilityHelper imageUtilityHelper;
 
     private String str;
 
     private Context mContext;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;
     private RealmList<MaterialListItem> materialListItems = new RealmList<MaterialListItem>();
+    private Bitmap bitmapProfile;
 
     public static InventoryDetailsMoveFragment newInstance(ArrayList<Integer> arrayMaterialCount) {
         Bundle args = new Bundle();
@@ -140,7 +151,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         mContext = getActivity();
         text_view_materialCount.setOnClickListener(this);
         buttonMove.setOnClickListener(this);
+        selectImage.setOnClickListener(this);
         textViewAddNote.setOnClickListener(this);
+        imageUtilityHelper = new ImageUtilityHelper(mContext);
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -222,6 +235,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 }else {
                     openAddToNoteDialog(getString(R.string.tap_too_add_note));
                 }
+                break;
+            case R.id.ivChooseImage:
+                getImageChooser();
                 break;
         }
     }
@@ -367,4 +383,30 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
         alertDialog.show();
     }
+
+    private void getImageChooser(){
+        Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
+        startActivityForResult(imageChooserIntent, 2612);
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE:
+                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                case 2612:
+                    //For new camera functionality
+                    imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
+                    if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                        bitmapProfile = imageUtilityHelper.bitmapProfile;
+                        choosed_Image.setImageBitmap(bitmapProfile);
+                    } else return;
+                default:
+                    break;
+            }
+        }
+    }
+
 }

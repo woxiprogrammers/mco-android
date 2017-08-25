@@ -74,4 +74,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:0.0.14'
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.3.1'
 }

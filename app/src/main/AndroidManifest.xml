@@ -39,6 +39,10 @@
         <activity android:name="com.android.purchase.PurchaseHomeActivity"></activity>
         <activity android:name="com.android.inventory.InventoryDetails"></activity>
         <activity android:name="com.android.inventory.BottomNavigateViewActivity"></activity>
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat" />
     </application>
 
 </manifest>
