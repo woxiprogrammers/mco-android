@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,9 +69,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.edit_text_vehicleNumber)
     EditText editTextVehicleNumber;
 
-    @BindView(R.id.text_view_selected_des)
-    EditText textViewSelectedDes;
-
     @BindView(R.id.edit_text_ChallanNumber)
     EditText editTextChallanNumber;
 
@@ -80,11 +78,25 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.text_view_addNote)
     TextView textViewAddNote;
 
+    @BindView(R.id.editText_Date)
+    EditText editText_Date;
+
     @BindView(R.id.button_move)
     Button buttonMove;
 
+    @BindView(R.id.edit_text_inTime)
+    EditText editTextInTime;
+
+    @BindView(R.id.edit_text_outTime)
+    EditText editTextOutTime;
+
+
     private View mParentView;
     private int intMaterialCount;
+    private String strSouceName, strDate, strVehicleNumber, strInTime, strOutTime,strBillNumber;
+    private boolean isValidate;
+
+    private String str;
 
     private Context mContext;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;
@@ -125,12 +137,13 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void initializeViews() {
         mContext = getActivity();
         text_view_materialCount.setOnClickListener(this);
+        buttonMove.setOnClickListener(this);
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
 
-                }else {
+                } else {
                     llChallanNumber.setVisibility(View.GONE);
                 }
 
@@ -146,6 +159,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forsite.setVisibility(View.VISIBLE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
+                        str = getString(R.string.site_name);
                         break;
                     //For CLient
                     case 1:
@@ -153,6 +167,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
+                        str = getString(R.string.client_name);
                         break;
                     //For Labour
                     case 2:
@@ -160,6 +175,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
+                        str = getString(R.string.labour_name);
                         break;
                     //For SubContracter
                     case 3:
@@ -167,12 +183,14 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
+                        str = getString(R.string.sub_contracter_name);
                         break;
                     //For Supplier
                     case 4:
                         text_ViewSetSelectedTextName.setText(getString(R.string.supplier_name));
                         ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
+                        str = getString(R.string.supplier_name);
                         break;
                 }
             }
@@ -190,6 +208,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             case R.id.textview_materialCount:
                 openMaterialListDialog();
                 Toast.makeText(mContext, "onClick", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.button_move:
+                validateEntries();
                 break;
         }
     }
@@ -219,6 +240,77 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     @Override
     public void fragmentBecameVisible() {
+
+    }
+
+
+    private void validateEntries() {
+
+        strSouceName = edit_text_selected_dest_name.getText().toString();
+        if (TextUtils.isEmpty(strSouceName)) {
+            edit_text_selected_dest_name.setError("Please enter " + " " + str);
+            return;
+        } else {
+            edit_text_selected_dest_name.requestFocus();
+            edit_text_selected_dest_name.setError(null);
+        }
+
+        //Date
+        strDate = editText_Date.getText().toString();
+        if (TextUtils.isEmpty(strDate)) {
+            editText_Date.setError("Please enter Date");
+            return;
+        } else {
+            editText_Date.requestFocus();
+            editText_Date.setError(null);
+        }
+
+        //Bill
+        strBillNumber=editTextChallanNumber.getText().toString();
+        if(TextUtils.isEmpty(strBillNumber)){
+            editTextChallanNumber.setError("Please Enter Bill Number");
+            return;
+        }else {
+            editTextChallanNumber.setError(null);
+            editTextChallanNumber.requestFocus();
+        }
+
+        //Vehicle Number
+        strVehicleNumber=editTextVehicleNumber.getText().toString();
+        if (TextUtils.isEmpty(strVehicleNumber)) {
+            editTextVehicleNumber.setError("Please enter vehicle number");
+            return;
+        } else {
+            editTextVehicleNumber.setError(null);
+            editTextVehicleNumber.requestFocus();
+        }
+
+        //In Time
+        strInTime=editTextInTime.getText().toString();
+        if (TextUtils.isEmpty(strInTime)) {
+            editTextInTime.setError("Please enter In time");
+            return;
+        } else {
+            editTextInTime.setError(null);
+            editTextInTime.requestFocus();
+        }
+
+        //Out Time
+        strOutTime=editTextOutTime.getText().toString();
+
+        if (TextUtils.isEmpty(strOutTime)) {
+            editTextOutTime.setError("Please enter out Time");
+            return;
+        } else {
+            editTextOutTime.setError(null);
+            editTextOutTime.requestFocus();
+        }
+
+
+
+
+        Toast.makeText(mContext, "Succes", Toast.LENGTH_SHORT).show();
+
 
     }
 }

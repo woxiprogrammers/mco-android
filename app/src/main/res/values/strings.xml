@@ -55,4 +55,14 @@
         <item>Sub-contracter</item>
         <item>Supplier</item>
     </string-array>
+
+    <string-array name="project_array">
+        <item>ProjABC</item>
+        <item>ProjXYZ</item>
+    </string-array>
+
+    <string-array name="site_array">
+        <item>SiteA</item>
+        <item>SIteB</item>
+    </string-array>
 </resources>

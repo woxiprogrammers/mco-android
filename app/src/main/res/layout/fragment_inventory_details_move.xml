@@ -442,6 +442,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:entries="@array/site_array"
                     android:prompt="@string/text_move"
                     android:textColor="@color/colorTextLight"/>
 
@@ -450,6 +451,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:entries="@array/project_array"
                     android:prompt="@string/text_move"/>
             </LinearLayout>
 
@@ -499,6 +501,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/edit_text_inTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -518,7 +521,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        android:id="@+id/text_view_selected_des"
+                        android:id="@+id/edit_text_outTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -583,6 +586,7 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
+                    android:id="@+id/editText_Date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
@@ -598,7 +602,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Challan Number:"
+                    android:text="Bill Number"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
