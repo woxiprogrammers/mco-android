@@ -91,10 +91,12 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     EditText editTextOutTime;
 
 
+
+
     private View mParentView;
     private int intMaterialCount;
     private String strSouceName, strDate, strVehicleNumber, strInTime, strOutTime,strBillNumber;
-    private boolean isValidate;
+    private boolean isChecked;
 
     private String str;
 
@@ -138,6 +140,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         mContext = getActivity();
         text_view_materialCount.setOnClickListener(this);
         buttonMove.setOnClickListener(this);
+        textViewAddNote.setOnClickListener(this);
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -191,6 +194,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
+                        isChecked=true;
                         break;
                 }
             }
@@ -211,6 +215,13 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 break;
             case R.id.button_move:
                 validateEntries();
+                break;
+            case R.id.text_view_addNote:
+                if (textViewAddNote.getText().toString().equalsIgnoreCase("Show")) {
+                    openAddToNoteDialog("Show");
+                }else {
+                    openAddToNoteDialog(getString(R.string.tap_too_add_note));
+                }
                 break;
         }
     }
@@ -248,7 +259,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
         strSouceName = edit_text_selected_dest_name.getText().toString();
         if (TextUtils.isEmpty(strSouceName)) {
-            edit_text_selected_dest_name.setError("Please enter " + " " + str);
+            edit_text_selected_dest_name.setError(getString(R.string.please_enter) + " " + str);
             return;
         } else {
             edit_text_selected_dest_name.requestFocus();
@@ -258,7 +269,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         //Date
         strDate = editText_Date.getText().toString();
         if (TextUtils.isEmpty(strDate)) {
-            editText_Date.setError("Please enter Date");
+            editText_Date.setError(getString(R.string.please_enter) + getString(R.string.date));
             return;
         } else {
             editText_Date.requestFocus();
@@ -268,49 +279,92 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         //Bill
         strBillNumber=editTextChallanNumber.getText().toString();
         if(TextUtils.isEmpty(strBillNumber)){
-            editTextChallanNumber.setError("Please Enter Bill Number");
+            editTextChallanNumber.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
             return;
         }else {
             editTextChallanNumber.setError(null);
             editTextChallanNumber.requestFocus();
         }
 
-        //Vehicle Number
-        strVehicleNumber=editTextVehicleNumber.getText().toString();
-        if (TextUtils.isEmpty(strVehicleNumber)) {
-            editTextVehicleNumber.setError("Please enter vehicle number");
-            return;
-        } else {
-            editTextVehicleNumber.setError(null);
-            editTextVehicleNumber.requestFocus();
+        if(isChecked) {
+            //Vehicle Number
+            strVehicleNumber = editTextVehicleNumber.getText().toString();
+            if (TextUtils.isEmpty(strVehicleNumber)) {
+                editTextVehicleNumber.setError(getString(R.string.please_enter) + getString(R.string.vehicle_number));
+                return;
+            } else {
+                editTextVehicleNumber.setError(null);
+                editTextVehicleNumber.requestFocus();
+            }
+
+            //In Time
+            strInTime = editTextInTime.getText().toString();
+            if (TextUtils.isEmpty(strInTime)) {
+                editTextInTime.setError(getString(R.string.please_enter) + getString(R.string.in_time));
+                return;
+            } else {
+                editTextInTime.setError(null);
+                editTextInTime.requestFocus();
+            }
+
+            //Out Time
+            strOutTime = editTextOutTime.getText().toString();
+
+            if (TextUtils.isEmpty(strOutTime)) {
+                editTextOutTime.setError(getString(R.string.please_enter) + getString(R.string.out_time));
+                return;
+            } else {
+                editTextOutTime.setError(null);
+                editTextOutTime.requestFocus();
+            }
         }
-
-        //In Time
-        strInTime=editTextInTime.getText().toString();
-        if (TextUtils.isEmpty(strInTime)) {
-            editTextInTime.setError("Please enter In time");
-            return;
-        } else {
-            editTextInTime.setError(null);
-            editTextInTime.requestFocus();
-        }
-
-        //Out Time
-        strOutTime=editTextOutTime.getText().toString();
-
-        if (TextUtils.isEmpty(strOutTime)) {
-            editTextOutTime.setError("Please enter out Time");
-            return;
-        } else {
-            editTextOutTime.setError(null);
-            editTextOutTime.requestFocus();
-        }
-
-
-
-
         Toast.makeText(mContext, "Succes", Toast.LENGTH_SHORT).show();
 
 
+    }
+
+    String str_add_note;
+    private void openAddToNoteDialog(String strMessage)
+    {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_tap_to_add_note, null);
+        dialogBuilder.setView(dialogView);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        final EditText editText_add_note = ButterKnife.findById(dialogView, R.id.edit_text_add_note);
+        final TextView textViewShowNote=ButterKnife.findById(dialogView,R.id.textViewShowNote);
+        Button buttonOk = ButterKnife.findById(dialogView, R.id.button_ok);
+
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                str_add_note =editText_add_note.getText().toString();
+                if(TextUtils.isEmpty(str_add_note)){
+                    editText_add_note.setError("Please" + " " + getString(R.string.add_your_note));
+                    editText_add_note.requestFocus();
+                    editText_add_note.requestFocus();
+                    return;
+                }else {
+                    editText_add_note.setError(null);
+                    editText_add_note.requestFocus();
+                    Toast.makeText(mContext,"Note Added",Toast.LENGTH_SHORT).show();
+                    textViewShowNote.setVisibility(View.VISIBLE);
+                    textViewShowNote.setText(str_add_note);
+                    textViewAddNote.setText("Show");
+                    alertDialog.dismiss();
+
+                }
+            }
+
+        });
+        if(str.equalsIgnoreCase(getString(R.string.tap_too_add_note))){
+
+            textViewShowNote.setVisibility(View.GONE);
+        }else {
+            editText_add_note.setText(str_add_note);
+            textViewShowNote.setVisibility(View.VISIBLE);
+        }
+
+        alertDialog.show();
     }
 }

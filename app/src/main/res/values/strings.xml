@@ -47,6 +47,13 @@
     <string name="labour_name">Labour Name</string>
     <string name="sub_contracter_name">Sub Contracter Name</string>
     <string name="supplier_name">Supplier Name</string>
+    <string name="please_enter">Please enter</string>
+    <string name="out_time">Out Time</string>
+    <string name="in_time">In Time</string>
+    <string name="vehicle_number">Vehicle Number</string>
+    <string name="bill_number">Bill Number</string>
+    <string name="date">Date</string>
+    <string name="add_your_note">Add your note</string>
 
     <string-array name="destination_array">
         <item>Site</item>
