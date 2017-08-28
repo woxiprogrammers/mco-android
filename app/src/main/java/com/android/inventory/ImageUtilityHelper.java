@@ -1,25 +1,22 @@
 package com.android.inventory;
 
-
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,30 +26,32 @@ import static android.app.Activity.RESULT_OK;
  * This class is used to Pick and Crop Image using Camera/Gallery application.
  * This class uses- "Android-Image-Cropper" by "ArthurHub" library to crop image.
  * Library github link - "https://github.com/ArthurHub/Android-Image-Cropper"
- * Created by RohitSS
+ * Created by rohitss
  */
+
 public class ImageUtilityHelper {
-    public Bitmap bitmapProfile = null;
     private Context mContext;
+    private ImageView cropImageView;
     private File localImageFile;
     private boolean isDeleteLocalImage;
 
-    public ImageUtilityHelper(Context context) {
+    public ImageUtilityHelper(Context context, ImageView imageView) {
         mContext = context;
+        cropImageView = imageView;
     }
 
     /**
      * Used to create image chooser intent
-     *
      * @return chooserIntent
      */
     public Intent getPickImageChooserIntent() {
-        File f = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+        File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
         Uri outputFileUri = Uri.fromFile(f);
         List<Intent> allIntents = new ArrayList<>();
         PackageManager packageManager = mContext.getPackageManager();
+
         // collect all camera intents
-        Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
         for (ResolveInfo res : listCam) {
             Intent intent = new Intent(captureIntent);
@@ -63,8 +62,9 @@ public class ImageUtilityHelper {
             }
             allIntents.add(intent);
         }
+
         // collect all gallery intents
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         galleryIntent.setType("image/*");
         List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
         for (ResolveInfo res : listGallery) {
@@ -73,6 +73,7 @@ public class ImageUtilityHelper {
             intent.setPackage(res.activityInfo.packageName);
             allIntents.add(intent);
         }
+
         // the main intent is the last in the list (fucking android) so pickup the useless one
         Intent mainIntent = allIntents.get(allIntents.size() - 1);
         for (Intent intent : allIntents) {
@@ -82,10 +83,13 @@ public class ImageUtilityHelper {
             }
         }
         allIntents.remove(mainIntent);
+
         // Create a chooser from the main intent
         Intent chooserIntent = Intent.createChooser(mainIntent, "Select source");
+
         // Add all other intents
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
+
         return chooserIntent;
     }
 
@@ -110,43 +114,48 @@ public class ImageUtilityHelper {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
-                try {
-                    bitmapProfile = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), resultUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                cropImageView.setImageURI(resultUri);
                 isDeleteLocalImage = true;
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Toast.makeText(mContext, "" + error, Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == 2612) {
-            boolean isCamera;
-            if (data == null) {
-                isCamera = true;
-            } else {
-                final String action = data.getAction();
-                isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
-            }
-            if (isCamera) {
-                //Result From Camera
-                localImageFile = new File(Environment.getExternalStorageDirectory().toString());
-                for (File temp : localImageFile.listFiles()) {
-                    if (temp.getName().equals("temp.jpg")) {
-                        localImageFile = temp;
-                        break;
+        } else
+            //For Image chooser intent
+            if (resultCode == RESULT_OK) {
+                if (requestCode == InventoryDetails.IMAGE_CHOOSER_CODE) {
+                    boolean isCamera;
+                    if (data == null) {
+                        isCamera = true;
+                    } else {
+                        final String action = data.getAction();
+                        if (action == null) {
+                            isCamera = false;
+                        } else {
+                            isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        }
+                    }
+
+                    if (isCamera) {
+                        //Result From Camera
+                        localImageFile = new File(Environment.getExternalStorageDirectory().toString());
+                        for (File temp : localImageFile.listFiles()) {
+                            if (temp.getName().equals("temp.jpg")) {
+                                localImageFile = temp;
+                                break;
+                            }
+                        }
+                        Uri selectedFileUri = Uri.fromFile(localImageFile);
+                        //call image crop activity
+                        getSetCropImage(selectedFileUri);
+                    } else {
+                        //Result From Gallery
+                        Uri selectedImageUri = data.getData();
+                        //call image crop activity
+                        getSetCropImage(selectedImageUri);
                     }
                 }
-                Uri selectedFileUri = Uri.fromFile(localImageFile);
-                //call image crop activity
-                getSetCropImage(selectedFileUri);
-            } else {
-                //Result From Gallery
-                Uri selectedImageUri = data.getData();
-                //call image crop activity
-                getSetCropImage(selectedImageUri);
             }
-        }
     }
 
     /**

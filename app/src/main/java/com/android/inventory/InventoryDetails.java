@@ -1,70 +1,74 @@
 package com.android.inventory;
 
-import android.app.AlertDialog;
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ImageView;
 
-import com.android.adapter.InventoryViewPagerAdapter;
-import com.android.adapter.SelectedMaterialListAdapter;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.material.AssetListFragment;
 import com.android.inventory.material.InventoryDetailsMoveFragment;
 import com.android.inventory.material.MaterialHistoryFragment;
-import com.android.inventory.material.MaterialListFragment;
-import com.android.models.inventory.MaterialListItem;
 import com.android.utils.BaseActivity;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.OrderedRealmCollection;
-import io.realm.Realm;
-import io.realm.RealmList;
-import timber.log.Timber;
 
 public class InventoryDetails extends BaseActivity {
-
-
-
-
+    public static final int IMAGE_CHOOSER_CODE =2612 ;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottom_navigation;
 
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
 
-    MenuItem prevMenuItem;
+    private InventoryDetailsMoveFragment detailsMoveFragment;
+    private MenuItem prevMenuItem;
     private ArrayList<Integer> arrayList = new ArrayList<Integer>();
+    private ImageUtilityHelper imageUtilityHelper;
+    private Context mContext;
+    public static final int WRITE_PERMISSION_CODE = 5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_view);
+        initializeViews();
+        callFragment();
+
+    }
+
+    private void initializeViews() {
         ButterKnife.bind(this);
-        Intent intent =getIntent();
-        if(intent !=null) {
+        mContext = InventoryDetails.this;
+//        detailsMoveFragment= viewPagerInventory.getAdapter()
+        ImageView imageView=new ImageView(mContext);
+        imageView.setMaxWidth(100);
+        imageView.setMaxHeight(100);
+        Intent intent = getIntent();
+        if (intent != null) {
             arrayList = intent.getIntegerArrayListExtra("Array");
         }
-        callFragment();
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -75,9 +79,7 @@ public class InventoryDetails extends BaseActivity {
             public void onPageSelected(int position) {
                 if (prevMenuItem != null) {
                     prevMenuItem.setChecked(false);
-                }
-                else
-                {
+                } else {
                     bottom_navigation.getMenu().getItem(0).setChecked(false);
                 }
                 bottom_navigation.getMenu().getItem(position).setChecked(true);
@@ -90,7 +92,6 @@ public class InventoryDetails extends BaseActivity {
 
             }
         });
-
         bottom_navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
             @Override
@@ -109,8 +110,8 @@ public class InventoryDetails extends BaseActivity {
         });
     }
 
-    private void callFragment(){
-        final InventoryDetailsViewPagerAdapter inventoryViewPagerAdapter=new InventoryDetailsViewPagerAdapter(getSupportFragmentManager());
+    private void callFragment() {
+        final InventoryDetailsViewPagerAdapter inventoryViewPagerAdapter = new InventoryDetailsViewPagerAdapter(getSupportFragmentManager());
         viewPagerInventory.setAdapter(inventoryViewPagerAdapter);
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -132,8 +133,15 @@ public class InventoryDetails extends BaseActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
+        imageUtilityHelper.deleteLocalImage();
+    }
+
     private class InventoryDetailsViewPagerAdapter extends FragmentPagerAdapter {
-        private String[] arrBottomTitle={"Bottom1","Bottom2"};
+        private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
 
         public InventoryDetailsViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -156,4 +164,52 @@ public class InventoryDetails extends BaseActivity {
             return arrBottomTitle.length;
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //TODO: Function that requires permission
+                InventoryDetailsMoveFragment inventoryDetailsMoveFragment=new InventoryDetailsMoveFragment();
+                inventoryDetailsMoveFragment.getImageChooser();
+            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    //Show permission explanation dialog...
+                    Snackbar.make(findViewById(android.R.id.content), "Permission required for the function to work properly.", Snackbar.LENGTH_LONG)
+                            .setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ActivityCompat.requestPermissions(InventoryDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION_CODE);
+                                }
+                            })
+                            .show();
+                } else {
+                    //Never ask again selected, or device policy prohibits the app from having that permission.
+                    //So, disable that feature, or fall back to another situation...
+                    //Open App Settings Page
+                    Snackbar.make(findViewById(android.R.id.content), "You have denied this permission. Please allow this permission.", Snackbar.LENGTH_LONG)
+                            .setAction("Settings", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intentSettings = new Intent();
+                                    intentSettings.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    intentSettings.addCategory(Intent.CATEGORY_DEFAULT);
+                                    intentSettings.setData(Uri.parse("package:" + mContext.getPackageName()));
+                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                                    mContext.startActivity(intentSettings);
+                                }
+                            }).show();
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    public void createObject(ImageView imageView){
+        imageUtilityHelper = new ImageUtilityHelper(mContext,imageView);
+    }
+
 }

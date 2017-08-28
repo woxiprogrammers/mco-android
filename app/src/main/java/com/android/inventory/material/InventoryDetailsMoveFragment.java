@@ -1,16 +1,23 @@
 package com.android.inventory.material;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +36,11 @@ import com.android.adapter.SelectedMaterialListAdapter;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.ImageUtilityHelper;
+import com.android.inventory.InventoryDetails;
 import com.android.models.inventory.MaterialListItem;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -39,6 +48,8 @@ import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmList;
+
+import static com.android.inventory.InventoryDetails.IMAGE_CHOOSER_CODE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,22 +109,25 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     @BindView(R.id.ivChooseImage)
     ImageView selectImage;
+/*
+    @BindView(R.id.sharimage)
+    ImageView sharImage;*/
 
-    @BindView(R.id.choosedImage)
-    ImageView choosed_Image;
+    @BindView(R.id.ll_uploadImage)
+    LinearLayout llUploadImage;
 
     private View mParentView;
     private int intMaterialCount;
-    private String strSouceName, strDate, strVehicleNumber, strInTime, strOutTime,strBillNumber;
+    private String strSouceName, strDate, strVehicleNumber, strInTime, strOutTime, strBillNumber;
     private boolean isChecked;
-    private ImageUtilityHelper imageUtilityHelper;
+    ImageUtilityHelper imageUtilityHelper;
+    private Bitmap bitmapProfile;
 
     private String str;
 
-    private Context mContext;
+    private Context mContext;ImageView imageView;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;
-    private RealmList<MaterialListItem> materialListItems = new RealmList<MaterialListItem>();
-    private Bitmap bitmapProfile;
+    private ArrayList<Integer> integerArrayList=new ArrayList<Integer>();
 
     public static InventoryDetailsMoveFragment newInstance(ArrayList<Integer> arrayMaterialCount) {
         Bundle args = new Bundle();
@@ -131,11 +145,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
-        ButterKnife.bind(this, mParentView);
-        Bundle bundle = getArguments();
-        ArrayList<Integer> integerArrayList = bundle.getIntegerArrayList("arrayMaterialCount");
-        intMaterialCount = integerArrayList.size();
-        text_view_materialCount.setText(intMaterialCount + " " + "Item(s) selected");
         initializeViews();
         return mParentView;
 
@@ -148,12 +157,22 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     }
 
     private void initializeViews() {
+        ButterKnife.bind(this, mParentView);
         mContext = getActivity();
         text_view_materialCount.setOnClickListener(this);
         buttonMove.setOnClickListener(this);
         selectImage.setOnClickListener(this);
         textViewAddNote.setOnClickListener(this);
-        imageUtilityHelper = new ImageUtilityHelper(mContext);
+        imageView=new ImageView(mContext);
+        imageView.setMaxWidth(200);
+        imageView.setMaxHeight(200);
+        imageUtilityHelper = new ImageUtilityHelper(mContext,imageView);
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            integerArrayList = bundle.getIntegerArrayList("arrayMaterialCount");
+        }
+        intMaterialCount = integerArrayList.size();
+        text_view_materialCount.setText(intMaterialCount + " " + "Item(s) selected");
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -207,7 +226,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
-                        isChecked=true;
+                        isChecked = true;
                         break;
                 }
             }
@@ -232,12 +251,12 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             case R.id.text_view_addNote:
                 if (textViewAddNote.getText().toString().equalsIgnoreCase("Show")) {
                     openAddToNoteDialog("Show");
-                }else {
+                } else {
                     openAddToNoteDialog(getString(R.string.tap_too_add_note));
                 }
                 break;
             case R.id.ivChooseImage:
-                getImageChooser();
+                pickAndCropImage(view);
                 break;
         }
     }
@@ -270,7 +289,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     }
 
-
     private void validateEntries() {
 
         strSouceName = edit_text_selected_dest_name.getText().toString();
@@ -293,16 +311,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         }
 
         //Bill
-        strBillNumber=editTextChallanNumber.getText().toString();
-        if(TextUtils.isEmpty(strBillNumber)){
+        strBillNumber = editTextChallanNumber.getText().toString();
+        if (TextUtils.isEmpty(strBillNumber)) {
             editTextChallanNumber.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
             return;
-        }else {
+        } else {
             editTextChallanNumber.setError(null);
             editTextChallanNumber.requestFocus();
         }
 
-        if(isChecked) {
+        if (isChecked) {
             //Vehicle Number
             strVehicleNumber = editTextVehicleNumber.getText().toString();
             if (TextUtils.isEmpty(strVehicleNumber)) {
@@ -336,34 +354,33 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         }
         Toast.makeText(mContext, "Succes", Toast.LENGTH_SHORT).show();
 
-
     }
 
     String str_add_note;
-    private void openAddToNoteDialog(String strMessage)
-    {
+
+    private void openAddToNoteDialog(String strMessage) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_tap_to_add_note, null);
         dialogBuilder.setView(dialogView);
         final AlertDialog alertDialog = dialogBuilder.create();
         final EditText editText_add_note = ButterKnife.findById(dialogView, R.id.edit_text_add_note);
-        final TextView textViewShowNote=ButterKnife.findById(dialogView,R.id.textViewShowNote);
+        final TextView textViewShowNote = ButterKnife.findById(dialogView, R.id.textViewShowNote);
         Button buttonOk = ButterKnife.findById(dialogView, R.id.button_ok);
 
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                str_add_note =editText_add_note.getText().toString();
-                if(TextUtils.isEmpty(str_add_note)){
+                str_add_note = editText_add_note.getText().toString();
+                if (TextUtils.isEmpty(str_add_note)) {
                     editText_add_note.setError("Please" + " " + getString(R.string.add_your_note));
                     editText_add_note.requestFocus();
                     editText_add_note.requestFocus();
                     return;
-                }else {
+                } else {
                     editText_add_note.setError(null);
                     editText_add_note.requestFocus();
-                    Toast.makeText(mContext,"Note Added",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Note Added", Toast.LENGTH_SHORT).show();
                     textViewShowNote.setVisibility(View.VISIBLE);
                     textViewShowNote.setText(str_add_note);
                     textViewAddNote.setText("Show");
@@ -373,10 +390,10 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             }
 
         });
-        if(str.equalsIgnoreCase(getString(R.string.tap_too_add_note))){
+        if (str.equalsIgnoreCase(getString(R.string.tap_too_add_note))) {
 
             textViewShowNote.setVisibility(View.GONE);
-        }else {
+        } else {
             editText_add_note.setText(str_add_note);
             textViewShowNote.setVisibility(View.VISIBLE);
         }
@@ -384,29 +401,29 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         alertDialog.show();
     }
 
-    private void getImageChooser(){
-        Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
-        startActivityForResult(imageChooserIntent, 2612);
+    public void pickAndCropImage(View view) {
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            //Permission denied, so request permission
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, InventoryDetails.WRITE_PERMISSION_CODE);
+        } else {
+            //Permission allowed
+            getImageChooser();
+        }
+    }
 
+    public void getImageChooser() {
+        if(imageView.getParent()!=null)
+            ((ViewGroup)imageView.getParent()).removeView(imageView);
+        llUploadImage.addView(imageView);
+        ((InventoryDetails) mContext).createObject(imageView);
+        //Step 5. Call image chooser function to get app list.
+        Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
+        startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE:
-                case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
-                case 2612:
-                    //For new camera functionality
-                    imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
-                    if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                        bitmapProfile = imageUtilityHelper.bitmapProfile;
-                        choosed_Image.setImageBitmap(bitmapProfile);
-                    } else return;
-                default:
-                    break;
-            }
-        }
+        imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
+        imageUtilityHelper.deleteLocalImage();
     }
-
 }
