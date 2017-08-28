@@ -66,6 +66,35 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         initializeViews();
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.actionLogout:
+                logoutAndClearAllData();
+                break;
+            case R.id.actionSetting:
+            case R.id.actionAbout:
+            case R.id.actionProfile:
+                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
@@ -108,16 +137,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         startActivity(intent);
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -130,25 +149,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }*/
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.actionLogout:
-                logoutAndClearAllData();
-                break;
-            case R.id.actionSetting:
-            case R.id.actionAbout:
-            case R.id.actionProfile:
-                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     private void logoutAndClearAllData() {
         Realm realm = null;
