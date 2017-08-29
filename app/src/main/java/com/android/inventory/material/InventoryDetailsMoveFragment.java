@@ -109,12 +109,11 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     @BindView(R.id.ivChooseImage)
     ImageView selectImage;
-/*
-    @BindView(R.id.sharimage)
-    ImageView sharImage;*/
 
     @BindView(R.id.ll_uploadImage)
     LinearLayout llUploadImage;
+
+    private int[] imageArray;
 
     private View mParentView;
     private int intMaterialCount;
@@ -125,7 +124,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     private String str;
 
-    private Context mContext;ImageView imageView;
+    private Context mContext;
+    private ImageView imageView;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;
     private ArrayList<Integer> integerArrayList=new ArrayList<Integer>();
 
@@ -163,10 +163,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         buttonMove.setOnClickListener(this);
         selectImage.setOnClickListener(this);
         textViewAddNote.setOnClickListener(this);
-        imageView=new ImageView(mContext);
-        imageView.setMaxWidth(200);
-        imageView.setMaxHeight(200);
-        imageUtilityHelper = new ImageUtilityHelper(mContext,imageView);
         Bundle bundle = getArguments();
         if(bundle != null) {
             integerArrayList = bundle.getIntegerArrayList("arrayMaterialCount");
@@ -412,11 +408,13 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     }
 
     public void getImageChooser() {
-        if(imageView.getParent()!=null)
-            ((ViewGroup)imageView.getParent()).removeView(imageView);
-        llUploadImage.addView(imageView);
+
+        ImageView imageView=new ImageView(mContext);
+        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(50, 50);
+        imageView.setLayoutParams(layoutParams);
+        imageUtilityHelper = new ImageUtilityHelper(mContext,imageView);
         ((InventoryDetails) mContext).createObject(imageView);
-        //Step 5. Call image chooser function to get app list.
+        llUploadImage.addView(imageView);
         Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
         startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
     }
