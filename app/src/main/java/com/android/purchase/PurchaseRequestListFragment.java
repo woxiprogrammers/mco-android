@@ -40,6 +40,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private Unbinder unbinder;
     private Context mContext;
     private View mParentView;
+    private Realm realm;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
@@ -68,6 +69,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        recyclerView_commonListingView.setAdapter(null);
+        realm.close();
         unbinder.unbind();
     }
 
@@ -100,7 +103,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
                     @Override
                     public void onResponse(final PurchaseRequestResponse response) {
-                        Realm realm = AppUtils.getInstance().getRealmInstance();
+                        realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
@@ -116,26 +119,29 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                             }, new Realm.Transaction.OnError() {
                                 @Override
                                 public void onError(Throwable error) {
-                                    Timber.d("Error");
+                                    Timber.d("onError: " + error.getMessage());
                                 }
                             });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
+                        } catch (Exception e) {
+                            Timber.d(e.getMessage());
                         }
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        Timber.d(String.valueOf(anError.getErrorCode()));
-                        Timber.d(String.valueOf(anError.getErrorBody()));
+                        if (anError.getErrorCode() != 0) {
+                            Timber.d("onError errorCode : " + anError.getErrorCode());
+                            Timber.d("onError errorBody : " + anError.getErrorBody());
+                            Timber.d("onError errorDetail : " + anError.getErrorDetail());
+                        } else {
+                            Timber.d("onError errorDetail : " + anError.getErrorDetail());
+                        }
                     }
                 });
     }
 
     private void setUpPrAdapter() {
-        final Realm realm = Realm.getDefaultInstance();
+        realm = Realm.getDefaultInstance();
         OrderedRealmCollection<PurchaseRequestListItem> purchaseRequestListItems = realm.where(PurchaseRequestRespData.class).findFirst().getPurchaseRequestList();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));

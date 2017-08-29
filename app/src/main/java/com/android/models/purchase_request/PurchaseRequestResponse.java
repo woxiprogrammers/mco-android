@@ -3,8 +3,11 @@ package com.android.models.purchase_request;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class PurchaseRequestResponse extends RealmObject {
+    @PrimaryKey
+    private int intIndex = 0;
     @SerializedName("next_url")
     private String nextUrl;
     @SerializedName("message")

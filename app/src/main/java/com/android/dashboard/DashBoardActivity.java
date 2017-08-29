@@ -40,8 +40,14 @@ import timber.log.Timber;
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
     private RecyclerView mRvTaskSelection;
-    private Realm realm;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
+    private Realm realm;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +109,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private void initializeViews() {
         mContext = DashBoardActivity.this;
         mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
-        realm = AppUtils.getInstance().getRealmInstance();
+        realm = Realm.getDefaultInstance();
         modulesItemOrderedRealmCollection = realm.where(LoginResponseData.class).findFirst().getModules();
         ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection);
         mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));
@@ -151,36 +157,25 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     }*/
 
     private void logoutAndClearAllData() {
-        Realm realm = null;
+        realm = Realm.getDefaultInstance();
         try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
+            realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     realm.deleteAll();
                 }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
+                    Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    finish();
+                    startActivity(intentLogin);
+                }
             });
-        } finally {
-            if (realm != null) {
-                realm.close();
-                AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
-                Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                finish();
-                startActivity(intentLogin);
-            }
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
         }
-    }
-
-    /*
-     * It is good practice to null the reference from the view to the adapter when it is no longer needed.
-     * Because the <code>RealmRecyclerViewAdapter</code> registers itself as a <code>RealmResult.ChangeListener</code>
-     * the view may still be reachable if anybody is still holding a reference to the <code>RealmResult>.
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mRvTaskSelection.setAdapter(null);
-        realm.close();
     }
 
     private HashMap<String, String> retrieveAclKeyValueFromLocal() {

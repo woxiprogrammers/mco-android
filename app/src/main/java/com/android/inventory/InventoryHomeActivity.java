@@ -20,7 +20,6 @@ import com.android.models.inventory.InventoryDataResponse;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
 import com.android.utils.AppURL;
-import com.android.utils.AppUtils;
 import com.android.utils.BaseActivity;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
@@ -45,6 +44,13 @@ public class InventoryHomeActivity extends BaseActivity {
     private MaterialListAdapter materialListAdapter;
     private Context mContext;
     private ArrayList<Integer> strMaterialName = new ArrayList<Integer>();
+    private Realm realm;
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        realm.close();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +88,8 @@ public class InventoryHomeActivity extends BaseActivity {
                 .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
                     @Override
                     public void onResponse(final InventoryResponse response) {
-                        Realm realm = AppUtils.getInstance().getRealmInstance();
                         try {
+                            realm = Realm.getDefaultInstance();
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
@@ -101,10 +107,8 @@ public class InventoryHomeActivity extends BaseActivity {
                                     Timber.d("Error");
                                 }
                             });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
+                        } catch (Exception e) {
+                            Timber.d(e.getMessage());
                         }
                     }
 
@@ -114,110 +118,6 @@ public class InventoryHomeActivity extends BaseActivity {
                         Timber.d(String.valueOf(anError.getErrorBody()));
                     }
                 });
-
-                /*.getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
-                        Gson gson = new GsonBuilder().create();
-                        final String tempResponse = "{\n" +
-                                "  \"data\": {\n" +
-                                "    \"material_list\": [\n" +
-                                "      {\n" +
-                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
-                                "        \"id\":1516,\n" +
-                                "        \"quantity_in\": \"123\",\n" +
-                                "        \"quantity_out\": \"567\",\n" +
-                                "        \"quantity_available\": \"788\"\n" +
-                                "      },\n" +
-                                "      {\n" +
-                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
-                                "        \"id\":1517,\n" +
-                                "        \"quantity_in\": \"123\",\n" +
-                                "        \"quantity_out\": \"567\",\n" +
-                                "        \"quantity_available\": \"788\"\n" +
-                                "      },\n" +
-                                "      {\n" +
-                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
-                                "        \"id\":1518,\n" +
-                                "        \"quantity_in\": \"123\",\n" +
-                                "        \"quantity_out\": \"567\",\n" +
-                                "        \"quantity_available\": \"788\"\n" +
-                                "      },\n" +
-                                "      {\n" +
-                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
-                                "        \"id\":1519,\n" +
-                                "        \"quantity_in\": \"123\",\n" +
-                                "        \"quantity_out\": \"567\",\n" +
-                                "        \"quantity_available\": \"788\"\n" +
-                                "      },\n" +
-                                "      {\n" +
-                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
-                                "        \"id\":1520,\n" +
-                                "        \"quantity_in\": \"123\",\n" +
-                                "        \"quantity_out\": \"567\",\n" +
-                                "        \"quantity_available\": \"788\"\n" +
-                                "      },\n" +
-                                "      {\n" +
-                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
-                                "        \"id\":1521,\n" +
-                                "        \"quantity_in\": \"123\",\n" +
-                                "        \"quantity_out\": \"567\",\n" +
-                                "        \"quantity_available\": \"788\"\n" +
-                                "      },\n" +
-                                "      {\n" +
-                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
-                                "        \"id\":1522,\n" +
-                                "        \"quantity_in\": \"123\",\n" +
-                                "        \"quantity_out\": \"567\",\n" +
-                                "        \"quantity_available\": \"788\"\n" +
-                                "      },\n" +
-                                "      {\n" +
-                                "        \"material_name\": \"Electric Welding Machine Bits\",\n" +
-                                "        \"id\":1523,\n" +
-                                "        \"quantity_in\": \"123\",\n" +
-                                "        \"quantity_out\": \"567\",\n" +
-                                "        \"quantity_available\": \"788\"\n" +
-                                "      }\n" +
-                                "    ]\n" +
-                                "    \n" +
-                                "  },\n" +
-                                "  \"next_url\": \"\",\n" +
-                                "  \"message\": \"Sucess\"\n" +
-                                "}";
-                        final InventoryResponse inventoryResponse = gson.fromJson(String.valueOf(tempResponse), InventoryResponse.class);
-                        Realm realm = null;
-                        try {
-                            realm = Realm.getDefaultInstance();
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.copyToRealm(inventoryResponse);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    Toast.makeText(InventoryHomeActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                                    setAdapterForMaterialList();
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    Timber.d(String.valueOf(error));
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        Timber.d(String.valueOf(anError));
-                    }
-                });*/
     }
 
     private void setAdapterForMaterialList() {
@@ -229,7 +129,7 @@ public class InventoryHomeActivity extends BaseActivity {
         strMaterialName.add(1521);
         strMaterialName.add(1522);
         strMaterialName.add(1523);
-        final Realm realm = Realm.getDefaultInstance();
+        realm = Realm.getDefaultInstance();
         final OrderedRealmCollection<MaterialListItem> materialListItems = realm.where(InventoryDataResponse.class).findFirst().getMaterialList();
         materialListAdapter = new MaterialListAdapter(materialListItems, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -239,6 +139,7 @@ public class InventoryHomeActivity extends BaseActivity {
         rv_material_list.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rv_material_list, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
+                realm = Realm.getDefaultInstance();
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {

@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import io.realm.Realm;
-
 /**
  * <b></b>
  * <p>This class is used to </p>
@@ -38,7 +36,6 @@ public class AppUtils {
                     "[a-zA-Z0-9][a-zA-Z0-9-]{0,25}" +
                     ")+"
     );
-    private Realm realm;
 
     /**
      * initialize utils plus library
@@ -321,12 +318,5 @@ public class AppUtils {
         } catch (android.content.ActivityNotFoundException ex) {
             Log.d("Utils Plus", "Activity Not Found");
         }
-    }
-
-    public Realm getRealmInstance() {
-        if (realm == null || realm.isClosed()) {
-            realm = Realm.getDefaultInstance();
-        }
-        return realm;
     }
 }

@@ -11,6 +11,7 @@ import com.android.interfaces.FragmentInterface;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 
 public class PurchaseHomeActivity extends AppCompatActivity {
     @BindView(R.id.tavLayout)
