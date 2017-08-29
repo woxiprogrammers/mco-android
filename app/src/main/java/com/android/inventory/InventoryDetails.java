@@ -64,7 +64,8 @@ public class InventoryDetails extends BaseActivity {
         ButterKnife.bind(this);
         mContext = InventoryDetails.this;
         if(getSupportActionBar() != null){
-            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Details");
         }
         Intent intent = getIntent();
         if (intent != null) {

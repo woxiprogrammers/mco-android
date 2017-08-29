@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -259,10 +260,11 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     }
 
     private void openMaterialListDialog() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext,R.style.DialogTheme);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.activity_material_listing, null);
         dialogBuilder.setView(dialogView);
+
         RecyclerView rv_material_list = ButterKnife.findById(dialogView, R.id.rv_material_list);
         final Realm realm = Realm.getDefaultInstance();
         /*for (int i = 0; i < arrayList.size(); i++) {
@@ -278,6 +280,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         rv_material_list.setLayoutManager(linearLayoutManager);
         rv_material_list.setAdapter(selectedMaterialListAdapter);
         AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         alertDialog.show();
     }
 
@@ -400,7 +403,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     public void pickAndCropImage(View view) {
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            //Permission denied, so request permission
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, InventoryDetails.WRITE_PERMISSION_CODE);
         } else {
             //Permission allowed
