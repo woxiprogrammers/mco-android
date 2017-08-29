@@ -49,6 +49,7 @@ import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmList;
 
+import static android.app.Activity.RESULT_OK;
 import static com.android.inventory.InventoryDetails.IMAGE_CHOOSER_CODE;
 
 /**
@@ -127,7 +128,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private Context mContext;
     private ImageView imageView;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;
-    private ArrayList<Integer> integerArrayList=new ArrayList<Integer>();
+    private ArrayList<Integer> integerArrayList = new ArrayList<Integer>();
 
     public static InventoryDetailsMoveFragment newInstance(ArrayList<Integer> arrayMaterialCount) {
         Bundle args = new Bundle();
@@ -164,7 +165,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         selectImage.setOnClickListener(this);
         textViewAddNote.setOnClickListener(this);
         Bundle bundle = getArguments();
-        if(bundle != null) {
+        if (bundle != null) {
             integerArrayList = bundle.getIntegerArrayList("arrayMaterialCount");
         }
         intMaterialCount = integerArrayList.size();
@@ -408,20 +409,41 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     }
 
     public void getImageChooser() {
-
-        ImageView imageView=new ImageView(mContext);
-        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(50, 50);
-        imageView.setLayoutParams(layoutParams);
-        imageUtilityHelper = new ImageUtilityHelper(mContext,imageView);
-        ((InventoryDetails) mContext).createObject(imageView);
-        llUploadImage.addView(imageView);
+        imageUtilityHelper = new ImageUtilityHelper(mContext, selectImage);
+        ((InventoryDetails) mContext).createObject(selectImage);
         Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
         startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
+        selectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
+                startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
+//                ((InventoryDetails) mContext).createObject((ImageView) view);
+            }
+        });
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
         imageUtilityHelper.deleteLocalImage();
+
+    }
+
+    public void addImageViewObject(Context context) {
+        ImageView imageView = new ImageView(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setBackgroundResource(R.drawable.ic_plus);
+        llUploadImage.addView(imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
+                startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
+                ((InventoryDetails) mContext).createObject((ImageView) view);
+            }
+        });
     }
 }

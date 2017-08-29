@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,7 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class InventoryDetails extends BaseActivity {
-    public static final int IMAGE_CHOOSER_CODE =2612 ;
+    public static final int IMAGE_CHOOSER_CODE = 2612;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottom_navigation;
 
@@ -48,6 +49,7 @@ public class InventoryDetails extends BaseActivity {
     private ImageUtilityHelper imageUtilityHelper;
     private Context mContext;
     public static final int WRITE_PERMISSION_CODE = 5;
+    private InventoryDetailsMoveFragment inventoryDetailsMoveFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +63,9 @@ public class InventoryDetails extends BaseActivity {
     private void initializeViews() {
         ButterKnife.bind(this);
         mContext = InventoryDetails.this;
-//        detailsMoveFragment= viewPagerInventory.getAdapter()
-        ImageView imageView=new ImageView(mContext);
-        imageView.setMaxWidth(100);
-        imageView.setMaxHeight(100);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
         Intent intent = getIntent();
         if (intent != null) {
             arrayList = intent.getIntegerArrayListExtra("Array");
@@ -110,6 +111,21 @@ public class InventoryDetails extends BaseActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void callFragment() {
         final InventoryDetailsViewPagerAdapter inventoryViewPagerAdapter = new InventoryDetailsViewPagerAdapter(getSupportFragmentManager());
         viewPagerInventory.setAdapter(inventoryViewPagerAdapter);
@@ -138,6 +154,12 @@ public class InventoryDetails extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
         imageUtilityHelper.deleteLocalImage();
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                inventoryDetailsMoveFragment = (InventoryDetailsMoveFragment) viewPagerInventory.getAdapter().instantiateItem(viewPagerInventory, 0);
+                inventoryDetailsMoveFragment.addImageViewObject(mContext);
+            }
+        }
     }
 
     private class InventoryDetailsViewPagerAdapter extends FragmentPagerAdapter {
@@ -170,7 +192,7 @@ public class InventoryDetails extends BaseActivity {
         if (grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //TODO: Function that requires permission
-                InventoryDetailsMoveFragment inventoryDetailsMoveFragment=new InventoryDetailsMoveFragment();
+                inventoryDetailsMoveFragment = (InventoryDetailsMoveFragment) viewPagerInventory.getAdapter().instantiateItem(viewPagerInventory, 0);
                 inventoryDetailsMoveFragment.getImageChooser();
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 // Should we show an explanation?
@@ -208,8 +230,9 @@ public class InventoryDetails extends BaseActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-    public void createObject(ImageView imageView){
-        imageUtilityHelper = new ImageUtilityHelper(mContext,imageView);
+
+    public void createObject(ImageView imageView) {
+        imageUtilityHelper = new ImageUtilityHelper(mContext, imageView);
     }
 
 }

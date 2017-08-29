@@ -632,8 +632,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:src="@android:drawable/ic_input_add"
-                    android:tint="@color/colorTextLight"
+                    android:src="@drawable/ic_plus"
                     android:contentDescription="@string/client_name"/>
             </LinearLayout>
 
