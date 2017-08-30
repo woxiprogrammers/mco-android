@@ -236,4 +236,6 @@ public class InventoryDetails extends BaseActivity {
         imageUtilityHelper = new ImageUtilityHelper(mContext, imageView);
     }
 
+
+
 }

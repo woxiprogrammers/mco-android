@@ -36,6 +36,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                              Bundle savedInstanceState) {
         mParentView=inflater.inflate(R.layout.fragment_asset_list, container, false);
         mContext=getActivity();
+        
         return mParentView;
     }
 

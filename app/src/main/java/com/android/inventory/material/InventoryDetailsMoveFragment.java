@@ -407,7 +407,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             public void onClick(View view) {
                 Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
                 startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
-//                ((InventoryDetails) mContext).createObject((ImageView) view);
             }
         });
     }
@@ -423,6 +422,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     public void addImageViewObject(Context context) {
         ImageView imageView = new ImageView(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
+        layoutParams.setMargins(10,10,10,10);
         imageView.setLayoutParams(layoutParams);
         imageView.setBackgroundResource(R.drawable.ic_plus);
         llUploadImage.addView(imageView);
