@@ -4,10 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.android.inventory.material.AssetListFragment;
+import com.android.inventory.assets.AssetListFragment;
 import com.android.inventory.material.MaterialListFragment;
-
-import java.util.ArrayList;
 
 /**
  * Created by Sharvari on 23/8/17.

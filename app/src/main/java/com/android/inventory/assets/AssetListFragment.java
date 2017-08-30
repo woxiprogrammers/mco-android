@@ -1,5 +1,7 @@
-package com.android.inventory.material;
+package com.android.inventory.assets;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,7 +19,8 @@ import com.android.interfaces.FragmentInterface;
  */
 public class AssetListFragment extends Fragment implements FragmentInterface {
 
-//    MenuInflater inflater = getActivity().getMenuInflater();
+    private Context mContext;
+    private View mParentView;
     public AssetListFragment() {
         // Required empty public constructor
     }
@@ -28,13 +31,12 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         fragment.setArguments(args);
         return fragment;
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_asset_list, container, false);
+        mParentView=inflater.inflate(R.layout.fragment_asset_list, container, false);
+        mContext=getActivity();
+        return mParentView;
     }
 
     @Override
@@ -58,13 +60,14 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_request_maintaianance:
-
+                startRequestMaintainanceActivity();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void startRequestMaintainanceActivity(){
-
+        Intent startIntent=new Intent(mContext, ActivityRequestMaintanance.class);
+        startActivity(startIntent);
     }
 }

@@ -60,6 +60,7 @@
     <string name="expiry_date">Expiry Date</string>
     <string name="remark">Remark</string>
     <string name="button_request">REQUEST</string>
+    <string name="asset_maintainance">Asset Maintainance</string>
 
     <string-array name="destination_array">
         <item>Site</item>

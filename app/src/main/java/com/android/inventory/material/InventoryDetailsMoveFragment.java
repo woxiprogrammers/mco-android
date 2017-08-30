@@ -115,19 +115,15 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.ll_uploadImage)
     LinearLayout llUploadImage;
 
-    private int[] imageArray;
-
     private View mParentView;
     private int intMaterialCount;
     private String strSouceName, strDate, strVehicleNumber, strInTime, strOutTime, strBillNumber;
     private boolean isChecked;
-    ImageUtilityHelper imageUtilityHelper;
-    private Bitmap bitmapProfile;
+    private ImageUtilityHelper imageUtilityHelper;
 
     private String str;
 
     private Context mContext;
-    private ImageView imageView;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;
     private ArrayList<Integer> integerArrayList = new ArrayList<Integer>();
 

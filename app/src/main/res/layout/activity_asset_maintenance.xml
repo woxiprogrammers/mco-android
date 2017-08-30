@@ -113,13 +113,15 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/button_request"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
                 android:background="@drawable/background_button_pressed"
                 android:backgroundTint="@color/colorAccent"
                 android:text="@string/button_request"
-                android:textColor="@color/colorWhite"/>
+                android:textColor="@color/colorWhite"
+                android:onClick="onClicked"/>
         </LinearLayout>
     </ScrollView>
 
