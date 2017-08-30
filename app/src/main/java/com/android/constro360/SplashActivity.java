@@ -32,7 +32,9 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.close();
+        if (realm != null) {
+            realm.close();
+        }
     }
 
     @Override
@@ -95,8 +97,10 @@ public class SplashActivity extends BaseActivity {
                                     finish();
                                 }
                             });
-                        } catch (Exception e) {
-                            Timber.d(e.getMessage());
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
                         }
                     }
 

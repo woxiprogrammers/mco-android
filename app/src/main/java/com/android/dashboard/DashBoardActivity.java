@@ -46,7 +46,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.close();
+        if (realm != null) {
+            realm.close();
+        }
     }
 
     @Override

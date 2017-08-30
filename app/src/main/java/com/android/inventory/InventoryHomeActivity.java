@@ -46,11 +46,6 @@ public class InventoryHomeActivity extends BaseActivity {
     private ArrayList<Integer> strMaterialName = new ArrayList<Integer>();
     private Realm realm;
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        realm.close();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -10,12 +10,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.androidnetworking.error.ANError;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import timber.log.Timber;
 
 /**
  * <b></b>
@@ -318,5 +323,24 @@ public class AppUtils {
         } catch (android.content.ActivityNotFoundException ex) {
             Log.d("Utils Plus", "Activity Not Found");
         }
+    }
+
+    public void logApiError(ANError anError, String strApiTag) {
+        if (anError.getErrorCode() != 0) {
+            Timber.tag(strApiTag).d("Api errorCode : " + anError.getErrorCode());
+            Timber.tag(strApiTag).d("Api errorBody : " + anError.getErrorBody());
+            Timber.tag(strApiTag).d("Api errorDetail : " + anError.getErrorDetail());
+        } else {
+            Timber.tag(strApiTag).d("onError errorDetail : " + anError.getErrorDetail());
+        }
+    }
+
+    public void logRealmExecutionError(Throwable error) {
+        Timber.d("RealmExecutionError: " + error.getMessage());
+    }
+
+    public void showOfflineMessage(String strTag) {
+        Timber.tag(strTag).d("App is offline");
+        Toast.makeText(mContext, "You ara offline.", Toast.LENGTH_SHORT).show();
     }
 }
