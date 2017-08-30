@@ -8,12 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_request.PurchaseRequestListItem;
-import com.android.models.purchase_request.PurchaseRequestRespData;
 import com.android.models.purchase_request.PurchaseRequestResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -26,8 +24,9 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -40,7 +39,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
-    private View mParentView;
     private Realm realm;
 
     public PurchaseRequestListFragment() {
@@ -60,7 +58,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        View mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
         //Initialize Views
         initializeViews();
         unbinder = ButterKnife.bind(this, mParentView);
@@ -140,9 +138,13 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
-        PurchaseRequestRespData purchaseRequestRespData = realm.where(PurchaseRequestRespData.class).findFirst();
-        if (purchaseRequestRespData != null) {
-            OrderedRealmCollection<PurchaseRequestListItem> purchaseRequestListItems = purchaseRequestRespData.getPurchaseRequestList();
+        RealmResults<PurchaseRequestListItem> purchaseRequestListItems = realm.where(PurchaseRequestListItem.class).findAllAsync();
+        if (purchaseRequestListItems != null) {
+            purchaseRequestListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseRequestListItem>>() {
+                @Override
+                public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems) {
+                }
+            });
             PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
             recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
             recyclerView_commonListingView.setHasFixedSize(true);

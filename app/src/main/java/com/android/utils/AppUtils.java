@@ -341,6 +341,6 @@ public class AppUtils {
 
     public void showOfflineMessage(String strTag) {
         Timber.tag(strTag).d("App is offline");
-        Toast.makeText(mContext, "You ara offline.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
     }
 }
