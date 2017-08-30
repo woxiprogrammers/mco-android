@@ -1,4 +1,4 @@
-package com.android.adapter;
+package com.android.dashboard;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;

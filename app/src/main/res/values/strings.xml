@@ -33,4 +33,52 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="inventory">Inventory</string>
+    <string name="text_material">Material</string>
+    <string name="text_assets">Assets</string>
+    <string name="text_move">Move</string>
+    <string name="text_history">History</string>
+    <string name="destination_prompt">Choose a country</string>
+    <string name="move_in">Move In</string>
+    <string name="move_out">Move Out</string>
+    <string name="project_name">Select Project Name</string>
+    <string name="tap_too_add_note">TAP TO ADD NOTE</string>
+    <string name="client_name">Client Name</string>
+    <string name="site_name">Site Name</string>
+    <string name="labour_name">Labour Name</string>
+    <string name="sub_contracter_name">Sub Contracter Name</string>
+    <string name="supplier_name">Supplier Name</string>
+    <string name="please_enter">Please enter</string>
+    <string name="out_time">Out Time</string>
+    <string name="in_time">In Time</string>
+    <string name="vehicle_number">Vehicle Number</string>
+    <string name="bill_number">Bill Number</string>
+    <string name="date">Date</string>
+    <string name="add_your_note">Add your note</string>
+    <string name="diesel_powered">Diesel Powered</string>
+    <string name="asset_name">Asset Name</string>
+    <string name="model_number">Model Number</string>
+    <string name="expiry_date">Expiry Date</string>
+    <string name="remark">Remark</string>
+    <string name="button_request">REQUEST</string>
+    <string name="asset_maintainance">Asset Maintainance</string>
+    <string name="please_enter_expiry_eate">Please Enter Expiry Date</string>
+    <string name="please_enter_remark">Please Enter Remark</string>
+
+    <string-array name="destination_array">
+        <item>Site</item>
+        <item>Client</item>
+        <item>Labour</item>
+        <item>Sub-contracter</item>
+        <item>Supplier</item>
+    </string-array>
+
+    <string-array name="project_array">
+        <item>ProjABC</item>
+        <item>ProjXYZ</item>
+    </string-array>
+
+    <string-array name="site_array">
+        <item>SiteA</item>
+        <item>SIteB</item>
+    </string-array>
 </resources>

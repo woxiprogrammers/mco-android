@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".MyApplication"
@@ -34,10 +35,14 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name="com.android.dummy.NewActivity"/>
         <activity android:name="com.android.dummy.SelectorActivity"/>
-        <activity android:name="com.android.inventory.InventoryHomeActivity"/>
-        <activity android:name="com.android.purchase.PurchaseHomeActivity">
-        </activity>
-        <activity android:name="com.android.inventory.InventoryDetails">
+        <activity android:name="com.android.purchase.PurchaseHomeActivity"/>
+        <activity android:name="com.android.inventory.InventoryDetails"/>
+        <activity android:name="com.android.inventory.BottomNavigateViewActivity"/>
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat"/>
+        <activity android:name="com.android.inventory.assets.ActivityRequestMaintanance">
         </activity>
     </application>
 </manifest>

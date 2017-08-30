@@ -323,22 +323,14 @@
                 android:orientation="horizontal"
                 android:padding="4dp">
 
-                <ImageView
+                <CheckBox
+                    android:id="@+id/checkbox_moveInOut"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="4dp"
-                    android:src="@drawable/ic_right"
-                    android:tint="@color/colorPrimaryDark"/>
-
-                <ToggleButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="#f00"
-                    android:textOff="@string/move_out"
-                    android:textOn="@string/move_in"
-                    android:textSize="16dp"/>
+                    android:textSize="16dp"
+                    android:checked="true"
+                    android:text="@string/move_in"/>
             </LinearLayout>
 
             <LinearLayout
@@ -408,6 +400,15 @@
                     android:padding="@dimen/dimen_5dp"
                     android:prompt="@string/destination_prompt"
                     />
+                <Spinner
+                    android:id="@+id/source_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/destination_array"
+                    android:padding="@dimen/dimen_5dp"
+                    android:prompt="@string/destination_prompt"
+                    android:visibility="gone"
+                    />
 
 
                 <TextView
@@ -443,20 +444,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:prompt="@string/project_name"
+                    android:entries="@array/site_array"
+                    android:prompt="@string/text_move"
                     android:textColor="@color/colorTextLight"/>
 
                 <Spinner
                     android:id="@+id/text_view_project_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"/>
+                    android:layout_weight="0.5"
+                    android:entries="@array/project_array"
+                    android:prompt="@string/text_move"/>
             </LinearLayout>
 
             <LinearLayout
@@ -464,12 +469,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Vehicle Number"
+                    android:text="@string/vehicle_number"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
@@ -487,7 +493,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -499,10 +506,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="In Time"
+                        android:text="@string/in_time"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/edit_text_inTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -518,11 +526,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Out Time"
+                        android:text="@string/out_time"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        android:id="@+id/text_view_selected_des"
+                        android:id="@+id/edit_text_outTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -583,10 +591,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Date:"
+                    android:text="@string/date"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
+                    android:id="@+id/editText_Date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
@@ -602,7 +611,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Challan Number:"
+                    android:text="@string/bill_number"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
@@ -613,16 +622,18 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_uploadImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
-
                 <ImageView
+                    android:id="@+id/ivChooseImage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@android:drawable/ic_input_add"
-                    android:tint="@color/colorTextLight"/>
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_plus"
+                    android:contentDescription="@string/client_name"/>
             </LinearLayout>
 
             <android.support.v7.widget.CardView
@@ -643,6 +654,7 @@
             </android.support.v7.widget.CardView>
 
             <Button
+                android:id="@+id/button_move"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
@@ -656,17 +668,5 @@
         </LinearLayout>
     </ScrollView>
 
-    <View
-        android:id="@+id/viewDivider"
-        style="@style/style_horizontal_line"/>
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bottom_navigation_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:itemBackground="?attr/selectableItemBackground"
-        app:itemTextColor="@drawable/nav_item_color_state"
-        app:menu="@menu/bottom_menu_material_details"/>
 
 </LinearLayout>

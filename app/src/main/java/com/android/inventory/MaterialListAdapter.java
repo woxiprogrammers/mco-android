@@ -1,4 +1,4 @@
-package com.android.adapter;
+package com.android.inventory;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -44,6 +44,7 @@ public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListIt
         holder.textview_quantity_out.setText(materialListItem.getQuantityOut());
         holder.textview_quantity_current.setText(materialListItem.getQuantityAvailable());
     }
+
 
     @Override
     public long getItemId(int index) {

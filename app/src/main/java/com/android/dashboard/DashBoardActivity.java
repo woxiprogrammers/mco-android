@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.adapter.ModulesAdapter;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;

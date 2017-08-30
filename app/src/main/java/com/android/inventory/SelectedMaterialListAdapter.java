@@ -1,10 +1,12 @@
-package com.android.adapter;
+package com.android.inventory;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import io.realm.RealmRecyclerViewAdapter;
  */
 public class SelectedMaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListItem, SelectedMaterialListAdapter.MyViewHolder> {
     private OrderedRealmCollection<MaterialListItem> materialListItemCollection;
+    private Context context;
 
     public SelectedMaterialListAdapter(@Nullable OrderedRealmCollection<MaterialListItem> data, boolean autoUpdate) {
         super(data, autoUpdate);
@@ -38,6 +41,13 @@ public class SelectedMaterialListAdapter extends RealmRecyclerViewAdapter<Materi
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final MaterialListItem materialListItem = materialListItemCollection.get(position);
         holder.text_view_MaterialName.setText(materialListItem.getMaterialName());
+        holder.editText_Quantity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
     }
 
     @Override
@@ -58,6 +68,7 @@ public class SelectedMaterialListAdapter extends RealmRecyclerViewAdapter<Materi
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
         }
     }
 }
