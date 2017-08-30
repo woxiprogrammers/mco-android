@@ -9,11 +9,11 @@ public class InventoryDataResponse extends RealmObject {
     @SerializedName("material_list")
     private RealmList<MaterialListItem> materialList;
 
-    public void setMaterialList(RealmList<MaterialListItem> materialList) {
-        this.materialList = materialList;
-    }
-
     public RealmList<MaterialListItem> getMaterialList() {
         return materialList;
+    }
+
+    public void setMaterialList(RealmList<MaterialListItem> materialList) {
+        this.materialList = materialList;
     }
 }

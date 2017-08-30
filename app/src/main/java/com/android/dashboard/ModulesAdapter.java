@@ -1,4 +1,4 @@
-package com.android.adapter;
+package com.android.dashboard;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.android.constro360.R;
 import com.android.models.login_acl.ModulesItem;
 import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.SlideAnimationUtil;
+
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
@@ -28,16 +30,6 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     // Define listener member variable
     private OnItemClickListener clickListener;
 
-    // Define the listener interface
-    public interface OnItemClickListener {
-        void onItemClick(View itemView, int position);
-    }
-
-    // Define the method that allows the parent activity or fragment to define the listener
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.clickListener = listener;
-    }
-
     public ModulesAdapter(OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection) {
         super(modulesItemOrderedRealmCollection, true);
         this.modulesItemOrderedRealmCollection = modulesItemOrderedRealmCollection;
@@ -47,6 +39,11 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             int intMaxSizeTemp = modulesItemOrderedRealmCollection.get(index).getSubModules().size();
             if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
         }
+    }
+
+    // Define the method that allows the parent activity or fragment to define the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.clickListener = listener;
     }
 
     @Override
@@ -100,6 +97,11 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     public long getItemId(int index) {
         //noinspection ConstantConditions
         return getItem(index).getId();
+    }
+
+    // Define the listener interface
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

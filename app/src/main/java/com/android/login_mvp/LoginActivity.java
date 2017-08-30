@@ -16,13 +16,14 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.dashboard.DashBoardActivity;
+import com.android.utils.BaseActivity;
 
 /**
  * <b></b>
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class LoginActivity extends AppCompatActivity implements LoginView {
+public class LoginActivity extends BaseActivity implements LoginView {
     private EditText edUserName;
     private EditText edPassword;
     private ProgressBar pbLoad;

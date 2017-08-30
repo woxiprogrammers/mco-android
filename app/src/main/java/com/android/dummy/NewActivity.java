@@ -45,10 +45,8 @@ public class NewActivity extends AppCompatActivity {
 
         /*setContentView(R.layout.activity_asset_maintenance);
         getSupportActionBar().setTitle("Asset Maintenance");*/
-
         setContentView(R.layout.activity_asset_summary);
         getSupportActionBar().setTitle("Asset Maintenance");
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

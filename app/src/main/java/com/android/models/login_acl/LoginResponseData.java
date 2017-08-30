@@ -27,83 +27,83 @@ public class LoginResponseData extends RealmObject {
     @SerializedName("modules")
     private RealmList<ModulesItem> modules;
 
-    public void setProjects(RealmList<ProjectsItem> projects) {
-        this.projects = projects;
-    }
-
     public RealmList<ProjectsItem> getProjects() {
         return projects;
     }
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
+    public void setProjects(RealmList<ProjectsItem> projects) {
+        this.projects = projects;
     }
 
     public boolean isIsActive() {
         return isActive;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public String getGender() {
         return gender;
     }
 
-    public void setDob(String dob) {
-        this.dob = dob;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getDob() {
         return dob;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setDob(String dob) {
+        this.dob = dob;
     }
 
     public String getMobile() {
         return mobile;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setModules(RealmList<ModulesItem> modules) {
-        this.modules = modules;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public RealmList<ModulesItem> getModules() {
         return modules;
+    }
+
+    public void setModules(RealmList<ModulesItem> modules) {
+        this.modules = modules;
     }
 }

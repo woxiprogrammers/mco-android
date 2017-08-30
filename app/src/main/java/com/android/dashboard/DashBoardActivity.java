@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.adapter.ModulesAdapter;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
@@ -32,6 +31,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
+import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import timber.log.Timber;
@@ -39,13 +39,25 @@ import timber.log.Timber;
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context mContext;
     private RecyclerView mRvTaskSelection;
-    private Realm realm;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
+    private Realm realm;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        if (BuildConfig.DEBUG) {
+            //Start Realm Browser
+            RealmBrowser.showRealmFilesNotification(getApplicationContext());
+        }
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 //        collapsingToolbar.setTitle("Kunal Aspiree \nBalewadi \nKunal Builders");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -59,6 +71,35 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         //Calling function to initialize required views.
         initializeViews();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.actionLogout:
+                logoutAndClearAllData();
+                break;
+            case R.id.actionSetting:
+            case R.id.actionAbout:
+            case R.id.actionProfile:
+                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     /**
@@ -103,16 +144,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         startActivity(intent);
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -126,56 +157,26 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }*/
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.actionLogout:
-                logoutAndClearAllData();
-                break;
-            case R.id.actionSetting:
-            case R.id.actionAbout:
-            case R.id.actionProfile:
-                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
     private void logoutAndClearAllData() {
-        Realm realm = null;
+        realm = Realm.getDefaultInstance();
         try {
-            realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
+            realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     realm.deleteAll();
                 }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
+                    Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    finish();
+                    startActivity(intentLogin);
+                }
             });
-        } finally {
-            if (realm != null) {
-                realm.close();
-                AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
-                Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                finish();
-                startActivity(intentLogin);
-            }
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
         }
-    }
-
-    /*
-     * It is good practice to null the reference from the view to the adapter when it is no longer needed.
-     * Because the <code>RealmRecyclerViewAdapter</code> registers itself as a <code>RealmResult.ChangeListener</code>
-     * the view may still be reachable if anybody is still holding a reference to the <code>RealmResult>.
-     */
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mRvTaskSelection.setAdapter(null);
-        realm.close();
     }
 
     private HashMap<String, String> retrieveAclKeyValueFromLocal() {

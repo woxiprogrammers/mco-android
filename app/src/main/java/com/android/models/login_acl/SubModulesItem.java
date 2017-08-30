@@ -17,28 +17,28 @@ public class SubModulesItem extends RealmObject {
     @SerializedName("id")
     private int id;
 
-    public void setModuleDescription(String moduleDescription) {
-        this.moduleDescription = moduleDescription;
-    }
-
     public String getModuleDescription() {
         return moduleDescription;
     }
 
-    public void setPermissions(RealmList<PermissionsItem> permissions) {
-        this.permissions = permissions;
+    public void setModuleDescription(String moduleDescription) {
+        this.moduleDescription = moduleDescription;
     }
 
     public RealmList<PermissionsItem> getPermissions() {
         return permissions;
     }
 
-    public void setSubModuleName(String subModuleName) {
-        this.subModuleName = subModuleName;
+    public void setPermissions(RealmList<PermissionsItem> permissions) {
+        this.permissions = permissions;
     }
 
     public String getSubModuleName() {
         return subModuleName;
+    }
+
+    public void setSubModuleName(String subModuleName) {
+        this.subModuleName = subModuleName;
     }
 
     public String getSubModuleTag() {
@@ -49,11 +49,11 @@ public class SubModulesItem extends RealmObject {
         this.subModuleTag = subModuleTag;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

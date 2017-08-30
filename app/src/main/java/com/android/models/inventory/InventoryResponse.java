@@ -5,37 +5,34 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 
 public class InventoryResponse extends RealmObject {
+    @SerializedName("data")
+    private InventoryDataResponse inventoryDataResponse;
+    @SerializedName("next_url")
+    private String nextUrl;
+    @SerializedName("message")
+    private String message;
 
-	@SerializedName("inventoryDataResponse")
-	private InventoryDataResponse inventoryDataResponse;
+    public InventoryDataResponse getInventoryDataResponse() {
+        return inventoryDataResponse;
+    }
 
-	@SerializedName("next_url")
-	private String nextUrl;
+    public void setInventoryDataResponse(InventoryDataResponse inventoryDataResponse) {
+        this.inventoryDataResponse = inventoryDataResponse;
+    }
 
-	@SerializedName("message")
-	private String message;
+    public String getNextUrl() {
+        return nextUrl;
+    }
 
-	public void setInventoryDataResponse(InventoryDataResponse inventoryDataResponse){
-		this.inventoryDataResponse = inventoryDataResponse;
-	}
+    public void setNextUrl(String nextUrl) {
+        this.nextUrl = nextUrl;
+    }
 
-	public InventoryDataResponse getInventoryDataResponse(){
-		return inventoryDataResponse;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setNextUrl(String nextUrl){
-		this.nextUrl = nextUrl;
-	}
-
-	public String getNextUrl(){
-		return nextUrl;
-	}
-
-	public void setMessage(String message){
-		this.message = message;
-	}
-
-	public String getMessage(){
-		return message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

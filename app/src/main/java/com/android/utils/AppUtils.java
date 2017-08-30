@@ -10,6 +10,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.androidnetworking.error.ANError;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,16 +20,18 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
+
 /**
  * <b></b>
  * <p>This class is used to </p>
  * Created by Rohit.
  */
 public class AppUtils {
-    private static SharedPreferences preference;
-    private static SharedPreferences.Editor editor;
     public static AppUtils instance;
     public static Context mContext;
+    private static SharedPreferences preference;
+    private static SharedPreferences.Editor editor;
     private final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
             "[a-zA-Z0-9+._%-+]{1,256}" +
                     "@" +
@@ -78,6 +83,13 @@ public class AppUtils {
             return instance = new AppUtils();
         }
         return instance;
+    }
+
+    private static <T> T checkNull(String message, T object) {
+        if (object == null) {
+            throw new NullPointerException(message);
+        }
+        return object;
     }
 
     public AppUtils put(String key, Object obj) {
@@ -313,10 +325,22 @@ public class AppUtils {
         }
     }
 
-    private static <T> T checkNull(String message, T object) {
-        if (object == null) {
-            throw new NullPointerException(message);
+    public void logApiError(ANError anError, String strApiTag) {
+        if (anError.getErrorCode() != 0) {
+            Timber.tag(strApiTag).d("Api errorCode : " + anError.getErrorCode());
+            Timber.tag(strApiTag).d("Api errorBody : " + anError.getErrorBody());
+            Timber.tag(strApiTag).d("Api errorDetail : " + anError.getErrorDetail());
+        } else {
+            Timber.tag(strApiTag).d("onError errorDetail : " + anError.getErrorDetail());
         }
-        return object;
+    }
+
+    public void logRealmExecutionError(Throwable error) {
+        Timber.d("RealmExecutionError: " + error.getMessage());
+    }
+
+    public void showOfflineMessage(String strTag) {
+        Timber.tag(strTag).d("App is offline");
+        Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
     }
 }
