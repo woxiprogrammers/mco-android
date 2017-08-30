@@ -54,6 +54,12 @@
     <string name="bill_number">Bill Number</string>
     <string name="date">Date</string>
     <string name="add_your_note">Add your note</string>
+    <string name="diesel_powered">Diesel Powered</string>
+    <string name="asset_name">Asset Name</string>
+    <string name="model_number">Model Number</string>
+    <string name="expiry_date">Expiry Date</string>
+    <string name="remark">Remark</string>
+    <string name="button_request">REQUEST</string>
 
     <string-array name="destination_array">
         <item>Site</item>

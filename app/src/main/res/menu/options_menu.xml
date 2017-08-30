@@ -12,13 +12,21 @@
     <item
         android:orderInCategory="100"
         android:title="Starting Point"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        android:visible="false"/>
     <item
         android:orderInCategory="100"
         android:title="Top Up"
-        app:showAsAction="never"/>
+        app:showAsAction="never"
+        android:visible="false"/>
     <item
         android:orderInCategory="100"
         android:title="Stopping Point"
+        app:showAsAction="never"
+        android:visible="false"/>
+    <item
+        android:id="@+id/action_request_maintaianance"
+        android:orderInCategory="100"
+        android:title="Request Maintainance"
         app:showAsAction="never"/>
 </menu>
