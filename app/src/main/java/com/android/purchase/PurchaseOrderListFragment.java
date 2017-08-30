@@ -178,18 +178,18 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         }
 
         @Override
-        public PurchaseOrderRvAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_request_list, parent, false);
-            return new PurchaseOrderRvAdapter.MyViewHolder(itemView);
+            return new MyViewHolder(itemView);
         }
 
         @Override
-        public void onBindViewHolder(PurchaseOrderRvAdapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseOrderListItem purchaseOrderListItem = arrPurchaseOrderListItems.get(position);
-            holder.textViewPurchaseRequestId.setText(purchaseOrderListItem.getPurchaseRequestId());
+            /*holder.textViewPurchaseRequestId.setText(purchaseOrderListItem.getPurchaseRequestId());
             holder.textViewPurchaseRequestStatus.setText(purchaseOrderListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseOrderListItem.getDate());
-            holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
+            holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());*/
         }
 
         @Override
@@ -198,18 +198,18 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.textView_purchase_request_id)
+            /*@BindView(R.id.textView_purchase_request_id)
             TextView textViewPurchaseRequestId;
             @BindView(R.id.textView_purchase_request_status)
             TextView textViewPurchaseRequestStatus;
             @BindView(R.id.textView_purchase_request_date)
             TextView textViewPurchaseRequestDate;
             @BindView(R.id.textView_purchase_request_materials)
-            TextView textViewPurchaseRequestMaterials;
+            TextView textViewPurchaseRequestMaterials;*/
 
             MyViewHolder(View itemView) {
                 super(itemView);
-                ButterKnife.bind(this, itemView);
+//                ButterKnife.bind(this, itemView);
             }
         }
     }

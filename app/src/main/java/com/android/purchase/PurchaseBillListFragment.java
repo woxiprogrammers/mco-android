@@ -2,26 +2,35 @@ package com.android.purchase;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.purchase_bill.PurchaseBillListItem;
+import com.android.models.purchase_bill.PurchaseBillResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -87,8 +96,8 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         } else {
             //Get data from local DB
             setUpPrAdapter();
+        }
     }
-}
 
     private void requestPrListOnline() {
         AndroidNetworking.get(AppURL.API_PURCHASE_BILL_LIST)
@@ -133,17 +142,17 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
-        RealmResults<PurchaseListItem> purchaseRequestListItems = realm.where(PurchaseListItem.class).findAllAsync();
-        if (purchaseRequestListItems != null) {
-            purchaseRequestListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseRequestListItem>>() {
+        RealmResults<PurchaseBillListItem> purchaseBillListItems = realm.where(PurchaseBillListItem.class).findAllAsync();
+        if (purchaseBillListItems != null) {
+            purchaseBillListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseBillListItem>>() {
                 @Override
-                public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems) {
+                public void onChange(RealmResults<PurchaseBillListItem> purchaseBillListItems) {
                 }
             });
-            PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
+            PurchaseBillRvAdapter purchaseBillRvAdapter = new PurchaseBillRvAdapter(purchaseBillListItems, true, true);
             recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
             recyclerView_commonListingView.setHasFixedSize(true);
-            recyclerView_commonListingView.setAdapter(purchaseRequestRvAdapter);
+            recyclerView_commonListingView.setAdapter(purchaseBillRvAdapter);
             recyclerView_commonListingView.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                     recyclerView_commonListingView,
                     new RecyclerItemClickListener.OnItemClickListener() {
@@ -157,6 +166,51 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     }));
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
+        }
+    }
+
+    private class PurchaseBillRvAdapter extends RealmRecyclerViewAdapter<PurchaseBillListItem, PurchaseBillRvAdapter.MyViewHolder> {
+        private OrderedRealmCollection<PurchaseBillListItem> arrPurchaseBillListItems;
+
+        PurchaseBillRvAdapter(@Nullable OrderedRealmCollection<PurchaseBillListItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            arrPurchaseBillListItems = data;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_request_list, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            PurchaseBillListItem purchaseBillListItem = arrPurchaseBillListItems.get(position);
+            /*holder.textViewPurchaseRequestId.setText(purchaseBillListItem.getPurchaseRequestId());
+            holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getStatus());
+            holder.textViewPurchaseRequestDate.setText(purchaseBillListItem.getDate());
+            holder.textViewPurchaseRequestMaterials.setText(purchaseBillListItem.getMaterialName());*/
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return arrPurchaseBillListItems.get(index).getId();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            /*@BindView(R.id.textView_purchase_request_id)
+            TextView textViewPurchaseRequestId;
+            @BindView(R.id.textView_purchase_request_status)
+            TextView textViewPurchaseRequestStatus;
+            @BindView(R.id.textView_purchase_request_date)
+            TextView textViewPurchaseRequestDate;
+            @BindView(R.id.textView_purchase_request_materials)
+            TextView textViewPurchaseRequestMaterials;*/
+
+            MyViewHolder(View itemView) {
+                super(itemView);
+//                ButterKnife.bind(this, itemView);
+            }
         }
     }
 }
