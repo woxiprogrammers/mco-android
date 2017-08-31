@@ -1,0 +1,71 @@
+package com.android.inventory.assets;
+
+import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.android.constro360.R;
+import com.android.models.inventory.MaterialListItem;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmRecyclerViewAdapter;
+import timber.log.Timber;
+
+/**
+ * Created by Sharvari on 31/8/17.
+ */
+
+public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, AssetsListAdapter.MyViewHolder> {
+
+
+    private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
+
+    public AssetsListAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        super(data, autoUpdate, updateOnModification);
+        Timber.d(String.valueOf(data));
+        assetsListItemCollection=data;
+    }
+
+    @Override
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_assets_list, parent, false);
+        return new MyViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        final AssetsListItem assetsListItem = assetsListItemCollection.get(position);
+        holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
+        holder.textViewAssetUnits.setText(assetsListItem.getAssetsUnits() + " " + "Units");
+        Timber.d(assetsListItem.getAssetsName());
+
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return  assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+    }
+
+    @Override
+    public long getItemId(int index) {
+        return assetsListItemCollection.get(index).getId();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_view_asset_list_name)
+        TextView textViewAssetListName;
+
+        @BindView(R.id.text_view_asset_units)
+        TextView textViewAssetUnits;
+        private MyViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+}

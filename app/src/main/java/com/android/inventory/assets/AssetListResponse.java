@@ -1,6 +1,9 @@
 package com.android.inventory.assets;
 import com.google.gson.annotations.SerializedName;
-public class AssetListResponse{
+
+import io.realm.RealmObject;
+
+public class AssetListResponse extends RealmObject {
 
 	@SerializedName("next_url")
 	private String nextUrl;

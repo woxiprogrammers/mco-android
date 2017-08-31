@@ -1,17 +1,20 @@
 package com.android.inventory.assets;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
-public class AssetResponseData{
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
+public class AssetResponseData extends RealmObject {
 
 	@SerializedName("assets_list")
-	private List<AssetsListItem> assetsList;
+	private RealmList<AssetsListItem> assetsList;
 
-	public void setAssetsList(List<AssetsListItem> assetsList){
+	public void setAssetsList(RealmList<AssetsListItem> assetsList){
 		this.assetsList = assetsList;
 	}
 
-	public List<AssetsListItem> getAssetsList(){
+	public RealmList<AssetsListItem> getAssetsList(){
 		return assetsList;
 	}
 }

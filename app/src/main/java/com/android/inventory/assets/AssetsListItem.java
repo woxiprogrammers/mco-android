@@ -1,6 +1,10 @@
 package com.android.inventory.assets;
+
+
 import com.google.gson.annotations.SerializedName;
-public class AssetsListItem{
+import io.realm.RealmObject;
+
+public class AssetsListItem extends RealmObject {
 
 	@SerializedName("id")
 	private int id;
