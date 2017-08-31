@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -23,8 +24,8 @@ import timber.log.Timber;
 public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListItem, MaterialListAdapter.MyViewHolder> {
     private OrderedRealmCollection<MaterialListItem> materialListItemCollection;
 
-    public MaterialListAdapter(@Nullable OrderedRealmCollection<MaterialListItem> data, boolean autoUpdate) {
-        super(data, autoUpdate);
+    public MaterialListAdapter(@Nullable OrderedRealmCollection<MaterialListItem> data, boolean autoUpdate,boolean updateOnModification) {
+        super(data, autoUpdate,updateOnModification);
         setHasStableIds(true);
         Timber.d(String.valueOf(data));
         materialListItemCollection = data;
@@ -62,7 +63,7 @@ public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListIt
         TextView textview_quantity_current;
         private Context context;
 
-        public MyViewHolder(View itemView) {
+        private MyViewHolder(View itemView) {
             super(itemView);
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);

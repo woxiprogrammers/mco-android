@@ -136,6 +136,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 });
     }
 
+
+
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         RealmResults<PurchaseRequestListItem> purchaseRequestListItems = realm.where(PurchaseRequestListItem.class).findAllAsync();

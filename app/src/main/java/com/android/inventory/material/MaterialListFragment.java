@@ -20,10 +20,10 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.InventoryDetails;
 import com.android.inventory.MaterialListAdapter;
-import com.android.models.inventory.InventoryDataResponse;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
 import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -34,28 +34,24 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
  * Created by Sharvari on 23/8/17.
  */
 public class MaterialListFragment extends Fragment implements FragmentInterface {
-    private View mParentView;
-    private Context mContext;
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
+
     private ArrayList<Integer> strMaterialName = new ArrayList<Integer>();
     private MaterialListAdapter materialListAdapter;
+    private View mParentView;
+    private Context mContext;
+    private Realm realm;
+    private RealmResults<MaterialListItem> materialListItems;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
-        ButterKnife.bind(this, mParentView);
-        return mParentView;
-    }
 
     public MaterialListFragment() {
         // Required empty public constructor
@@ -66,6 +62,13 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         MaterialListFragment fragment = new MaterialListFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        ButterKnife.bind(this, mParentView);
+        return mParentView;
     }
 
     @Override
@@ -79,17 +82,18 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
-            requestInventoryResponse();
+            functionForGettingData();
         }
     }
 
     private void requestInventoryResponse() {
-        AndroidNetworking.get(AppURL.INVENTORY_DATA_URL)
+
+        realm = Realm.getDefaultInstance();
+        AndroidNetworking.get(AppURL.API_INVENTORY_DATA_URL)
                 .setTag("requestInventoryData")
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
-                    Realm realm = Realm.getDefaultInstance();
 
                     @Override
                     public void onResponse(final InventoryResponse response) {
@@ -98,7 +102,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                                 @Override
                                 public void execute(Realm realm) {
                                     Timber.d("Execute");
-                                    realm.copyToRealm(response);
+                                    realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
@@ -109,8 +113,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                             }, new Realm.Transaction.OnError() {
                                 @Override
                                 public void onError(Throwable error) {
-                                    Timber.d(error);
-                                    Timber.d("Error");
+                                    AppUtils.getInstance().logRealmExecutionError(error);
                                 }
                             });
                         } finally {
@@ -122,8 +125,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
                     @Override
                     public void onError(ANError anError) {
-                        Timber.d(String.valueOf(anError.getErrorCode()));
-                        Timber.d(String.valueOf(anError.getErrorBody()));
+                        AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
     }
@@ -137,9 +139,9 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         strMaterialName.add(1521);
         strMaterialName.add(1522);
         strMaterialName.add(1523);
-        final Realm realm = Realm.getDefaultInstance();
-        final OrderedRealmCollection<MaterialListItem> materialListItems = realm.where(InventoryDataResponse.class).findFirst().getMaterialList();
-        materialListAdapter = new MaterialListAdapter(materialListItems, false);
+        realm = Realm.getDefaultInstance();
+        materialListItems = realm.where(MaterialListItem.class).findAllAsync();
+        materialListAdapter = new MaterialListAdapter(materialListItems, true,true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv_material_list.setLayoutManager(linearLayoutManager);
@@ -184,5 +186,21 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     @Override
     public void fragmentBecameVisible() {
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        realm.close();
+    }
+
+    private void functionForGettingData() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            //Get data from Server
+            requestInventoryResponse();
+        } else {
+            //Get data from local DB
+            setAdapterForMaterialList();
+        }
     }
 }
