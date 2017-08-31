@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_request.PurchaseRequestListItem;
@@ -44,6 +45,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
+    private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
@@ -145,7 +147,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        RealmResults<PurchaseRequestListItem> purchaseRequestListItems = realm.where(PurchaseRequestListItem.class).findAllAsync();
+        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class).findAllAsync();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
@@ -155,6 +157,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        PurchaseRequestListItem purchaseRequestListItem = purchaseRequestListItems.get(position);
+                        if (BuildConfig.DEBUG) {
+                            Timber.d(String.valueOf(purchaseRequestListItem));
+                        }
                     }
 
                     @Override

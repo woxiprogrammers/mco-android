@@ -44,6 +44,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
+    private RealmResults<PurchaseBillListItem> purchaseBillListItems;
 
     public PurchaseBillListFragment() {
         // Required empty public constructor
@@ -145,7 +146,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        RealmResults<PurchaseBillListItem> purchaseBillListItems = realm.where(PurchaseBillListItem.class).findAllAsync();
+        purchaseBillListItems = realm.where(PurchaseBillListItem.class).findAllAsync();
         PurchaseBillRvAdapter purchaseBillRvAdapter = new PurchaseBillRvAdapter(purchaseBillListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
@@ -155,6 +156,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        Timber.d(String.valueOf(purchaseBillListItems));
                     }
 
                     @Override
