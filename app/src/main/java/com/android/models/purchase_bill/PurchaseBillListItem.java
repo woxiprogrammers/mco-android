@@ -3,6 +3,7 @@ package com.android.models.purchase_bill;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class PurchaseBillListItem extends RealmObject{
 
@@ -18,6 +19,7 @@ public class PurchaseBillListItem extends RealmObject{
 	@SerializedName("purchase_order_id")
 	private String purchaseOrderId;
 
+	@PrimaryKey
 	@SerializedName("id")
 	private int id;
 

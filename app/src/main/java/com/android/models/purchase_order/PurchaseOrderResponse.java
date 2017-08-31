@@ -3,8 +3,11 @@ package com.android.models.purchase_order;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class PurchaseOrderResponse extends RealmObject {
+    @PrimaryKey
+    private int intIndex = 0;
     @SerializedName("purchaseOrderRespData")
     private PurchaseOrderRespData purchaseOrderRespData;
     @SerializedName("next_url")

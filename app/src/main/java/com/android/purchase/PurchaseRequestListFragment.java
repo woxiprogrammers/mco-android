@@ -58,14 +58,16 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     @Override
     public void fragmentBecameVisible() {
+        Timber.d("fragmentBecameVisible");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        unbinder = ButterKnife.bind(this, mParentView);
         //Initialize Views
         initializeViews();
-        unbinder = ButterKnife.bind(this, mParentView);
+        setUpPrAdapter();
         return mParentView;
     }
 
@@ -117,7 +119,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    setUpPrAdapter();
+//                                    setUpPrAdapter();
                                     Timber.d("Success");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -142,34 +144,36 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
+        Timber.d("Adapter setup called");
         RealmResults<PurchaseRequestListItem> purchaseRequestListItems = realm.where(PurchaseRequestListItem.class).findAllAsync();
+        PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
+        recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView_commonListingView.setHasFixedSize(true);
+        recyclerView_commonListingView.setAdapter(purchaseRequestRvAdapter);
+        recyclerView_commonListingView.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                recyclerView_commonListingView,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
         if (purchaseRequestListItems != null) {
             purchaseRequestListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseRequestListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems) {
                 }
             });
-            PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
-            recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
-            recyclerView_commonListingView.setHasFixedSize(true);
-            recyclerView_commonListingView.setAdapter(purchaseRequestRvAdapter);
-            recyclerView_commonListingView.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                    recyclerView_commonListingView,
-                    new RecyclerItemClickListener.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(View view, final int position) {
-                        }
-
-                        @Override
-                        public void onLongItemClick(View view, int position) {
-                        }
-                    }));
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
         }
     }
 
-    private class PurchaseRequestRvAdapter extends RealmRecyclerViewAdapter<PurchaseRequestListItem, PurchaseRequestRvAdapter.MyViewHolder> {
+    @SuppressWarnings("WeakerAccess")
+    protected class PurchaseRequestRvAdapter extends RealmRecyclerViewAdapter<PurchaseRequestListItem, PurchaseRequestRvAdapter.MyViewHolder> {
         private OrderedRealmCollection<PurchaseRequestListItem> arrPurchaseRequestListItems;
 
         PurchaseRequestRvAdapter(@Nullable OrderedRealmCollection<PurchaseRequestListItem> data, boolean autoUpdate, boolean updateOnModification) {
@@ -186,10 +190,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseRequestListItem purchaseRequestListItem = arrPurchaseRequestListItems.get(position);
-            /*holder.textViewPurchaseRequestId.setText(purchaseRequestListItem.getPurchaseRequestId());
+            holder.textViewPurchaseRequestId.setText(purchaseRequestListItem.getPurchaseRequestId());
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
-            holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());*/
+            holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
         }
 
         @Override
@@ -197,19 +201,24 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             return arrPurchaseRequestListItems.get(index).getId();
         }
 
+        @Override
+        public int getItemCount() {
+            return arrPurchaseRequestListItems == null ? 0 : arrPurchaseRequestListItems.size();
+        }
+
         class MyViewHolder extends RecyclerView.ViewHolder {
-            /*@BindView(R.id.textView_purchase_request_id)
+            @BindView(R.id.textView_purchase_request_id)
             TextView textViewPurchaseRequestId;
             @BindView(R.id.textView_purchase_request_status)
             TextView textViewPurchaseRequestStatus;
             @BindView(R.id.textView_purchase_request_date)
             TextView textViewPurchaseRequestDate;
             @BindView(R.id.textView_purchase_request_materials)
-            TextView textViewPurchaseRequestMaterials;*/
+            TextView textViewPurchaseRequestMaterials;
 
             MyViewHolder(View itemView) {
                 super(itemView);
-//                ButterKnife.bind(this, itemView);
+                ButterKnife.bind(this, itemView);
             }
         }
     }
