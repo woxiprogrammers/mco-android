@@ -4,20 +4,29 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
+import timber.log.Timber;
 
 public class PurchaseHomeActivity extends AppCompatActivity {
     @BindView(R.id.tavLayout)
     TabLayout mTabLayout_purchaseHome;
     @BindView(R.id.homeViewPager)
     ViewPager mViewPager_purchaseHome;
+    @BindView(R.id.textView_purchaseHome_appBarTitle)
+    TextView textViewPurchaseHomeAppBarTitle;
+    @BindView(R.id.toolbarPurchase)
+    Toolbar toolbarPurchase;
     private Context mContext;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
 
@@ -37,6 +46,7 @@ public class PurchaseHomeActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         mContext = PurchaseHomeActivity.this;
+        setUpAppBarDatePicker();
         viewPagerAdapter = new PurchaseHomeViewPagerAdapter(getSupportFragmentManager());
         mViewPager_purchaseHome.setAdapter(viewPagerAdapter);
         mTabLayout_purchaseHome.setupWithViewPager(mViewPager_purchaseHome);
@@ -58,5 +68,10 @@ public class PurchaseHomeActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
+
+    private void setUpAppBarDatePicker() {
+        Timber.d(String.valueOf(Calendar.getInstance().getTime().getTime()));
+        toolbarPurchase.setTitle(String.valueOf(Calendar.getInstance().getTimeInMillis()));
     }
 }

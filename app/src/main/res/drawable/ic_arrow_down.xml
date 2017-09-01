@@ -1,9 +1,5 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-        android:width="24dp"
-        android:height="24dp"
-        android:viewportHeight="512.0"
-        android:viewportWidth="512.0">
-    <path
-        android:fillColor="#FF000000"
-        android:pathData="M402.8,361.2l-146.8,-146.8l-146.8,146.8l-42.4,-42.4l189.2,-189.2l189.2,189.2z"/>
-</vector>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+        android:drawable="@drawable/ic_arrow_up"
+        android:fromDegrees="180"
+        android:toDegrees="0">
+</rotate>

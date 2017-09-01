@@ -31,7 +31,9 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name="com.android.dummy.NewActivity"/>
         <activity android:name="com.android.dummy.SelectorActivity"/>
-        <activity android:name="com.android.purchase.PurchaseHomeActivity">
+        <activity
+            android:name="com.android.purchase.PurchaseHomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
