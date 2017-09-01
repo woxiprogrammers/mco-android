@@ -81,4 +81,8 @@
         <item>SiteA</item>
         <item>SIteB</item>
     </string-array>
+    <string name="title_activity_asset_details">AssetDetailsActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

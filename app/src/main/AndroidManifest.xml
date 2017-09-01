@@ -21,6 +21,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -44,5 +45,10 @@
             android:theme="@style/Base.Theme.AppCompat"/>
         <activity android:name="com.android.inventory.assets.ActivityRequestMaintanance">
         </activity>
+        <activity
+            android:name="com.android.inventory.assets.AssetDetailsActivity"
+            android:label="@string/title_activity_asset_details">
+        </activity>
     </application>
+
 </manifest>
