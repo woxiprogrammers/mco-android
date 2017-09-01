@@ -38,7 +38,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
-    Unbinder unbinder;
+    private Unbinder unbinder;
     private Context mContext;
     private View mParentView;
     private Realm realm;
@@ -55,12 +55,11 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
-        ButterKnife.bind(this, mParentView);
-        functionForGettingData();
+        unbinder = ButterKnife.bind(this, mParentView);
         setUpAssetListAdapter();
+        functionForGettingData();
         return mParentView;
     }
 
@@ -94,7 +93,14 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     @Override
     public void onResume() {
         super.onResume();
-        if (getUserVisibleHint()) {
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+        if (realm != null) {
+            realm.close();
         }
     }
 
@@ -131,7 +137,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    setUpAssetListAdapter();
                                     Timber.d(String.valueOf(response));
                                     Timber.d("hello");
                                 }
@@ -159,21 +164,21 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         realm = Realm.getDefaultInstance();
         RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).findAllAsync();
         Timber.d(String.valueOf(assetsListItems));
-            AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
-            rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
-            rvMaterialList.setHasFixedSize(true);
-            rvMaterialList.setAdapter(purchaseRequestRvAdapter);
-            rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                    rvMaterialList,
-                    new RecyclerItemClickListener.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(View view, final int position) {
-                        }
+        AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
+        rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
+        rvMaterialList.setHasFixedSize(true);
+        rvMaterialList.setAdapter(purchaseRequestRvAdapter);
+        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                rvMaterialList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                    }
 
-                        @Override
-                        public void onLongItemClick(View view, int position) {
-                        }
-                    }));
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
 
         if (assetsListItems != null) {
             assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsListItem>>() {
@@ -182,13 +187,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 }
             });
         } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
+            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 }

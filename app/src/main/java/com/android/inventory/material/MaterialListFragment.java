@@ -68,6 +68,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
         ButterKnife.bind(this, mParentView);
+        setAdapterForMaterialList();
         return mParentView;
     }
 
@@ -87,7 +88,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     }
 
     private void requestInventoryResponse() {
-
         realm = Realm.getDefaultInstance();
         AndroidNetworking.get(AppURL.API_INVENTORY_DATA_URL)
                 .setTag("requestInventoryData")
@@ -108,7 +108,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                                 @Override
                                 public void onSuccess() {
                                     Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
-                                    setAdapterForMaterialList();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -191,7 +190,9 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        realm.close();
+        if(realm !=null) {
+            realm.close();
+        }
     }
 
     private void functionForGettingData() {
