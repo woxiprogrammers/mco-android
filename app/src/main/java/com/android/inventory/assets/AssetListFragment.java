@@ -58,6 +58,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
+        mContext=getActivity();
         setUpAssetListAdapter();
         functionForGettingData();
         return mParentView;
@@ -173,6 +174,8 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        Intent intent=new Intent(mContext,AssetDetailsActivity.class);
+                        startActivity(intent);
                     }
 
                     @Override

@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.android.constro360.R;
-import com.android.models.inventory.MaterialListItem;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
@@ -43,8 +40,6 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
         holder.textViewAssetUnits.setText(assetsListItem.getAssetsUnits() + " " + "Units");
         Timber.d(assetsListItem.getAssetsName());
-
-
     }
 
     @Override

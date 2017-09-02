@@ -19,6 +19,7 @@ public class BottomNavigateViewActivity extends BaseActivity {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottom_navigation;
     @BindView(R.id.view_pager)
+
     ViewPager viewPagerInventory;
     MenuItem prevMenuItem;
 
@@ -67,6 +68,8 @@ public class BottomNavigateViewActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     private void callMaterialFragment() {
         final InventoryViewPagerAdapter inventoryViewPagerAdapter = new InventoryViewPagerAdapter(getSupportFragmentManager());
         viewPagerInventory.setAdapter(inventoryViewPagerAdapter);
@@ -101,5 +104,7 @@ public class BottomNavigateViewActivity extends BaseActivity {
         });
 
     }
+
+
 
 }
