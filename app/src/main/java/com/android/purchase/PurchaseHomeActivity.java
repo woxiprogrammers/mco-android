@@ -8,13 +8,18 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.constro360.SelectorAdapter;
 import com.android.interfaces.FragmentInterface;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,8 +32,8 @@ public class PurchaseHomeActivity extends AppCompatActivity {
     ViewPager mViewPager_purchaseHome;
     @BindView(R.id.textView_purchaseHome_appBarTitle)
     TextView textViewPurchaseHomeAppBarTitle;
-    @BindView(R.id.toolbarPurchase)
-    Toolbar toolbarPurchase;
+//    @BindView(R.id.toolbarPurchase)
+//    Toolbar toolbarPurchase;
     private Context mContext;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
 
@@ -73,17 +78,29 @@ public class PurchaseHomeActivity extends AppCompatActivity {
     }
 
     private void setUpAppBarDatePicker() {
-        Timber.d(String.valueOf(Calendar.getInstance().getTime()));
-        textViewPurchaseHomeAppBarTitle.setText(String.valueOf(Calendar.getInstance().getTime()));
+        Timber.d(String.valueOf(Calendar.getInstance().get(Calendar.MONTH)));
+        Calendar calendar = Calendar.getInstance();
+        String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        String strYear = calendar.getDisplayName(Calendar.YEAR, Calendar.LONG, Locale.US);
+        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + strYear);
         textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                alertDialogBuilder.setTitle(R.string.select_month).setMessage(R.string.choose_month).setPositiveButton(R.string.select, new DialogInterface.OnClickListener() {
+                alertDialogBuilder.setCancelable(false);
+                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                View dialogView = layoutInflater.inflate(R.layout.dialog_date_picker, null);
+                DiscreteScrollView scrollView = (DiscreteScrollView) dialogView.findViewById(R.id.recyclerPicker);
+                scrollView.setAdapter(new SelectorAdapter());
+                scrollView.setItemTransformer(new ScaleTransformer.Builder().setMinScale(0.8f).build());
+                alertDialogBuilder.setView(dialogView);
+                alertDialogBuilder.setTitle(R.string.select_month).setPositiveButton(R.string.select, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
                 }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
                 }).show();
             }

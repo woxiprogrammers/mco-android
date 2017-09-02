@@ -2,6 +2,7 @@ package com.android.constro360;
 
 import android.app.Application;
 
+import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 
@@ -24,7 +25,7 @@ public class MyApplication extends Application {
         Realm.init(getApplicationContext());
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .name(getString(R.string.realm_database_name))
-                .schemaVersion(0)
+                .schemaVersion(AppConstants.PREFS_REALM_DATABASE_VERSION)
 //                .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
