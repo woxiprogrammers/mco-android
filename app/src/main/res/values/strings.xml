@@ -63,6 +63,10 @@
     <string name="asset_maintainance">Asset Maintainance</string>
     <string name="please_enter_expiry_eate">Please Enter Expiry Date</string>
     <string name="please_enter_remark">Please Enter Remark</string>
+    <string name="select_month">Select Month</string>
+    <string name="choose_month">Choose month</string>
+    <string name="select">Select</string>
+    <string name="dismiss">Dismiss</string>
 
     <string-array name="destination_array">
         <item>Site</item>

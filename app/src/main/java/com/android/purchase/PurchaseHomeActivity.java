@@ -1,12 +1,14 @@
 package com.android.purchase;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -71,7 +73,20 @@ public class PurchaseHomeActivity extends AppCompatActivity {
     }
 
     private void setUpAppBarDatePicker() {
-        Timber.d(String.valueOf(Calendar.getInstance().getTime().getTime()));
-        toolbarPurchase.setTitle(String.valueOf(Calendar.getInstance().getTimeInMillis()));
+        Timber.d(String.valueOf(Calendar.getInstance().getTime()));
+        textViewPurchaseHomeAppBarTitle.setText(String.valueOf(Calendar.getInstance().getTime()));
+        textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+                alertDialogBuilder.setTitle(R.string.select_month).setMessage(R.string.choose_month).setPositiveButton(R.string.select, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
+            }
+        });
     }
 }
