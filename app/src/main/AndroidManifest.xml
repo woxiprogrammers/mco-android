@@ -49,6 +49,8 @@
             android:name="com.android.inventory.assets.AssetDetailsActivity"
             android:label="@string/title_activity_asset_details">
         </activity>
+        <activity android:name="com.android.inventory.assets.ActivityAssetsReadings">
+        </activity>
     </application>
 
 </manifest>
