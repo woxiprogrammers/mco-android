@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:multi_line_radio_group="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/colorAccentLight"
@@ -9,10 +10,14 @@
     <com.yarolegovich.discretescrollview.DiscreteScrollView
         android:id="@+id/recyclerPicker"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         app:dsv_orientation="horizontal"/>
 
     <com.rohitss.multilineradiogroup.MultiLineRadioGroup
+        android:id="@+id/multi_line_radio_group_purchase_home"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="100dp"
+        multi_line_radio_group:default_button="button_2"
+        multi_line_radio_group:max_in_row="6"
+        multi_line_radio_group:radio_buttons="@arrays/values"/>
 </LinearLayout>

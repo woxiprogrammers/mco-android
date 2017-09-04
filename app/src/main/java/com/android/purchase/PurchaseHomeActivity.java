@@ -7,14 +7,17 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.constro360.SelectorAdapter;
 import com.android.interfaces.FragmentInterface;
+import com.rohitss.multilineradiogroup.MultiLineRadioGroup;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
@@ -32,7 +35,7 @@ public class PurchaseHomeActivity extends AppCompatActivity {
     ViewPager mViewPager_purchaseHome;
     @BindView(R.id.textView_purchaseHome_appBarTitle)
     TextView textViewPurchaseHomeAppBarTitle;
-//    @BindView(R.id.toolbarPurchase)
+    //    @BindView(R.id.toolbarPurchase)
 //    Toolbar toolbarPurchase;
     private Context mContext;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
@@ -90,9 +93,19 @@ public class PurchaseHomeActivity extends AppCompatActivity {
                 alertDialogBuilder.setCancelable(false);
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                 View dialogView = layoutInflater.inflate(R.layout.dialog_date_picker, null);
+                //////////////////
                 DiscreteScrollView scrollView = (DiscreteScrollView) dialogView.findViewById(R.id.recyclerPicker);
                 scrollView.setAdapter(new SelectorAdapter());
                 scrollView.setItemTransformer(new ScaleTransformer.Builder().setMinScale(0.8f).build());
+                //
+                MultiLineRadioGroup mMultiLineRadioGroup = (MultiLineRadioGroup) dialogView.findViewById(R.id.multi_line_radio_group_purchase_home);
+                mMultiLineRadioGroup.setOnCheckedChangeListener(new MultiLineRadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(ViewGroup group, RadioButton button) {
+                        Toast.makeText(mContext, button.getText() + " was clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                //////////////////////
                 alertDialogBuilder.setView(dialogView);
                 alertDialogBuilder.setTitle(R.string.select_month).setPositiveButton(R.string.select, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
