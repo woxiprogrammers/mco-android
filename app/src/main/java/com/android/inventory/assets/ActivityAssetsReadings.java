@@ -33,6 +33,7 @@ public class ActivityAssetsReadings extends BaseActivity {
     private Context mContext;
     private String strFirstText;
     private String strSecondText;
+    private String flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,17 +76,20 @@ public class ActivityAssetsReadings extends BaseActivity {
                             case R.id.action_start_point:
                                 strFirstText="Start Reading";
                                 strSecondText="Start Reading Percent";
-                                openAddToNoteDialog();
+                                flag="start";
+                                openAddToNoteDialog(flag);
                                 break;
                             case R.id.action_top_up:
                                 strFirstText="Before Top Up";
                                 strSecondText="Before Up In Percent";
-                                openAddToNoteDialog();
+                                flag="topup";
+                                openAddToNoteDialog(flag);
                                 break;
                             case R.id.action_stop_point:
                                 strFirstText="Stop Reading";
                                 strSecondText="Stop Reading Percent";
-                                openAddToNoteDialog();
+                                flag="stop";
+                                openAddToNoteDialog(flag);
                                 break;
                         }
                         return true;
@@ -98,15 +102,20 @@ public class ActivityAssetsReadings extends BaseActivity {
 
     }
 
-    private void openAddToNoteDialog() {
+    private void openAddToNoteDialog(final String flag) {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_diesel_asset_readings, null);
-
         dialogBuilder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                if(flag.equals("start")){
 
+                }else if(flag.equals("topup")){
+
+                }else {
+
+                }
             }
         });
 
@@ -124,6 +133,7 @@ public class ActivityAssetsReadings extends BaseActivity {
         final TextView text_view_startPercent = ButterKnife.findById(dialogView, R.id.text_view_startPercent);
         text_view_startPoint.setText(strFirstText);
         text_view_startPercent.setText(strSecondText);
+
         alertDialog.show();
     }
 }
