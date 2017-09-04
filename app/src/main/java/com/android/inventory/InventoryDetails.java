@@ -39,8 +39,6 @@ public class InventoryDetails extends BaseActivity {
 
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
-
-    private InventoryDetailsMoveFragment detailsMoveFragment;
     private MenuItem prevMenuItem;
     private ArrayList<Integer> arrayList = new ArrayList<Integer>();
     private ImageUtilityHelper imageUtilityHelper;
