@@ -1,8 +1,10 @@
 package com.android.purchase;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +28,7 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
@@ -42,6 +45,8 @@ import timber.log.Timber;
 public class PurchaseRequestListFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
+    @BindView(R.id.floating_create_purchase_request)
+    FloatingActionButton floatingCreatePurchaseRequest;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
@@ -90,6 +95,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
      */
     private void initializeViews() {
         mContext = getActivity();
+        floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
         functionForGettingData();
     }
 
@@ -176,6 +182,11 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
         }
+    }
+
+    @OnClick(R.id.floating_create_purchase_request)
+    public void onViewClicked() {
+        startActivity(new Intent(mContext, PurchaseMaterialListActivity.class));
     }
 
     @SuppressWarnings("WeakerAccess")

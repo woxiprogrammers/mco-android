@@ -67,7 +67,6 @@
     <string name="choose_month">Choose month</string>
     <string name="select">Select</string>
     <string name="dismiss">Dismiss</string>
-
     <string-array name="destination_array">
         <item>Site</item>
         <item>Client</item>
@@ -75,12 +74,10 @@
         <item>Sub-contracter</item>
         <item>Supplier</item>
     </string-array>
-
     <string-array name="project_array">
         <item>ProjABC</item>
         <item>ProjXYZ</item>
     </string-array>
-
     <string-array name="site_array">
         <item>SiteA</item>
         <item>SIteB</item>
