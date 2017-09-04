@@ -7,10 +7,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ImageButton
+        android:id="@+id/iamgeButton_open_readings_menu"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="top|right"
         android:background="@color/colorWhite"
+        android:onClick="onViewClicked"
         android:src="@drawable/ic_action_more_vert"/>
 
     <LinearLayout

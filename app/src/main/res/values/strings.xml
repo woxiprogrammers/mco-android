@@ -83,4 +83,7 @@
     </string-array>
     <string name="title_activity_asset_details">AssetDetailsActivity</string>
     <string name="assets_readings">Readings</string>
+    <string name="action_start_point">Starting Point</string>
+    <string name="action_top_up">Top Up</string>
+    <string name="action_stop_point">Stopping Point</string>
 </resources>
