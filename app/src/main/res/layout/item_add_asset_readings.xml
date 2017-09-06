@@ -80,10 +80,11 @@
                 android:text="Top-Up Time:"/>
 
             <TextView
+                android:id="@+id/text_view_topUpTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="04:30 PM"/>
+                android:text="AM/PM"/>
         </LinearLayout>
 
         <LinearLayout
