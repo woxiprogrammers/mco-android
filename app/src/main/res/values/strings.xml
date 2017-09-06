@@ -67,6 +67,9 @@
     <string name="choose_month">Choose month</string>
     <string name="select">Select</string>
     <string name="dismiss">Dismiss</string>
+    <string name="add_material">Add Material</string>
+    <string name="dialog_option_add">Add</string>
+    <string name="add_asset">Add Asset</string>
     <string-array name="destination_array">
         <item>Site</item>
         <item>Client</item>

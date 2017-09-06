@@ -3,9 +3,10 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_add_material"
-        android:actionViewClass="android.widget.ImageButton"
-        android:orderInCategory="100"
-        android:title="Add +"
-        android:visible="true"
-        app:showAsAction="always"/>
+        android:title="Add Material"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_add_asset"
+        android:title="Add Asset"
+        app:showAsAction="never"/>
 </menu>

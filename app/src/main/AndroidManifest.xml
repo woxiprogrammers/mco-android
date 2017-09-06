@@ -47,7 +47,9 @@
             android:theme="@style/Base.Theme.AppCompat"/>
         <activity android:name="com.android.inventory.assets.ActivityRequestMaintanance">
         </activity>
-        <activity android:name="com.android.purchase.PurchaseMaterialListActivity">
+        <activity
+            android:name="com.android.purchase.PurchaseMaterialListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 </manifest>

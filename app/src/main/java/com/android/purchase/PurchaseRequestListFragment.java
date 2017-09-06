@@ -70,7 +70,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        View mParentView = inflater.inflate(R.layout.fragment_purchase_request_list, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         //Initialize Views
         initializeViews();
