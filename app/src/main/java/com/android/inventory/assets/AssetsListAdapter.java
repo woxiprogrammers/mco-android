@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.android.constro360.R;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
@@ -25,7 +27,7 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
     public AssetsListAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, autoUpdate, updateOnModification);
         Timber.d(String.valueOf(data));
-        assetsListItemCollection=data;
+        assetsListItemCollection = data;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
 
     @Override
     public int getItemCount() {
-        return  assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+        return assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
     }
 
     @Override
@@ -58,6 +60,19 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
 
         @BindView(R.id.text_view_asset_units)
         TextView textViewAssetUnits;
+
+        @BindView(R.id.asset_model_number)
+        TextView assetModelNumber;
+
+        @BindView(R.id.textview_total_unit)
+        TextView textviewTotalUnit;
+
+        @BindView(R.id.textview_work_hour)
+        TextView textviewWorkHour;
+
+        @BindView(R.id.textview_diesel_consume)
+        TextView textviewDieselConsume;
+
         private MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
