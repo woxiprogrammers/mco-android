@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,21 +13,19 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.utils.BaseActivity;
 
-import org.w3c.dom.Text;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ActivityAssetsReadings extends BaseActivity {
 
     @BindView(R.id.ll_add_readings)
     LinearLayout llAddReadings;
+
+    private TextView startRead,text_view_setStopReading;
 
     private Context mContext;
     private String strFirstText;
@@ -63,7 +60,9 @@ public class ActivityAssetsReadings extends BaseActivity {
 
     private void inflateReadingLayout() {
         View child = getLayoutInflater().inflate(R.layout.item_add_asset_readings, null);
-        final ImageButton imageAddReadingsPoint=child.findViewById(R.id.iamgeButton_open_readings_menu);
+        final ImageButton imageAddReadingsPoint = child.findViewById(R.id.iamgeButton_open_readings_menu);
+        startRead=child.findViewById(R.id.startRead);
+        text_view_setStopReading=child.findViewById(R.id.text_view_setStopReading);
         llAddReadings.addView(child);
         imageAddReadingsPoint.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,23 +71,17 @@ public class ActivityAssetsReadings extends BaseActivity {
                 popup.getMenuInflater().inflate(R.menu.options_menu_assets_readings_point, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()){
+                        switch (item.getItemId()) {
                             case R.id.action_start_point:
-                                strFirstText="Start Reading";
-                                strSecondText="Start Reading Percent";
-                                flag="start";
-                                openAddToNoteDialog(flag);
-                                break;
-                            case R.id.action_top_up:
-                                strFirstText="Before Top Up";
-                                strSecondText="Before Up In Percent";
-                                flag="topup";
+                                strFirstText = "Start Reading";
+                                strSecondText = "Start Reading Percent";
+                                flag = "start";
                                 openAddToNoteDialog(flag);
                                 break;
                             case R.id.action_stop_point:
-                                strFirstText="Stop Reading";
-                                strSecondText="Stop Reading Percent";
-                                flag="stop";
+                                strFirstText = "Stop Reading";
+                                strSecondText = "Stop Reading Percent";
+                                flag = "stop";
                                 openAddToNoteDialog(flag);
                                 break;
                         }
@@ -106,16 +99,19 @@ public class ActivityAssetsReadings extends BaseActivity {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_diesel_asset_readings, null);
+        dialogBuilder.setView(dialogView);
+        final EditText edit_text_add_start_point = ButterKnife.findById(dialogView, R.id.edit_text_add_start_point);
+        final TextView text_view_startPoint = ButterKnife.findById(dialogView, R.id.text_view_startPoint);
+        text_view_startPoint.setText(strFirstText);
         dialogBuilder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(flag.equals("start")){
-
-                }else if(flag.equals("topup")){
-
-                }else {
-
+                if (flag.equals("start")) {
+                    startRead.setText(edit_text_add_start_point.getText().toString() + " KM");
+                } else  {
+                    text_view_setStopReading.setText(edit_text_add_start_point.getText().toString() + " KM");
                 }
+                dialogInterface.dismiss();
             }
         });
 
@@ -123,17 +119,10 @@ public class ActivityAssetsReadings extends BaseActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
+                dialogInterface.dismiss();
             }
         });
-        dialogBuilder.setView(dialogView);
-        final AlertDialog alertDialog = dialogBuilder.create();
-        final EditText edit_text_add_start_point = ButterKnife.findById(dialogView, R.id.edit_text_add_start_point);
-        final EditText edit_text_add_start_percent = ButterKnife.findById(dialogView, R.id.edit_text_add_start_percent);
-        final TextView text_view_startPoint = ButterKnife.findById(dialogView, R.id.text_view_startPoint);
-        final TextView text_view_startPercent = ButterKnife.findById(dialogView, R.id.text_view_startPercent);
-        text_view_startPoint.setText(strFirstText);
-        text_view_startPercent.setText(strSecondText);
+        dialogBuilder.show();
 
-        alertDialog.show();
     }
 }

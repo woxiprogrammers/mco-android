@@ -5,7 +5,8 @@
         android:title="@string/action_start_point"/>
     <item
         android:id="@+id/action_top_up"
-        android:title="@string/action_top_up"/>
+        android:title="@string/action_top_up"
+        android:visible="false"/>
     <item
         android:id="@+id/action_stop_point"
         android:title="@string/action_stop_point"/>

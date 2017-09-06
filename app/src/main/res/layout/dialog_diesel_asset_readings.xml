@@ -1,97 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:layout_height="200dp"
+              android:layout_gravity="center"
+              android:weightSum="1"
+              android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/text_view_startPoint"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_8dp"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:layout_weight="0.6"
+        android:textSize="@dimen/dimen_18dp"/>
 
-        <TextView
-            android:id="@+id/text_view_startPoint"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.6"
-            android:textSize="@dimen/dimen_18dp"/>
-
-        <EditText
-            android:id="@+id/edit_text_add_start_point"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:text="KM"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/edit_text_add_start_point"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_8dp"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:layout_weight="0.3"
+        android:inputType="number"
+        android:digits="0123456789"/>
 
-        <TextView
-            android:id="@+id/text_view_startPercent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.6"
-            android:textSize="@dimen/dimen_18dp"/>
-
-        <EditText
-            android:id="@+id/edit_text_add_start_percent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:text="%"
-            android:textSize="@dimen/dimen_20dp"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_after_top_up"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_8dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:weightSum="1">
-
-        <TextView
-            android:id="@+id/text_view_afterTopUp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.6"
-            android:text="After Top Up"
-            android:textSize="@dimen/dimen_12dp"/>
-
-        <EditText
-            android:id="@+id/edit_text_add_topup_percent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:text="%"
-            android:textSize="@dimen/dimen_20dp"/>
-    </LinearLayout>
+        android:layout_weight="0.1"
+        android:text="KM"/>
 
 </LinearLayout>

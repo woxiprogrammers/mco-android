@@ -36,17 +36,11 @@
                 android:text="Start Reading:"/>
 
             <TextView
+                android:id="@+id/startRead"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="1155 KM"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="center_horizontal"
-                android:text=" 40 %"/>
+                android:text="0 KM"/>
         </LinearLayout>
 
         <LinearLayout
@@ -64,17 +58,11 @@
                 android:text="Stop Reading:"/>
 
             <TextView
+                android:id="@+id/text_view_setStopReading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="1250 KM"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="center_horizontal"
-                android:text=" 60 %"/>
+                android:text="0 KM"/>
         </LinearLayout>
 
         <LinearLayout
@@ -96,14 +84,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:text="04:30 PM"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="center_horizontal"
-                android:text=" __:__ %"
-                android:visibility="invisible"/>
         </LinearLayout>
 
         <LinearLayout
@@ -124,14 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="1190 KM"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="center_horizontal"
-                android:text=" 10 %"/>
+                android:text="0 KM"/>
         </LinearLayout>
 
         <LinearLayout
@@ -153,14 +126,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:text="80 %"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="center_horizontal"
-                android:text=" __:__ %"
-                android:visibility="invisible"/>
         </LinearLayout>
 
     </LinearLayout>
