@@ -1,5 +1,7 @@
 package com.android.inventory.assets;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -7,17 +9,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.utils.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AssetDetailsActivity extends AppCompatActivity {
+public class AssetDetailsActivity extends BaseActivity {
 
 
 
@@ -28,15 +30,25 @@ public class AssetDetailsActivity extends AppCompatActivity {
     BottomNavigationView bottom_navigation;
 
     private MenuItem prevMenuItem;
+    private Context mContext;
+    private String strAssetName,strModelNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asset_details);
         ButterKnife.bind(this);
+        mContext=AssetDetailsActivity.this;
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Asset Details");
         }
+        Intent extras=getIntent();
+        if(extras != null) {
+           strAssetName= extras.getStringExtra("assetName");
+            strModelNumber=extras.getStringExtra("modelNumber");
+        }
+
         setAdapter();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.assets_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -44,6 +56,8 @@ public class AssetDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -52,6 +66,10 @@ public class AssetDetailsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                break;
+
+            case R.id.action_request_maintaianance:
+                startRequestMaintainanceActivity();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -138,6 +156,12 @@ public class AssetDetailsActivity extends AppCompatActivity {
 
         }
     }
+    private void startRequestMaintainanceActivity() {
+        Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
+        startIntent.putExtra("key",strAssetName);
+        startIntent.putExtra("key1",strModelNumber);
 
+        startActivity(startIntent);
+    }
 
 }

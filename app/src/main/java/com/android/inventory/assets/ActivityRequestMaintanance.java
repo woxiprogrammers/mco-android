@@ -58,6 +58,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private Calendar myCalendar;
     private DatePickerDialog.OnDateSetListener date;
     private ImageUtilityHelper imageUtilityHelper;
+    private String strAssetName;
+    private String strModelNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,16 @@ public class ActivityRequestMaintanance extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.asset_maintainance);
         }
+
+        Intent extras=getIntent();
+        if(extras != null) {
+            strAssetName= extras.getStringExtra("key");
+            strModelNumber=extras.getStringExtra("key1");
+        }
+        editTextAssetName.setText(strAssetName);
+        editTextAssetName.setEnabled(false);
+        editTextModelName.setText(strModelNumber);
+        editTextModelName.setEnabled(false);
 
         date = new DatePickerDialog.OnDateSetListener() {
             @Override

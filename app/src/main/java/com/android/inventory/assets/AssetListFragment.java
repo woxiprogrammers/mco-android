@@ -76,22 +76,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.options_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_request_maintaianance:
-                startRequestMaintainanceActivity();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
     }
@@ -103,11 +87,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         if (realm != null) {
             realm.close();
         }
-    }
-
-    private void startRequestMaintainanceActivity() {
-        Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
-        startActivity(startIntent);
     }
 
     private void functionForGettingData() {
@@ -163,7 +142,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).findAllAsync();
+        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).findAllAsync();
         Timber.d(String.valueOf(assetsListItems));
         AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -175,6 +154,8 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                     @Override
                     public void onItemClick(View view, final int position) {
                         Intent intent=new Intent(mContext,AssetDetailsActivity.class);
+                        intent.putExtra("assetName",assetsListItems.get(position).getAssetsName());
+                        intent.putExtra("modelNumber",assetsListItems.get(position).getModelNumber());
                         startActivity(intent);
                     }
 
