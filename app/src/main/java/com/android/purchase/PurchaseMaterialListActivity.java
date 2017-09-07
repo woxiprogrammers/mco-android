@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -160,9 +161,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         }
 
         @Override
-        public PurchaseMaterialRvAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_material_list, parent, false);
-            return new PurchaseMaterialRvAdapter.MyViewHolder(itemView);
+            return new MyViewHolder(itemView);
         }
 
         @Override
@@ -182,8 +183,16 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.textView_MaterialName_createPR)
+            TextView textViewMaterialNameCreatePR;
+            @BindView(R.id.textView_MaterialUnit_createPR)
+            TextView textViewMaterialUnitCreatePR;
+            @BindView(R.id.imageButton_deleteMaterial_createPR)
+            ImageButton imageButtonDeleteMaterialCreatePR;
+
             MyViewHolder(View itemView) {
                 super(itemView);
+                ButterKnife.bind(this, itemView);
             }
         }
     }
