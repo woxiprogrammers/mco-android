@@ -1,0 +1,18 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.android.inventory.assets.AssetsReadingsFragment">
+
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floating_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:src="@drawable/ic_plus"
+        android:onClick="onViewClicked"
+        android:layout_margin="@dimen/dimen_20dp"/>
+
+</FrameLayout>

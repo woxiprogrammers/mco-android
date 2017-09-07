@@ -15,4 +15,6 @@ public class AppURL {
     public static final String INVENTORY_DATA_URL = "http://www.mocky.io/v2/599c5a5229000011012110ac";
     public static final String API_PURCHASE_ORDER_LIST = "http://www.mocky.io/v2/59a6a7e4100000cd0508fcfe";
     public static final String API_PURCHASE_BILL_LIST = "http://www.mocky.io/v2/59a6b4dd100000ca0408fd4b";
+    public static final String API_INVENTORY_DATA_URL = "http://www.mocky.io/v2/599c5a5229000011012110ac";
+    public static final String API_ASSETS_DATA_URL ="http://www.mocky.io/v2/59b0de11260000f901287d6c";
 }

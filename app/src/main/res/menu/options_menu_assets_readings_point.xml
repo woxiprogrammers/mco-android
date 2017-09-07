@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_start_point"
+        android:title="@string/action_start_point"/>
+    <item
+        android:id="@+id/action_stop_point"
+        android:title="@string/action_stop_point"/>
+    <item
+        android:id="@+id/action_top_up"
+        android:title="@string/action_top_up"/>
+
+</menu>

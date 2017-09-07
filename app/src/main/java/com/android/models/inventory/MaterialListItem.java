@@ -9,8 +9,8 @@ public class MaterialListItem extends RealmObject {
     @SerializedName("quantity_out")
     private String quantityOut;
 
-    @SerializedName("id")
     @PrimaryKey
+    @SerializedName("id")
     private int id;
 
     @SerializedName("quantity_in")

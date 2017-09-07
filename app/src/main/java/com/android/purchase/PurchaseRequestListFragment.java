@@ -150,6 +150,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 });
     }
 
+
+
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");

@@ -10,6 +10,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
@@ -342,5 +344,10 @@ public class AppUtils {
     public void showOfflineMessage(String strTag) {
         Timber.tag(strTag).d("App is offline");
         Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void hidekeyboard(View view,Context context){
+        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

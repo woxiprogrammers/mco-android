@@ -3,8 +3,11 @@ package com.android.models.inventory;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class InventoryResponse extends RealmObject {
+    @PrimaryKey
+    private int intIndex = 0;
     @SerializedName("data")
     private InventoryDataResponse inventoryDataResponse;
     @SerializedName("next_url")

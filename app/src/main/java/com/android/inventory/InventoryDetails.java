@@ -1,11 +1,9 @@
 package com.android.inventory;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -17,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,8 +39,6 @@ public class InventoryDetails extends BaseActivity {
 
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
-
-    private InventoryDetailsMoveFragment detailsMoveFragment;
     private MenuItem prevMenuItem;
     private ArrayList<Integer> arrayList = new ArrayList<Integer>();
     private ImageUtilityHelper imageUtilityHelper;
@@ -235,5 +230,7 @@ public class InventoryDetails extends BaseActivity {
     public void createObject(ImageView imageView) {
         imageUtilityHelper = new ImageUtilityHelper(mContext, imageView);
     }
+
+
 
 }

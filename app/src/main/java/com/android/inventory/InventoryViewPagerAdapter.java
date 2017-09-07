@@ -18,6 +18,12 @@ public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
+
+    @Override
+    public int getCount() {
+        return arrBottomTitle.length;
+    }
+
     @Override
     public Fragment getItem(int position)
     {
@@ -30,10 +36,5 @@ public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
                 return null;
         }
 
-    }
-
-    @Override
-    public int getCount() {
-        return arrBottomTitle.length;
     }
 }
