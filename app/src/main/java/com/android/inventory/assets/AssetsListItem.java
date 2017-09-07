@@ -1,42 +1,73 @@
 package com.android.inventory.assets;
-
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
-public class AssetsListItem extends RealmObject {
-    @PrimaryKey
-    @SerializedName("id")
-    private int id;
+public class AssetsListItem extends RealmObject{
 
-    @SerializedName("assets_units")
-    private String assetsUnits;
+	@SerializedName("total_diesel_consume")
+	private int totalDieselConsume;
 
-    @SerializedName("assets_name")
-    private String assetsName;
+	@SerializedName("model_number")
+	private String modelNumber;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	@SerializedName("id")
+	private int id;
 
-    public int getId() {
-        return id;
-    }
+	@SerializedName("total_work_hour")
+	private String totalWorkHour;
 
-    public void setAssetsUnits(String assetsUnits) {
-        this.assetsUnits = assetsUnits;
-    }
+	@SerializedName("assets_units")
+	private String assetsUnits;
 
-    public String getAssetsUnits() {
-        return assetsUnits;
-    }
+	@SerializedName("assets_name")
+	private String assetsName;
 
-    public void setAssetsName(String assetsName) {
-        this.assetsName = assetsName;
-    }
+	public void setTotalDieselConsume(int totalDieselConsume){
+		this.totalDieselConsume = totalDieselConsume;
+	}
 
-    public String getAssetsName() {
-        return assetsName;
-    }
+	public int getTotalDieselConsume(){
+		return totalDieselConsume;
+	}
+
+	public void setModelNumber(String modelNumber){
+		this.modelNumber = modelNumber;
+	}
+
+	public String getModelNumber(){
+		return modelNumber;
+	}
+
+	public void setId(int id){
+		this.id = id;
+	}
+
+	public int getId(){
+		return id;
+	}
+
+	public void setTotalWorkHour(String totalWorkHour){
+		this.totalWorkHour = totalWorkHour;
+	}
+
+	public String getTotalWorkHour(){
+		return totalWorkHour;
+	}
+
+	public void setAssetsUnits(String assetsUnits){
+		this.assetsUnits = assetsUnits;
+	}
+
+	public String getAssetsUnits(){
+		return assetsUnits;
+	}
+
+	public void setAssetsName(String assetsName){
+		this.assetsName = assetsName;
+	}
+
+	public String getAssetsName(){
+		return assetsName;
+	}
 }

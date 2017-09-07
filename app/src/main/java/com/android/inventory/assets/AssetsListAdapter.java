@@ -40,8 +40,10 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final AssetsListItem assetsListItem = assetsListItemCollection.get(position);
         holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
-        holder.textViewAssetUnits.setText(assetsListItem.getAssetsUnits() + " " + "Units");
-        Timber.d(assetsListItem.getAssetsName());
+        holder.textViewAssetUnits.setText(assetsListItem.getAssetsUnits());
+        holder.assetModelNumber.setText("Model Number:- " + assetsListItem.getModelNumber());
+        holder.textviewWorkHour.setText(assetsListItem.getTotalWorkHour());
+        holder.textviewDieselConsume.setText(assetsListItem.getTotalDieselConsume() + " ");
     }
 
     @Override
@@ -63,9 +65,6 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
 
         @BindView(R.id.asset_model_number)
         TextView assetModelNumber;
-
-        @BindView(R.id.textview_total_unit)
-        TextView textviewTotalUnit;
 
         @BindView(R.id.textview_work_hour)
         TextView textviewWorkHour;

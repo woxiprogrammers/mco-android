@@ -7,23 +7,6 @@
     android:background="@drawable/selector_is_material_selected"
     app:cardCornerRadius="8dp"
     app:cardElevation="@dimen/dimen_4dp">
-    <!--<LinearLayout
-        android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_8dp"
-        android:background="@drawable/selector_is_material_selected"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/text_view_asset_list_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-        <TextView
-            android:id="@+id/text_view_asset_units"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/cardView"
@@ -60,7 +43,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_40dp"
+                android:paddingTop="@dimen/dimen_10dp"
+                android:paddingBottom="@dimen/dimen_10dp"
                 android:layout_marginTop="@dimen/dimen_8dp"
                 android:orientation="horizontal">
 
@@ -68,10 +52,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="@dimen/dimen_3dp"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textview_total_unit"
+                        android:id="@+id/text_view_asset_units"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -95,6 +80,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="@dimen/dimen_3dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -130,7 +116,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="3500"
                         android:textColor="@color/colorText"
                         android:textSize="@dimen/dimen_18dp"/>
 
@@ -140,6 +125,7 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:text="Diesel Consume"
+                        android:layout_marginTop="@dimen/dimen_2dp"
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_16dp"/>
 

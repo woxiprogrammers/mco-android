@@ -2,11 +2,11 @@ package com.android.inventory.assets;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class AssetListResponse extends RealmObject {
-	@PrimaryKey
-	private int intIndex = 0;
+
+	@SerializedName("data")
+	private AssetListData assetListData;
 
 	@SerializedName("next_url")
 	private String nextUrl;
@@ -14,8 +14,13 @@ public class AssetListResponse extends RealmObject {
 	@SerializedName("message")
 	private String message;
 
-	@SerializedName("data")
-	private AssetResponseData assetResponseData;
+	public void setAssetListData(AssetListData assetListData){
+		this.assetListData = assetListData;
+	}
+
+	public AssetListData getAssetListData(){
+		return assetListData;
+	}
 
 	public void setNextUrl(String nextUrl){
 		this.nextUrl = nextUrl;
@@ -31,13 +36,5 @@ public class AssetListResponse extends RealmObject {
 
 	public String getMessage(){
 		return message;
-	}
-
-	public void setAssetResponseData(AssetResponseData assetResponseData){
-		this.assetResponseData = assetResponseData;
-	}
-
-	public AssetResponseData getAssetResponseData(){
-		return assetResponseData;
 	}
 }
