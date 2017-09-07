@@ -5,21 +5,32 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.utils.AppUtils;
+import com.android.utils.RecyclerItemClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
+import timber.log.Timber;
 
 public class PurchaseMaterialListActivity extends AppCompatActivity {
     private Context mContext;
@@ -30,8 +41,11 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     @BindView(R.id.toolbarPurchase)
     Toolbar toolbarPurchase;
     @BindView(R.id.rv_material_list)
-    RecyclerView rvMaterialList;
+    RecyclerView recyclerView_materialList;
     private LayoutInflater layoutInflater;
+    private Realm realm;
+    private RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems;
+    private PurchaseMaterial_PostItem purchaseMaterial_postItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +54,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mContext = PurchaseMaterialListActivity.this;
         layoutInflater = LayoutInflater.from(mContext);
+        setUpPrAdapter();
     }
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
@@ -92,5 +107,84 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             }
         });
         popup.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        recyclerView_materialList.setAdapter(null);
+        if (realm != null) {
+            realm.close();
+        }
+    }
+
+    private void setUpPrAdapter() {
+        realm = Realm.getDefaultInstance();
+        Timber.d("Adapter setup called");
+        purchaseMaterialListItems = realm.where(PurchaseMaterialListItem.class).findAllAsync();
+        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListItems, true, true);
+        recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView_materialList.setHasFixedSize(true);
+        recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
+        recyclerView_materialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                recyclerView_materialList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems.get(position);
+                        Timber.d(String.valueOf(purchaseMaterialListItem));
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+        if (purchaseMaterialListItems != null) {
+            purchaseMaterialListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
+                @Override
+                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseMaterialRvAdapter.MyViewHolder> {
+        private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
+
+        PurchaseMaterialRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            arrPurchaseMaterialListItems = data;
+        }
+
+        @Override
+        public PurchaseMaterialRvAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_material_list, parent, false);
+            return new PurchaseMaterialRvAdapter.MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+//            holder.textViewPurchaseRequestId.setText(purchaseMaterialListItem.getPurchaseRequestId());
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return arrPurchaseMaterialListItems.get(index).getIndexId();
+        }
+
+        @Override
+        public int getItemCount() {
+            return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            MyViewHolder(View itemView) {
+                super(itemView);
+            }
+        }
     }
 }
