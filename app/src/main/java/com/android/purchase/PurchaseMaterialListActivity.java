@@ -2,7 +2,6 @@ package com.android.purchase;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +13,15 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.utils.AppUtils;
@@ -47,7 +53,17 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private PurchaseMaterial_PostItem purchaseMaterial_postItem;
     private AlertDialog alertDialog;
     private boolean isMaterial;
-    private String strDialogTitle = "";
+    private String strDialogTitle = "", strItemNameLabel = "";
+    private TextView mTextViewTitleMaterialAsset;
+    private CheckBox mCheckboxIsMaterial;
+    private TextView mTextViewLabelMaterialAsset;
+    private EditText mEditTextNameMaterialAsset;
+    private EditText mEditTextQuantityMaterialAsset;
+    private EditText mEditTextUnitMaterialAsset;
+    private LinearLayout mLlUploadImage;
+    private ImageView mIvChooseImage;
+    private Button mButtonDismissMaterialAsset;
+    private Button mButtonAddMaterialAsset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,18 +101,52 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     }
 
     private void createAlertDialog() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = layoutInflater.inflate(R.layout.dialog_add_material_asset_form, null);
-
+        mTextViewTitleMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_title_material_asset);
+        mCheckboxIsMaterial = (CheckBox) dialogView.findViewById(R.id.checkbox_is_material);
+        mTextViewLabelMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_label_material_asset);
+        mEditTextNameMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_name_material_asset);
+        mEditTextQuantityMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_quantity_material_asset);
+        mEditTextUnitMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_unit_material_asset);
+        mLlUploadImage = (LinearLayout) dialogView.findViewById(R.id.ll_uploadImage);
+        mIvChooseImage = (ImageView) dialogView.findViewById(R.id.ivChooseImage);
+        mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
+        mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
+        mTextViewTitleMaterialAsset.setText(strDialogTitle);
+        mTextViewLabelMaterialAsset.setText(strItemNameLabel);
+        mCheckboxIsMaterial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Toast.makeText(mContext, "" + isChecked, Toast.LENGTH_SHORT).show();
+            }
+        });
+        mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        mButtonAddMaterialAsset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mEditTextNameMaterialAsset.getText().toString().trim();
+                mEditTextQuantityMaterialAsset.getText().toString().trim();
+                mEditTextUnitMaterialAsset.getText().toString().trim();
+                alertDialog.dismiss();
+            }
+        });
         alertDialogBuilder.setCancelable(false).setView(dialogView);
         alertDialog = alertDialogBuilder.create();
     }
 
     private AlertDialog getExistingAlertDialog() {
         if (isMaterial) {
-            strDialogTitle = getString(R.string.dialog_title_add_material_asset);
+            strItemNameLabel = getString(R.string.dialog_label_add_material);
+            strDialogTitle = getString(R.string.dialog_title_add_material);
         } else {
-            strDialogTitle = getString(R.string.dialog_title_add_material_asset);
+            strItemNameLabel = getString(R.string.dialog_label_add_asset);
+            strDialogTitle = getString(R.string.dialog_title_add_asset);
         }
         if (alertDialog == null) {
             createAlertDialog();
