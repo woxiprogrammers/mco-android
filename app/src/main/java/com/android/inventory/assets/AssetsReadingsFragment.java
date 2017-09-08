@@ -42,7 +42,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_assets_readings, container, false);
+        View view = inflater.inflate(R.layout.layout_asset_summary_list, container, false);
         initializeViews(view);
         return view;
     }
