@@ -9,10 +9,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:visibility="gone"
-        android:textColor="#ff2800"
-        android:background="@drawable/background_button_pressed"
-        android:textSize="13sp"/>
+        android:gravity="center"
+        android:layout_margin="@dimen/dimen_10dp"
+        android:background="@drawable/background_oval_for_diesel_remaining"/>
     <LinearLayout
         android:id="@+id/ff"
         android:layout_width="match_parent"
