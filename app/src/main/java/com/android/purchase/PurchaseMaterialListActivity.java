@@ -21,11 +21,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +50,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     RecyclerView recyclerView_materialList;
     private LayoutInflater layoutInflater;
     private Realm realm;
-    private RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems;
+    private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResults;
+    private ArrayList<PurchaseMaterialListItem> materialListItemArrayList;
     private PurchaseMaterial_PostItem purchaseMaterial_postItem;
     private AlertDialog alertDialog;
     private boolean isMaterial;
@@ -64,6 +66,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private ImageView mIvChooseImage;
     private Button mButtonDismissMaterialAsset;
     private Button mButtonAddMaterialAsset;
+    private PurchaseMaterialListItem purchaseMaterialListItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mContext = PurchaseMaterialListActivity.this;
         layoutInflater = LayoutInflater.from(mContext);
+        materialListItemArrayList = new ArrayList<PurchaseMaterialListItem>();
+        purchaseMaterial_postItem = new PurchaseMaterial_PostItem();
         setUpPrAdapter();
         createAlertDialog();
     }
@@ -116,8 +121,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         mCheckboxIsMaterial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                Toast.makeText(mContext, "" + isChecked, Toast.LENGTH_SHORT).show();
-                Toast.makeText(mContext, "isMaterial " + isMaterial, Toast.LENGTH_SHORT).show();
+                purchaseMaterialListItem = getPurchaseMaterialListItemInstance();
+                purchaseMaterialListItem.setIs_diesel(isChecked);
             }
         });
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
@@ -132,11 +137,26 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                 mEditTextNameMaterialAsset.getText().toString().trim();
                 mEditTextQuantityMaterialAsset.getText().toString().trim();
                 mEditTextUnitMaterialAsset.getText().toString().trim();
+                purchaseMaterialListItem = getPurchaseMaterialListItemInstance();
+                purchaseMaterialListItem.setApproved_status("new");
+                if (isMaterial) {
+                    purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
+                } else {
+                    purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
+                }
+                materialListItemArrayList.add(purchaseMaterialListItem);
                 alertDialog.dismiss();
             }
         });
         alertDialogBuilder.setCancelable(false).setView(dialogView);
         alertDialog = alertDialogBuilder.create();
+    }
+
+    private PurchaseMaterialListItem getPurchaseMaterialListItemInstance() {
+        if (purchaseMaterialListItem == null) {
+            purchaseMaterialListItem = new PurchaseMaterialListItem();
+        }
+        return purchaseMaterialListItem;
     }
 
     private AlertDialog getExistingAlertDialog() {
@@ -167,8 +187,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseMaterialListItems = realm.where(PurchaseMaterialListItem.class).findAllAsync();
-        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListItems, true, true);
+        purchaseMaterialListRealmResults = realm.where(PurchaseMaterialListItem.class).findAllAsync();
+        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResults, true, true);
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
         recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
@@ -177,7 +197,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems.get(position);
+                        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResults.get(position);
                         Timber.d(String.valueOf(purchaseMaterialListItem));
                     }
 
@@ -185,8 +205,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (purchaseMaterialListItems != null) {
-            purchaseMaterialListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
+        if (purchaseMaterialListRealmResults != null) {
+            purchaseMaterialListRealmResults.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
                 }

@@ -93,4 +93,6 @@
     <string name="dialog_title_add_asset">Add Asset</string>
     <string name="dialog_label_add_material">Material Name</string>
     <string name="dialog_label_add_asset">Asset Name</string>
+    <string name="tag_material">material</string>
+    <string name="tag_asset">asset</string>
 </resources>
