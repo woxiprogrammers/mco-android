@@ -35,4 +35,7 @@
     <dimen name="design_bottom_navigation_text_size" tools:override="true">22sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">22sp</dimen>
     <dimen name="app_bar_height_200dp">200dp</dimen>
+    <dimen name="text_16sp">16sp</dimen>
+    <dimen name="text_18sp">18sp</dimen>
+    <dimen name="text_20sp">20sp</dimen>
 </resources>

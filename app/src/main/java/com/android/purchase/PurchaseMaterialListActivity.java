@@ -3,7 +3,6 @@ package com.android.purchase;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -89,22 +87,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private void createAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = layoutInflater.inflate(R.layout.dialog_add_material_asset_form, null);
-        alertDialogBuilder.setCancelable(false)
-                .setView(dialogView)
-                .setTitle(strDialogTitle)
-                .setPositiveButton(R.string.dialog_option_add, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
+
+        alertDialogBuilder.setCancelable(false).setView(dialogView);
         alertDialog = alertDialogBuilder.create();
-        /*Button nbutton2 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        nbutton2.setBackgroundColor(Color.GRAY);
-        Button pbutton2 = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        pbutton2.setBackgroundColor(Color.RED);*/
     }
 
     private AlertDialog getExistingAlertDialog() {
