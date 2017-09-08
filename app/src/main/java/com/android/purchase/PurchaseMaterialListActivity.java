@@ -66,48 +66,40 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_add_material:
-                        AlertDialog.Builder alertDialogBuilderMaterial = new AlertDialog.Builder(mContext);
-                        alertDialogBuilderMaterial.setCancelable(false);
-                        View dialogViewMaterial = layoutInflater.inflate(R.layout.dialog_add_material_asset_form, null);
-                        alertDialogBuilderMaterial.setView(dialogViewMaterial);
-                        alertDialogBuilderMaterial.setTitle(R.string.add_material).setPositiveButton(R.string.dialog_option_add, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                        AlertDialog alertDialogMaterial = alertDialogBuilderMaterial.create();
+                        AlertDialog alertDialogMaterial = getAlertDialog(false);
                         alertDialogMaterial.show();
-                        Button nbutton = alertDialogMaterial.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        nbutton.setBackgroundColor(Color.GRAY);
-                        Button pbutton = alertDialogMaterial.getButton(DialogInterface.BUTTON_POSITIVE);
-                        pbutton.setBackgroundColor(Color.RED);
                         break;
                     case R.id.action_add_asset:
-                        AlertDialog.Builder alertDialogBuilderAsset = new AlertDialog.Builder(mContext);
-                        alertDialogBuilderAsset.setCancelable(false);
-                        View dialogViewAsset = layoutInflater.inflate(R.layout.dialog_add_material_asset_form, null);
-                        alertDialogBuilderAsset.setView(dialogViewAsset);
-                        alertDialogBuilderAsset.setTitle(R.string.add_asset).setPositiveButton(R.string.dialog_option_add, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                        AlertDialog alertDialogAsset = alertDialogBuilderAsset.create();
+                        AlertDialog alertDialogAsset = getAlertDialog(false);
                         alertDialogAsset.show();
-                        Button nbutton2 = alertDialogAsset.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        nbutton2.setBackgroundColor(Color.GRAY);
-                        Button pbutton2 = alertDialogAsset.getButton(DialogInterface.BUTTON_POSITIVE);
-                        pbutton2.setBackgroundColor(Color.RED);
                         break;
                 }
                 return true;
             }
         });
         popup.show();
+    }
+
+    private AlertDialog getAlertDialog(boolean isMaterial) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        View dialogView = layoutInflater.inflate(R.layout.dialog_add_material_asset_form, null);
+        alertDialogBuilder.setCancelable(false)
+                .setView(dialogView)
+                .setTitle(R.string.add_asset)
+                .setPositiveButton(R.string.dialog_option_add, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        Button nbutton2 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        nbutton2.setBackgroundColor(Color.GRAY);
+        Button pbutton2 = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        pbutton2.setBackgroundColor(Color.RED);
+        return alertDialog;
     }
 
     @Override

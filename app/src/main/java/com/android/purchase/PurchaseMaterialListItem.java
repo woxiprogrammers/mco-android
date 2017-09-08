@@ -1,7 +1,6 @@
 package com.android.purchase;
 
-import java.util.ArrayList;
-
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -10,12 +9,15 @@ import io.realm.annotations.PrimaryKey;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-class PurchaseMaterialListItem extends RealmObject {
+public class PurchaseMaterialListItem extends RealmObject {
     @PrimaryKey
     private int indexId;
     private String item_name, item_quantity, item_unit, approved_status, item_category;
     private boolean is_diesel;
-    private ArrayList<String> list_of_images;
+    private RealmList<MaterialImageItem> list_of_images;
+
+    public PurchaseMaterialListItem() {
+    }
 
     public int getIndexId() {
         return indexId;
@@ -73,11 +75,11 @@ class PurchaseMaterialListItem extends RealmObject {
         this.is_diesel = is_diesel;
     }
 
-    public ArrayList<String> getList_of_images() {
+    public RealmList<MaterialImageItem> getList_of_images() {
         return list_of_images;
     }
 
-    public void setList_of_images(ArrayList<String> list_of_images) {
+    public void setList_of_images(RealmList<MaterialImageItem> list_of_images) {
         this.list_of_images = list_of_images;
     }
 }

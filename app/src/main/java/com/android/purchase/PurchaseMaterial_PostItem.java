@@ -8,9 +8,12 @@ import io.realm.RealmObject;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-class PurchaseMaterial_PostItem extends RealmObject {
+public class PurchaseMaterial_PostItem extends RealmObject {
     private String request_assigned_to;
     private RealmList<PurchaseMaterialListItem> arrPurchaseMaterialList;
+
+    public PurchaseMaterial_PostItem() {
+    }
 
     public String getRequest_assigned_to() {
         return request_assigned_to;
