@@ -47,6 +47,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems;
     private PurchaseMaterial_PostItem purchaseMaterial_postItem;
+    private AlertDialog alertDialog;
+    private boolean isMaterial;
+    private String strDialogTitle = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         mContext = PurchaseMaterialListActivity.this;
         layoutInflater = LayoutInflater.from(mContext);
         setUpPrAdapter();
+        createAlertDialog();
     }
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
@@ -66,11 +70,13 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_add_material:
-                        AlertDialog alertDialogMaterial = getAlertDialog(false);
+                        isMaterial = true;
+                        AlertDialog alertDialogMaterial = getExistingAlertDialog();
                         alertDialogMaterial.show();
                         break;
                     case R.id.action_add_asset:
-                        AlertDialog alertDialogAsset = getAlertDialog(false);
+                        isMaterial = false;
+                        AlertDialog alertDialogAsset = getExistingAlertDialog();
                         alertDialogAsset.show();
                         break;
                 }
@@ -80,12 +86,12 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         popup.show();
     }
 
-    private AlertDialog getAlertDialog(boolean isMaterial) {
+    private void createAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = layoutInflater.inflate(R.layout.dialog_add_material_asset_form, null);
         alertDialogBuilder.setCancelable(false)
                 .setView(dialogView)
-                .setTitle(R.string.add_asset)
+                .setTitle(strDialogTitle)
                 .setPositiveButton(R.string.dialog_option_add, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -94,11 +100,22 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        Button nbutton2 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        alertDialog = alertDialogBuilder.create();
+        /*Button nbutton2 = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         nbutton2.setBackgroundColor(Color.GRAY);
         Button pbutton2 = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        pbutton2.setBackgroundColor(Color.RED);
+        pbutton2.setBackgroundColor(Color.RED);*/
+    }
+
+    private AlertDialog getExistingAlertDialog() {
+        if (isMaterial) {
+            strDialogTitle = getString(R.string.dialog_title_add_material_asset);
+        } else {
+            strDialogTitle = getString(R.string.dialog_title_add_material_asset);
+        }
+        if (alertDialog == null) {
+            createAlertDialog();
+        }
         return alertDialog;
     }
 
