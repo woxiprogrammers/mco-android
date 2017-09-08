@@ -113,12 +113,11 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         mIvChooseImage = (ImageView) dialogView.findViewById(R.id.ivChooseImage);
         mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
         mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
-        mTextViewTitleMaterialAsset.setText(strDialogTitle);
-        mTextViewLabelMaterialAsset.setText(strItemNameLabel);
         mCheckboxIsMaterial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 Toast.makeText(mContext, "" + isChecked, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "isMaterial " + isMaterial, Toast.LENGTH_SHORT).show();
             }
         });
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +140,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     }
 
     private AlertDialog getExistingAlertDialog() {
+        if (alertDialog == null) {
+            createAlertDialog();
+        }
         if (isMaterial) {
             strItemNameLabel = getString(R.string.dialog_label_add_material);
             strDialogTitle = getString(R.string.dialog_title_add_material);
@@ -148,9 +150,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             strItemNameLabel = getString(R.string.dialog_label_add_asset);
             strDialogTitle = getString(R.string.dialog_title_add_asset);
         }
-        if (alertDialog == null) {
-            createAlertDialog();
-        }
+        mTextViewTitleMaterialAsset.setText(strDialogTitle);
+        mTextViewLabelMaterialAsset.setText(strItemNameLabel);
         return alertDialog;
     }
 

@@ -69,7 +69,7 @@
     <string name="dismiss">Dismiss</string>
     <string name="add_material">Add Material</string>
     <string name="dialog_option_add">Add</string>
-    <string name="dialog_title_add_material">Add Asset</string>
+    <string name="dialog_title_add_material">Add Material</string>
     <string-array name="destination_array">
         <item>Site</item>
         <item>Client</item>
