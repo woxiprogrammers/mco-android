@@ -24,13 +24,29 @@
                 android:layout_height="wrap_content"
                 android:text="Wooden Ply Shaded Door"/>
 
-            <TextView
-                android:id="@+id/textView_MaterialUnit_createPR"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wooden Ply Shaded Door"
-                android:textColor="@color/colorTextLight"
-                android:textSize="@dimen/text_14sp"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView_MaterialQuantity_createPR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="123"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/text_14sp"/>
+
+                <TextView
+                    android:id="@+id/textView_MaterialUnit_createPR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:layout_marginRight="@dimen/dimen_8dp"
+                    android:text="KG"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/text_14sp"/>
+            </LinearLayout>
         </LinearLayout>
 
         <ImageButton

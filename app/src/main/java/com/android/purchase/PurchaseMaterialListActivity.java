@@ -2,6 +2,7 @@ package com.android.purchase;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,11 @@ import android.widget.TextView;
 import com.android.constro360.R;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
+import com.vlk.multimager.activities.GalleryActivity;
+import com.vlk.multimager.activities.MultiCameraActivity;
+import com.vlk.multimager.utils.Constants;
+import com.vlk.multimager.utils.Image;
+import com.vlk.multimager.utils.Params;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -34,6 +40,7 @@ import butterknife.OnClick;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -51,7 +58,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private LayoutInflater layoutInflater;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResults;
-    private ArrayList<PurchaseMaterialListItem> materialListItemArrayList;
+    //    private ArrayList<PurchaseMaterialListItem> materialListItemArrayList;
     private PurchaseMaterial_PostItem purchaseMaterial_postItem;
     private AlertDialog alertDialog;
     private boolean isMaterial;
@@ -64,9 +71,10 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private EditText mEditTextUnitMaterialAsset;
     private LinearLayout mLlUploadImage;
     private ImageView mIvChooseImage;
+    private TextView mTextViewCaptureImages;
+    private TextView mTextViewPickImages;
     private Button mButtonDismissMaterialAsset;
     private Button mButtonAddMaterialAsset;
-    private PurchaseMaterialListItem purchaseMaterialListItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +83,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mContext = PurchaseMaterialListActivity.this;
         layoutInflater = LayoutInflater.from(mContext);
-        materialListItemArrayList = new ArrayList<PurchaseMaterialListItem>();
+//        materialListItemArrayList = new ArrayList<PurchaseMaterialListItem>();
         purchaseMaterial_postItem = new PurchaseMaterial_PostItem();
         setUpPrAdapter();
         createAlertDialog();
@@ -118,38 +126,45 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         mIvChooseImage = (ImageView) dialogView.findViewById(R.id.ivChooseImage);
         mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
         mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
+        mTextViewCaptureImages = (TextView) dialogView.findViewById(R.id.textView_capture_images);
+        mTextViewPickImages = (TextView) dialogView.findViewById(R.id.textView_pick_images);
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
             }
         });
+        mTextViewCaptureImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, MultiCameraActivity.class);
+                Params params = new Params();
+                params.setCaptureLimit(10);
+                params.setToolbarColor(R.color.colorPrimaryLight);
+                params.setActionButtonColor(R.color.colorAccentDark);
+                params.setButtonTextColor(R.color.colorWhite);
+                intent.putExtra(Constants.KEY_PARAMS, params);
+                startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
+            }
+        });
+        mTextViewPickImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, GalleryActivity.class);
+                Params params = new Params();
+                params.setCaptureLimit(10);
+                params.setPickerLimit(10);
+                params.setToolbarColor(R.color.colorPrimaryLight);
+                params.setActionButtonColor(R.color.colorAccentDark);
+                params.setButtonTextColor(R.color.colorWhite);
+                intent.putExtra(Constants.KEY_PARAMS, params);
+                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
+            }
+        });
         mButtonAddMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                purchaseMaterialListItem = getPurchaseMaterialListItemInstance();
-                purchaseMaterialListItem.setItem_name(mEditTextNameMaterialAsset.getText().toString().trim());
-                purchaseMaterialListItem.setItem_quantity(mEditTextQuantityMaterialAsset.getText().toString().trim());
-                purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim());
-                //approve status- "new" or "approved"
-                //As we are adding item status will always be "new".
-                purchaseMaterialListItem.setApproved_status("new");
-                if (isMaterial) {
-                    purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
-                } else {
-                    purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
-                }
-                if (mCheckboxIsMaterial.isChecked()) {
-                    purchaseMaterialListItem.setIs_diesel(true);
-                } else {
-                    purchaseMaterialListItem.setIs_diesel(false);
-                }
-                int randomNum = ThreadLocalRandom.current().nextInt(111, 11111);
-                purchaseMaterialListItem.setIndexId(randomNum);
-                //TODO: Add images' array
-                materialListItemArrayList.add(purchaseMaterialListItem);
-                addThisItemToLocalRealm(purchaseMaterialListItem);
-                purchaseMaterialListItem = null;
+                addItemToLocalRealm();
                 alertDialog.dismiss();
             }
         });
@@ -157,14 +172,33 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         alertDialog = alertDialogBuilder.create();
     }
 
-    private void addThisItemToLocalRealm(PurchaseMaterialListItem purchaseMaterialListItem) {
-        final PurchaseMaterialListItem purchaseItem = purchaseMaterialListItem;
+    private void addItemToLocalRealm() {
+        final PurchaseMaterialListItem purchaseMaterialListItem = new PurchaseMaterialListItem();
+        purchaseMaterialListItem.setItem_name(mEditTextNameMaterialAsset.getText().toString().trim() + "");
+        purchaseMaterialListItem.setItem_quantity(mEditTextQuantityMaterialAsset.getText().toString().trim() + "");
+        purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim() + "");
+        //approve status- "new" or "approved"
+        //As we are adding item status will always be "new".
+        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_new));
+        if (isMaterial) {
+            purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
+        } else {
+            purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
+        }
+        if (mCheckboxIsMaterial.isChecked()) {
+            purchaseMaterialListItem.setIs_diesel(true);
+        } else {
+            purchaseMaterialListItem.setIs_diesel(false);
+        }
+        int randomNum = ThreadLocalRandom.current().nextInt(11, 999999);
+        purchaseMaterialListItem.setIndexId(randomNum);
+        purchaseMaterialListItem.setList_of_images(new RealmList<MaterialImageItem>());
         realm = Realm.getDefaultInstance();
         try {
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    realm.insertOrUpdate(purchaseItem);
+                    realm.insertOrUpdate(purchaseMaterialListItem);
                 }
             }, new Realm.Transaction.OnSuccess() {
                 @Override
@@ -184,12 +218,12 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         }
     }
 
-    private PurchaseMaterialListItem getPurchaseMaterialListItemInstance() {
+    /*private PurchaseMaterialListItem getPurchaseMaterialListItemInstance() {
         if (purchaseMaterialListItem == null) {
             purchaseMaterialListItem = new PurchaseMaterialListItem();
         }
         return purchaseMaterialListItem;
-    }
+    }*/
 
     private AlertDialog getExistingAlertDialog() {
         if (alertDialog == null) {
@@ -219,7 +253,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseMaterialListRealmResults = realm.where(PurchaseMaterialListItem.class).findAllAsync();
+        purchaseMaterialListRealmResults = realm.where(PurchaseMaterialListItem.class).findAll();
         PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResults, true, true);
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
@@ -242,6 +276,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             purchaseMaterialListRealmResults.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
+                    Timber.d("Size of purchaseRequestListItems: " + String.valueOf(purchaseRequestListItems.size()));
                 }
             });
         } else {
@@ -267,7 +302,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
-//            holder.textViewPurchaseRequestId.setText(purchaseMaterialListItem.getPurchaseRequestId());
+            holder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
+            holder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
+            holder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit());
         }
 
         @Override
@@ -283,6 +320,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         class MyViewHolder extends RecyclerView.ViewHolder {
             @BindView(R.id.textView_MaterialName_createPR)
             TextView textViewMaterialNameCreatePR;
+            @BindView(R.id.textView_MaterialQuantity_createPR)
+            TextView textViewMaterialQuantityCreatePR;
             @BindView(R.id.textView_MaterialUnit_createPR)
             TextView textViewMaterialUnitCreatePR;
             @BindView(R.id.imageButton_deleteMaterial_createPR)
@@ -292,6 +331,23 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
             }
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList));
+                break;
+            case Constants.TYPE_MULTI_PICKER:
+                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList2));
+                break;
         }
     }
 }
