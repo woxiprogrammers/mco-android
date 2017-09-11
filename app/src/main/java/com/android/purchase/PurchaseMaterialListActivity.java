@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,6 +26,7 @@ import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -118,13 +118,6 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         mIvChooseImage = (ImageView) dialogView.findViewById(R.id.ivChooseImage);
         mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
         mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
-        mCheckboxIsMaterial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                purchaseMaterialListItem = getPurchaseMaterialListItemInstance();
-                purchaseMaterialListItem.setIs_diesel(isChecked);
-            }
-        });
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,22 +127,61 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         mButtonAddMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mEditTextNameMaterialAsset.getText().toString().trim();
-                mEditTextQuantityMaterialAsset.getText().toString().trim();
-                mEditTextUnitMaterialAsset.getText().toString().trim();
                 purchaseMaterialListItem = getPurchaseMaterialListItemInstance();
+                purchaseMaterialListItem.setItem_name(mEditTextNameMaterialAsset.getText().toString().trim());
+                purchaseMaterialListItem.setItem_quantity(mEditTextQuantityMaterialAsset.getText().toString().trim());
+                purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim());
+                //approve status- "new" or "approved"
+                //As we are adding item status will always be "new".
                 purchaseMaterialListItem.setApproved_status("new");
                 if (isMaterial) {
                     purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
                 } else {
                     purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
                 }
+                if (mCheckboxIsMaterial.isChecked()) {
+                    purchaseMaterialListItem.setIs_diesel(true);
+                } else {
+                    purchaseMaterialListItem.setIs_diesel(false);
+                }
+                int randomNum = ThreadLocalRandom.current().nextInt(111, 11111);
+                purchaseMaterialListItem.setIndexId(randomNum);
+                //TODO: Add images' array
                 materialListItemArrayList.add(purchaseMaterialListItem);
+                addThisItemToLocalRealm(purchaseMaterialListItem);
+                purchaseMaterialListItem = null;
                 alertDialog.dismiss();
             }
         });
         alertDialogBuilder.setCancelable(false).setView(dialogView);
         alertDialog = alertDialogBuilder.create();
+    }
+
+    private void addThisItemToLocalRealm(PurchaseMaterialListItem purchaseMaterialListItem) {
+        final PurchaseMaterialListItem purchaseItem = purchaseMaterialListItem;
+        realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.insertOrUpdate(purchaseItem);
+                }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    Timber.d("Realm execution successful");
+                }
+            }, new Realm.Transaction.OnError() {
+                @Override
+                public void onError(Throwable error) {
+                    AppUtils.getInstance().logRealmExecutionError(error);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 
     private PurchaseMaterialListItem getPurchaseMaterialListItemInstance() {
@@ -206,6 +238,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                     }
                 }));
         if (purchaseMaterialListRealmResults != null) {
+            Timber.d("purchaseMaterialListRealmResults change listener added.");
             purchaseMaterialListRealmResults.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {

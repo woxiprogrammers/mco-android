@@ -120,8 +120,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    setUpPrAdapter();
-                                    Timber.d("Success");
+                                    Timber.d("Realm execution successful");
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
