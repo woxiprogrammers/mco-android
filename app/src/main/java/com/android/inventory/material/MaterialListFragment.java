@@ -30,6 +30,9 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -88,8 +91,17 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     }
 
     private void requestInventoryResponse() {
+    JSONObject params=new JSONObject();
+        try {
+            params.put("page_id",0);
+            params.put("project_site_id",6);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         realm = Realm.getDefaultInstance();
-        AndroidNetworking.get(AppURL.API_INVENTORY_DATA_URL)
+        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL)
+                .addBodyParameter(params)
                 .setTag("requestInventoryData")
                 .setPriority(Priority.MEDIUM)
                 .build()
