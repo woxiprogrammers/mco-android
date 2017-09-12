@@ -34,11 +34,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import okhttp3.OkHttpClient;
 import timber.log.Timber;
 
 /**
@@ -98,15 +101,17 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Accept", "application/json; charset=UTF-8");
 
         realm = Realm.getDefaultInstance();
         AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL)
                 .addBodyParameter(params)
+                .addHeaders(headers)
                 .setTag("requestInventoryData")
-                .setPriority(Priority.MEDIUM)
+                .setPriority(Priority.LOW)
                 .build()
                 .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
-
                     @Override
                     public void onResponse(final InventoryResponse response) {
                         try {
@@ -136,7 +141,8 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
+//                        AppUtils.getInstance().logRealmExecutionError(anError);
+                        anError.printStackTrace();
                     }
                 });
     }

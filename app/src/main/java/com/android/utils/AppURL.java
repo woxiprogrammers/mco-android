@@ -16,7 +16,7 @@ public class AppURL {
     public static final String API_PURCHASE_BILL_LIST = "http://www.mocky.io/v2/59a6b4dd100000ca0408fd4b";
 
     public static final String API_INVENTORY_DATA_URL = "http://www.mocky.io/v2/599c5a5229000011012110ac";
-    public static final String API_MATERIAL_LISTING_URL="http://test.api.mconstruction.co.in/inventory/material/listing";
+    public static final String API_MATERIAL_LISTING_URL="http://testapi.mconstruction.co.in/inventory/material/listing?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vdGVzdGFwaS5tY29uc3RydWN0aW9uLmNvLmluL2xvZ2luIiwiaWF0IjoxNTA1MjEzNzgwLCJleHAiOjE1MDUyMTczODAsIm5iZiI6MTUwNTIxMzc4MCwianRpIjoiTzY5azlndzdJOWltTGZuQSIsInN1YiI6Mn0.bZfkMcHfMojJbuBrNyPqUdpE37Yq1q6twlxLIRJ2fBY";
     public static final String API_ASSETS_DATA_URL ="http://www.mocky.io/v2/59b0de11260000f901287d6c";
     public static final String API_SUMMARY_LIST_URL ="http://www.mocky.io/v2/59b23132120000700289224b";
 }
