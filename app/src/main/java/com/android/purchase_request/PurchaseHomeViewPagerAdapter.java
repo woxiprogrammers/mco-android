@@ -1,4 +1,4 @@
-package com.android.purchase;
+package com.android.purchase_request;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

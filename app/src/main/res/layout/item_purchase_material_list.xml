@@ -21,8 +21,7 @@
             <TextView
                 android:id="@+id/textView_MaterialName_createPR"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Wooden Ply Shaded Door"/>
+                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -33,7 +32,6 @@
                     android:id="@+id/textView_MaterialQuantity_createPR"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="123"
                     android:textColor="@color/colorTextLight"
                     android:textSize="@dimen/text_14sp"/>
 
@@ -43,7 +41,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_8dp"
                     android:layout_marginRight="@dimen/dimen_8dp"
-                    android:text="KG"
                     android:textColor="@color/colorTextLight"
                     android:textSize="@dimen/text_14sp"/>
             </LinearLayout>

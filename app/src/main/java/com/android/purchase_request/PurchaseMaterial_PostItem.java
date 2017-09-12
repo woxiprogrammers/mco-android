@@ -1,4 +1,4 @@
-package com.android.purchase;
+package com.android.purchase_request;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;

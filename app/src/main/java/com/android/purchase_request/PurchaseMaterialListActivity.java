@@ -1,4 +1,4 @@
-package com.android.purchase;
+package com.android.purchase_request;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,8 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.models.purchase_request.PurchaseRequestResponse;
+import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
@@ -32,6 +38,7 @@ import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import butterknife.BindView;
@@ -55,6 +62,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     Toolbar toolbarPurchase;
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_materialList;
+    @BindView(R.id.button_submit_purchase_request)
+    Button buttonSubmitPurchaseRequest;
     private LayoutInflater layoutInflater;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResults;
@@ -90,7 +99,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
-    public void onViewClicked() {
+    public void onAddClicked() {
         PopupMenu popup = new PopupMenu(PurchaseMaterialListActivity.this, textViewPurchaseMaterialListAddNew);
         popup.getMenuInflater().inflate(R.menu.options_menu_create_purchase_request, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -111,6 +120,11 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             }
         });
         popup.show();
+    }
+
+    @OnClick(R.id.button_submit_purchase_request)
+    public void onSubmitClicked() {
+        submitPurchaseRequest();
     }
 
     private void createAlertDialog() {
@@ -190,9 +204,11 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         } else {
             purchaseMaterialListItem.setIs_diesel(false);
         }
-        int randomNum = 0;
+        int randomNum;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             randomNum = ThreadLocalRandom.current().nextInt(11, 999999);
+        } else {
+            randomNum = new Random().nextInt((999999) + 11);
         }
         purchaseMaterialListItem.setIndexId(randomNum);
         purchaseMaterialListItem.setList_of_images(new RealmList<MaterialImageItem>());
@@ -352,5 +368,45 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                 Timber.d(String.valueOf(imagesList2));
                 break;
         }
+    }
+
+    private void submitPurchaseRequest() {
+        AndroidNetworking.post(AppURL.API_PURCHASE_REQUEST_SUBMIT)
+                .setPriority(Priority.MEDIUM)
+                .setTag("submitPurchaseRequest")
+                .build()
+                .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
+                    @Override
+                    public void onResponse(final PurchaseRequestResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Timber.d("Success");
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                    }
+                });
     }
 }

@@ -36,7 +36,7 @@
         <activity android:name="com.android.dummy.NewActivity"/>
         <activity android:name="com.android.dummy.SelectorActivity"/>
         <activity
-            android:name="com.android.purchase.PurchaseHomeActivity"
+            android:name="com.android.purchase_request.PurchaseHomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name="com.android.inventory.InventoryDetails"/>
@@ -48,7 +48,7 @@
         <activity android:name="com.android.inventory.assets.ActivityRequestMaintanance">
         </activity>
         <activity
-            android:name="com.android.purchase.PurchaseMaterialListActivity"
+            android:name="com.android.purchase_request.PurchaseMaterialListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
@@ -56,6 +56,8 @@
             android:label="@string/title_activity_asset_details">
         </activity>
         <activity android:name="com.android.inventory.assets.ActivityAssetsReadings">
+        </activity>
+        <activity android:name="com.android.purchase_details.PurchaseRequestDetailsHomeActivity">
         </activity>
     </application>
 </manifest>

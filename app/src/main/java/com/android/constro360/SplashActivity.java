@@ -10,7 +10,7 @@ import com.android.dashboard.DashBoardActivity;
 import com.android.inventory.BottomNavigateViewActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.login_acl.LoginResponse;
-import com.android.purchase.PurchaseHomeActivity;
+import com.android.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
