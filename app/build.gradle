@@ -24,7 +24,7 @@ android {
         dev {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
-            minSdkVersion 21
+//            minSdkVersion 21
             buildConfigField "String", "BASE_URL", '"http://testapi.mconstruction.co.in/"'
             resValue "string", "app_name", "ConstructionDev"
         }

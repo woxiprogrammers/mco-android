@@ -190,7 +190,10 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         } else {
             purchaseMaterialListItem.setIs_diesel(false);
         }
-        int randomNum = ThreadLocalRandom.current().nextInt(11, 999999);
+        int randomNum = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            randomNum = ThreadLocalRandom.current().nextInt(11, 999999);
+        }
         purchaseMaterialListItem.setIndexId(randomNum);
         purchaseMaterialListItem.setList_of_images(new RealmList<MaterialImageItem>());
         realm = Realm.getDefaultInstance();
