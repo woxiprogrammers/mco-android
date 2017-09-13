@@ -44,15 +44,6 @@
                         android:text="Quantity"
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
-
-                    <TextView
-                        android:id="@+id/textview_item_units"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Total Units"
-                        android:textColor="#ff0000"
-                        android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>
 
                 <LinearLayout

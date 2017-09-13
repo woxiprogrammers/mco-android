@@ -1,6 +1,7 @@
 package com.android.purchase_details;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -28,6 +30,8 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     @BindView(R.id.view_pager_purchase_details)
     ViewPager viewPagerPurchaseDetails;
 
+    private boolean isInValidate=false;
+
     @BindView(R.id.purchase_details_bottom_navigation)
     BottomNavigationView purchaseDetailsBottomNavigation;
     MenuItem prevMenuItem;
@@ -43,6 +47,11 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.purchase_details_approve_menu,menu);
+
+        if(isInValidate) {
+            menu.findItem(R.id.action_approve).setVisible(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -54,7 +63,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 break;
 
             case R.id.action_approve:
-                Toast.makeText(mContext,"Hello",Toast.LENGTH_SHORT).show();
+                openApproveDialog(item);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -150,5 +159,23 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         public int getCount() {
             return arrBottomTitle.length;
         }
+    }
+
+    private void openApproveDialog(final MenuItem item){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder
+                .setTitle("Approved?")
+                .setMessage("Do You Want To approve")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        isInValidate=true;
+                        invalidateOptionsMenu();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 }

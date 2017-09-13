@@ -1,27 +1,19 @@
 package com.android.purchase_details;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.InventoryDetails;
-import com.android.inventory.MaterialListAdapter;
-import com.android.models.inventory.InventoryResponse;
-import com.android.models.inventory.MaterialListItem;
-import com.android.models.purchase_request.PurchaseRequestListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -170,4 +162,6 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
             AppUtils.getInstance().showOfflineMessage("PurchaseDetailsListFragment");
         }
     }
+
+
 }

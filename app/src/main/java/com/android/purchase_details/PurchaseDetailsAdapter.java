@@ -46,8 +46,8 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ItemListItem itemListItem = arrItemList.get(position);
         holder.textviewItemName.setText(itemListItem.getItemName());
-        holder.textviewItemQuantity.setText(itemListItem.getItemQuantity());
-        holder.textviewItemUnits.setText(itemListItem.getItemUnit());
+        holder.textviewItemQuantity.setText(itemListItem.getItemQuantity() + " " + itemListItem.getItemUnit());
+//        holder.textviewItemUnits.setText(itemListItem.getItemUnit());
 
         Timber.d(String.valueOf(itemListItem.getListOfImages().size()));
         Timber.d("Pos" + position);
@@ -87,8 +87,6 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
         TextView textviewItemName;
         @BindView(R.id.textview_item_quantity)
         TextView textviewItemQuantity;
-        @BindView(R.id.textview_item_units)
-        TextView textviewItemUnits;
         @BindView(R.id.ll_image)
         LinearLayout llImage;
 
