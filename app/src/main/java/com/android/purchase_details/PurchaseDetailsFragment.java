@@ -17,6 +17,13 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
     public PurchaseDetailsFragment() {
     }
 
+    public static PurchaseDetailsFragment newInstance() {
+        Bundle args = new Bundle();
+        PurchaseDetailsFragment fragment = new PurchaseDetailsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -25,6 +32,5 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
 
     @Override
     public void fragmentBecameVisible() {
-
     }
 }
