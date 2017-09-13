@@ -1,6 +1,7 @@
 package com.android.purchase_details;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -63,9 +64,14 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     private void initializeViews() {
         mContext=PurchaseRequestDetailsHomeActivity.this;
         unbinder=ButterKnife.bind(this);
+        String strRRequestId = null;
+        Intent extras=getIntent();
+        if(extras != null){
+            strRRequestId=extras.getStringExtra("PRNumber");
+        }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            setTitle("Purchase Summary");
+            setTitle(strRRequestId);
         }
 
         purchaseDetailsBottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

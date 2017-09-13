@@ -1,9 +1,13 @@
 package com.android.purchase_details;
 
 import java.util.List;
+
+import com.android.purchase_request.MaterialImageItem;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class ItemListItem extends RealmObject{
 
@@ -14,11 +18,12 @@ public class ItemListItem extends RealmObject{
 	private String itemUnit;
 
 	@SerializedName("list_of_images")
-	private List<String> listOfImages;
+	private RealmList<ImageItem> listOfImages;
 
 	@SerializedName("item_name")
 	private String itemName;
 
+	@PrimaryKey
 	@SerializedName("id")
 	private int id;
 
@@ -41,11 +46,11 @@ public class ItemListItem extends RealmObject{
 		return itemUnit;
 	}
 
-	public void setListOfImages(List<String> listOfImages){
+	public void setListOfImages(RealmList<ImageItem> listOfImages){
 		this.listOfImages = listOfImages;
 	}
 
-	public List<String> getListOfImages(){
+	public RealmList<ImageItem> getListOfImages(){
 		return listOfImages;
 	}
 
