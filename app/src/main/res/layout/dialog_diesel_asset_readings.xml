@@ -9,14 +9,14 @@
               android:weightSum="1">
 
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/text_view_topUpMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Set current time as a Top Up Time"
         android:layout_marginLeft="@dimen/dimen_8dp"
         android:textSize="@dimen/dimen_18dp"
-        android:visibility="gone"/>
+        android:visibility="gone"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"

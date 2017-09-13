@@ -30,12 +30,18 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import okhttp3.OkHttpClient;
 import timber.log.Timber;
 
 /**
@@ -88,13 +94,24 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     }
 
     private void requestInventoryResponse() {
+    JSONObject params=new JSONObject();
+        try {
+            params.put("page_id",0);
+            params.put("project_site_id",6);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Accept", "application/json; charset=UTF-8");
+
         realm = Realm.getDefaultInstance();
-        AndroidNetworking.get(AppURL.API_INVENTORY_DATA_URL)
+        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL)
+                .addBodyParameter(params)
+                .addHeaders(headers)
                 .setTag("requestInventoryData")
-                .setPriority(Priority.MEDIUM)
+                .setPriority(Priority.LOW)
                 .build()
                 .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
-
                     @Override
                     public void onResponse(final InventoryResponse response) {
                         try {
@@ -124,7 +141,8 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
+//                        AppUtils.getInstance().logRealmExecutionError(anError);
+                        anError.printStackTrace();
                     }
                 });
     }

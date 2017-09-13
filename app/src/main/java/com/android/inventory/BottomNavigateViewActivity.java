@@ -29,7 +29,7 @@ public class BottomNavigateViewActivity extends BaseActivity {
         setContentView(R.layout.activity_bottom_navigate_view);
         ButterKnife.bind(this);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             setTitle(getString(R.string.inventory));
         }
         callMaterialFragment();
