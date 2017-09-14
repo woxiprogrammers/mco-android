@@ -1,5 +1,6 @@
 package com.android.purchase_details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -52,15 +53,22 @@ public class PayAndBillsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_and_bills);
         ButterKnife.bind(this);
+        initializeViews();
+    }
+
+    private void initializeViews() {
+        Intent intent=getIntent();
+        String titlePoName = null;
+        if(intent != null){
+            titlePoName=intent.getStringExtra("PONumber");
+
+        }
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Pay");
+            getSupportActionBar().setTitle(titlePoName);
         }
         callMaterialFragment();
     }
-
-
-
 
     private void callMaterialFragment() {
         final PurchaseViewPagerAdapter purchaseViewPagerAdapter = new PurchaseViewPagerAdapter(getSupportFragmentManager());

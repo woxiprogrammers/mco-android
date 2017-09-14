@@ -51,13 +51,12 @@
                     android:layout_height="wrap_content"
                     android:text="Material Name:"
                     android:textColor="@color/colorTextLight"/>
-
-                <EditText
+                <Spinner
+                    android:id="@+id/spinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:drawableRight="@android:drawable/arrow_down_float"
-                    android:hint="Select Material"/>
+                    android:layout_height="match_parent">
+
+                </Spinner>
             </LinearLayout>
 
             <LinearLayout
@@ -79,6 +78,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/edittextQuantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -97,6 +97,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/editTextUnits"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -111,23 +112,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="0dp"
+                    android:layout_width="75dp"
                     android:layout_height="75dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_menu_gallery"
-                    android:tint="@color/colorTextLight"/>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="75dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_menu_gallery"
-                    android:tint="@color/colorTextLight"/>
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="75dp"
-                    android:layout_weight="1"
                     android:src="@drawable/ic_menu_gallery"
                     android:tint="@color/colorTextLight"/>
             </LinearLayout>
@@ -145,6 +131,7 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
+                    android:id="@+id/editText_Challan_Number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
@@ -176,6 +163,7 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
+                    android:id="@+id/editText_VehicleNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
@@ -194,6 +182,7 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
+                    android:id="@+id/editText_InTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
@@ -212,6 +201,7 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
+                    android:id="@+id/editText_OutTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
