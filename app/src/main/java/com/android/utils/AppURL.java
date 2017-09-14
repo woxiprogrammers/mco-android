@@ -23,4 +23,5 @@ public class AppURL {
 
     //Purchase Details
     public static final String API_PURCHASE_SUMMARY="http://www.mocky.io/v2/59b905003a0000d300f7f877";
+    public static final String API_PURCHASE_ORDER="http://www.mocky.io/v2/59ba5d100f000094016227ea";
 }

@@ -96,4 +96,10 @@
     <string name="tag_material">material</string>
     <string name="tag_asset">asset</string>
     <string name="tag_new">new</string>
+    <string name="title_activity_pay_and_bills">PayAndBillsActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="text_pay">Pay</string>
+    <string name="text_bills">Bills</string>
 </resources>

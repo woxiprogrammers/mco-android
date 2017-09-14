@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.utils.BaseActivity;
 
 import butterknife.BindView;
@@ -30,7 +31,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     @BindView(R.id.view_pager_purchase_details)
     ViewPager viewPagerPurchaseDetails;
 
-    private boolean isInValidate=false;
+    private boolean isInValidate = false;
 
     @BindView(R.id.purchase_details_bottom_navigation)
     BottomNavigationView purchaseDetailsBottomNavigation;
@@ -46,9 +47,9 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.purchase_details_approve_menu,menu);
+        getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
 
-        if(isInValidate) {
+        if (isInValidate) {
             menu.findItem(R.id.action_approve).setVisible(false);
         }
 
@@ -57,7 +58,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
@@ -69,14 +70,13 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void initializeViews() {
-        mContext=PurchaseRequestDetailsHomeActivity.this;
-        unbinder=ButterKnife.bind(this);
+        mContext = PurchaseRequestDetailsHomeActivity.this;
+        unbinder = ButterKnife.bind(this);
         String strRRequestId = null;
-        Intent extras=getIntent();
-        if(extras != null){
-            strRRequestId=extras.getStringExtra("PRNumber");
+        Intent extras = getIntent();
+        if (extras != null) {
+            strRRequestId = extras.getStringExtra("PRNumber");
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -105,8 +105,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         });
     }
 
-
-    private void callFragments(){
+    private void callFragments() {
         final PurchaseDetailsAdapter inventoryViewPagerAdapter = new PurchaseDetailsAdapter(getSupportFragmentManager());
         viewPagerPurchaseDetails.setAdapter(inventoryViewPagerAdapter);
         viewPagerPurchaseDetails.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -134,8 +133,9 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
             }
         });
     }
+
     private class PurchaseDetailsAdapter extends FragmentPagerAdapter {
-        private String[] arrBottomTitle = {"Bottom1", "Bottom2","Bottom3"};
+        private String[] arrBottomTitle = {"Bottom1", "Bottom2", "Bottom3"};
 
         public PurchaseDetailsAdapter(FragmentManager fm) {
             super(fm);
@@ -149,7 +149,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 case 1:
                     return PurchaseHistoryFragment.newInstance();
                 case 2:
-                    return PurchaseOrderFragment.newInstance();
+                    return PurchaseOrderListFragment.newInstance();
                 default:
                     return null;
             }
@@ -161,14 +161,14 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         }
     }
 
-    private void openApproveDialog(final MenuItem item){
+    private void openApproveDialog(final MenuItem item) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder
-                .setTitle("Approved?")
-                .setMessage("Do You Want To approve")
+                .setTitle("Approve")
+                .setMessage("Do You Want To approve?")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        isInValidate=true;
+                        isInValidate = true;
                         invalidateOptionsMenu();
                         dialog.dismiss();
                     }
