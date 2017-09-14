@@ -69,7 +69,6 @@ public class BottomNavigateViewActivity extends BaseActivity {
     }
 
 
-
     private void callMaterialFragment() {
         final InventoryViewPagerAdapter inventoryViewPagerAdapter = new InventoryViewPagerAdapter(getSupportFragmentManager());
         viewPagerInventory.setAdapter(inventoryViewPagerAdapter);
