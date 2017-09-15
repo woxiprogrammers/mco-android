@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -26,7 +27,6 @@ import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.models.purchase_request.AvailableUsersItem;
-import com.android.models.purchase_request.PurchaseRequestListItem;
 import com.android.models.purchase_request.PurchaseRequestResponse;
 import com.android.models.purchase_request.UsersWithAclResponse;
 import com.android.utils.AppURL;
@@ -42,12 +42,12 @@ import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -80,6 +80,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResults;
     private RealmResults<AvailableUsersItem> availableUsersRealmResults;
+    private List<AvailableUsersItem> availableUserArray;
     //    private ArrayList<PurchaseMaterialListItem> materialListItemArrayList;
 //    private PurchaseMaterial_PostItem purchaseMaterial_postItem;
     private AlertDialog alertDialog;
@@ -116,19 +117,31 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private void setUpSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         availableUsersRealmResults = realm.where(AvailableUsersItem.class).findAll();
+        setUpSpinnerAdapter(availableUsersRealmResults);
         if (availableUsersRealmResults != null) {
             Timber.d("availableUsersRealmResults change listener added.");
             availableUsersRealmResults.addChangeListener(new RealmChangeListener<RealmResults<AvailableUsersItem>>() {
                 @Override
                 public void onChange(RealmResults<AvailableUsersItem> availableUsersItems) {
                     Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
-                    Object[] availableUserArray = availableUsersItems.toArray();
-                    Timber.d(Arrays.toString(availableUserArray));
+                    setUpSpinnerAdapter(availableUsersItems);
                 }
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
         }
+    }
+
+    private void setUpSpinnerAdapter(RealmResults<AvailableUsersItem> availableUsersItems) {
+        availableUserArray = realm.copyFromRealm(availableUsersItems);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (AvailableUsersItem currentUser : availableUserArray) {
+            String strUserName = currentUser.getUserName();
+            arrayOfUsers.add(strUserName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerSelectAssignTo.setAdapter(arrayAdapter);
     }
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
@@ -157,14 +170,20 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_submit_purchase_request)
     public void onSubmitClicked() {
-        ArrayList<PurchaseRequestListItem> purchaseRequestListItems = new ArrayList(purchaseMaterialListRealmResults);
+        realm = Realm.getDefaultInstance();
+        List<PurchaseMaterialListItem> purchaseMaterialListItems = realm.copyFromRealm(purchaseMaterialListRealmResults);
         JSONObject params = new JSONObject();
+        int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
+        int userId = availableUserArray.get(index).getId();
+        String userName = availableUserArray.get(index).getUserName();
         try {
-            params.put("item_list", purchaseRequestListItems);
-            params.put("assigned_to", mSpinnerSelectAssignTo.getSelectedItem().toString());
+            params.put("item_list", purchaseMaterialListItems);
+            params.put("user_id", userId);
+            params.put("user_name", userName);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
+        Timber.d(String.valueOf(params));
         submitPurchaseRequest(params);
     }
 
@@ -412,9 +431,12 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     }
 
     private void submitPurchaseRequest(JSONObject params) {
-        AndroidNetworking.post(AppURL.API_PURCHASE_REQUEST_SUBMIT)
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Accept", "application/json; charset=UTF-8");
+        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL)
                 .setPriority(Priority.MEDIUM)
                 .addBodyParameter(params)
+                .addHeaders(headers)
                 .setTag("submitPurchaseRequest")
                 .build()
                 .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
