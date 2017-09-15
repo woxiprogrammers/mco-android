@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -30,23 +31,7 @@ public class PayAndBillsActivity extends BaseActivity {
     BottomNavigationView bottomNavigationPay;
     MenuItem prevMenuItem;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.action_pay:
-                    viewPager.setCurrentItem(0);
-                    break;
-                case R.id.action_bills:
-                    viewPager.setCurrentItem(1);
-                    break;
-            }
-            return false;
-        }
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +39,21 @@ public class PayAndBillsActivity extends BaseActivity {
         setContentView(R.layout.activity_pay_and_bills);
         ButterKnife.bind(this);
         initializeViews();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initializeViews() {
@@ -68,6 +68,24 @@ public class PayAndBillsActivity extends BaseActivity {
             getSupportActionBar().setTitle(titlePoName);
         }
         callMaterialFragment();
+
+        bottomNavigationPay.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.action_pay:
+                        viewPager.setCurrentItem(0);
+                        break;
+                    case R.id.action_bills:
+                        viewPager.setCurrentItem(1);
+                        break;
+
+                }
+                return false;
+            }
+        });
     }
 
     private void callMaterialFragment() {

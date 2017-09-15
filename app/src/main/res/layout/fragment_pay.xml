@@ -11,34 +11,7 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/dimen_16dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginBottom="8dp"
-                android:layout_marginRight="@dimen/dimen_8dp"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:background="@drawable/background_button_pressed"
-                android:orientation="horizontal"
-                android:padding="4dp"
-                android:visibility="gone">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="4dp"
-                    android:background="@drawable/ic_right"
-                    android:tint="@color/colorTextLight"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="Non Quotation"
-                    android:textColor="#000"
-                    android:textSize="16dp"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -51,13 +24,33 @@
                     android:layout_height="wrap_content"
                     android:text="Material Name:"
                     android:textColor="@color/colorTextLight"/>
-                <Spinner
-                    android:id="@+id/spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
 
-                </Spinner>
             </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background">
+
+                <Spinner
+                    android:id="@+id/spinner_select_material"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Bill"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create Ammetment"/>
+
+            </RadioGroup>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -202,6 +195,42 @@
 
                 <EditText
                     android:id="@+id/editText_OutTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bill Amount:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_BillAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GRN Number:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_grnNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>

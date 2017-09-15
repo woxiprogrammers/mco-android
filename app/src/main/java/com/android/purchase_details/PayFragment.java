@@ -20,7 +20,7 @@ import butterknife.Unbinder;
  */
 public class PayFragment extends Fragment implements FragmentInterface {
 
-    @BindView(R.id.spinner)
+    @BindView(R.id.spinner_select_material)
     Spinner spinner;
     @BindView(R.id.edittextQuantity)
     EditText edittextQuantity;
@@ -58,7 +58,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     @Override
     public void fragmentBecameVisible() {
-
     }
 
     @Override
