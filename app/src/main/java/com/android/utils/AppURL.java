@@ -20,8 +20,8 @@ public class AppURL {
     public static final String API_ASSETS_DATA_URL ="http://www.mocky.io/v2/59b0de11260000f901287d6c";
     public static final String API_PURCHASE_REQUEST_SUBMIT = "";
     public static final String API_SUMMARY_LIST_URL ="http://www.mocky.io/v2/59b23132120000700289224b";
-
     //Purchase Details
     public static final String API_PURCHASE_SUMMARY="http://www.mocky.io/v2/59b905003a0000d300f7f877";
     public static final String API_PURCHASE_ORDER="http://www.mocky.io/v2/59ba5d100f000094016227ea";
+//    http://www.mocky.io/v2/59bbb16d0f0000fb01ff86dd
 }

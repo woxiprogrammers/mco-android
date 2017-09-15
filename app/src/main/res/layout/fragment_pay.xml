@@ -38,12 +38,14 @@
         </FrameLayout>
 
         <RadioGroup
+            android:id="@+id/radio_Group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Upload Bill"/>
 
             <RadioButton
@@ -75,6 +77,8 @@
                     android:id="@+id/edittextQuantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:digits="0123456789"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
