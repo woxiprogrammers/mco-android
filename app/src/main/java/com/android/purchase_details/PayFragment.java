@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.inventory.InventoryResponse;
+import com.android.models.inventory.MaterialListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -28,11 +31,16 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -88,6 +96,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private Unbinder unbinder;
     private Realm realm;
     private Context mContext;
+    private RealmResults<MaterialNamesItem> availableMaterialRealmResults;
+    private List<MaterialNamesItem> availableMaterialArray;
     private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount;
 
     public PayFragment() {
@@ -107,16 +117,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pay, container, false);
         unbinder = ButterKnife.bind(this, view);
-        /*int selectedId = radioGroup.getCheckedRadioButtonId();
-        radioPayButton = (RadioButton) view.findViewById(selectedId);
-        if(radioPayButton.getText() != null) {
-            if (radioPayButton.getText().equals("Upload Bill")) {
-                buttonAction.setText("Upload Bill");
-
-            } else {
-                buttonAction.setText("Create Ammetment");
-            }
-        }*/
+        mContext=getActivity();
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
@@ -130,6 +131,21 @@ public class PayFragment extends Fragment implements FragmentInterface {
                 }
             }
         });
+        requestForMaterialNames();
+        setUpSpinnerValueChangeListener();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
         return view;
     }
 
@@ -234,13 +250,13 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     private void requestForMaterialNames(){
         realm = Realm.getDefaultInstance();
-        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL)
+        AndroidNetworking.post(AppURL.API_PURCHASE_MATERIAL_UNITS_IMAGES_URL)
                 .setTag("requestInventoryData")
-                .setPriority(Priority.LOW)
+                .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
+                .getAsObject(MaterialUnitsImagesResponse.class, new ParsedRequestListener<MaterialUnitsImagesResponse>() {
                     @Override
-                    public void onResponse(final InventoryResponse response) {
+                    public void onResponse(final MaterialUnitsImagesResponse response) {
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
@@ -272,5 +288,35 @@ public class PayFragment extends Fragment implements FragmentInterface {
                         anError.printStackTrace();
                     }
                 });
+    }
+
+    private void setUpSpinnerValueChangeListener() {
+        realm = Realm.getDefaultInstance();
+        availableMaterialRealmResults = realm.where(MaterialNamesItem.class).findAll();
+        setUpSpinnerAdapter(availableMaterialRealmResults);
+        if (availableMaterialRealmResults != null) {
+            Timber.d("availableUsersRealmResults change listener added.");
+            availableMaterialRealmResults.addChangeListener(new RealmChangeListener<RealmResults<MaterialNamesItem>>() {
+                @Override
+                public void onChange(RealmResults<MaterialNamesItem> availableUsersItems) {
+                    Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
+                    setUpSpinnerAdapter(availableMaterialRealmResults);
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
+        }
+    }
+
+    private void setUpSpinnerAdapter(RealmResults<MaterialNamesItem> availableUsersItems) {
+        availableMaterialArray = realm.copyFromRealm(availableUsersItems);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (MaterialNamesItem currentUser : availableMaterialArray) {
+            String strMaterialName = currentUser.getMaterialName();
+            arrayOfUsers.add(strMaterialName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
     }
 }
