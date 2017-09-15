@@ -2,8 +2,8 @@ package com.android.purchase_request;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -21,10 +21,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.models.purchase_request.AvailableUsersItem;
+import com.android.models.purchase_request.PurchaseRequestListItem;
 import com.android.models.purchase_request.PurchaseRequestResponse;
+import com.android.models.purchase_request.UsersWithAclResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -38,7 +42,12 @@ import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -54,6 +63,8 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class PurchaseMaterialListActivity extends AppCompatActivity {
+    @BindView(R.id.spinner_select_assign_to)
+    Spinner mSpinnerSelectAssignTo;
     private Context mContext;
     @BindView(R.id.textView_purchaseMaterialList_appBarTitle)
     TextView textViewPurchaseMaterialListAppBarTitle;
@@ -68,8 +79,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private LayoutInflater layoutInflater;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResults;
+    private RealmResults<AvailableUsersItem> availableUsersRealmResults;
     //    private ArrayList<PurchaseMaterialListItem> materialListItemArrayList;
-    private PurchaseMaterial_PostItem purchaseMaterial_postItem;
+//    private PurchaseMaterial_PostItem purchaseMaterial_postItem;
     private AlertDialog alertDialog;
     private boolean isMaterial;
     private String strDialogTitle = "", strItemNameLabel = "";
@@ -94,9 +106,29 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         mContext = PurchaseMaterialListActivity.this;
         layoutInflater = LayoutInflater.from(mContext);
 //        materialListItemArrayList = new ArrayList<PurchaseMaterialListItem>();
-        purchaseMaterial_postItem = new PurchaseMaterial_PostItem();
+//        purchaseMaterial_postItem = new PurchaseMaterial_PostItem();
         setUpPrAdapter();
         createAlertDialog();
+        requestUsersWithApproveAcl();
+        setUpSpinnerValueChangeListener();
+    }
+
+    private void setUpSpinnerValueChangeListener() {
+        realm = Realm.getDefaultInstance();
+        availableUsersRealmResults = realm.where(AvailableUsersItem.class).findAll();
+        if (availableUsersRealmResults != null) {
+            Timber.d("availableUsersRealmResults change listener added.");
+            availableUsersRealmResults.addChangeListener(new RealmChangeListener<RealmResults<AvailableUsersItem>>() {
+                @Override
+                public void onChange(RealmResults<AvailableUsersItem> availableUsersItems) {
+                    Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
+                    Object[] availableUserArray = availableUsersItems.toArray();
+                    Timber.d(Arrays.toString(availableUserArray));
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
+        }
     }
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
@@ -125,7 +157,15 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_submit_purchase_request)
     public void onSubmitClicked() {
-        submitPurchaseRequest();
+        ArrayList<PurchaseRequestListItem> purchaseRequestListItems = new ArrayList(purchaseMaterialListRealmResults);
+        JSONObject params = new JSONObject();
+        try {
+            params.put("item_list", purchaseRequestListItems);
+            params.put("assigned_to", mSpinnerSelectAssignTo.getSelectedItem().toString());
+        } catch (JSONException e) {
+            Timber.d("Exception occurred: " + e.getMessage());
+        }
+        submitPurchaseRequest(params);
     }
 
     private void createAlertDialog() {
@@ -206,7 +246,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             purchaseMaterialListItem.setIs_diesel(false);
         }
         int randomNum;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             randomNum = ThreadLocalRandom.current().nextInt(11, 999999);
         } else {
             randomNum = new Random().nextInt((999999) + 11);
@@ -371,10 +411,10 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         }
     }
 
-    private void submitPurchaseRequest() {
+    private void submitPurchaseRequest(JSONObject params) {
         AndroidNetworking.post(AppURL.API_PURCHASE_REQUEST_SUBMIT)
                 .setPriority(Priority.MEDIUM)
-                .addBodyParameter(purchaseMaterial_postItem)
+                .addBodyParameter(params)
                 .setTag("submitPurchaseRequest")
                 .build()
                 .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
@@ -408,6 +448,46 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                    }
+                });
+    }
+
+    private void requestUsersWithApproveAcl() {
+        AndroidNetworking.get(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL)
+                .setPriority(Priority.MEDIUM)
+                .setTag("requestUsersWithApproveAcl")
+                .build()
+                .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
+                    @Override
+                    public void onResponse(final UsersWithAclResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Timber.d("Realm Execution Successful");
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
                     }
                 });
     }
