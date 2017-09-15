@@ -43,6 +43,7 @@ class LoginInteractor implements LoginInteractorInterface {
                 .getAsObject(LoginResponse.class, new ParsedRequestListener<LoginResponse>() {
                     @Override
                     public void onResponse(final LoginResponse response) {
+                        Timber.i("LoginResponse: " + String.valueOf(response));
                         Realm realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
