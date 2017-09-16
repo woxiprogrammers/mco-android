@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +22,6 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.models.inventory.InventoryResponse;
-import com.android.models.inventory.MaterialListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -92,6 +89,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
     Button buttonAction;
     @BindView(R.id.radio_Group)
     RadioGroup radioGroup;
+    @BindView(R.id.textView_capture_images)
+    TextView textViewCaptureImages;
+    @BindView(R.id.textView_pick_images)
+    TextView textViewPickImages;
 
     private RadioButton radioPayButton;
     private Unbinder unbinder;
@@ -99,7 +100,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private Context mContext;
     private RealmResults<MaterialNamesItem> availableMaterialRealmResults;
     private List<MaterialNamesItem> availableMaterialArray;
-    private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount,str_add_note,str;
+    private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str;
 
     public PayFragment() {
         // Required empty public constructor
@@ -118,16 +119,16 @@ public class PayFragment extends Fragment implements FragmentInterface {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pay, container, false);
         unbinder = ButterKnife.bind(this, view);
-        mContext=getActivity();
+        mContext = getActivity();
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                 RadioButton radioButton = radioGroup.findViewById(i);
-                String st=radioButton.getText().toString();
-                if(st.equals("Create Ammetment")){
+                String st = radioButton.getText().toString();
+                if (st.equals("Create Ammetment")) {
                     buttonAction.setText("Create Ammetment");
-                }else {
+                } else {
                     buttonAction.setText("Upload Bill");
                 }
             }
@@ -145,7 +146,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
             }
         });
-
 
         return view;
     }
@@ -260,7 +260,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     }
 
-    private void requestForMaterialNames(){
+    private void requestForMaterialNames() {
         realm = Realm.getDefaultInstance();
         AndroidNetworking.post(AppURL.API_PURCHASE_MATERIAL_UNITS_IMAGES_URL)
                 .setTag("requestInventoryData")
@@ -364,11 +364,12 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
         });
         if (strMessage.equalsIgnoreCase("Show")) {
+            editText_add_note.setFocusable(true);
             editText_add_note.setSelection(editText_add_note.getText().length());
+            editText_add_note.requestFocus();
             editText_add_note.setText(str_add_note);
             textViewShowNote.setVisibility(View.VISIBLE);
         }
-
         alertDialog.show();
     }
 }

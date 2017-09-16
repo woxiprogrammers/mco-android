@@ -138,6 +138,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView_capture_images"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:drawableTop="@android:drawable/ic_menu_camera"
+                android:gravity="center_horizontal"
+                android:text="Capture Images"/>
+
+            <View
+                android:layout_width="@dimen/dimen_20dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/textView_pick_images"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:onClick="txtPickImages"
+                android:drawableTop="@android:drawable/ic_menu_gallery"
+                android:gravity="center_horizontal"
+                android:text="Choose Images"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
