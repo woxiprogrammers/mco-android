@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -128,7 +126,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
     @OnClick(R.id.edit_text_expiryDate)
     void onClickExpiryDate(View view) {
         if (view.getId() == R.id.edit_text_expiryDate) {
-            AppUtils.getInstance().hidekeyboard(view,mContext);
+            AppUtils.getInstance().hideKeyboard(view,mContext);
             new DatePickerDialog(ActivityRequestMaintanance.this, date, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();

@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 public class ProjectsItem extends RealmObject {
     @SerializedName("id")
     private int id;
-    @SerializedName("project_name")
+    @SerializedName("name")
     private String projectName;
 
     public int getId() {

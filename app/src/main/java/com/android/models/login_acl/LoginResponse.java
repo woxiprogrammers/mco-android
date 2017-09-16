@@ -10,7 +10,7 @@ public class LoginResponse extends RealmObject {
     @SerializedName("message")
     private String message;
     @SerializedName("logged_in_at")
-    private String loggedInAt;
+    private LoggedInAt loggedInAt;
     @SerializedName("token")
     private String token;
 
@@ -30,12 +30,12 @@ public class LoginResponse extends RealmObject {
         this.message = message;
     }
 
-    public String getLoggedInAt() {
-        return loggedInAt;
+    public void setLoggedInAt(LoggedInAt loggedInAt) {
+        this.loggedInAt = loggedInAt;
     }
 
-    public void setLoggedInAt(String loggedInAt) {
-        this.loggedInAt = loggedInAt;
+    public LoggedInAt getLoggedInAt() {
+        return loggedInAt;
     }
 
     public String getToken() {

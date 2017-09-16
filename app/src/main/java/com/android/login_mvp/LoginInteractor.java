@@ -61,7 +61,7 @@ class LoginInteractor implements LoginInteractorInterface {
                             }, new Realm.Transaction.OnError() {
                                 @Override
                                 public void onError(Throwable error) {
-                                    listener.onFailure("Failed to fetch local database.");
+                                    AppUtils.getInstance().logRealmExecutionError(error);
                                 }
                             });
                         } finally {
@@ -73,8 +73,7 @@ class LoginInteractor implements LoginInteractorInterface {
 
                     @Override
                     public void onError(ANError error) {
-                        Timber.d(String.valueOf(error.getErrorCode()));
-                        Timber.d(String.valueOf(error.getErrorBody()));
+                        AppUtils.getInstance().logApiError(error, "requestLoginAPI");
                         listener.onFailure("Invalid credentials");
                     }
                 });

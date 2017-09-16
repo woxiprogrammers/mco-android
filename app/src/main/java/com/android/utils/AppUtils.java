@@ -346,7 +346,7 @@ public class AppUtils {
         Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
     }
 
-    public void hidekeyboard(View view,Context context){
+    public void hideKeyboard(View view, Context context){
         InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }

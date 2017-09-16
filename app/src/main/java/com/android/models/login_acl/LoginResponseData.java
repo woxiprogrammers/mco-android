@@ -6,10 +6,10 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class LoginResponseData extends RealmObject {
-    @SerializedName("projects")
-    private RealmList<ProjectsItem> projects;
     @SerializedName("is_active")
     private boolean isActive;
+    @SerializedName("projects")
+    private RealmList<ProjectsItem> projects;
     @SerializedName("gender")
     private String gender;
     @SerializedName("dob")
