@@ -115,14 +115,17 @@ public class SplashActivity extends BaseActivity {
 
     private void storeAclKeyValueToLocal() {
         HashMap<String, String> aclKeyValuePair = new HashMap<String, String>();
-        aclKeyValuePair.put("create_purchase", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("request_material", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("approve_material", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("create_order", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("manage_bill", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("approve_purchase", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("manage_inventory", BottomNavigateViewActivity.class.getName());
-        aclKeyValuePair.put("approve_inventory", BottomNavigateViewActivity.class.getName());
+        aclKeyValuePair.put("purchase-request", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("material-request", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("vendor-assignment", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("manage-amendment", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("inventory-in-out-transfer", BottomNavigateViewActivity.class.getName());
+        aclKeyValuePair.put("asset-reading", BottomNavigateViewActivity.class.getName());
+        aclKeyValuePair.put("asset-maintainance", BottomNavigateViewActivity.class.getName());
+        aclKeyValuePair.put("asset-management", BottomNavigateViewActivity.class.getName());
+        aclKeyValuePair.put("inventory-history", BottomNavigateViewActivity.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
