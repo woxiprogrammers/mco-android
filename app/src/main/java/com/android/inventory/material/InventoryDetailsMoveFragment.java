@@ -27,16 +27,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.inventory.SelectedMaterialListAdapter;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.ImageUtilityHelper;
 import com.android.inventory.InventoryDetails;
 import com.android.models.inventory.MaterialListItem;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
@@ -378,7 +375,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
         });
         if (str.equalsIgnoreCase(getString(R.string.tap_too_add_note))) {
-
             textViewShowNote.setVisibility(View.GONE);
         } else {
             editText_add_note.setText(str_add_note);

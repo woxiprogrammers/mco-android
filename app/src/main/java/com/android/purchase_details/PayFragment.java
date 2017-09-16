@@ -1,5 +1,6 @@
 package com.android.purchase_details;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -98,7 +99,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private Context mContext;
     private RealmResults<MaterialNamesItem> availableMaterialRealmResults;
     private List<MaterialNamesItem> availableMaterialArray;
-    private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount;
+    private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount,str_add_note,str;
 
     public PayFragment() {
         // Required empty public constructor
@@ -163,6 +164,17 @@ public class PayFragment extends Fragment implements FragmentInterface {
     void onClickButtonAction(View view) {
         if (view.getId() == R.id.buttonAction) {
             validateEntries();
+        }
+    }
+
+    @OnClick(R.id.textview_tapToAddNote)
+    void addNote(View view) {
+        if (view.getId() == R.id.textview_tapToAddNote) {
+            if (textviewTapToAddNote.getText().toString().equalsIgnoreCase("Show")) {
+                openAddToNoteDialog("Show");
+            } else {
+                openAddToNoteDialog(getString(R.string.tap_too_add_note));
+            }
         }
     }
 
@@ -318,5 +330,45 @@ public class PayFragment extends Fragment implements FragmentInterface {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
+    }
+
+    private void openAddToNoteDialog(String strMessage) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_tap_to_add_note, null);
+        dialogBuilder.setView(dialogView);
+        final AlertDialog alertDialog = dialogBuilder.create();
+        final EditText editText_add_note = ButterKnife.findById(dialogView, R.id.edit_text_add_note);
+        final TextView textViewShowNote = ButterKnife.findById(dialogView, R.id.textViewShowNote);
+        Button buttonOk = ButterKnife.findById(dialogView, R.id.button_ok);
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                str_add_note = editText_add_note.getText().toString();
+                if (TextUtils.isEmpty(str_add_note)) {
+                    editText_add_note.setError("Please" + " " + getString(R.string.add_your_note));
+                    editText_add_note.requestFocus();
+                    editText_add_note.requestFocus();
+                    return;
+                } else {
+                    editText_add_note.setError(null);
+                    editText_add_note.requestFocus();
+                    Toast.makeText(mContext, "Note Added", Toast.LENGTH_SHORT).show();
+                    textViewShowNote.setVisibility(View.VISIBLE);
+                    textViewShowNote.setText(str_add_note);
+                    textviewTapToAddNote.setText("Show");
+                    alertDialog.dismiss();
+
+                }
+            }
+
+        });
+        if (strMessage.equalsIgnoreCase("Show")) {
+            editText_add_note.setSelection(editText_add_note.getText().length());
+            editText_add_note.setText(str_add_note);
+            textViewShowNote.setVisibility(View.VISIBLE);
+        }
+
+        alertDialog.show();
     }
 }
