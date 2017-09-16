@@ -53,7 +53,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext=getActivity();
         setUpAssetListAdapter();

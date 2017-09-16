@@ -76,7 +76,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         //Initialize Views
         initializeViews();

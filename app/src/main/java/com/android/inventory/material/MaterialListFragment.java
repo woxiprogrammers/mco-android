@@ -35,13 +35,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import okhttp3.OkHttpClient;
 import timber.log.Timber;
 
 /**
@@ -58,7 +56,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     private Realm realm;
     private RealmResults<MaterialListItem> materialListItems;
 
-
     public MaterialListFragment() {
         // Required empty public constructor
     }
@@ -72,7 +69,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
         setAdapterForMaterialList();
         return mParentView;
@@ -93,8 +90,30 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         }
     }
 
+    @Override
+    public void fragmentBecameVisible() {
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(realm !=null) {
+            realm.close();
+        }
+    }
+
+    private void functionForGettingData() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            //Get data from Server
+            requestInventoryResponse();
+        } else {
+            //Get data from local DB
+            setAdapterForMaterialList();
+        }
+    }
+
     private void requestInventoryResponse() {
-    JSONObject params=new JSONObject();
+        JSONObject params=new JSONObject();
         try {
             params.put("page_id",0);
             params.put("project_site_id",6);
@@ -199,27 +218,5 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             public void onLongItemClick(View view, int position) {
             }
         }));
-    }
-
-    @Override
-    public void fragmentBecameVisible() {
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if(realm !=null) {
-            realm.close();
-        }
-    }
-
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestInventoryResponse();
-        } else {
-            //Get data from local DB
-            setAdapterForMaterialList();
-        }
     }
 }

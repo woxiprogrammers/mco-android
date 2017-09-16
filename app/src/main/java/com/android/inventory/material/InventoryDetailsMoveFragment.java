@@ -27,16 +27,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.inventory.SelectedMaterialListAdapter;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.ImageUtilityHelper;
 import com.android.inventory.InventoryDetails;
 import com.android.models.inventory.MaterialListItem;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
@@ -249,7 +246,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void openMaterialListDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext,R.style.DialogTheme);
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.activity_material_listing, null);
+        View dialogView = inflater.inflate(R.layout.layout_common_recycler_view_listing, null);
         dialogBuilder.setView(dialogView);
 
         RecyclerView rv_material_list = ButterKnife.findById(dialogView, R.id.rv_material_list);
@@ -378,7 +375,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
         });
         if (str.equalsIgnoreCase(getString(R.string.tap_too_add_note))) {
-
             textViewShowNote.setVisibility(View.GONE);
         } else {
             editText_add_note.setText(str_add_note);

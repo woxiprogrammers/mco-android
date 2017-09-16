@@ -1,6 +1,7 @@
 package com.android.purchase_request;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_order.PurchaseOrderListItem;
 import com.android.models.purchase_order.PurchaseOrderResponse;
+import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -64,7 +66,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mParentView = inflater.inflate(R.layout.activity_material_listing, container, false);
+        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         //Initialize Views
         initializeViews();
@@ -156,6 +158,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     @Override
                     public void onItemClick(View view, final int position) {
                         Timber.d(String.valueOf(purchaseOrderListItems));
+                        Intent intent=new Intent(mContext, PayAndBillsActivity.class);
+                        intent.putExtra("PONumber",purchaseOrderListItems.get(position).getPurchaseOrderId());
+                        startActivity(intent);
                     }
 
                     @Override
