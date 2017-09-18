@@ -2,6 +2,7 @@ package com.android.purchase_details;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,11 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.vlk.multimager.activities.GalleryActivity;
+import com.vlk.multimager.activities.MultiCameraActivity;
+import com.vlk.multimager.utils.Constants;
+import com.vlk.multimager.utils.Image;
+import com.vlk.multimager.utils.Params;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +44,11 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import timber.log.Timber;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,9 +60,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     @BindView(R.id.edittextQuantity)
     EditText edittextQuantity;
-
-    @BindView(R.id.editTextUnits)
-    EditText editTextUnits;
 
     @BindView(R.id.editText_Challan_Number)
     EditText editTextChallanNumber;
@@ -93,13 +99,17 @@ public class PayFragment extends Fragment implements FragmentInterface {
     TextView textViewCaptureImages;
     @BindView(R.id.textView_pick_images)
     TextView textViewPickImages;
+    @BindView(R.id.spinner_select_units)
+    Spinner spinnerSelectUnits;
 
     private RadioButton radioPayButton;
     private Unbinder unbinder;
     private Realm realm;
     private Context mContext;
     private RealmResults<MaterialNamesItem> availableMaterialRealmResults;
+    private RealmList<MaterialUnitsItem> unitsRealmResults;
     private List<MaterialNamesItem> availableMaterialArray;
+    private List<MaterialUnitsItem> unitsArray;
     private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str;
 
     public PayFragment() {
@@ -138,7 +148,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                setUpSpinnerValueForUnits(i);
             }
 
             @Override
@@ -178,9 +188,57 @@ public class PayFragment extends Fragment implements FragmentInterface {
         }
     }
 
+    @OnClick(R.id.textView_pick_images)
+    void txtPickImages(View view) {
+        if (view.getId() == R.id.textView_pick_images) {
+            Intent intent = new Intent(mContext, GalleryActivity.class);
+            Params params = new Params();
+            params.setCaptureLimit(10);
+            params.setPickerLimit(10);
+            params.setToolbarColor(R.color.colorPrimaryLight);
+            params.setActionButtonColor(R.color.colorAccentDark);
+            params.setButtonTextColor(R.color.colorWhite);
+            intent.putExtra(Constants.KEY_PARAMS, params);
+            startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
+        }
+    }
+
+    @OnClick(R.id.textView_capture_images)
+    void clickCaptImage(View view) {
+        if (view.getId() == R.id.textView_capture_images) {
+            Intent intent = new Intent(mContext, MultiCameraActivity.class);
+            Params params = new Params();
+            params.setCaptureLimit(10);
+            params.setToolbarColor(R.color.colorPrimaryLight);
+            params.setActionButtonColor(R.color.colorAccentDark);
+            params.setButtonTextColor(R.color.colorWhite);
+            intent.putExtra(Constants.KEY_PARAMS, params);
+            startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
+        }
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList));
+                Toast.makeText(mContext, "Capture", Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.TYPE_MULTI_PICKER:
+                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList2));
+                Toast.makeText(mContext, "Pick", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
     private void validateEntries() {
         strQuantity = edittextQuantity.getText().toString();
-        strUnit = editTextUnits.getText().toString();
         strChallanNumber = editTextChallanNumber.getText().toString();
         strVehicleNumber = editTextVehicleNumber.getText().toString();
         strInTime = editTextInTime.getText().toString();
@@ -196,16 +254,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
         } else {
             edittextQuantity.setError(null);
             edittextQuantity.requestFocus();
-        }
-        //For Unit
-        if (TextUtils.isEmpty(strUnit)) {
-            editTextUnits.setFocusableInTouchMode(true);
-            editTextUnits.requestFocus();
-            editTextUnits.setError("Please " + getString(R.string.edittext_hint_units));
-            return;
-        } else {
-            editTextUnits.setError(null);
-            editTextUnits.requestFocus();
         }
         //For Challan Number
         if (TextUtils.isEmpty(strChallanNumber)) {
@@ -320,6 +368,16 @@ public class PayFragment extends Fragment implements FragmentInterface {
         }
     }
 
+    private void setUpSpinnerValueForUnits(int selectedId) {
+        realm = Realm.getDefaultInstance();
+        MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", selectedId).findFirst();
+        if (materialNamesItem != null) {
+            unitsRealmResults = materialNamesItem.getMaterialUnits();
+        }
+        setUpSpinnerAdapterForUnits(unitsRealmResults);
+
+    }
+
     private void setUpSpinnerAdapter(RealmResults<MaterialNamesItem> availableUsersItems) {
         availableMaterialArray = realm.copyFromRealm(availableUsersItems);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
@@ -330,6 +388,20 @@ public class PayFragment extends Fragment implements FragmentInterface {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
+    }
+
+    private void setUpSpinnerAdapterForUnits(RealmList<MaterialUnitsItem> unitsItems) {
+        unitsArray = realm.copyFromRealm(unitsItems);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (MaterialUnitsItem currentUser : unitsArray) {
+            String strMaterialUnit = currentUser.getUnit();
+            arrayOfUsers.add(strMaterialUnit);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        if (arrayAdapter != null) {
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerSelectUnits.setAdapter(arrayAdapter);
+        }
     }
 
     private void openAddToNoteDialog(String strMessage) {

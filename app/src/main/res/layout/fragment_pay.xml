@@ -94,11 +94,16 @@
                     android:text="Unit:"
                     android:textColor="@color/colorTextLight"/>
 
-                <EditText
-                    android:id="@+id/editTextUnits"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/spinner_select_units"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -147,6 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
+                android:onClick="clickCaptImage"
                 android:drawableTop="@android:drawable/ic_menu_camera"
                 android:gravity="center_horizontal"
                 android:text="Capture Images"/>
