@@ -40,15 +40,15 @@ public class LoginActivityUITest {
         appCompatEditText.perform(click());
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.userName), isDisplayed()));
-        appCompatEditText2.perform(replaceText("admin"), closeSoftKeyboard());
+        appCompatEditText2.perform(replaceText("admin@mconstruction.co.in"), closeSoftKeyboard());
         ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.userName), withText("admin"), isDisplayed()));
+                allOf(withId(R.id.userName), withText("admin@mconstruction.co.in"), isDisplayed()));
         appCompatEditText3.perform(pressImeActionButton());
         ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(R.id.password), isDisplayed()));
-        appCompatEditText4.perform(replaceText("12345"), closeSoftKeyboard());
+        appCompatEditText4.perform(replaceText("mco@1234"), closeSoftKeyboard());
         ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.password), withText("12345"), isDisplayed()));
+                allOf(withId(R.id.password), withText("mco@1234"), isDisplayed()));
         appCompatEditText5.perform(pressImeActionButton());
     }
 }
