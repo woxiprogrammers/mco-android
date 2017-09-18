@@ -7,7 +7,16 @@ import io.realm.annotations.PrimaryKey;
 
 public class PurchaseBillListItem extends RealmObject{
 
+
+	private  String challanNumber;
+	private String vehicleNumber;
+
+	private String inTime;
+	private String outTime;
+	private int BillAmount;
+
 	@SerializedName("date")
+
 	private String date;
 
 	@SerializedName("purchase_request_id")
@@ -116,5 +125,45 @@ public class PurchaseBillListItem extends RealmObject{
 
 	public String getStatus(){
 		return status;
+	}
+
+	public String getChallanNumber() {
+		return challanNumber;
+	}
+
+	public void setChallanNumber(String challanNumber) {
+		this.challanNumber = challanNumber;
+	}
+
+	public String getVehicleNumber() {
+		return vehicleNumber;
+	}
+
+	public void setVehicleNumber(String vehicleNumber) {
+		this.vehicleNumber = vehicleNumber;
+	}
+
+	public String getInTime() {
+		return inTime;
+	}
+
+	public void setInTime(String inTime) {
+		this.inTime = inTime;
+	}
+
+	public String getOutTime() {
+		return outTime;
+	}
+
+	public void setOutTime(String outTime) {
+		this.outTime = outTime;
+	}
+
+	public int getBillAmount() {
+		return BillAmount;
+	}
+
+	public void setBillAmount(int billAmount) {
+		BillAmount = billAmount;
 	}
 }

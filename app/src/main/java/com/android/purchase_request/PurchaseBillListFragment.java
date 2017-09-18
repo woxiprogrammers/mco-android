@@ -16,6 +16,9 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_bill.PurchaseBillListItem;
 import com.android.models.purchase_bill.PurchaseBillResponse;
+import com.android.purchase_details.PayAndBillsActivity;
+import com.android.purchase_details.PurchaseBIllDetailsItems;
+import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -39,13 +42,14 @@ import timber.log.Timber;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class PurchaseBillListFragment extends Fragment implements FragmentInterface {
+public class PurchaseBillListFragment extends Fragment implements FragmentInterface,AppConstants {
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseBillListItem> purchaseBillListItems;
+    private PurchaseBIllDetailsItems purchaseBIllDetailsItems=new PurchaseBIllDetailsItems();
 
     public PurchaseBillListFragment() {
         // Required empty public constructor
@@ -81,8 +85,10 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         //Initialize Views
         initializeViews();
         setUpPrAdapter();
+        Timber.d("@@",purchaseBIllDetailsItems.getChallanNumber());
         return mParentView;
     }
+
 
     @Override
     public void onDestroyView() {
@@ -168,7 +174,8 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        Timber.d(String.valueOf(purchaseBillListItems));
+                        PayAndBillsActivity.isForViewOnly=true;
+                        ((PayAndBillsActivity) mContext).moveFragments(false);
                     }
 
                     @Override

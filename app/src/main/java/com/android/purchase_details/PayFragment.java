@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.inventory.InventoryDetails;
+import com.android.models.purchase_bill.PurchaseBillListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -106,8 +109,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
     Spinner spinnerSelectUnits;
     @BindView(R.id.llIm)
     LinearLayout llIm;
-    @BindView(R.id.dummy)
-    ImageView dummy;
 
     private RadioButton radioPayButton;
     private Unbinder unbinder;
@@ -118,6 +119,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private RealmList<MaterialImagesItem> materialImagesItemRealmList;
     private List<MaterialNamesItem> availableMaterialArray;
     private List<MaterialUnitsItem> unitsArray;
+    PurchaseBillListItem purchaseBIllDetailsItems = new PurchaseBillListItem();
 
     private List<MaterialImagesItem> materialImagesItemList;
     private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str;
@@ -167,12 +169,20 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
             }
         });
+        if (PayAndBillsActivity.isForViewOnly) {
+            llgrnNumber.setVisibility(View.VISIBLE);
+            Log.i("@@view","check");
+        }
 
         return view;
     }
 
     @Override
     public void fragmentBecameVisible() {
+        if (PayAndBillsActivity.isForViewOnly) {
+            llgrnNumber.setVisibility(View.VISIBLE);
+            Log.i("@@override","check");
+        }
     }
 
     @Override
@@ -249,6 +259,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     }
 
     private void validateEntries() {
+        String name = spinner.getSelectedItem().toString();
         strQuantity = edittextQuantity.getText().toString();
         strChallanNumber = editTextChallanNumber.getText().toString();
         strVehicleNumber = editTextVehicleNumber.getText().toString();
@@ -316,7 +327,39 @@ public class PayFragment extends Fragment implements FragmentInterface {
             editTextBillAmount.setError(null);
             editTextBillAmount.requestFocus();
         }
+        purchaseBIllDetailsItems.setMaterialName(name);
+        purchaseBIllDetailsItems.setMaterialUnit(strUnit);
+        purchaseBIllDetailsItems.setPurchaseOrderId(strQuantity);
+        purchaseBIllDetailsItems.setChallanNumber(strChallanNumber);
+        purchaseBIllDetailsItems.setVehicleNumber(strVehicleNumber);
+        purchaseBIllDetailsItems.setInTime(strInTime);
+        purchaseBIllDetailsItems.setOutTime(strOutTime);
 
+        realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Timber.d("Execute");
+                    realm.insertOrUpdate(purchaseBIllDetailsItems);
+                }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    clearData();
+                    ((PayAndBillsActivity) mContext).moveFragments(true);
+                }
+            }, new Realm.Transaction.OnError() {
+                @Override
+                public void onError(Throwable error) {
+                    AppUtils.getInstance().logRealmExecutionError(error);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 
     private void requestForMaterialNames() {
@@ -371,30 +414,22 @@ public class PayFragment extends Fragment implements FragmentInterface {
     }
 
     private void setImage(RealmList<MaterialImagesItem> image) {
+        llIm.removeAllViews();
         materialImagesItemList = realm.copyFromRealm(image);
-        ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (MaterialImagesItem currentUser : materialImagesItemList) {
             String strMaterialUnit = currentUser.getImageUrl();
-            arrayOfUsers.add(strMaterialUnit);
-            Timber.d(arrayOfUsers.toString());
-
-            /*ImageView imageView = new ImageView(mContext);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80, 80);
+            ImageView imageView = new ImageView(mContext);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
             layoutParams.setMargins(10, 10, 10, 10);
             imageView.setLayoutParams(layoutParams);
-            llIm.addView(imageView);*/
-
-
+            llIm.addView(imageView);
+            Glide.with(mContext).load(strMaterialUnit)
+                    .thumbnail(0.1f)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(imageView);
         }
-        Glide.with(mContext).load(arrayOfUsers)
-                .thumbnail(0.1f)
-                .crossFade()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(dummy);/*
-        for (int index = 0; index < arrayOfUsers.size(); index++) {
-
-        }*/
     }
 
     private void setUpSpinnerValueChangeListener() {
@@ -492,5 +527,14 @@ public class PayFragment extends Fragment implements FragmentInterface {
             textViewShowNote.setVisibility(View.VISIBLE);
         }
         alertDialog.show();
+    }
+
+    private void clearData(){
+        edittextQuantity.setText("");
+        editTextChallanNumber.setText("");
+        editTextVehicleNumber.setText("");
+        editTextInTime.setText("");
+        editTextOutTime.setText("");
+        editTextBillAmount.setText("");
     }
 }
