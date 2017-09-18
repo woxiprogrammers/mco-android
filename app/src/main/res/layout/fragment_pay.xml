@@ -109,16 +109,15 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llIm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:orientation="horizontal">
-
             <ImageView
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:src="@drawable/ic_menu_gallery"
-                android:tint="@color/colorTextLight"/>
+                android:id="@+id/dummy"
+                android:layout_width="120dp"
+                android:layout_height="120dp"/>
         </LinearLayout>
 
         <LinearLayout

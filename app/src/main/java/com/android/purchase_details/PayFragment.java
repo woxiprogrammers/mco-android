@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -29,6 +30,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
@@ -101,6 +104,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
     TextView textViewPickImages;
     @BindView(R.id.spinner_select_units)
     Spinner spinnerSelectUnits;
+    @BindView(R.id.llIm)
+    LinearLayout llIm;
+    @BindView(R.id.dummy)
+    ImageView dummy;
 
     private RadioButton radioPayButton;
     private Unbinder unbinder;
@@ -108,8 +115,11 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private Context mContext;
     private RealmResults<MaterialNamesItem> availableMaterialRealmResults;
     private RealmList<MaterialUnitsItem> unitsRealmResults;
+    private RealmList<MaterialImagesItem> materialImagesItemRealmList;
     private List<MaterialNamesItem> availableMaterialArray;
     private List<MaterialUnitsItem> unitsArray;
+
+    private List<MaterialImagesItem> materialImagesItemList;
     private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str;
 
     public PayFragment() {
@@ -148,7 +158,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setUpSpinnerValueForUnits(i);
+                setUpSpinnerValueForUnits(availableMaterialRealmResults.get(i).getId());
+                getMaterialImages(availableMaterialRealmResults.get(i).getId());
             }
 
             @Override
@@ -350,6 +361,42 @@ public class PayFragment extends Fragment implements FragmentInterface {
                 });
     }
 
+    private void getMaterialImages(int selectedId) {
+        realm = Realm.getDefaultInstance();
+        MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", selectedId).findFirst();
+        if (materialNamesItem != null) {
+            materialImagesItemRealmList = materialNamesItem.getMaterialImages();
+        }
+        setImage(materialImagesItemRealmList);
+    }
+
+    private void setImage(RealmList<MaterialImagesItem> image) {
+        materialImagesItemList = realm.copyFromRealm(image);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (MaterialImagesItem currentUser : materialImagesItemList) {
+            String strMaterialUnit = currentUser.getImageUrl();
+            arrayOfUsers.add(strMaterialUnit);
+            Timber.d(arrayOfUsers.toString());
+
+            /*ImageView imageView = new ImageView(mContext);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80, 80);
+            layoutParams.setMargins(10, 10, 10, 10);
+            imageView.setLayoutParams(layoutParams);
+            llIm.addView(imageView);*/
+
+
+        }
+        Glide.with(mContext).load(arrayOfUsers)
+                .thumbnail(0.1f)
+                .crossFade()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(dummy);/*
+        for (int index = 0; index < arrayOfUsers.size(); index++) {
+
+        }*/
+    }
+
     private void setUpSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         availableMaterialRealmResults = realm.where(MaterialNamesItem.class).findAll();
@@ -386,8 +433,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
             arrayOfUsers.add(strMaterialName);
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
+        if (arrayAdapter != null) {
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(arrayAdapter);
+        }
     }
 
     private void setUpSpinnerAdapterForUnits(RealmList<MaterialUnitsItem> unitsItems) {
@@ -397,10 +446,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
             String strMaterialUnit = currentUser.getUnit();
             arrayOfUsers.add(strMaterialUnit);
         }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        if (arrayAdapter != null) {
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerSelectUnits.setAdapter(arrayAdapter);
+        ArrayAdapter<String> arrayAdapterUnits = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        if (arrayAdapterUnits != null) {
+            arrayAdapterUnits.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerSelectUnits.setAdapter(arrayAdapterUnits);
         }
     }
 
