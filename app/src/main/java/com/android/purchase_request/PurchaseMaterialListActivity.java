@@ -301,13 +301,6 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         }
     }
 
-    /*private PurchaseMaterialListItem getPurchaseMaterialListItemInstance() {
-        if (purchaseMaterialListItem == null) {
-            purchaseMaterialListItem = new PurchaseMaterialListItem();
-        }
-        return purchaseMaterialListItem;
-    }*/
-
     private AlertDialog getExistingAlertDialog() {
         if (alertDialog == null) {
             createAlertDialog();
