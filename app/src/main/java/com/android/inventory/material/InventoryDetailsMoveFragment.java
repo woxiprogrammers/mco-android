@@ -105,7 +105,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     private View mParentView;
     private int intMaterialCount;
-    private String strSouceName, strDate, strVehicleNumber, strInTime, strOutTime, strBillNumber;
+    private String strSourceName, strDate, strVehicleNumber, strInTime, strOutTime, strBillNumber;
     private boolean isChecked;
     private ImageUtilityHelper imageUtilityHelper;
 
@@ -275,8 +275,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     private void validateEntries() {
 
-        strSouceName = edit_text_selected_dest_name.getText().toString();
-        if (TextUtils.isEmpty(strSouceName)) {
+        strSourceName = edit_text_selected_dest_name.getText().toString();
+        if (TextUtils.isEmpty(strSourceName)) {
             edit_text_selected_dest_name.setError(getString(R.string.please_enter) + " " + str);
             return;
         } else {
