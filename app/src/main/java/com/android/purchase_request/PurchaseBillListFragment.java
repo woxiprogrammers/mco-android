@@ -175,6 +175,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     @Override
                     public void onItemClick(View view, final int position) {
                         PayAndBillsActivity.isForViewOnly=true;
+                        PayAndBillsActivity.idForBillItem=1;
                         ((PayAndBillsActivity) mContext).moveFragments(false);
                     }
 

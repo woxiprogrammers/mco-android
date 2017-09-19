@@ -146,13 +146,13 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                RadioButton radioButton = radioGroup.findViewById(i);
+                /*RadioButton radioButton = radioGroup.findViewById(i);
                 String st = radioButton.getText().toString();
                 if (st.equals("Create Ammetment")) {
                     buttonAction.setText("Create Ammetment");
                 } else {
                     buttonAction.setText("Upload Bill");
-                }
+                }*/
             }
         });
         requestForMaterialNames();
@@ -169,19 +169,15 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
             }
         });
-        if (PayAndBillsActivity.isForViewOnly) {
-            llgrnNumber.setVisibility(View.VISIBLE);
-            Log.i("@@view","check");
-        }
-
         return view;
     }
 
     @Override
     public void fragmentBecameVisible() {
         if (PayAndBillsActivity.isForViewOnly) {
-            llgrnNumber.setVisibility(View.VISIBLE);
-            Log.i("@@override","check");
+            setData(true);
+        }else {
+            setData(false);
         }
     }
 
@@ -327,6 +323,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             editTextBillAmount.setError(null);
             editTextBillAmount.requestFocus();
         }
+        purchaseBIllDetailsItems.setId(1);
         purchaseBIllDetailsItems.setMaterialName(name);
         purchaseBIllDetailsItems.setMaterialUnit(strUnit);
         purchaseBIllDetailsItems.setPurchaseOrderId(strQuantity);
@@ -334,6 +331,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
         purchaseBIllDetailsItems.setVehicleNumber(strVehicleNumber);
         purchaseBIllDetailsItems.setInTime(strInTime);
         purchaseBIllDetailsItems.setOutTime(strOutTime);
+        purchaseBIllDetailsItems.setMaterialQuantity(strQuantity);
+        purchaseBIllDetailsItems.setBillAmount(Integer.parseInt(strBillAmount));
 
         realm = Realm.getDefaultInstance();
         try {
@@ -536,5 +535,34 @@ public class PayFragment extends Fragment implements FragmentInterface {
         editTextInTime.setText("");
         editTextOutTime.setText("");
         editTextBillAmount.setText("");
+    }
+
+    private void setData(boolean isFromClick){
+
+        if(isFromClick){
+            llgrnNumber.setVisibility(View.VISIBLE);
+            editTextGrnNumber.setEnabled(false);
+            radioGroup.setVisibility(View.GONE);
+            spinner.setEnabled(false);
+            editTextPayableAmount.setVisibility(View.VISIBLE);
+            realm = Realm.getDefaultInstance();
+
+            PurchaseBillListItem purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("id", 1).findFirst();
+            edittextQuantity.setText(purchaseBIllDetailsItems.getMaterialQuantity());
+            editTextChallanNumber.setText(purchaseBIllDetailsItems.getChallanNumber());
+            editTextVehicleNumber.setText(purchaseBIllDetailsItems.getVehicleNumber());
+            editTextInTime.setText(purchaseBIllDetailsItems.getInTime());
+            editTextOutTime.setText(purchaseBIllDetailsItems.getOutTime());
+            editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
+            editTextGrnNumber.setText(purchaseBIllDetailsItems.getPurchaseBillGrn());
+
+        }else {
+            llgrnNumber.setVisibility(View.GONE);
+            editTextGrnNumber.setEnabled(false);
+            radioGroup.setVisibility(View.VISIBLE);
+            spinner.setEnabled(true);
+            editTextPayableAmount.setVisibility(View.GONE);
+        }
+
     }
 }

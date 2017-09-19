@@ -28,7 +28,6 @@ public class PurchaseBillListItem extends RealmObject{
 	@SerializedName("purchase_order_id")
 	private String purchaseOrderId;
 
-	@PrimaryKey
 	@SerializedName("id")
 	private int id;
 
@@ -38,6 +37,7 @@ public class PurchaseBillListItem extends RealmObject{
 	@SerializedName("material_unit")
 	private String materialUnit;
 
+	@PrimaryKey
 	@SerializedName("purchase_bill_grn")
 	private String purchaseBillGrn;
 

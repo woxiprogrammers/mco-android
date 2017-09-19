@@ -37,7 +37,8 @@ public class PayAndBillsActivity extends BaseActivity {
     BottomNavigationView bottomNavigationPay;
     MenuItem prevMenuItem;
 
-    public static boolean isForViewOnly=false;
+    public static boolean isForViewOnly;
+    public static int idForBillItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class PayAndBillsActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.action_pay:
                         viewPager.setCurrentItem(0);
+                        isForViewOnly=false;
                         break;
                     case R.id.action_bills:
                         viewPager.setCurrentItem(1);

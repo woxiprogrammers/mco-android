@@ -332,7 +332,7 @@
             android:background="@drawable/background_button_pressed"
             android:backgroundTint="@color/colorAccent"
             android:onClick="onClickButtonAction"
-            android:text="Upload Bill"
+            android:text="Submit"
             android:textColor="@color/colorWhite"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
