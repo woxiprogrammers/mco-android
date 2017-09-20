@@ -27,8 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.models.login_acl.LoginResponse;
 import com.android.models.purchase_request.AvailableUsersItem;
-import com.android.models.purchase_request.PurchaseRequestResponse;
 import com.android.models.purchase_request.UsersWithAclResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -37,6 +37,7 @@ import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
@@ -47,6 +48,7 @@ import com.vlk.multimager.utils.Params;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +83,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     Button buttonSubmitPurchaseRequest;
     private LayoutInflater layoutInflater;
     private Realm realm;
-    private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResults;
+    private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResults_Approved;
+    private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResults_Current;
     private RealmResults<AvailableUsersItem> availableUsersRealmResults;
     private List<AvailableUsersItem> availableUserArray;
     //    private ArrayList<PurchaseMaterialListItem> materialListItemArrayList;
@@ -102,6 +105,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private Button mButtonDismissMaterialAsset;
     private Button mButtonAddMaterialAsset;
     private SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter;
+    private File currentImageFile;
+    private String strToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,15 +180,21 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     @OnClick(R.id.button_submit_purchase_request)
     public void onSubmitClicked() {
         realm = Realm.getDefaultInstance();
-        List<PurchaseMaterialListItem> purchaseMaterialListItems = realm.copyFromRealm(purchaseMaterialListRealmResults);
+        ArrayList<PurchaseMaterialListItem> purchaseMaterialListItems = new ArrayList<PurchaseMaterialListItem>();
+        List<PurchaseMaterialListItem> purchaseMaterialListItems_Approved = realm.copyFromRealm(purchaseMaterialListRealmResults_Approved);
+        List<PurchaseMaterialListItem> purchaseMaterialListItems_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
+//        Collections.copy(purchaseMaterialListItems, purchaseMaterialListItems_Approved);
+//        Collections.copy(purchaseMaterialListItems, purchaseMaterialListItems_Current);
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId = availableUserArray.get(index).getId();
         String userName = availableUserArray.get(index).getUserName();
         try {
-            params.put("item_list", purchaseMaterialListItems);
-            params.put("user_id", userId);
-            params.put("user_name", userName);
+//            params.put("item_list", purchaseMaterialListItems);
+            params.put("is_material_request", true);
+            params.put("project_site_id", 6);
+            params.put("assigned_to", 1);
+            params.put("project_site_id", null);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
@@ -329,31 +340,47 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseMaterialListRealmResults = realm.where(PurchaseMaterialListItem.class).findAll();
-//        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResults, true, true);
+        purchaseMaterialListRealmResults_Approved = realm.where(PurchaseMaterialListItem.class).findAll();
+        List<PurchaseMaterialListItem> purchaseMaterialList_Approved = realm.copyFromRealm(purchaseMaterialListRealmResults_Approved);
+        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).findAll();
+        List<PurchaseMaterialListItem> purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
+//        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResults_Approved, true, true);
         sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
 //        recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
-        sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Approved Items", new ArrayList<PurchaseMaterialListItem>()));
-        sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Current Items", new ArrayList<PurchaseMaterialListItem>()));
+        sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Approved Items", purchaseMaterialList_Approved));
+        sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Current Items", purchaseMaterialList_Current));
         recyclerView_materialList.setAdapter(sectionedRecyclerViewAdapter);
         recyclerView_materialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 recyclerView_materialList,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResults.get(position);
-                        Timber.d(String.valueOf(purchaseMaterialListItem));
+                        PurchaseMaterialListItem purchaseMaterialListItem_Approved = purchaseMaterialListRealmResults_Approved.get(position);
+                        Timber.d(String.valueOf(purchaseMaterialListItem_Approved));
+                        PurchaseMaterialListItem purchaseMaterialListItem_Current = purchaseMaterialListRealmResults_Current.get(position);
+                        Timber.d(String.valueOf(purchaseMaterialListItem_Current));
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (purchaseMaterialListRealmResults != null) {
-            Timber.d("purchaseMaterialListRealmResults change listener added.");
-            purchaseMaterialListRealmResults.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
+        if (purchaseMaterialListRealmResults_Approved != null) {
+            Timber.d("purchaseMaterialListRealmResults_Approved change listener added.");
+            purchaseMaterialListRealmResults_Approved.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
+                @Override
+                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
+                    Timber.d("Size of purchaseRequestListItems: " + String.valueOf(purchaseRequestListItems.size()));
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
+        }
+        if (purchaseMaterialListRealmResults_Current != null) {
+            Timber.d("purchaseMaterialListRealmResults_Current change listener added.");
+            purchaseMaterialListRealmResults_Current.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
                     Timber.d("Size of purchaseRequestListItems: " + String.valueOf(purchaseRequestListItems.size()));
@@ -398,6 +425,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                 mLlUploadImage.removeAllViews();
                 for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                         ImageView imageView = new ImageView(mContext);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
@@ -418,45 +446,40 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     }
 
     private void submitPurchaseRequest(JSONObject params) {
+        realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
+                    strToken = loginResponse.getToken();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Accept", "application/json; charset=UTF-8");
-        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL)
+        AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
                 .addBodyParameter(params)
+                .addFileBody(currentImageFile)
                 .addHeaders(headers)
                 .setTag("submitPurchaseRequest")
                 .build()
-                .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(final PurchaseRequestResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    Timber.d("Success");
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
                     }
                 });
     }
@@ -552,9 +575,10 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     }*/
 
     /////////////////////////////////////////
-    private class SectionedPurchaseMaterialRvAdapter extends StatelessSection {
-        String title;
-        List<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
+    @SuppressWarnings("WeakerAccess")
+    protected class SectionedPurchaseMaterialRvAdapter extends StatelessSection {
+        private String title;
+        private List<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
 
         SectionedPurchaseMaterialRvAdapter(String title, List<PurchaseMaterialListItem> list) {
             super(new SectionParameters.Builder(R.layout.item_purchase_material_list)
@@ -593,30 +617,30 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
             headerHolder.tvTitle.setText(title);
         }
-    }
 
-    private class HeaderViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvTitle;
+        private class HeaderViewHolder extends RecyclerView.ViewHolder {
+            private final TextView tvTitle;
 
-        HeaderViewHolder(View view) {
-            super(view);
-            tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+            HeaderViewHolder(View view) {
+                super(view);
+                tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+            }
         }
-    }
 
-    protected class ItemViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.textView_MaterialName_createPR)
-        TextView textViewMaterialNameCreatePR;
-        @BindView(R.id.textView_MaterialQuantity_createPR)
-        TextView textViewMaterialQuantityCreatePR;
-        @BindView(R.id.textView_MaterialUnit_createPR)
-        TextView textViewMaterialUnitCreatePR;
-        @BindView(R.id.imageButton_deleteMaterial_createPR)
-        ImageButton imageButtonDeleteMaterialCreatePR;
+        protected class ItemViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.textView_MaterialName_createPR)
+            TextView textViewMaterialNameCreatePR;
+            @BindView(R.id.textView_MaterialQuantity_createPR)
+            TextView textViewMaterialQuantityCreatePR;
+            @BindView(R.id.textView_MaterialUnit_createPR)
+            TextView textViewMaterialUnitCreatePR;
+            @BindView(R.id.imageButton_deleteMaterial_createPR)
+            ImageButton imageButtonDeleteMaterialCreatePR;
 
-        ItemViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+            ItemViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
         }
     }
 }

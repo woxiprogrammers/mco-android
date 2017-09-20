@@ -21,7 +21,9 @@ public class AppURL {
     public static final String API_SUMMARY_LIST_URL = "http://www.mocky.io/v2/59b23132120000700289224b";
     public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = "http://www.mocky.io/v2/59bb7e190f00009101ff85bb";
     //Purchase Details
+    ///purchase/material-request/create?token=
     public static final String API_PURCHASE_SUMMARY = "http://www.mocky.io/v2/59b905003a0000d300f7f877";
     public static final String API_PURCHASE_ORDER = "http://www.mocky.io/v2/59ba5d100f000094016227ea";
     public static final String API_PURCHASE_MATERIAL_UNITS_IMAGES_URL = "http://www.mocky.io/v2/59bbb16d0f0000fb01ff86dd";
+    public static final String API_SUBMIT_PURCHASE_REQUEST = BASE_URL + "purchase/material-request/create?token=";
 }
