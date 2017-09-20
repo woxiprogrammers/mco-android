@@ -3,6 +3,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class MaterialNamesItem extends RealmObject{
 
@@ -12,6 +13,7 @@ public class MaterialNamesItem extends RealmObject{
 	@SerializedName("material_images")
 	private RealmList<MaterialImagesItem> materialImages;
 
+	@PrimaryKey
 	@SerializedName("id")
 	private int id;
 

@@ -1,4 +1,5 @@
-<ScrollView
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,6 +28,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/frameLayout_materialSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:drawable/editbox_background">
@@ -36,6 +38,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_materialName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edittext_setNameOfMaterial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:enabled="false"/>
+
+        </LinearLayout>
 
         <RadioGroup
             android:id="@+id/radio_Group"
@@ -77,9 +94,9 @@
                     android:id="@+id/edittextQuantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:background="@android:drawable/editbox_background_normal"
                     android:digits="0123456789"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:inputType="number"/>
             </LinearLayout>
 
             <LinearLayout
@@ -94,27 +111,49 @@
                     android:text="Unit:"
                     android:textColor="@color/colorTextLight"/>
 
-                <EditText
-                    android:id="@+id/editTextUnits"
+                <FrameLayout
+                    android:id="@+id/frameLayout_UnitSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/spinner_select_units"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/edittext_setUnit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:enabled="false"/>
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:fadeScrollbars="false">
 
-            <ImageView
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:src="@drawable/ic_menu_gallery"
-                android:tint="@color/colorTextLight"/>
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llIm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -135,50 +174,24 @@
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <include
+            android:id="@+id/layoutBillImage"
+            layout="@layout/layout_multicapture_multicamera"/>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_16dp"
-            android:orientation="horizontal">
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:fadeScrollbars="false">
 
-            <TextView
-                android:id="@+id/textView_capture_images"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/ll_addImage"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:drawableTop="@android:drawable/ic_menu_camera"
-                android:gravity="center_horizontal"
-                android:text="Capture Images"/>
-
-            <View
-                android:layout_width="@dimen/dimen_20dp"
-                android:layout_height="match_parent"/>
-
-            <TextView
-                android:id="@+id/textView_pick_images"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:onClick="txtPickImages"
-                android:drawableTop="@android:drawable/ic_menu_gallery"
-                android:gravity="center_horizontal"
-                android:text="Choose Images"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:src="@android:drawable/ic_input_add"
-                android:tint="@color/colorTextLight"/>
-        </LinearLayout>
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -208,14 +221,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="In Timer:"
+                android:text="In Time:"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
                 android:id="@+id/editText_InTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:drawable/editbox_background_normal"/>
+                android:background="@android:drawable/editbox_background_normal"
+                android:focusable="false"
+                android:onClick="onViewClicked"/>
         </LinearLayout>
 
         <LinearLayout
@@ -234,7 +249,9 @@
                 android:id="@+id/editText_OutTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:drawable/editbox_background_normal"/>
+                android:background="@android:drawable/editbox_background_normal"
+                android:focusable="false"
+                android:onClick="onViewClickedOutTime"/>
         </LinearLayout>
 
         <LinearLayout
@@ -251,27 +268,6 @@
 
             <EditText
                 android:id="@+id/editText_BillAmount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/editbox_background_normal"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_PayableAmount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Payable Amount:"
-                android:textColor="@color/colorTextLight"/>
-
-            <EditText
-                android:id="@+id/editText_PayableAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:drawable/editbox_background_normal"/>
@@ -298,6 +294,52 @@
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_PayableAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Payable Amount:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_PayableAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"/>
+        </LinearLayout>
+
+
+        <include
+            android:id="@+id/billPaymentImageLayout"
+            layout="@layout/layout_multicapture_multicamera"
+            android:visibility="gone"/>
+
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:fadeScrollbars="false">
+
+            <LinearLayout
+                android:id="@+id/ll_PaymentImageLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -308,9 +350,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#FFD740"
+                android:onClick="addNote"
                 android:padding="@dimen/dimen_16dp"
                 android:text="@string/tap_too_add_note"
-                android:onClick="addNote"
                 android:textColor="@color/colorText"
                 android:textSize="@dimen/dimen_16dp"/>
         </android.support.v7.widget.CardView>
@@ -324,7 +366,6 @@
             android:background="@drawable/background_button_pressed"
             android:backgroundTint="@color/colorAccent"
             android:onClick="onClickButtonAction"
-            android:text="Upload Bill"
             android:textColor="@color/colorWhite"/>
     </LinearLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

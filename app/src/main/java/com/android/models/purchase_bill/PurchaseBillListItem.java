@@ -7,19 +7,41 @@ import io.realm.annotations.PrimaryKey;
 
 public class PurchaseBillListItem extends RealmObject{
 
+
 	@SerializedName("date")
 	private String date;
 
-	@SerializedName("purchase_request_id")
-	private String purchaseRequestId;
+	@SerializedName("out_time")
+	private String outTime;
 
-	@SerializedName("vendor")
-	private String vendor;
+	@SerializedName("challan_number")
+	private String challanNumber;
+
+	@SerializedName("bill_amount")
+	private String billAmount;
 
 	@SerializedName("purchase_order_id")
 	private String purchaseOrderId;
 
 	@PrimaryKey
+	@SerializedName("purchase_bill_grn")
+	private String purchaseBillGrn;
+
+	@SerializedName("material_quantity")
+	private String materialQuantity;
+
+	@SerializedName("purchase_request_id")
+	private String purchaseRequestId;
+
+	@SerializedName("in_time")
+	private String inTime;
+
+	@SerializedName("vendor")
+	private String vendor;
+
+	@SerializedName("vehicle_number")
+	private String vehicleNumber;
+
 	@SerializedName("id")
 	private int id;
 
@@ -28,12 +50,6 @@ public class PurchaseBillListItem extends RealmObject{
 
 	@SerializedName("material_unit")
 	private String materialUnit;
-
-	@SerializedName("purchase_bill_grn")
-	private String purchaseBillGrn;
-
-	@SerializedName("material_quantity")
-	private String materialQuantity;
 
 	@SerializedName("status")
 	private String status;
@@ -116,5 +132,45 @@ public class PurchaseBillListItem extends RealmObject{
 
 	public String getStatus(){
 		return status;
+	}
+
+	public String getChallanNumber() {
+		return challanNumber;
+	}
+
+	public void setChallanNumber(String challanNumber) {
+		this.challanNumber = challanNumber;
+	}
+
+	public String getVehicleNumber() {
+		return vehicleNumber;
+	}
+
+	public void setVehicleNumber(String vehicleNumber) {
+		this.vehicleNumber = vehicleNumber;
+	}
+
+	public String getInTime() {
+		return inTime;
+	}
+
+	public void setInTime(String inTime) {
+		this.inTime = inTime;
+	}
+
+	public String getOutTime() {
+		return outTime;
+	}
+
+	public void setOutTime(String outTime) {
+		this.outTime = outTime;
+	}
+
+	public String getBillAmount() {
+		return billAmount;
+	}
+
+	public void setBillAmount(int billAmount) {
+		billAmount = billAmount;
 	}
 }

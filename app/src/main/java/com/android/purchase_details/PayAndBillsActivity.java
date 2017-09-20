@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
@@ -19,9 +20,14 @@ import com.android.inventory.InventoryViewPagerAdapter;
 import com.android.purchase_request.PurchaseBillListFragment;
 import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.utils.BaseActivity;
+import com.vlk.multimager.utils.Constants;
+import com.vlk.multimager.utils.Image;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class PayAndBillsActivity extends BaseActivity {
 
@@ -31,7 +37,8 @@ public class PayAndBillsActivity extends BaseActivity {
     BottomNavigationView bottomNavigationPay;
     MenuItem prevMenuItem;
 
-
+    public static boolean isForViewOnly;
+    public static int idForBillItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +55,7 @@ public class PayAndBillsActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 break;
@@ -57,13 +64,13 @@ public class PayAndBillsActivity extends BaseActivity {
     }
 
     private void initializeViews() {
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         String titlePoName = null;
-        if(intent != null){
-            titlePoName=intent.getStringExtra("PONumber");
+        if (intent != null) {
+            titlePoName = intent.getStringExtra("PONumber");
 
         }
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(titlePoName);
         }
@@ -77,6 +84,7 @@ public class PayAndBillsActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.action_pay:
                         viewPager.setCurrentItem(0);
+                        isForViewOnly=false;
                         break;
                     case R.id.action_bills:
                         viewPager.setCurrentItem(1);
@@ -145,6 +153,33 @@ public class PayAndBillsActivity extends BaseActivity {
         @Override
         public int getCount() {
             return arrBottomTitle.length;
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList));
+                Toast.makeText(this, "Capture", Toast.LENGTH_SHORT).show();
+                break;
+            case Constants.TYPE_MULTI_PICKER:
+                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList2));
+                Toast.makeText(this, "Pick", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    public void moveFragments(boolean checkFromWhichFragment) {
+        if (checkFromWhichFragment) {
+            viewPager.setCurrentItem(1);
+        } else {
+            viewPager.setCurrentItem(0);
         }
     }
 

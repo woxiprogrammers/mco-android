@@ -16,6 +16,9 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_bill.PurchaseBillListItem;
 import com.android.models.purchase_bill.PurchaseBillResponse;
+import com.android.purchase_details.PayAndBillsActivity;
+import com.android.purchase_details.PurchaseBIllDetailsItems;
+import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -39,13 +42,14 @@ import timber.log.Timber;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class PurchaseBillListFragment extends Fragment implements FragmentInterface {
+public class PurchaseBillListFragment extends Fragment implements FragmentInterface,AppConstants {
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseBillListItem> purchaseBillListItems;
+    private PurchaseBIllDetailsItems purchaseBIllDetailsItems=new PurchaseBIllDetailsItems();
 
     public PurchaseBillListFragment() {
         // Required empty public constructor
@@ -83,6 +87,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         setUpPrAdapter();
         return mParentView;
     }
+
 
     @Override
     public void onDestroyView() {
@@ -168,7 +173,9 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        Timber.d(String.valueOf(purchaseBillListItems));
+                        PayAndBillsActivity.isForViewOnly=true;
+                        PayAndBillsActivity.idForBillItem=purchaseBillListItems.get(position).getId();
+                        ((PayAndBillsActivity) mContext).moveFragments(false);
                     }
 
                     @Override
@@ -197,14 +204,14 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_request_list, parent, false);
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_bill_list, parent, false);
             return new MyViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseBillListItem purchaseBillListItem = arrPurchaseBillListItems.get(position);
-            holder.textViewPurchaseRequestId.setText(purchaseBillListItem.getPurchaseRequestId());
+            holder.textViewPurchaseGrn.setText(purchaseBillListItem.getPurchaseBillGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseBillListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseBillListItem.getMaterialName());
@@ -221,8 +228,8 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.textView_purchase_request_id)
-            TextView textViewPurchaseRequestId;
+            @BindView(R.id.textView_purchase_grn)
+            TextView textViewPurchaseGrn;
             @BindView(R.id.textView_purchase_request_status)
             TextView textViewPurchaseRequestStatus;
             @BindView(R.id.textView_purchase_request_date)
