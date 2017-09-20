@@ -14,14 +14,18 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.android.models.login_acl.LoginResponse;
 import com.androidnetworking.error.ANError;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -32,6 +36,7 @@ import timber.log.Timber;
 public class AppUtils {
     public static AppUtils instance;
     public static Context mContext;
+    private String strToken;
     private static SharedPreferences preference;
     private static SharedPreferences.Editor editor;
     private final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -346,8 +351,34 @@ public class AppUtils {
         Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
     }
 
-    public void hideKeyboard(View view, Context context){
-        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+    public void hideKeyboard(View view, Context context) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public String getCurrentToken() {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
+                    strToken = loginResponse.getToken();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return strToken;
+    }
+
+    public Map<String, String> getApiHeaders() {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Accept", "application/json; charset=UTF-8");
+        return headers;
     }
 }

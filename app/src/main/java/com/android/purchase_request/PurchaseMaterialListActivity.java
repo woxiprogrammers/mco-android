@@ -27,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.models.login_acl.LoginResponse;
 import com.android.models.purchase_request.AvailableUsersItem;
 import com.android.models.purchase_request.UsersWithAclResponse;
 import com.android.utils.AppConstants;
@@ -50,7 +49,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -106,7 +104,6 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private Button mButtonAddMaterialAsset;
     private SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter;
     private File currentImageFile;
-    private String strToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,13 +185,13 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId = availableUserArray.get(index).getId();
-        String userName = availableUserArray.get(index).getUserName();
+//        String userName = availableUserArray.get(index).getUserName();
         try {
-//            params.put("item_list", purchaseMaterialListItems);
+            params.put("item_list", purchaseMaterialListItems);
             params.put("is_material_request", true);
             params.put("project_site_id", 6);
-            params.put("assigned_to", 1);
-            params.put("project_site_id", null);
+            params.put("assigned_to", userId);
+            params.put("item_list", null);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
@@ -446,29 +443,11 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     }
 
     private void submitPurchaseRequest(JSONObject params) {
-        realm = Realm.getDefaultInstance();
-        try {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
-                    strToken = loginResponse.getToken();
-                }
-            });
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("Accept", "application/json; charset=UTF-8");
+        String strToken = AppUtils.getInstance().getCurrentToken();
         AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
                 .addBodyParameter(params)
-                .addFileBody(currentImageFile)
-                .addHeaders(headers)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("submitPurchaseRequest")
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
