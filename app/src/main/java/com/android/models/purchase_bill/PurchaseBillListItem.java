@@ -8,25 +8,39 @@ import io.realm.annotations.PrimaryKey;
 public class PurchaseBillListItem extends RealmObject{
 
 
-	private  String challanNumber;
-	private String vehicleNumber;
-
-	private String inTime;
-	private String outTime;
-	private int BillAmount;
-
 	@SerializedName("date")
-
 	private String date;
+
+	@SerializedName("out_time")
+	private String outTime;
+
+	@SerializedName("challan_number")
+	private String challanNumber;
+
+	@SerializedName("bill_amount")
+	private String billAmount;
+
+	@SerializedName("purchase_order_id")
+	private String purchaseOrderId;
+
+	@PrimaryKey
+	@SerializedName("purchase_bill_grn")
+	private String purchaseBillGrn;
+
+	@SerializedName("material_quantity")
+	private String materialQuantity;
 
 	@SerializedName("purchase_request_id")
 	private String purchaseRequestId;
 
+	@SerializedName("in_time")
+	private String inTime;
+
 	@SerializedName("vendor")
 	private String vendor;
 
-	@SerializedName("purchase_order_id")
-	private String purchaseOrderId;
+	@SerializedName("vehicle_number")
+	private String vehicleNumber;
 
 	@SerializedName("id")
 	private int id;
@@ -36,13 +50,6 @@ public class PurchaseBillListItem extends RealmObject{
 
 	@SerializedName("material_unit")
 	private String materialUnit;
-
-	@PrimaryKey
-	@SerializedName("purchase_bill_grn")
-	private String purchaseBillGrn;
-
-	@SerializedName("material_quantity")
-	private String materialQuantity;
 
 	@SerializedName("status")
 	private String status;
@@ -159,11 +166,11 @@ public class PurchaseBillListItem extends RealmObject{
 		this.outTime = outTime;
 	}
 
-	public int getBillAmount() {
-		return BillAmount;
+	public String getBillAmount() {
+		return billAmount;
 	}
 
 	public void setBillAmount(int billAmount) {
-		BillAmount = billAmount;
+		billAmount = billAmount;
 	}
 }

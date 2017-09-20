@@ -85,7 +85,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         //Initialize Views
         initializeViews();
         setUpPrAdapter();
-        Timber.d("@@",purchaseBIllDetailsItems.getChallanNumber());
         return mParentView;
     }
 
@@ -175,7 +174,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     @Override
                     public void onItemClick(View view, final int position) {
                         PayAndBillsActivity.isForViewOnly=true;
-                        PayAndBillsActivity.idForBillItem=1;
+                        PayAndBillsActivity.idForBillItem=purchaseBillListItems.get(position).getId();
                         ((PayAndBillsActivity) mContext).moveFragments(false);
                     }
 

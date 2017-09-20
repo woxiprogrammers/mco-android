@@ -4,10 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.InventoryDetails;
 import com.android.models.purchase_bill.PurchaseBillListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -49,7 +47,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -99,16 +96,39 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     @BindView(R.id.buttonAction)
     Button buttonAction;
+
     @BindView(R.id.radio_Group)
     RadioGroup radioGroup;
+
     @BindView(R.id.textView_capture_images)
     TextView textViewCaptureImages;
+
     @BindView(R.id.textView_pick_images)
     TextView textViewPickImages;
+
     @BindView(R.id.spinner_select_units)
     Spinner spinnerSelectUnits;
+
     @BindView(R.id.llIm)
     LinearLayout llIm;
+
+    @BindView(R.id.edittext_setNameOfMaterial)
+    EditText edittextSetNameOfMaterial;
+
+    @BindView(R.id.ll_materialName)
+    LinearLayout llMaterialName;
+
+    @BindView(R.id.edittext_setUnit)
+    EditText edittextSetUnit;
+
+    @BindView(R.id.ll_unit)
+    LinearLayout llUnit;
+
+    @BindView(R.id.frameLayout_materialSpinner)
+    FrameLayout frameLayoutMaterialSpinner;
+
+    @BindView(R.id.frameLayout_UnitSpinner)
+    FrameLayout frameLayoutUnitSpinner;
 
     private RadioButton radioPayButton;
     private Unbinder unbinder;
@@ -142,21 +162,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
         View view = inflater.inflate(R.layout.fragment_pay, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                /*RadioButton radioButton = radioGroup.findViewById(i);
-                String st = radioButton.getText().toString();
-                if (st.equals("Create Ammetment")) {
-                    buttonAction.setText("Create Ammetment");
-                } else {
-                    buttonAction.setText("Upload Bill");
-                }*/
-            }
-        });
-        requestForMaterialNames();
-        setUpSpinnerValueChangeListener();
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -169,6 +174,9 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
             }
         });
+        requestForMaterialNames();
+        setUpSpinnerValueChangeListener();
+        setUpSpinnerAdapter(availableMaterialRealmResults);
         return view;
     }
 
@@ -176,7 +184,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     public void fragmentBecameVisible() {
         if (PayAndBillsActivity.isForViewOnly) {
             setData(true);
-        }else {
+        } else {
             setData(false);
         }
     }
@@ -435,7 +443,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
         realm = Realm.getDefaultInstance();
         availableMaterialRealmResults = realm.where(MaterialNamesItem.class).findAll();
         setUpSpinnerAdapter(availableMaterialRealmResults);
-        if (availableMaterialRealmResults != null) {
+        /*if (availableMaterialRealmResults != null) {
             Timber.d("availableUsersRealmResults change listener added.");
             availableMaterialRealmResults.addChangeListener(new RealmChangeListener<RealmResults<MaterialNamesItem>>() {
                 @Override
@@ -446,7 +454,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }
+        }*/
     }
 
     private void setUpSpinnerValueForUnits(int selectedId) {
@@ -528,7 +536,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
         alertDialog.show();
     }
 
-    private void clearData(){
+    private void clearData() {
         edittextQuantity.setText("");
         editTextChallanNumber.setText("");
         editTextVehicleNumber.setText("");
@@ -537,31 +545,44 @@ public class PayFragment extends Fragment implements FragmentInterface {
         editTextBillAmount.setText("");
     }
 
-    private void setData(boolean isFromClick){
+    private void setData(boolean isFromClick) {
 
-        if(isFromClick){
+        if (isFromClick) {
             llgrnNumber.setVisibility(View.VISIBLE);
             editTextGrnNumber.setEnabled(false);
             radioGroup.setVisibility(View.GONE);
             spinner.setEnabled(false);
-            editTextPayableAmount.setVisibility(View.VISIBLE);
+            llPayableAmount.setVisibility(View.VISIBLE);
+            llMaterialName.setVisibility(View.VISIBLE);
+            llUnit.setVisibility(View.VISIBLE);
+            frameLayoutMaterialSpinner.setVisibility(View.GONE);
+            frameLayoutUnitSpinner.setVisibility(View.GONE);
             realm = Realm.getDefaultInstance();
 
-            PurchaseBillListItem purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("id", 1).findFirst();
-            edittextQuantity.setText(purchaseBIllDetailsItems.getMaterialQuantity());
-            editTextChallanNumber.setText(purchaseBIllDetailsItems.getChallanNumber());
-            editTextVehicleNumber.setText(purchaseBIllDetailsItems.getVehicleNumber());
-            editTextInTime.setText(purchaseBIllDetailsItems.getInTime());
-            editTextOutTime.setText(purchaseBIllDetailsItems.getOutTime());
-            editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
-            editTextGrnNumber.setText(purchaseBIllDetailsItems.getPurchaseBillGrn());
+            PurchaseBillListItem purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("id", PayAndBillsActivity.idForBillItem).findFirst();
+            if (purchaseBIllDetailsItems != null) {
+                edittextSetNameOfMaterial.setText(purchaseBIllDetailsItems.getMaterialName());
+                edittextSetUnit.setText(purchaseBIllDetailsItems.getMaterialUnit());
+                edittextQuantity.setText(purchaseBIllDetailsItems.getMaterialQuantity());
+                editTextChallanNumber.setText(purchaseBIllDetailsItems.getChallanNumber());
+                editTextVehicleNumber.setText(purchaseBIllDetailsItems.getVehicleNumber());
+                editTextInTime.setText(purchaseBIllDetailsItems.getInTime());
+                editTextOutTime.setText(purchaseBIllDetailsItems.getOutTime());
+                editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
+                editTextGrnNumber.setText(purchaseBIllDetailsItems.getPurchaseBillGrn());
+                buttonAction.setText("Pay");
+            }
 
-        }else {
+        } else {
             llgrnNumber.setVisibility(View.GONE);
             editTextGrnNumber.setEnabled(false);
             radioGroup.setVisibility(View.VISIBLE);
             spinner.setEnabled(true);
             editTextPayableAmount.setVisibility(View.GONE);
+            llMaterialName.setVisibility(View.GONE);
+            llUnit.setVisibility(View.GONE);
+            frameLayoutMaterialSpinner.setVisibility(View.VISIBLE);
+            frameLayoutUnitSpinner.setVisibility(View.VISIBLE);
         }
 
     }
