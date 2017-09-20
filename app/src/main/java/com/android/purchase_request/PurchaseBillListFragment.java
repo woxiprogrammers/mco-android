@@ -204,14 +204,14 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_request_list, parent, false);
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_bill_list, parent, false);
             return new MyViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseBillListItem purchaseBillListItem = arrPurchaseBillListItems.get(position);
-            holder.textViewPurchaseRequestId.setText(purchaseBillListItem.getPurchaseRequestId());
+            holder.textViewPurchaseGrn.setText(purchaseBillListItem.getPurchaseBillGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseBillListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseBillListItem.getMaterialName());
@@ -228,8 +228,8 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.textView_purchase_request_id)
-            TextView textViewPurchaseRequestId;
+            @BindView(R.id.textView_purchase_grn)
+            TextView textViewPurchaseGrn;
             @BindView(R.id.textView_purchase_request_status)
             TextView textViewPurchaseRequestStatus;
             @BindView(R.id.textView_purchase_request_date)
