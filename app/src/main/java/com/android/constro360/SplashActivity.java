@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import com.android.dashboard.DashBoardActivity;
 import com.android.inventory.BottomNavigateViewActivity;
 import com.android.login_mvp.LoginActivity;
+import com.android.material_request_approve.MaterialRequest_ApproveActivity;
 import com.android.models.login_acl.LoginResponse;
 import com.android.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppConstants;
@@ -116,11 +117,12 @@ public class SplashActivity extends BaseActivity {
     private void storeAclKeyValueToLocal() {
         HashMap<String, String> aclKeyValuePair = new HashMap<String, String>();
         aclKeyValuePair.put("purchase-request", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("material-request", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("material-request", MaterialRequest_ApproveActivity.class.getName());
         aclKeyValuePair.put("vendor-assignment", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("manage-amendment", PurchaseHomeActivity.class.getName());
+        //
         aclKeyValuePair.put("inventory-in-out-transfer", BottomNavigateViewActivity.class.getName());
         aclKeyValuePair.put("asset-reading", BottomNavigateViewActivity.class.getName());
         aclKeyValuePair.put("asset-maintainance", BottomNavigateViewActivity.class.getName());

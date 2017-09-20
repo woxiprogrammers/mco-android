@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -16,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -58,11 +56,12 @@ import java.util.concurrent.ThreadLocalRandom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.OrderedRealmCollection;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
-import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
@@ -102,6 +101,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private TextView mTextViewPickImages;
     private Button mButtonDismissMaterialAsset;
     private Button mButtonAddMaterialAsset;
+    private SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -330,10 +330,14 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseMaterialListRealmResults = realm.where(PurchaseMaterialListItem.class).findAll();
-        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResults, true, true);
+//        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResults, true, true);
+        sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
-        recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
+//        recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
+        sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Approved Items", new ArrayList<PurchaseMaterialListItem>()));
+        sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Current Items", new ArrayList<PurchaseMaterialListItem>()));
+        recyclerView_materialList.setAdapter(sectionedRecyclerViewAdapter);
         recyclerView_materialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 recyclerView_materialList,
                 new RecyclerItemClickListener.OnItemClickListener() {
@@ -357,56 +361,6 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseMaterialRvAdapter.MyViewHolder> {
-        private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
-
-        PurchaseMaterialRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
-            super(data, autoUpdate, updateOnModification);
-            arrPurchaseMaterialListItems = data;
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_material_list, parent, false);
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
-            holder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
-            holder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
-            holder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit());
-        }
-
-        @Override
-        public long getItemId(int index) {
-            return arrPurchaseMaterialListItems.get(index).getIndexId();
-        }
-
-        @Override
-        public int getItemCount() {
-            return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
-        }
-
-        class MyViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.textView_MaterialName_createPR)
-            TextView textViewMaterialNameCreatePR;
-            @BindView(R.id.textView_MaterialQuantity_createPR)
-            TextView textViewMaterialQuantityCreatePR;
-            @BindView(R.id.textView_MaterialUnit_createPR)
-            TextView textViewMaterialUnitCreatePR;
-            @BindView(R.id.imageButton_deleteMaterial_createPR)
-            ImageButton imageButtonDeleteMaterialCreatePR;
-
-            MyViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
-            }
         }
     }
 
@@ -545,5 +499,124 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                         AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
                     }
                 });
+    }
+
+    /*@SuppressWarnings("WeakerAccess")
+    protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseMaterialRvAdapter.MyViewHolder> {
+        private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
+
+        PurchaseMaterialRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            arrPurchaseMaterialListItems = data;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_material_list, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            holder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
+            holder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
+            holder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit());
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return arrPurchaseMaterialListItems.get(index).getIndexId();
+        }
+
+        @Override
+        public int getItemCount() {
+            return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.textView_MaterialName_createPR)
+            TextView textViewMaterialNameCreatePR;
+            @BindView(R.id.textView_MaterialQuantity_createPR)
+            TextView textViewMaterialQuantityCreatePR;
+            @BindView(R.id.textView_MaterialUnit_createPR)
+            TextView textViewMaterialUnitCreatePR;
+            @BindView(R.id.imageButton_deleteMaterial_createPR)
+            ImageButton imageButtonDeleteMaterialCreatePR;
+
+            MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
+    }*/
+
+    /////////////////////////////////////////
+    private class SectionedPurchaseMaterialRvAdapter extends StatelessSection {
+        String title;
+        List<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
+
+        SectionedPurchaseMaterialRvAdapter(String title, List<PurchaseMaterialListItem> list) {
+            super(new SectionParameters.Builder(R.layout.item_purchase_material_list)
+                    .headerResourceId(R.layout.section_ex1_header)
+                    .build());
+            this.title = title;
+            this.arrPurchaseMaterialListItems = list;
+        }
+
+        @Override
+        public int getContentItemsTotal() {
+            return arrPurchaseMaterialListItems.size();
+        }
+
+        @Override
+        public RecyclerView.ViewHolder getItemViewHolder(View view) {
+            return new ItemViewHolder(view);
+        }
+
+        @Override
+        public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
+            final ItemViewHolder itemHolder = (ItemViewHolder) holder;
+            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            itemHolder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
+            itemHolder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
+            itemHolder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit());
+        }
+
+        @Override
+        public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
+            return new HeaderViewHolder(view);
+        }
+
+        @Override
+        public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
+            HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
+            headerHolder.tvTitle.setText(title);
+        }
+    }
+
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvTitle;
+
+        HeaderViewHolder(View view) {
+            super(view);
+            tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+        }
+    }
+
+    protected class ItemViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.textView_MaterialName_createPR)
+        TextView textViewMaterialNameCreatePR;
+        @BindView(R.id.textView_MaterialQuantity_createPR)
+        TextView textViewMaterialQuantityCreatePR;
+        @BindView(R.id.textView_MaterialUnit_createPR)
+        TextView textViewMaterialUnitCreatePR;
+        @BindView(R.id.imageButton_deleteMaterial_createPR)
+        ImageButton imageButtonDeleteMaterialCreatePR;
+
+        ItemViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

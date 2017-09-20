@@ -34,6 +34,7 @@
         <activity android:name="com.android.dummy.SelectorActivity"/>
         <activity
             android:name="com.android.purchase_request.PurchaseHomeActivity"
+            android:parentActivityName="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name="com.android.inventory.InventoryDetails"/>
@@ -49,6 +50,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -64,5 +66,12 @@
             android:name="com.android.purchase_details.PayAndBillsActivity"
             android:label="@string/title_activity_pay_and_bills">
         </activity>
+        <activity
+            android:name="com.android.material_request_approve.MaterialRequest_ApproveActivity"
+            android:label="@string/title_activity_material_request"
+            android:parentActivityName="com.android.dashboard.DashBoardActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
+
 </manifest>
