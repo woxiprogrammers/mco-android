@@ -400,6 +400,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                 mLlUploadImage.removeAllViews();
                 for (Image currentImage : imagesList) {
                     if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                         ImageView imageView = new ImageView(mContext);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
@@ -444,9 +445,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
 
     private void submitPurchaseRequest(JSONObject params) {
         String strToken = AppUtils.getInstance().getCurrentToken();
-        AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
+        AndroidNetworking.upload(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
-                .addBodyParameter(params)
+                .addMultipartFile("image_file", currentImageFile)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("submitPurchaseRequest")
                 .build()

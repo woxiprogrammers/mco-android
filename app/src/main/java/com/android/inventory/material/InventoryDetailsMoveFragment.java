@@ -30,7 +30,7 @@ import android.widget.Toast;
 import com.android.inventory.SelectedMaterialListAdapter;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.ImageUtilityHelper;
+import com.android.utils.ImageUtilityHelper;
 import com.android.inventory.InventoryDetails;
 import com.android.models.inventory.MaterialListItem;
 import java.util.ArrayList;

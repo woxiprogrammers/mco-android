@@ -7,7 +7,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.android.dashboard.DashBoardActivity;
-import com.android.inventory.BottomNavigateViewActivity;
+import com.android.inventory.InventoryHomeActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.material_request_approve.MaterialRequest_ApproveActivity;
 import com.android.models.login_acl.LoginResponse;
@@ -15,7 +15,6 @@ import com.android.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.BaseActivity;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -123,11 +122,11 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("manage-amendment", PurchaseHomeActivity.class.getName());
         //
-        aclKeyValuePair.put("inventory-in-out-transfer", BottomNavigateViewActivity.class.getName());
-        aclKeyValuePair.put("asset-reading", BottomNavigateViewActivity.class.getName());
-        aclKeyValuePair.put("asset-maintainance", BottomNavigateViewActivity.class.getName());
-        aclKeyValuePair.put("asset-management", BottomNavigateViewActivity.class.getName());
-        aclKeyValuePair.put("inventory-history", BottomNavigateViewActivity.class.getName());
+        aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-maintainance", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("inventory-history", InventoryHomeActivity.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);

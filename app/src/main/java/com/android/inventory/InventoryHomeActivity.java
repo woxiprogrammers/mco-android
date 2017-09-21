@@ -9,17 +9,15 @@ import android.view.MenuItem;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.utils.BaseActivity;
+import com.android.constro360.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BottomNavigateViewActivity extends BaseActivity {
-
+public class InventoryHomeActivity extends BaseActivity {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottom_navigation;
     @BindView(R.id.view_pager)
-
     ViewPager viewPagerInventory;
     MenuItem prevMenuItem;
 
@@ -33,12 +31,9 @@ public class BottomNavigateViewActivity extends BaseActivity {
             setTitle(getString(R.string.inventory));
         }
         callMaterialFragment();
-
         bottom_navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 switch (item.getItemId()) {
                     case R.id.action_material:
                         viewPagerInventory.setCurrentItem(0);
@@ -46,7 +41,6 @@ public class BottomNavigateViewActivity extends BaseActivity {
                     case R.id.action_assets:
                         viewPagerInventory.setCurrentItem(1);
                         break;
-
                 }
                 return false;
             }
@@ -68,15 +62,12 @@ public class BottomNavigateViewActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void callMaterialFragment() {
         final InventoryViewPagerAdapter inventoryViewPagerAdapter = new InventoryViewPagerAdapter(getSupportFragmentManager());
         viewPagerInventory.setAdapter(inventoryViewPagerAdapter);
-
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -90,20 +81,13 @@ public class BottomNavigateViewActivity extends BaseActivity {
                 } else {
                     bottom_navigation.getMenu().getItem(0).setChecked(false);
                 }
-
                 bottom_navigation.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = bottom_navigation.getMenu().getItem(position);
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
-
     }
-
-
-
 }

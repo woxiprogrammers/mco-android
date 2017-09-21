@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -15,11 +14,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.android.constro360.R;
-import com.android.utils.BaseActivity;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.android.constro360.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

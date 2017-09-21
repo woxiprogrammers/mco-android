@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.constro360.SelectorAdapter;
+import com.android.utils.SelectorAdapter;
 import com.android.interfaces.FragmentInterface;
 import com.rohitss.multilineradiogroup.MultiLineRadioGroup;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;

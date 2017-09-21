@@ -335,7 +335,8 @@ public class AppUtils {
     public void logApiError(ANError anError, String strApiTag) {
         if (anError.getErrorCode() != 0) {
             Timber.tag(strApiTag).d("Api errorCode : " + anError.getErrorCode());
-            Timber.tag(strApiTag).d("Api errorBody : " + anError.getErrorBody());
+//            Timber.tag(strApiTag).d("Api errorBody : " + anError.getErrorBody());
+            Timber.tag(strApiTag).d("Api errorMessage : " + anError.getMessage());
             Timber.tag(strApiTag).d("Api errorDetail : " + anError.getErrorDetail());
         } else {
             Timber.tag(strApiTag).d("onError errorDetail : " + anError.getErrorDetail());

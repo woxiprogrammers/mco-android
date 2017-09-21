@@ -1,4 +1,4 @@
-package com.android.inventory;
+package com.android.utils;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.inventory.InventoryDetails;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 

@@ -24,7 +24,8 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.material.InventoryDetailsMoveFragment;
 import com.android.inventory.material.MaterialHistoryFragment;
-import com.android.utils.BaseActivity;
+import com.android.constro360.BaseActivity;
+import com.android.utils.ImageUtilityHelper;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;

@@ -24,7 +24,7 @@ import com.android.models.login_acl.ModulesItem;
 import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
-import com.android.utils.BaseActivity;
+import com.android.constro360.BaseActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

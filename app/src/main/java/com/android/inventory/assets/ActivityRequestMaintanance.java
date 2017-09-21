@@ -15,9 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.inventory.ImageUtilityHelper;
+import com.android.utils.ImageUtilityHelper;
 import com.android.utils.AppUtils;
-import com.android.utils.BaseActivity;
+import com.android.constro360.BaseActivity;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.text.SimpleDateFormat;
