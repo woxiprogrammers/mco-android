@@ -28,6 +28,7 @@ import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
@@ -120,16 +121,26 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("Accept", "application/json; charset=UTF-8");
 
         realm = Realm.getDefaultInstance();
-        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL)
-                .addBodyParameter(params)
-                .addHeaders(headers)
+        Timber.d(AppURL.API_MATERIAL_LISTING_URL + AppUtils.getInstance().getCurrentToken());
+        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("requestInventoryData")
-                .setPriority(Priority.LOW)
+                .setPriority(Priority.MEDIUM)
                 .build()
+               /* .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError,"requestInventoryData");
+                    }
+                });*/
                 .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
                     @Override
                     public void onResponse(final InventoryResponse response) {
@@ -160,8 +171,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
                     @Override
                     public void onError(ANError anError) {
-//                        AppUtils.getInstance().logRealmExecutionError(anError);
-                        anError.printStackTrace();
+                        AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
     }

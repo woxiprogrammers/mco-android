@@ -23,6 +23,7 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
 
 
     private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
+    private AssetsListItem assetsListItem;
 
     public AssetsListAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, autoUpdate, updateOnModification);
@@ -38,12 +39,31 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final AssetsListItem assetsListItem = assetsListItemCollection.get(position);
-        holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
-        holder.textViewAssetUnits.setText(assetsListItem.getAssetsUnits());
-        holder.assetModelNumber.setText("Model Number:- " + assetsListItem.getModelNumber());
-        holder.textviewWorkHour.setText(assetsListItem.getTotalWorkHour());
-        holder.textviewDieselConsume.setText(assetsListItem.getTotalDieselConsume() + " ");
+
+        for (int i=0;i<assetsListItemCollection.size();i++){
+            if(assetsListItemCollection.get(i).isIsDiesel()) {
+                assetsListItem = assetsListItemCollection.get(i);
+                holder.textViewAssetListName.setText("Material Name Number:- " + assetsListItem.getAssetsName());
+                holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
+                holder.assetModelNumber.setText("Model Number:- " + assetsListItem.getModelNumber());
+                holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
+                holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume() + " "));
+            }
+        }
+            /*if(assetsListItem.isIsDiesel()) {
+                holder.textViewAssetListName.setText("Material Name Number:- " + assetsListItem.getAssetsName());
+                holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
+                holder.assetModelNumber.setText("Model Number:- " + assetsListItem.getModelNumber());
+                holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
+                holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume() + " "));
+            }else {
+                holder.textViewAssetListName.setText("");
+                holder.textViewAssetUnits.setText("");
+                holder.assetModelNumber.setText("");
+                holder.textviewWorkHour.setText("");
+                holder.textviewDieselConsume.setText("");
+            }*/
+
     }
 
     @Override
