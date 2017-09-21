@@ -95,7 +95,7 @@
     <string name="dialog_label_add_asset">Asset Name</string>
     <string name="tag_material">material</string>
     <string name="tag_asset">asset</string>
-    <string name="tag_new">new</string>
+    <string name="tag_p_r_assigned">p-r-assigned</string>
     <string name="title_activity_pay_and_bills">PayAndBillsActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -103,4 +103,5 @@
     <string name="text_pay">Pay</string>
     <string name="text_bills">Bills</string>
     <string name="title_activity_material_request">Material Request</string>
+    <string name="tag_in_indent">in-indent</string>
 </resources>

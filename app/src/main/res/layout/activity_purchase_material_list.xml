@@ -58,45 +58,57 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_8dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_4dp"
-                android:text="Assign To: "/>
-
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:drawable/editbox_background">
+                android:layout_marginBottom="@dimen/dimen_8dp"
+                android:orientation="vertical">
 
-                <Spinner
-                    android:id="@+id/spinner_select_assign_to"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_4dp"
+                    android:text="Assign To: "/>
+
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </FrameLayout>
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/spinner_select_assign_to"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_material_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/button_submit_purchase_request"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/dimen_60dp"
+                android:background="@drawable/background_button_pressed"
+                android:backgroundTint="@color/colorAccent"
+                android:text="SUBMIT"
+                android:textColor="@color/colorWhite"
+                tools:targetApi="lollipop"/>
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_material_list"
+            android:id="@+id/rv_existing_material_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"/>
-
-        <Button
-            android:id="@+id/button_submit_purchase_request"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/dimen_60dp"
-            android:background="@drawable/background_button_pressed"
-            android:backgroundTint="@color/colorAccent"
-            android:text="SUBMIT"
-            android:textColor="@color/colorWhite"
-            tools:targetApi="lollipop"/>
+            android:visibility="gone"
+            android:layout_weight="1"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

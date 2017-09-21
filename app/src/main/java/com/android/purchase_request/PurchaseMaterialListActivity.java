@@ -263,9 +263,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         purchaseMaterialListItem.setItem_name(mEditTextNameMaterialAsset.getText().toString().trim() + "");
         purchaseMaterialListItem.setItem_quantity(mEditTextQuantityMaterialAsset.getText().toString().trim() + "");
         purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim() + "");
-        //approve status- "new" or "approved"
-        //As we are adding item status will always be "new".
-        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_new));
+        //approve status- "p-r-assigned" or "in-indent"
+        //As we are adding item status will always be "p-r-assigned".
+        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_p_r_assigned));
         if (isMaterial) {
             purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
         } else {
@@ -337,9 +337,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseMaterialListRealmResults_Approved = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", "approve").findAll();
+        purchaseMaterialListRealmResults_Approved = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
         List<PurchaseMaterialListItem> purchaseMaterialList_Approved = realm.copyFromRealm(purchaseMaterialListRealmResults_Approved);
-        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", "new").findAll();
+        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_p_r_assigned)).findAll();
         List<PurchaseMaterialListItem> purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
 //        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResults_Approved, true, true);
         sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
@@ -444,6 +444,27 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     }
 
     private void submitPurchaseRequest(JSONObject params) {
+        String strToken = AppUtils.getInstance().getCurrentToken();
+        AndroidNetworking.upload(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
+                .setPriority(Priority.MEDIUM)
+                .addMultipartFile("image_file", currentImageFile)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("submitPurchaseRequest")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
+                    }
+                });
+    }
+
+    private void uploadMultipart() {
         String strToken = AppUtils.getInstance().getCurrentToken();
         AndroidNetworking.upload(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
