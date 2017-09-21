@@ -12,13 +12,13 @@ public class AssetsSummaryListItem extends RealmObject{
 	private String stopTime;
 
 	@SerializedName("work_hour_in_day")
-	private String workHourInDay;
+	private int workHourInDay;
 
 	@SerializedName("top_up_time")
 	private String topUpTime;
 
 	@SerializedName("fuel_remaining")
-	private int fuelRemaining;
+	private String fuelRemaining;
 
 	@SerializedName("total_diesel_consume")
 	private int totalDieselConsume;
@@ -27,7 +27,7 @@ public class AssetsSummaryListItem extends RealmObject{
 	private int id;
 
 	@SerializedName("assets_units")
-	private String assetsUnits;
+	private int assetsUnits;
 
 	public void setStartTime(String startTime){
 		this.startTime = startTime;
@@ -45,11 +45,11 @@ public class AssetsSummaryListItem extends RealmObject{
 		return stopTime;
 	}
 
-	public void setWorkHourInDay(String workHourInDay){
+	public void setWorkHourInDay(int workHourInDay){
 		this.workHourInDay = workHourInDay;
 	}
 
-	public String getWorkHourInDay(){
+	public int getWorkHourInDay(){
 		return workHourInDay;
 	}
 
@@ -61,11 +61,11 @@ public class AssetsSummaryListItem extends RealmObject{
 		return topUpTime;
 	}
 
-	public void setFuelRemaining(int fuelRemaining){
+	public void setFuelRemaining(String fuelRemaining){
 		this.fuelRemaining = fuelRemaining;
 	}
 
-	public int getFuelRemaining(){
+	public String getFuelRemaining(){
 		return fuelRemaining;
 	}
 
@@ -85,11 +85,11 @@ public class AssetsSummaryListItem extends RealmObject{
 		return id;
 	}
 
-	public void setAssetsUnits(String assetsUnits){
+	public void setAssetsUnits(int assetsUnits){
 		this.assetsUnits = assetsUnits;
 	}
 
-	public String getAssetsUnits(){
+	public int getAssetsUnits(){
 		return assetsUnits;
 	}
 }

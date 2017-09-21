@@ -5,7 +5,7 @@
                 android:orientation="vertical">
 
     <TextView
-        android:id="@+id/TextViewID"
+        android:id="@+id/textview_fuel_remaining"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_8dp"
         android:orientation="horizontal"
-        android:layout_below="@id/TextViewID"
+        android:layout_below="@id/textview_fuel_remaining"
         android:paddingBottom="@dimen/dimen_10dp"
         android:paddingTop="@dimen/dimen_10dp">
 
@@ -31,6 +31,7 @@
             android:padding="@dimen/dimen_3dp">
 
             <TextView
+                android:id="@+id/textview_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -60,6 +61,7 @@
             android:padding="@dimen/dimen_2dp">
 
             <TextView
+                android:id="@+id/textview_stop_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -87,6 +89,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/textview_topup_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
