@@ -104,4 +104,5 @@
     <string name="text_bills">Bills</string>
     <string name="title_activity_material_request">Material Request</string>
     <string name="tag_in_indent">in-indent</string>
+    <string name="tag_pending">pending</string>
 </resources>

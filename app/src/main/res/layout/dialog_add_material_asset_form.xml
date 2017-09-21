@@ -46,6 +46,8 @@
                 android:id="@+id/editText_name_material_asset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 

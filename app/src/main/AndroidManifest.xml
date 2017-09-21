@@ -58,11 +58,13 @@
         <activity android:name="com.android.inventory.assets.ActivityAssetsReadings">
         </activity>
         <activity android:name="com.android.purchase_details.PurchaseRequestDetailsHomeActivity">
-            <!--<intent-filter>
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name="com.android.purchase_details.PayAndBillsActivity"
@@ -73,6 +75,8 @@
             android:label="@string/title_activity_material_request"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name="com.android.material_request_approve.AutoSuggestActivity">
         </activity>
     </application>
 </manifest>

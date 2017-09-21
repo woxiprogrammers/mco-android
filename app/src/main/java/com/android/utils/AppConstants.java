@@ -10,4 +10,5 @@ public interface AppConstants {
     String IS_APP_FIRST_TIME = "isAppFirstTime";
     long PREFS_REALM_DATABASE_VERSION = 0;
     int IMAGE_PICK_CAPTURE_LIMIT = 10;
+    int REQUEST_CODE_FOR_AUTO_SUGGEST = 111;
 }
