@@ -337,9 +337,9 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseMaterialListRealmResults_Approved = realm.where(PurchaseMaterialListItem.class).findAll();
+        purchaseMaterialListRealmResults_Approved = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", "approve").findAll();
         List<PurchaseMaterialListItem> purchaseMaterialList_Approved = realm.copyFromRealm(purchaseMaterialListRealmResults_Approved);
-        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).findAll();
+        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", "new").findAll();
         List<PurchaseMaterialListItem> purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
 //        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResults_Approved, true, true);
         sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
