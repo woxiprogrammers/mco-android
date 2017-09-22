@@ -28,7 +28,6 @@
                 android:id="@+id/text_view_asset_list_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Electric Welding Machine Bits"
                 android:textColor="@color/colorText"
                 android:textSize="@dimen/dimen_16dp"/>
 
@@ -36,7 +35,6 @@
                 android:id="@+id/asset_model_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Model Number :"
                 android:textSize="@dimen/dimen_16dp"
                 android:layout_marginTop="@dimen/dimen_5dp"/>
 
@@ -61,7 +59,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="3534"
                         android:textColor="@color/colorText"
                         android:textSize="@dimen/dimen_18dp"/>
 
@@ -90,7 +87,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="34"
                         android:textColor="@color/colorText"
                         android:textSize="@dimen/dimen_18dp"/>
 

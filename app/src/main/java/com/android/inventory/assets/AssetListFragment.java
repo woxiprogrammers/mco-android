@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,11 @@ import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,12 +97,22 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
             requestAssetListOnline();
         } else {
             //Get data from local DB
-            setUpAssetListAdapter();
+//            setUpAssetListAdapter();
         }
     }
 
     private void requestAssetListOnline() {
-        AndroidNetworking.get(AppURL.API_ASSETS_DATA_URL)
+        JSONObject params=new JSONObject();
+        try {
+            params.put("page",0);
+            params.put("project_site_id",6);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Timber.d(AppURL.API_ASSETS_DATA_URL + AppUtils.getInstance().getCurrentToken());
+        AndroidNetworking.post(AppURL.API_ASSETS_DATA_URL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestAssetListOnline")
                 .build()
@@ -139,8 +154,10 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).findAllAsync();
+        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).equalTo("isDiesel",true).findAll();
+
         Timber.d(String.valueOf(assetsListItems));
+        Log.i("@@", String.valueOf(assetsListItems));
         AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);

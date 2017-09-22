@@ -36,13 +36,13 @@ public class LoginActivityUITest {
             e.printStackTrace();
         }
         ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.userName), isDisplayed()));
+                allOf(withId(R.id.mobileNumber), isDisplayed()));
         appCompatEditText.perform(click());
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.userName), isDisplayed()));
+                allOf(withId(R.id.mobileNumber), isDisplayed()));
         appCompatEditText2.perform(replaceText("admin@mconstruction.co.in"), closeSoftKeyboard());
         ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.userName), withText("admin@mconstruction.co.in"), isDisplayed()));
+                allOf(withId(R.id.mobileNumber), withText("admin@mconstruction.co.in"), isDisplayed()));
         appCompatEditText3.perform(pressImeActionButton());
         ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(R.id.password), isDisplayed()));

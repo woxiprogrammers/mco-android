@@ -17,6 +17,17 @@ public class InventoryResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
+    @SerializedName("page_id")
+    private String pageid;
+
+    public String getPageid() {
+        return pageid;
+    }
+
+    public void setPageid(String pageid) {
+        this.pageid = pageid;
+    }
+
     public InventoryDataResponse getInventoryDataResponse() {
         return inventoryDataResponse;
     }

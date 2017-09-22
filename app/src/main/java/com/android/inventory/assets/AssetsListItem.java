@@ -1,73 +1,87 @@
 package com.android.inventory.assets;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class AssetsListItem extends RealmObject{
 
-	@SerializedName("total_diesel_consume")
-	private int totalDieselConsume;
+    @SerializedName("total_diesel_consume")
+    private String totalDieselConsume;
 
-	@SerializedName("model_number")
-	private String modelNumber;
+    @PrimaryKey
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("model_number")
+    private String modelNumber;
 
-	@SerializedName("total_work_hour")
-	private String totalWorkHour;
+    @SerializedName("total_work_hour")
+    private String totalWorkHour;
 
-	@SerializedName("assets_units")
-	private String assetsUnits;
+    @SerializedName("is_diesel")
+    private boolean isDiesel;
 
-	@SerializedName("assets_name")
-	private String assetsName;
+    @SerializedName("assets_units")
+    private String assetsUnits;
 
-	public void setTotalDieselConsume(int totalDieselConsume){
-		this.totalDieselConsume = totalDieselConsume;
-	}
+    @SerializedName("assets_name")
+    private String assetsName;
 
-	public int getTotalDieselConsume(){
-		return totalDieselConsume;
-	}
+    public void setTotalDieselConsume(String totalDieselConsume){
+        this.totalDieselConsume = totalDieselConsume;
+    }
 
-	public void setModelNumber(String modelNumber){
-		this.modelNumber = modelNumber;
-	}
+    public String getTotalDieselConsume(){
+        return totalDieselConsume;
+    }
 
-	public String getModelNumber(){
-		return modelNumber;
-	}
+    public void setId(int id){
+        this.id = id;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public int getId(){
+        return id;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public void setModelNumber(String modelNumber){
+        this.modelNumber = modelNumber;
+    }
 
-	public void setTotalWorkHour(String totalWorkHour){
-		this.totalWorkHour = totalWorkHour;
-	}
+    public String getModelNumber(){
+        return modelNumber;
+    }
 
-	public String getTotalWorkHour(){
-		return totalWorkHour;
-	}
+    public void setTotalWorkHour(String totalWorkHour){
+        this.totalWorkHour = totalWorkHour;
+    }
 
-	public void setAssetsUnits(String assetsUnits){
-		this.assetsUnits = assetsUnits;
-	}
+    public String getTotalWorkHour(){
+        return totalWorkHour;
+    }
 
-	public String getAssetsUnits(){
-		return assetsUnits;
-	}
+    public void setIsDiesel(boolean isDiesel){
+        this.isDiesel = isDiesel;
+    }
 
-	public void setAssetsName(String assetsName){
-		this.assetsName = assetsName;
-	}
+    public boolean isIsDiesel(){
+        return isDiesel;
+    }
 
-	public String getAssetsName(){
-		return assetsName;
-	}
+    public void setAssetsUnits(String assetsUnits){
+        this.assetsUnits = assetsUnits;
+    }
+
+    public String getAssetsUnits(){
+        return assetsUnits;
+    }
+
+    public void setAssetsName(String assetsName){
+        this.assetsName = assetsName;
+    }
+
+    public String getAssetsName(){
+        return assetsName;
+    }
 }

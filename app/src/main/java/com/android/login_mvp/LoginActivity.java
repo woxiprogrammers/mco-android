@@ -44,7 +44,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
      * Created by - Rohit
      */
     private void initializeViews() {
-        edUserName = (EditText) findViewById(R.id.userName);
+        edUserName = (EditText) findViewById(R.id.mobileNumber);
         edPassword = (EditText) findViewById(R.id.password);
         pbLoad = (ProgressBar) findViewById(R.id.login_progress);
         mLoginPresenter = new LoginPresenter(this);

@@ -2,6 +2,7 @@
 <android.support.design.widget.AppBarLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/appBarLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/app_bar_height_200dp"
     android:fitsSystemWindows="true"
@@ -36,21 +37,19 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/projectSiteName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Kunal Aspiree, Balewadi"
-                android:textAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded.Shadow"
                 android:textSize="@dimen/dimen_30dp"
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/builderName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kunal Builders"
-                android:textAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded.Shadow"
                 android:textSize="@dimen/dimen_20dp"
                 android:textStyle="bold"/>
-
         </LinearLayout>
 
         <android.support.v7.widget.Toolbar
@@ -59,7 +58,5 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
     </android.support.design.widget.CollapsingToolbarLayout>
-
 </android.support.design.widget.AppBarLayout>
