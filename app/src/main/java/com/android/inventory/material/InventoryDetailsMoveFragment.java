@@ -253,7 +253,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         final Realm realm = Realm.getDefaultInstance();
         /*for (int i = 0; i < arrayList.size(); i++) {
             int strId = arrayList.get(i);
-            final MaterialListItem materialListItem = realm.where(MaterialListItem.class).equalTo("id", strId).findFirst();
+            final SearchMaterialListItem materialListItem = realm.where(SearchMaterialListItem.class).equalTo("id", strId).findFirst();
             materialListItems.add(materialListItem);
         }*/
         Integer[] integers = {1516, 1517, 1518, 1519, 1520, 1521, 1522, 1523};

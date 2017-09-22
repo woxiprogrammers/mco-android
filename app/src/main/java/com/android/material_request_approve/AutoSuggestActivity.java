@@ -2,28 +2,42 @@ package com.android.material_request_approve;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class AutoSuggestActivity extends AppCompatActivity {
@@ -36,18 +50,20 @@ public class AutoSuggestActivity extends AppCompatActivity {
     private Context mContext;
     private String mStrSearch;
     //    private ArrayList<AGPostOfficeName> mPostNameList;
-    private AutoSuggestAdapter mPinCodeAdapter;
     public static View.OnClickListener searchResultClickListener;
+    private Realm realm;
+    private RealmResults<SearchMaterialListItem> searchMaterialListItemRealmResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auto_suggest);
         ButterKnife.bind(this);
-        initializeViews();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        initializeViews();
+        setUpPrAdapter();
         searchResultClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +79,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
                 mStrSearch = s.toString();
                 if (mStrSearch.length() > 2) {
                     requestAutoSearchApi(mStrSearch);
-//                    new AGCommonMethods(mContext).hideKeyBoard(mEtPincode);
+                    AppUtils.getInstance().hideKeyBoard(mEditTextAutoSuggest);
                 }
             }
 
@@ -78,26 +94,17 @@ public class AutoSuggestActivity extends AppCompatActivity {
     }
 
     private void requestAutoSearchApi(String searchString) {
-        /*if (object instanceof Boolean) {
-                                mRNoSeaarchFound.setVisibility(View.VISIBLE);
-                                recyclerViewSearchResultList.setVisibility(View.GONE);
-                                llEnterPostOffice.setVisibility(View.GONE);
-                                llSuggestions.setVisibility(View.GONE);
-                                ivClickOkPin.setVisibility(View.GONE);
-                            } else if (object instanceof ArrayList) {
-                                mRNoSeaarchFound.setVisibility(View.GONE);
-                                recyclerViewSearchResultList.setVisibility(View.VISIBLE);
-                                llSuggestions.setVisibility(View.VISIBLE);
-                                mPostNameList = (ArrayList<AGPostOfficeName>) object;
-                                mPinCodeAdapter = new AGPinCodeSearchAdapter(mContext, mPostNameList);
-                                recyclerViewSearchResultList.setLayoutManager(new LinearLayoutManager(mContext));
-                                recyclerViewSearchResultList.setAdapter(mPinCodeAdapter);
-                            }*/
+        JSONObject params = new JSONObject();
+        try {
+            params.put("search_in", "material");
+            params.put("keyword", searchString);
+            params.put("project_site_id", 5);
+        } catch (JSONException e) {
+            Timber.d("Exception occurred: " + e.getMessage());
+        }
         AndroidNetworking.post(AppURL.API_AUTO_SUGGEST_COMMON)
                 .setPriority(Priority.MEDIUM)
-                .addBodyParameter("search_in", "")
-                .addBodyParameter("keyword", searchString)
-                .addBodyParameter("project_site_id", "6")
+                .addJSONObjectBody(params)
                 .setTag("requestAutoSearchApi")
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -111,9 +118,9 @@ public class AutoSuggestActivity extends AppCompatActivity {
                         AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                     }
                 });
-                /*.getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
+                /*.getAsObject(ItemSearchResponse.class, new ParsedRequestListener<ItemSearchResponse>() {
                     @Override
-                    public void onResponse(final UsersWithAclResponse response) {
+                    public void onResponse(final ItemSearchResponse response) {
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -158,6 +165,83 @@ public class AutoSuggestActivity extends AppCompatActivity {
 
     @OnClick(R.id.buttonAddAsNewItem)
     public void onViewClicked() {
+        Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setUpPrAdapter() {
+        realm = Realm.getDefaultInstance();
+        Timber.d("Adapter setup called");
+        searchMaterialListItemRealmResults = realm.where(SearchMaterialListItem.class).findAllAsync();
+        AutoSuggestAdapter autoSuggestAdapter = new AutoSuggestAdapter(searchMaterialListItemRealmResults, true, true);
+        mRecyclerViewSearchResultList.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerViewSearchResultList.setHasFixedSize(true);
+        mRecyclerViewSearchResultList.setAdapter(autoSuggestAdapter);
+        mRecyclerViewSearchResultList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                mRecyclerViewSearchResultList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        SearchMaterialListItem searchMaterialListItem = searchMaterialListItemRealmResults.get(position);
+                        if (BuildConfig.DEBUG) {
+                            Timber.d(String.valueOf(searchMaterialListItem));
+                        }
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+        if (searchMaterialListItemRealmResults != null) {
+            searchMaterialListItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<SearchMaterialListItem>>() {
+                @Override
+                public void onChange(RealmResults<SearchMaterialListItem> searchMaterialListItems) {
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("AutoSuggestActivity");
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    protected class AutoSuggestAdapter extends RealmRecyclerViewAdapter<SearchMaterialListItem, AutoSuggestAdapter.MyViewHolder> {
+        private OrderedRealmCollection<SearchMaterialListItem> arrSearchMaterialListItem;
+
+        AutoSuggestAdapter(@Nullable OrderedRealmCollection<SearchMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            arrSearchMaterialListItem = data;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_result_list, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            SearchMaterialListItem searchMaterialListItem = arrSearchMaterialListItem.get(position);
+            holder.mTextViewResultItem.setText(searchMaterialListItem.getMaterialName());
+        }
+
+        /*@Override
+        public long getItemId(int index) {
+            return arrSearchMaterialListItem.get(index).getId();
+        }*/
+
+        @Override
+        public int getItemCount() {
+            return arrSearchMaterialListItem == null ? 0 : arrSearchMaterialListItem.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.textViewResultItem)
+            TextView mTextViewResultItem;
+
+            MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
     }
 }
 

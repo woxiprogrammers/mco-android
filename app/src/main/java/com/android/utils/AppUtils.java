@@ -383,5 +383,8 @@ public class AppUtils {
         return headers;
     }
 
-
+    public void hideKeyBoard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 }
