@@ -98,7 +98,7 @@ public class AutoSuggestActivity extends AppCompatActivity implements View.OnCli
         btnSendEnquiry.setOnClickListener(this);
         dialog = new Dialog(mContext);
         mEtEnterPostoffice.setEnabled(false);
-        mEtPincode.addTextChangedListener(new TextWatcher() {
+        /*mEtPincode.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mStrSearch = s.toString();
@@ -125,7 +125,7 @@ public class AutoSuggestActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void afterTextChanged(Editable arg0) {
             }
-        });
+        });*/
     }
 
     private void getResposeOfPincode(String searchString) {
