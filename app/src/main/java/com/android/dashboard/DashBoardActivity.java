@@ -44,18 +44,25 @@ import timber.log.Timber;
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.builderName)
     TextView projectSiteName;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
+
     @BindView(R.id.appBarLayout)
     AppBarLayout appBarLayout;
+
     @BindView(R.id.rv_task_selection)
     RecyclerView rvTaskSelection;
+
     @BindView(R.id.nav_view)
     NavigationView navView;
+
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+
     private Context mContext;
     private RecyclerView mRvTaskSelection;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
@@ -88,24 +95,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Calling function to initialize required views.
         initializeViews();
         getSiteName();
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    toolbar.setTitle("Kunal Aspiree, Balewadi");
-                    isShow = true;
-                } else if (isShow) {
-                    toolbar.setTitle("");
-                    isShow = false;
-                }
-            }
-        });
 
     }
 
@@ -162,6 +151,26 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                     Toast.makeText(mContext, "Hi: " + strSubModuleTag + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
                 }
                 startCorrespondingAclActivity(subModulesItem);
+            }
+        });
+
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    toolbar.setTitle("Kunal Aspiree, Balewadi");
+                    isShow = true;
+                } else if (isShow) {
+                    toolbar.setTitle("");
+                    isShow = false;
+                }
             }
         });
     }
@@ -228,7 +237,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("id", 2).findFirst();
         if (projectsItem != null) {
             projectSiteName.setText(projectsItem.getProjectName());
-//            collapsingToolbar.setTitle(projectsItem.getProjectName());
         }
 
     }
