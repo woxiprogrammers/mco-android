@@ -23,18 +23,20 @@ class LoginInteractor implements LoginInteractorInterface {
     @Override
     public void login(String username, String password, final onLoginFinishedListener listener) {
         if (TextUtils.isEmpty(username))
-            listener.onUserNameEmptyError("User Name Empty");
-        else if (username.length() < 3)
-            listener.onUserNameValidationError("Invalid User Name");
+            listener.onUserNameEmptyError("Mobile Number is Empty");
+        else if (username.length() < 10 )
+            listener.onUserNameValidationError("Invalid Mobile Number");
         else if (TextUtils.isEmpty(password))
             listener.onPasswordEmptyError("Password Empty");
-        else if (password.length() < 3)
-            listener.onPasswordValidationError("Invalid Password");
-        else requestLoginAPI(listener);
+        else if (password.length() < 6)
+            listener.onPasswordValidationError("Password should range between 6–20 chars");
+        else requestLoginAPI(listener,username,password);
     }
 
-    private void requestLoginAPI(final onLoginFinishedListener listener) {
+    private void requestLoginAPI(final onLoginFinishedListener listener,String mobileNumber, String password) {
         AndroidNetworking.post(AppURL.API_USER_LOGIN)
+//                .addBodyParameter("email", mobileNumber)
+//                .addBodyParameter("password", password)
                 .addBodyParameter("email", "admin@mconstruction.co.in")
                 .addBodyParameter("password", "mco@1234")
                 .setTag("requestLoginAPI")
