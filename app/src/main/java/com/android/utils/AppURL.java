@@ -26,5 +26,6 @@ public class AppURL {
     public static final String API_PURCHASE_ORDER = "http://www.mocky.io/v2/59ba5d100f000094016227ea";
     public static final String API_SUBMIT_PURCHASE_REQUEST = BASE_URL + "purchase/material-request/create?token=";
     public static final String API_PURCHASE_MATERIAL_UNITS_IMAGES_URL = "http://www.mocky.io/v2/59bf69611100004100fa0151";
+    public static final String API_AUTO_SUGGEST_COMMON = BASE_URL + "auto-suggest";
 //    http://www.mocky.io/v2/59a6b4dd100000ca0408fd4b  old bilkl list
 }

@@ -1,6 +1,5 @@
 package com.android.material_request_approve;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,19 +16,16 @@ import java.util.ArrayList;
  * Created by Rohit.
  */
 public class AutoSuggestAdapter extends RecyclerView.Adapter<AutoSuggestAdapter.ViewHolder> {
-    ArrayList<String> list;
-    //    AGPostOfficeName postOfficeName;
-    Context context;
+    private ArrayList<String> list;
 
-    public AutoSuggestAdapter(Context context, ArrayList<String> list) {
-        this.context = context;
+    public AutoSuggestAdapter(ArrayList<String> arrayList) {
         this.list = list;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_result_list, parent, false);
-        itemView.setOnClickListener(AutoSuggestActivity.postOfficeClickListner);
+        itemView.setOnClickListener(AutoSuggestActivity.searchResultClickListener);
         return new ViewHolder(itemView);
     }
 
@@ -47,7 +43,7 @@ public class AutoSuggestAdapter extends RecyclerView.Adapter<AutoSuggestAdapter.
 
         ViewHolder(View itemView) {
             super(itemView);
-            tvPinList = (TextView) itemView.findViewById(R.id.tvPinList);
+            tvPinList = (TextView) itemView.findViewById(R.id.textViewResultItem);
         }
     }
 }

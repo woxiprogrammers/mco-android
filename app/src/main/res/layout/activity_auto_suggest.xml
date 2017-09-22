@@ -4,27 +4,25 @@
                 android:layout_height="match_parent"
                 android:padding="@dimen/dimen_10dp">
 
-    <android.support.v7.widget.SearchView.SearchAutoComplete
-        android:id="@+id/etPincode"
+    <EditText
+        android:id="@+id/editTextAutoSuggest"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_44dp"
         android:paddingBottom="@dimen/dimen_16dp"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewPincodeList"
+        android:id="@+id/recyclerViewSearchResultList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/etPincode"
+        android:layout_below="@id/editTextAutoSuggest"
         android:scrollbars="vertical"/>
 
     <Button
-        android:id="@+id/btnSendEnquiry"
+        android:id="@+id/buttonAddAsNewItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Add As New Item"
         android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:paddingLeft="@dimen/dimen_10dp"
-        android:paddingRight="@dimen/dimen_10dp"
-        android:visibility="visible"/>
+        android:layout_centerInParent="true"/>
 </RelativeLayout>
 
