@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/app_bar_height_200dp"
     android:fitsSystemWindows="true"
+    android:id="@+id/appBarLayout"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
     <android.support.design.widget.CollapsingToolbarLayout
@@ -36,6 +37,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/projectSiteName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Kunal Aspiree, Balewadi"
@@ -44,9 +46,9 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/builderName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kunal Builders"
                 android:textAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded.Shadow"
                 android:textSize="@dimen/dimen_20dp"
                 android:textStyle="bold"/>

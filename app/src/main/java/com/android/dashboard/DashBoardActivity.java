@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,29 +15,47 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.login_acl.LoginResponseData;
 import com.android.models.login_acl.ModulesItem;
+import com.android.models.login_acl.ProjectsItem;
 import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
-import com.android.constro360.BaseActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import timber.log.Timber;
 
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+    @BindView(R.id.builderName)
+    TextView projectSiteName;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.appBarLayout)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.rv_task_selection)
+    RecyclerView rvTaskSelection;
+    @BindView(R.id.nav_view)
+    NavigationView navView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
     private Context mContext;
     private RecyclerView mRvTaskSelection;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
@@ -54,23 +73,40 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
+        ButterKnife.bind(this);
         if (BuildConfig.DEBUG) {
             //Start Realm Browser
             RealmBrowser.showRealmFilesNotification(getApplicationContext());
         }
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-//        collapsingToolbar.setTitle("Kunal Aspiree \nBalewadi \nKunal Builders");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Kunal Aspiree, Balewadi");
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar.setTitle("");
+//        setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navView.setNavigationItemSelectedListener(this);
         //Calling function to initialize required views.
         initializeViews();
+        getSiteName();
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    toolbar.setTitle("Kunal Aspiree, Balewadi");
+                    isShow = true;
+                } else if (isShow) {
+                    toolbar.setTitle("");
+                    isShow = false;
+                }
+            }
+        });
+
     }
 
     @Override
@@ -185,5 +221,15 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         Type type = new TypeToken<HashMap<String, String>>() {
         }.getType();
         return gson.fromJson(hashMapString, type);
+    }
+
+    private void getSiteName() {
+        realm = Realm.getDefaultInstance();
+        ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("id", 2).findFirst();
+        if (projectsItem != null) {
+            projectSiteName.setText(projectsItem.getProjectName());
+//            collapsingToolbar.setTitle(projectsItem.getProjectName());
+        }
+
     }
 }
