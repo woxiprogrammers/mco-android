@@ -24,6 +24,7 @@ import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.login_acl.LoginResponseData;
 import com.android.models.login_acl.ModulesItem;
+import com.android.models.login_acl.PermissionsItem;
 import com.android.models.login_acl.ProjectsItem;
 import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppConstants;
@@ -31,8 +32,10 @@ import com.android.utils.AppUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -154,7 +157,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             }
         });
 
-
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -185,6 +187,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 //        intent.putExtras(bundleExtras);
         String strClassName = aclKeyValuePair.get(subModulesItem.getSubModuleTag());
         Timber.d("Activity Started: " + strClassName);
+        Realm realm = Realm.getDefaultInstance();
+        List<PermissionsItem> permissionsItemList = realm.copyFromRealm(subModulesItem.getPermissions());
+        intent.putExtra("permissionsItemList", new Gson().toJson(permissionsItemList));
+        intent.putExtra("subModuleTag", subModulesItem.getSubModuleTag());
         intent.setClassName(getApplicationContext(), strClassName);
         startActivity(intent);
     }

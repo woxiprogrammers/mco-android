@@ -27,6 +27,11 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,9 +50,13 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
+
     private Context mContext;
     private Unbinder unbinder;
     private Realm realm;
+
+    @BindView(R.id.floating_add_button)
+    FloatingActionButton floatingAddButton;
 
     public AssetsReadingsFragment() {
         // Required empty public constructor
@@ -63,7 +72,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        View view = inflater.inflate(R.layout.recyclerview_lsiting_for_asset_summary, container, false);
         unbinder = ButterKnife.bind(this, view);
         initializeViews(view);
         setUpAssetListAdapter();
@@ -87,13 +96,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         unbinder.unbind();
     }
 
-    @OnClick(R.id.floating_add_button)
-    public void onViewClicked() {
-        Intent intent = new Intent(mContext, ActivityAssetsReadings.class);
-        startActivityForResult(intent, 1111);
-
-    }
-
     private void functionForGettingData() {
         if (AppUtils.getInstance().checkNetworkState()) {
             //Get data from Server
@@ -105,7 +107,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
         JSONObject params = new JSONObject();
         try {
-            params.put("inventory_component_id", 4);
+            params.put("inventory_component_id", 3);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -205,9 +207,10 @@ class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
         holder.textviewStartTime.setText(assetsSummaryListItem.getStartTime());
         holder.textviewStopTime.setText(assetsSummaryListItem.getStopTime());
         holder.textviewTopupTime.setText(assetsSummaryListItem.getTopUpTime());
-        holder.textViewAssetUnits.setText(assetsSummaryListItem.getAssetsUnits());
-        holder.textviewDieselConsume.setText(assetsSummaryListItem.getTotalDieselConsume());
-        holder.textviewWorkHour.setText(assetsSummaryListItem.getWorkHourInDay());
+        holder.textViewAssetUnits.setText(" " + assetsSummaryListItem.getAssetsUnits());
+        holder.textviewDieselConsume.setText(" " + assetsSummaryListItem.getTotalDieselConsume());
+        holder.textviewWorkHour.setText("" + assetsSummaryListItem.getWorkHourInDay());
+
 
     }
 
@@ -236,12 +239,14 @@ class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
         TextView textviewWorkHour;
         @BindView(R.id.textview_diesel_consume)
         TextView textviewDieselConsume;
-        @BindView(R.id.floating_add_button)
-        FloatingActionButton floatingAddButton;
         MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    private void setTime() {
+
     }
 }
 

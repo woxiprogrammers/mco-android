@@ -2,6 +2,7 @@ package com.android.inventory.assets;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class AssetsSummaryListItem extends RealmObject{
 
@@ -23,6 +24,7 @@ public class AssetsSummaryListItem extends RealmObject{
 	@SerializedName("total_diesel_consume")
 	private int totalDieselConsume;
 
+	@PrimaryKey
 	@SerializedName("id")
 	private int id;
 
