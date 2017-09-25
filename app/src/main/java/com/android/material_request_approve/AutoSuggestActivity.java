@@ -29,8 +29,6 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -55,6 +53,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
     private Realm realm;
     private RealmResults<SearchMaterialListItem> searchMaterialListItemRealmResults;
     private SearchMaterialListItem searchMaterialListItem;
+    private String strMaterialOrAsset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +62,15 @@ public class AutoSuggestActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            boolean isMaterial = bundle.getBoolean("isMaterial");
+            if (isMaterial) {
+                strMaterialOrAsset = getString(R.string.tag_material);
+            } else {
+                strMaterialOrAsset = getString(R.string.tag_asset);
+            }
         }
         initializeViews();
         setUpPrAdapter();
@@ -110,7 +118,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
     private void requestAutoSearchApi(String searchString) {
         JSONObject params = new JSONObject();
         try {
-            params.put("search_in", "material");
+            params.put("search_in", strMaterialOrAsset);
             params.put("keyword", searchString);
             params.put("project_site_id", 5);
         } catch (JSONException e) {
@@ -121,6 +129,17 @@ public class AutoSuggestActivity extends AppCompatActivity {
                 .addJSONObjectBody(params)
                 .setTag("requestAutoSearchApi")
                 .build()
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
+                    }
+                });*/
                 .getAsObject(ItemSearchResponse.class, new ParsedRequestListener<ItemSearchResponse>() {
                     @Override
                     public void onResponse(final ItemSearchResponse response) {
@@ -179,15 +198,16 @@ public class AutoSuggestActivity extends AppCompatActivity {
     @OnClick(R.id.buttonAddAsNewItem)
     public void onViewClicked() {
         searchMaterialListItem.setMaterialName(mStrSearch);
-        setResultAndFinish(searchMaterialListItem);
+        setResultAndFinish(searchMaterialListItem.getMaterialName(), true);
     }
 
-    private void setResultAndFinish(SearchMaterialListItem searchMaterialListItem) {
-        realm = Realm.getDefaultInstance();
-        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(searchMaterialListItem.getUnitQuantity());
-
+    private void setResultAndFinish(String searchedMaterialName, boolean isNewItem) {
         Intent intentData = getIntent();
-        intentData.putExtra("searchMaterialListItem", searchMaterialListItem);
+        intentData.putExtra("searchedMaterialName", searchedMaterialName);
+        if (isNewItem) {
+            intentData.putExtra("searchMaterialListItem", searchMaterialListItem);
+        }
+        intentData.putExtra("isNewItem", isNewItem);
         setResult(RESULT_OK, intentData);
         finish();
     }
@@ -206,9 +226,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(View view, final int position) {
                         searchMaterialListItem = searchMaterialListItemRealmResults.get(position);
-                        realm = Realm.getDefaultInstance();
-                        SearchMaterialListItem searchMaterialItem = realm.copyFromRealm(searchMaterialListItem);
-                        setResultAndFinish(searchMaterialItem);
+                        setResultAndFinish(searchMaterialListItem.getMaterialName(), false);
                     }
 
                     @Override

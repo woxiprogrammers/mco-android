@@ -262,7 +262,9 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
         mEditTextNameMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(mContext, AutoSuggestActivity.class), AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST);
+                Intent intentSearch = new Intent(mContext, AutoSuggestActivity.class);
+                intentSearch.putExtra("isMaterial", isMaterial);
+                startActivityForResult(intentSearch, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST);
             }
         });
         alertDialogBuilder.setCancelable(false).setView(dialogView);
@@ -448,8 +450,20 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
                 Bundle bundleExtras = intent.getExtras();
                 if (bundleExtras != null) {
-                    SearchMaterialListItem searchMaterialListItem = (SearchMaterialListItem) bundleExtras.getSerializable("searchMaterialListItem");
+                    boolean isNewItem = bundleExtras.getBoolean("isNewItem");
+                    String searchedMaterialName = bundleExtras.getString("searchedMaterialName");
+                    SearchMaterialListItem searchMaterialListItem;
+                    if (isNewItem) {
+                        searchMaterialListItem = (SearchMaterialListItem) bundleExtras.getSerializable("searchMaterialListItem");
+                    } else {
+                        searchMaterialListItem = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedMaterialName).findFirst();
+                    }
+                    Timber.d("RESULT_OK searchedMaterialName: " + searchedMaterialName);
+                    realm = Realm.getDefaultInstance();
                     Timber.d("RESULT_OK searchMaterialListItem: " + searchMaterialListItem);
+                    if (realm != null) {
+                        realm.close();
+                    }
                 }
                 break;
         }
