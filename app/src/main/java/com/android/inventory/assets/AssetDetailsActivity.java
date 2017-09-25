@@ -160,7 +160,6 @@ public class AssetDetailsActivity extends BaseActivity {
         Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
         startIntent.putExtra("key",strAssetName);
         startIntent.putExtra("key1",strModelNumber);
-
         startActivity(startIntent);
     }
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -100,9 +101,28 @@ public class ActivityAssetsReadings extends BaseActivity {
         dialogBuilder.setView(dialogView);
         final EditText edit_text_add_start_point = ButterKnife.findById(dialogView, R.id.edit_text_add_start_point);
         final TextView text_view_startPoint = ButterKnife.findById(dialogView, R.id.text_view_startPoint);
-        final LinearLayout ll_readings = ButterKnife.findById(dialogView, R.id.ll_readings);
-//        final TextView text_view_topUpMessage = ButterKnife.findById(dialogView, R.id.text_view_topUpMessage);
+        Button buttonDismiss=ButterKnife.findById(dialogView,R.id.button_dialog_dismiss);
+        Button buttonSelect=ButterKnife.findById(dialogView,R.id.button_dialog_select);
         text_view_startPoint.setText(strFirstText);
+
+        buttonDismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        buttonSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (flag.equals("start")) {
+                    startRead.setText(edit_text_add_start_point.getText().toString() + " KM");
+                } else  if (flag.equals("stop")){
+                    text_view_setStopReading.setText(edit_text_add_start_point.getText().toString() + " KM");
+                }
+
+            }
+        });
 
         dialogBuilder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
             @Override

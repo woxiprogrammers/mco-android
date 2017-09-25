@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +26,6 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -184,6 +181,12 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
         }
     }
+
+    @OnClick(R.id.floating_add_button)
+    public void onViewClicked() {
+        Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
+        startActivity(intent);
+    }
 }
 
 class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem, AssetRadingAdapter.MyViewHolder> {
@@ -208,16 +211,15 @@ class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
         holder.textViewAssetUnits.setText(" " + assetsSummaryListItem.getAssetsUnits());
         holder.textviewDieselConsume.setText(" " + assetsSummaryListItem.getTotalDieselConsume());
         holder.textviewWorkHour.setText("" + assetsSummaryListItem.getWorkHourInDay());
-        setTime(assetsSummaryListItem.getStartTime(),holder.textviewStartTime);
-        setTime(assetsSummaryListItem.getStopTime(),holder.textviewStopTime);
-        setTime(assetsSummaryListItem.getTopUpTime(),holder.textviewTopupTime);
-        if(assetsSummaryListItem.getFuelRemaining() != null){
+        setTime(assetsSummaryListItem.getStartTime(), holder.textviewStartTime);
+        setTime(assetsSummaryListItem.getStopTime(), holder.textviewStopTime);
+        setTime(assetsSummaryListItem.getTopUpTime(), holder.textviewTopupTime);
+        if (assetsSummaryListItem.getFuelRemaining() != null) {
             holder.textviewFuelRemaining.setText(assetsSummaryListItem.getFuelRemaining());
             holder.textviewFuelRemaining.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.textviewFuelRemaining.setVisibility(View.GONE);
         }
-
 
     }
 
@@ -246,24 +248,22 @@ class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
         TextView textviewWorkHour;
         @BindView(R.id.textview_diesel_consume)
         TextView textviewDieselConsume;
+
         MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
-    private void setTime(String strParse,TextView textView) {
+    private void setTime(String strParse, TextView textView) {
         final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date dateObj;
         String newDateStr = null;
-        try
-        {
+        try {
             dateObj = df.parse(strParse);
             SimpleDateFormat fd = new SimpleDateFormat("HH:mm");
             newDateStr = fd.format(dateObj);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         textView.setText(newDateStr);
