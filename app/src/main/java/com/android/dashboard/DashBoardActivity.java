@@ -149,10 +149,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             public void onItemClick(View itemView, int modulePosition) {
                 int subModuleIndex = itemView.getId();
                 SubModulesItem subModulesItem = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules().get(subModuleIndex);
-                if (BuildConfig.DEBUG) {
+                /*if (BuildConfig.DEBUG) {
                     String strSubModuleTag = subModulesItem.getSubModuleTag();
                     Toast.makeText(mContext, "Hi: " + strSubModuleTag + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
-                }
+                }*/
                 startCorrespondingAclActivity(subModulesItem);
             }
         });

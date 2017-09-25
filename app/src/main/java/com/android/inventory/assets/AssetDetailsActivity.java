@@ -5,53 +5,70 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Toast;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.constro360.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class AssetDetailsActivity extends BaseActivity {
-
-
 
     @BindView(R.id.view_pager_assets)
     ViewPager viewPagerAssets;
 
     @BindView(R.id.assets_navigation)
     BottomNavigationView bottom_navigation;
+    @BindView(R.id.floating_add_button)
+    FloatingActionButton floatingAddButton;
 
     private MenuItem prevMenuItem;
     private Context mContext;
-    private String strAssetName,strModelNumber;
+    private String strAssetName, strModelNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asset_details);
         ButterKnife.bind(this);
-        mContext=AssetDetailsActivity.this;
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Asset Details");
-        }
-        Intent extras=getIntent();
-        if(extras != null) {
-           strAssetName= extras.getStringExtra("assetName");
-            strModelNumber=extras.getStringExtra("modelNumber");
-        }
+        initializeViews();
 
         setAdapter();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.assets_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        viewPagerAssets.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+    }
+
+    private void initializeViews() {
+        ButterKnife.bind(this);
+        mContext = AssetDetailsActivity.this;
+        Intent extras = getIntent();
+        if (extras != null) {
+            strAssetName = extras.getStringExtra("assetName");
+            strModelNumber = extras.getStringExtra("modelNumber");
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(strAssetName);
+        }
     }
 
     @Override
@@ -81,11 +98,11 @@ public class AssetDetailsActivity extends BaseActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_asset_history:
+                case R.id.navigation_readings:
                     viewPagerAssets.setCurrentItem(0);
                     break;
-                case R.id.navigation_readings:
-                    viewPagerAssets.setCurrentItem(1);
+                case R.id.navigation_asset_history:
+                    Toast.makeText(mContext, "Work In Progress", Toast.LENGTH_SHORT).show();
                     break;
             }
             return false;
@@ -93,8 +110,7 @@ public class AssetDetailsActivity extends BaseActivity {
 
     };
 
-
-    private void setAdapter(){
+    private void setAdapter() {
 
         final InventoryViewPagerAdapter inventoryViewPagerAdapter = new InventoryViewPagerAdapter(getSupportFragmentManager());
         viewPagerAssets.setAdapter(inventoryViewPagerAdapter);
@@ -127,15 +143,20 @@ public class AssetDetailsActivity extends BaseActivity {
         });
     }
 
+    @OnClick(R.id.floating_add_button)
+    public void onViewClicked() {
+        Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
+        intent.putExtra("asset_name",strAssetName);
+        startActivity(intent);
+    }
 
-    public class InventoryViewPagerAdapter extends FragmentPagerAdapter
-    {
+    public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
 
-        private String[] arrBottomTitle={"Bottom1","Bottom2"};
+        private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
+
         public InventoryViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
 
         @Override
         public int getCount() {
@@ -143,23 +164,23 @@ public class AssetDetailsActivity extends BaseActivity {
         }
 
         @Override
-        public Fragment getItem(int position)
-        {
+        public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return AssetsHistoryFragment.newInstance();
-                case 1:
                     return AssetsReadingsFragment.newInstance();
+                case 1:
+                    return AssetsHistoryFragment.newInstance();
                 default:
                     return null;
             }
 
         }
     }
+
     private void startRequestMaintainanceActivity() {
         Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
-        startIntent.putExtra("key",strAssetName);
-        startIntent.putExtra("key1",strModelNumber);
+        startIntent.putExtra("key", strAssetName);
+        startIntent.putExtra("key1", strModelNumber);
         startActivity(startIntent);
     }
 

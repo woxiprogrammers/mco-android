@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:layout_gravity="center"
               android:orientation="vertical"
-              android:padding="@dimen/dimen_10dp"
               android:background="@drawable/background_button_normal"
               android:weightSum="1">
 
@@ -41,7 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:layout_marginTop="@dimen/dimen_10dp">
         <Button
             android:id="@+id/button_dialog_dismiss"
             android:layout_width="0dp"

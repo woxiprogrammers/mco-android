@@ -1,10 +1,8 @@
 package com.android.inventory.assets;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +29,6 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
@@ -51,9 +48,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private Context mContext;
     private Unbinder unbinder;
     private Realm realm;
-
-    @BindView(R.id.floating_add_button)
-    FloatingActionButton floatingAddButton;
 
     public AssetsReadingsFragment() {
         // Required empty public constructor
@@ -182,11 +176,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         }
     }
 
-    @OnClick(R.id.floating_add_button)
-    public void onViewClicked() {
-        Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
-        startActivity(intent);
-    }
 }
 
 class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem, AssetRadingAdapter.MyViewHolder> {
