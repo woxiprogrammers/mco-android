@@ -203,13 +203,20 @@ class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         AssetsSummaryListItem assetsSummaryListItem = summaryListItems.get(position);
-        holder.textviewFuelRemaining.setText(assetsSummaryListItem.getFuelRemaining());
-        holder.textviewStartTime.setText(assetsSummaryListItem.getStartTime());
         holder.textviewStopTime.setText(assetsSummaryListItem.getStopTime());
         holder.textviewTopupTime.setText(assetsSummaryListItem.getTopUpTime());
         holder.textViewAssetUnits.setText(" " + assetsSummaryListItem.getAssetsUnits());
         holder.textviewDieselConsume.setText(" " + assetsSummaryListItem.getTotalDieselConsume());
         holder.textviewWorkHour.setText("" + assetsSummaryListItem.getWorkHourInDay());
+        setTime(assetsSummaryListItem.getStartTime(),holder.textviewStartTime);
+        setTime(assetsSummaryListItem.getStopTime(),holder.textviewStopTime);
+        setTime(assetsSummaryListItem.getTopUpTime(),holder.textviewTopupTime);
+        if(assetsSummaryListItem.getFuelRemaining() != null){
+            holder.textviewFuelRemaining.setText(assetsSummaryListItem.getFuelRemaining());
+            holder.textviewFuelRemaining.setVisibility(View.VISIBLE);
+        }else {
+            holder.textviewFuelRemaining.setVisibility(View.GONE);
+        }
 
 
     }
@@ -245,8 +252,21 @@ class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
         }
     }
 
-    private void setTime() {
-
+    private void setTime(String strParse,TextView textView) {
+        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dateObj;
+        String newDateStr = null;
+        try
+        {
+            dateObj = df.parse(strParse);
+            SimpleDateFormat fd = new SimpleDateFormat("HH:mm");
+            newDateStr = fd.format(dateObj);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        textView.setText(newDateStr);
     }
 }
 
