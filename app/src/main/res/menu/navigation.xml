@@ -7,9 +7,9 @@
         android:id="@+id/navigation_readings"
         android:title="@string/assets_readings"
         app:showAsAction="ifRoom"/>
-    <item
+
+    <!--<item
         android:id="@+id/navigation_asset_history"
         android:title="@string/text_history"
-        app:showAsAction="ifRoom"/>
-
+        app:showAsAction="ifRoom"/>-->
 </menu>

@@ -71,11 +71,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         return view;
     }
 
-    private void initializeViews(View view) {
-        unbinder = ButterKnife.bind(this, view);
-        mContext = getActivity();
-    }
-
     @Override
     public void fragmentBecameVisible() {
 
@@ -85,6 +80,11 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    private void initializeViews(View view) {
+        unbinder = ButterKnife.bind(this, view);
+        mContext = getActivity();
     }
 
     private void functionForGettingData() {
@@ -148,7 +148,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
         final RealmResults<AssetsSummaryListItem> assetsListItems = realm.where(AssetsSummaryListItem.class).findAllAsync();
-        AssetRadingAdapter assetRadingAdapter = new AssetRadingAdapter(assetsListItems, true, true);
+        AssetRedingAdapter assetRadingAdapter = new AssetRedingAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
         rvMaterialList.setAdapter(assetRadingAdapter);
@@ -178,10 +178,10 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
 }
 
-class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem, AssetRadingAdapter.MyViewHolder> {
+class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem, AssetRedingAdapter.MyViewHolder> {
     private OrderedRealmCollection<AssetsSummaryListItem> summaryListItems;
 
-    AssetRadingAdapter(@Nullable OrderedRealmCollection<AssetsSummaryListItem> data, boolean autoUpdate, boolean updateOnModification) {
+    AssetRedingAdapter(@Nullable OrderedRealmCollection<AssetsSummaryListItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, autoUpdate, updateOnModification);
         summaryListItems = data;
     }

@@ -49,12 +49,6 @@ public class AssetDetailsActivity extends BaseActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.assets_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        viewPagerAssets.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
     }
 
     private void initializeViews() {
@@ -101,9 +95,10 @@ public class AssetDetailsActivity extends BaseActivity {
                 case R.id.navigation_readings:
                     viewPagerAssets.setCurrentItem(0);
                     break;
-                case R.id.navigation_asset_history:
+                //ToDo Enable History For Asset History
+                /*case R.id.navigation_asset_history:
                     Toast.makeText(mContext, "Work In Progress", Toast.LENGTH_SHORT).show();
-                    break;
+                    break;*/
             }
             return false;
         }
@@ -152,7 +147,7 @@ public class AssetDetailsActivity extends BaseActivity {
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
 
-        private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
+        private String[] arrBottomTitle = {"Bottom1"/*, "Bottom2"*/};
 
         public InventoryViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -168,8 +163,9 @@ public class AssetDetailsActivity extends BaseActivity {
             switch (position) {
                 case 0:
                     return AssetsReadingsFragment.newInstance();
-                case 1:
-                    return AssetsHistoryFragment.newInstance();
+                //ToDo Enable History For Asset History
+                /*case 1:
+                    return AssetsHistoryFragment.newInstance();*/
                 default:
                     return null;
             }

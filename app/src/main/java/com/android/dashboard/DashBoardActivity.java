@@ -13,8 +13,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,13 +31,13 @@ import com.android.models.login_acl.ModulesItem;
 import com.android.models.login_acl.PermissionsItem;
 import com.android.models.login_acl.ProjectsItem;
 import com.android.models.login_acl.SubModulesItem;
+import com.android.purchase_details.MaterialNamesItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,6 +46,8 @@ import butterknife.ButterKnife;
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,12 +70,20 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     NavigationView navView;
 
     @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
+    DrawerLayout drawerLayout;/*
+
+    @BindView(R.id.project_spinner)
+    Spinner projectSpinner;*/
 
     private Context mContext;
     private RecyclerView mRvTaskSelection;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     private Realm realm;
+    private Spinner projectSpinner;
+    private TextView userName;
+
+    private RealmResults<ProjectsItem> projectsItemRealmResults;
+    private List<ProjectsItem> projectsItemList;
 
     @Override
     protected void onDestroy() {
@@ -98,6 +112,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Calling function to initialize required views.
         initializeViews();
         getSiteName();
+        setSpinnerListener();
 
     }
 
@@ -138,6 +153,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private void initializeViews() {
         mContext = DashBoardActivity.this;
         mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
+        View headerLayout =navView.inflateHeaderView(R.layout.nav_header_dash_board);
+        projectSpinner= headerLayout.findViewById(R.id.project_spinner);
+        userName=headerLayout.findViewById(R.id.userName);
         realm = Realm.getDefaultInstance();
         modulesItemOrderedRealmCollection = realm.where(LoginResponseData.class).findFirst().getModules();
         ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection);
@@ -154,6 +172,18 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                     Toast.makeText(mContext, "Hi: " + strSubModuleTag + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
                 }*/
                 startCorrespondingAclActivity(subModulesItem);
+            }
+        });
+
+        projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(mContext,"Only  " + projectSpinner.getSelectedItem().toString()  + "can be selected",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -245,5 +275,41 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             projectSiteName.setText(projectsItem.getProjectName());
         }
 
+    }
+
+    private void setSpinnerListener(){
+        realm=Realm.getDefaultInstance();
+        projectsItemRealmResults=realm.where(ProjectsItem.class).findAll();
+        setUpSpinnerAdapter(projectsItemRealmResults);
+        if (projectsItemRealmResults != null) {
+            Timber.d("availableUsersRealmResults change listener added.");
+            Log.i("@@","availableUsersRealmResults change listener added");
+            projectsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<ProjectsItem>>() {
+                @Override
+                public void onChange(RealmResults<ProjectsItem> availableUsersItems) {
+                    Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
+
+                    Log.i("@@",String.valueOf(availableUsersItems.size()));
+                    setUpSpinnerAdapter(projectsItemRealmResults);
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
+        }
+    }
+
+    private void setUpSpinnerAdapter(RealmResults<ProjectsItem> availableUsersItems) {
+        projectsItemList = realm.copyFromRealm(availableUsersItems);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (ProjectsItem currentUser : projectsItemList) {
+            String strMaterialName = currentUser.getProjectName();
+            arrayOfUsers.add(strMaterialName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        if (arrayAdapter != null) {
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            projectSpinner.setAdapter(arrayAdapter);
+        }
+        userName.setText("Test User");
     }
 }
