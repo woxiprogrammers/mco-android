@@ -445,6 +445,13 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
                     }
                 }
                 break;
+            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
+                Bundle bundleExtras = intent.getExtras();
+                if (bundleExtras != null) {
+                    SearchMaterialListItem searchMaterialListItem = (SearchMaterialListItem) bundleExtras.getSerializable("searchMaterialListItem");
+                    Timber.d("RESULT_OK searchMaterialListItem: " + searchMaterialListItem);
+                }
+                break;
         }
     }
 

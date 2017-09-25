@@ -1,6 +1,7 @@
 package com.android.material_request_approve;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -29,6 +28,8 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +54,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
     public static View.OnClickListener searchResultClickListener;
     private Realm realm;
     private RealmResults<SearchMaterialListItem> searchMaterialListItemRealmResults;
+    private SearchMaterialListItem searchMaterialListItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +100,10 @@ public class AutoSuggestActivity extends AppCompatActivity {
         if (isVisible) {
             mButtonAddAsNewItem.setVisibility(View.VISIBLE);
             mButtonAddAsNewItem.setText(getString(R.string.add_as_new_item, mStrSearch));
+            mRecyclerViewSearchResultList.setVisibility(View.GONE);
         } else {
             mButtonAddAsNewItem.setVisibility(View.GONE);
+            mRecyclerViewSearchResultList.setVisibility(View.VISIBLE);
         }
     }
 
@@ -117,21 +121,11 @@ public class AutoSuggestActivity extends AppCompatActivity {
                 .addJSONObjectBody(params)
                 .setTag("requestAutoSearchApi")
                 .build()
-                /*.getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
-                    }
-                });*/
                 .getAsObject(ItemSearchResponse.class, new ParsedRequestListener<ItemSearchResponse>() {
                     @Override
                     public void onResponse(final ItemSearchResponse response) {
-                        if (response.getItemSearchResponseData().getMaterialList().get(0).getMaterialRequestComponentTypeSlug().contains("new")) {
+                        searchMaterialListItem = response.getItemSearchResponseData().getMaterialList().get(0);
+                        if (searchMaterialListItem.getMaterialRequestComponentTypeSlug().contains("new")) {
                             setUpAddNewButton(true);
                         } else {
                             setUpAddNewButton(false);
@@ -167,7 +161,6 @@ public class AutoSuggestActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        realm.delete(SearchMaterialListItem.class);
                         AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                     }
                 });
@@ -185,7 +178,18 @@ public class AutoSuggestActivity extends AppCompatActivity {
 
     @OnClick(R.id.buttonAddAsNewItem)
     public void onViewClicked() {
-        Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
+        searchMaterialListItem.setMaterialName(mStrSearch);
+        setResultAndFinish(searchMaterialListItem);
+    }
+
+    private void setResultAndFinish(SearchMaterialListItem searchMaterialListItem) {
+        realm = Realm.getDefaultInstance();
+        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(searchMaterialListItem.getUnitQuantity());
+
+        Intent intentData = getIntent();
+        intentData.putExtra("searchMaterialListItem", searchMaterialListItem);
+        setResult(RESULT_OK, intentData);
+        finish();
     }
 
     private void setUpPrAdapter() {
@@ -201,10 +205,10 @@ public class AutoSuggestActivity extends AppCompatActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        SearchMaterialListItem searchMaterialListItem = searchMaterialListItemRealmResults.get(position);
-                        if (BuildConfig.DEBUG) {
-                            Timber.d(String.valueOf(searchMaterialListItem));
-                        }
+                        searchMaterialListItem = searchMaterialListItemRealmResults.get(position);
+                        realm = Realm.getDefaultInstance();
+                        SearchMaterialListItem searchMaterialItem = realm.copyFromRealm(searchMaterialListItem);
+                        setResultAndFinish(searchMaterialItem);
                     }
 
                     @Override
@@ -262,6 +266,15 @@ public class AutoSuggestActivity extends AppCompatActivity {
                 ButterKnife.bind(this, itemView);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+        }
+        mRecyclerViewSearchResultList.setAdapter(null);
     }
 }
 
