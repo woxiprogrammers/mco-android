@@ -25,7 +25,7 @@ import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +73,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
 
     private void initializeViews() {
         mContext = AutoSuggestActivity.this;
+        setUpAddNewButton(false);
         mEditTextAutoSuggest.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -93,6 +94,15 @@ public class AutoSuggestActivity extends AppCompatActivity {
         });
     }
 
+    private void setUpAddNewButton(boolean isVisible) {
+        if (isVisible) {
+            mButtonAddAsNewItem.setVisibility(View.VISIBLE);
+            mButtonAddAsNewItem.setText(getString(R.string.add_as_new_item, mStrSearch));
+        } else {
+            mButtonAddAsNewItem.setVisibility(View.GONE);
+        }
+    }
+
     private void requestAutoSearchApi(String searchString) {
         JSONObject params = new JSONObject();
         try {
@@ -107,7 +117,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
                 .addJSONObjectBody(params)
                 .setTag("requestAutoSearchApi")
                 .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
@@ -117,15 +127,24 @@ public class AutoSuggestActivity extends AppCompatActivity {
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                     }
-                });
-                /*.getAsObject(ItemSearchResponse.class, new ParsedRequestListener<ItemSearchResponse>() {
+                });*/
+                .getAsObject(ItemSearchResponse.class, new ParsedRequestListener<ItemSearchResponse>() {
                     @Override
                     public void onResponse(final ItemSearchResponse response) {
+                        if (response.getItemSearchResponseData().getMaterialList().get(0).getMaterialRequestComponentTypeSlug().contains("new")) {
+                            setUpAddNewButton(true);
+                        } else {
+                            setUpAddNewButton(false);
+                        }
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(ItemSearchResponse.class);
+                                    realm.delete(ItemSearchResponseData.class);
+                                    realm.delete(SearchMaterialListItem.class);
+                                    realm.delete(UnitQuantityItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -148,9 +167,10 @@ public class AutoSuggestActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(ANError anError) {
+                        realm.delete(SearchMaterialListItem.class);
                         AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                     }
-                });*/
+                });
     }
 
     @Override

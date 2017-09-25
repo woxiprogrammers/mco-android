@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 
 public class ItemSearchResponse extends RealmObject {
-    @SerializedName("item_search_response_data")
+    @SerializedName("data")
     private ItemSearchResponseData itemSearchResponseData;
     @SerializedName("message")
     private String message;

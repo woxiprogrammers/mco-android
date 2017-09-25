@@ -22,7 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/selectable_button_background_gray"
         android:layout_centerInParent="true"
-        android:text="Add As New Item"/>
+        android:text="@string/add_as_new_item"/>
 </RelativeLayout>
 
