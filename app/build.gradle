@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+apply from: "$project.rootDir/tools/script-findbugs.gradle"
 
 android {
     compileSdkVersion 26
@@ -24,16 +25,13 @@ android {
     productFlavors {
         dev {
             applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
+            versionNameSuffix '-dev'
 //            minSdkVersion 21
             buildConfigField "String", "BASE_URL", '"http://testapi.mconstruction.co.in/"'
             resValue "string", "app_name", "ConstructionDev"
         }
-        live {
-            applicationIdSuffix ".release"
-            versionNameSuffix "-release"
-            buildConfigField "String", "BASE_URL", '"http://api.mconstruction.co.in/"'
-            resValue "string", "app_name", "Construction"
+        prod {
+            versionNameSuffix '-prod'
         }
     }
     packagingOptions {
