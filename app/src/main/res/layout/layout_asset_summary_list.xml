@@ -1,220 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="4dp"
+                                    android:background="@drawable/selector_is_material_selected"
+                                    app:cardCornerRadius="8dp"
+                                    app:cardElevation="@dimen/dimen_4dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textview_fuel_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="@dimen/dimen_10dp"
+            android:background="@drawable/background_oval_for_diesel_remaining"/>
+
+        <LinearLayout
+            android:id="@+id/ff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen_10dp"
+            android:paddingTop="@dimen/dimen_10dp">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_3dp">
+
+                <TextView
+                    android:id="@+id/textview_start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="3534"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_18dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="Start Time"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_16dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_2dp">
+
+                <TextView
+                    android:id="@+id/textview_stop_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="34"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_18dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="Stop TIme"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_16dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textview_fuel_remaining"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:gravity="center"
-        android:layout_margin="@dimen/dimen_10dp"
-        android:background="@drawable/background_oval_for_diesel_remaining"/>
-    <LinearLayout
-        android:id="@+id/ff"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_8dp"
-        android:orientation="horizontal"
-        android:layout_below="@id/textview_fuel_remaining"
-        android:paddingBottom="@dimen/dimen_10dp"
-        android:paddingTop="@dimen/dimen_10dp">
+                <TextView
+                    android:id="@+id/textview_topup_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="02:20"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_18dp"/>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_8dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/dimen_3dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:gravity="center_horizontal"
+                    android:text="Top Up Time"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_16dp"/>
 
-            <TextView
-                android:id="@+id/textview_start_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="3534"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_18dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="Start Time"
-                android:textColor="@color/colorTextLight"
-                android:textSize="@dimen/dimen_16dp"/>
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_8dp"
-            android:layout_marginLeft="@dimen/dimen_3dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/dimen_2dp">
-
-            <TextView
-                android:id="@+id/textview_stop_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="34"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_18dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="Stop TIme"
-                android:textColor="@color/colorTextLight"
-                android:textSize="@dimen/dimen_16dp"/>
-
-        </LinearLayout>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/ff"
             android:layout_margin="@dimen/dimen_8dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen_10dp"
+            android:paddingTop="@dimen/dimen_10dp">
 
-            <TextView
-                android:id="@+id/textview_topup_time"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="02:20"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_18dp"/>
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_3dp">
 
-            <TextView
-                android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/text_view_asset_units"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="3534"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_18dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="Units"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_16dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dimen_2dp"
-                android:gravity="center_horizontal"
-                android:text="Top Up Time"
-                android:textColor="@color/colorTextLight"
-                android:textSize="@dimen/dimen_16dp"/>
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_2dp">
+
+                <TextView
+                    android:id="@+id/textview_work_hour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="34"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_18dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="Work Hour"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_16dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview_diesel_consume"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_18dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:gravity="center_horizontal"
+                    android:text="Total Diesel"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_16dp"/>
+
+            </LinearLayout>
 
         </LinearLayout>
-
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ff"
-        android:layout_margin="@dimen/dimen_8dp"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/dimen_10dp"
-        android:paddingTop="@dimen/dimen_10dp">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/dimen_3dp">
 
-            <TextView
-                android:id="@+id/text_view_asset_units"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="3534"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_18dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="Units"
-                android:textColor="@color/colorTextLight"
-                android:textSize="@dimen/dimen_16dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_3dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="@dimen/dimen_2dp">
-
-            <TextView
-                android:id="@+id/textview_work_hour"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="34"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_18dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="Work Hour"
-                android:textColor="@color/colorTextLight"
-                android:textSize="@dimen/dimen_16dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textview_diesel_consume"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_18dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dimen_2dp"
-                android:gravity="center_horizontal"
-                android:text="Total Diesel"
-                android:textColor="@color/colorTextLight"
-                android:textSize="@dimen/dimen_16dp"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floating_add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/dimen_10dp"
-        android:gravity="right"
-        android:src="@drawable/ic_plus"
-        />
-</RelativeLayout>
+</android.support.v7.widget.CardView>

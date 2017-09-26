@@ -1,5 +1,6 @@
 package com.android.inventory;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,9 +11,14 @@ import android.view.MenuItem;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.constro360.BaseActivity;
+import com.android.models.login_acl.PermissionsItem;
+import com.google.gson.Gson;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class InventoryHomeActivity extends BaseActivity {
     @BindView(R.id.bottom_navigation)
@@ -20,6 +26,7 @@ public class InventoryHomeActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     MenuItem prevMenuItem;
+    private String subModuleTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,14 @@ public class InventoryHomeActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             setTitle(getString(R.string.inventory));
+        }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String permissionsItemList = bundle.getString("permissionsItemList");
+            PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
+            subModuleTag = bundle.getString("subModuleTag");
+            Timber.d(subModuleTag);
+            Timber.d(String.valueOf(permissionsItems));
         }
         callMaterialFragment();
         bottom_navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -64,6 +79,8 @@ public class InventoryHomeActivity extends BaseActivity {
 
     private void callMaterialFragment() {
         final InventoryViewPagerAdapter inventoryViewPagerAdapter = new InventoryViewPagerAdapter(getSupportFragmentManager());
+
+
         viewPagerInventory.setAdapter(inventoryViewPagerAdapter);
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -75,6 +92,11 @@ public class InventoryHomeActivity extends BaseActivity {
                 FragmentInterface fragment = (FragmentInterface) inventoryViewPagerAdapter.instantiateItem(viewPagerInventory, position);
                 if (fragment != null) {
                     fragment.fragmentBecameVisible();
+                    /*if (subModuleTag.equalsIgnoreCase("inventory-in-out-transfer")) {
+                        viewPagerInventory.setCurrentItem(0);
+                    } else if(subModuleTag.equalsIgnoreCase("asset-reading")){
+                        viewPagerInventory.setCurrentItem(1);
+                    }*/
                 }
                 if (prevMenuItem != null) {
                     prevMenuItem.setChecked(false);

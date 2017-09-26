@@ -105,7 +105,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         JSONObject params=new JSONObject();
         try {
             params.put("page",0);
-            params.put("project_site_id",6);
+            params.put("project_site_id",5);
         } catch (JSONException e) {
             e.printStackTrace();
         }

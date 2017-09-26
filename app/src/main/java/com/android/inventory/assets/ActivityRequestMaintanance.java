@@ -3,6 +3,8 @@ package com.android.inventory.assets;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -12,23 +14,29 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.constro360.R;
-import com.android.utils.ImageUtilityHelper;
-import com.android.utils.AppUtils;
 import com.android.constro360.BaseActivity;
-import com.theartofdev.edmodo.cropper.CropImage;
+import com.android.constro360.R;
+import com.android.purchase_details.PayAndBillsActivity;
+import com.android.utils.AppConstants;
+import com.android.utils.AppUtils;
+import com.vlk.multimager.activities.GalleryActivity;
+import com.vlk.multimager.activities.MultiCameraActivity;
+import com.vlk.multimager.utils.Constants;
+import com.vlk.multimager.utils.Image;
+import com.vlk.multimager.utils.Params;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.android.inventory.InventoryDetails.IMAGE_CHOOSER_CODE;
+import timber.log.Timber;
 
 public class ActivityRequestMaintanance extends BaseActivity {
 
@@ -43,19 +51,24 @@ public class ActivityRequestMaintanance extends BaseActivity {
 
     @BindView(R.id.edit_text_remark)
     EditText editTextRemark;
+
     @BindView(R.id.button_request)
     Button buttonRequest;
 
-    @BindView(R.id.image_view_addImage)
-    ImageView imageViewAddImage;
-    @BindView(R.id.ll_upload_image)
-    LinearLayout llUploadImage;
+
+    @BindView(R.id.textView_capture)
+    TextView textViewCapture;
+
+    @BindView(R.id.textView_pick)
+    TextView textViewPick;
+
+    @BindView(R.id.ll_addImage)
+    LinearLayout llAddImage;
 
     private Context mContext;
     private String strExpiryDate, strRemark;
     private Calendar myCalendar;
     private DatePickerDialog.OnDateSetListener date;
-    private ImageUtilityHelper imageUtilityHelper;
     private String strAssetName;
     private String strModelNumber;
 
@@ -76,10 +89,10 @@ public class ActivityRequestMaintanance extends BaseActivity {
             getSupportActionBar().setTitle(R.string.asset_maintainance);
         }
 
-        Intent extras=getIntent();
-        if(extras != null) {
-            strAssetName= extras.getStringExtra("key");
-            strModelNumber=extras.getStringExtra("key1");
+        Intent extras = getIntent();
+        if (extras != null) {
+            strAssetName = extras.getStringExtra("key");
+            strModelNumber = extras.getStringExtra("key1");
         }
         editTextAssetName.setText(strAssetName);
         editTextAssetName.setEnabled(false);
@@ -126,17 +139,10 @@ public class ActivityRequestMaintanance extends BaseActivity {
     @OnClick(R.id.edit_text_expiryDate)
     void onClickExpiryDate(View view) {
         if (view.getId() == R.id.edit_text_expiryDate) {
-            AppUtils.getInstance().hideKeyboard(view,mContext);
+            AppUtils.getInstance().hideKeyboard(view, mContext);
             new DatePickerDialog(ActivityRequestMaintanance.this, date, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        }
-    }
-
-    @OnClick(R.id.image_view_addImage)
-    void onClickAddImage(View view) {
-        if (view.getId() == R.id.image_view_addImage) {
-            getImageChooser();
         }
     }
 
@@ -167,52 +173,73 @@ public class ActivityRequestMaintanance extends BaseActivity {
         Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
     }
 
-    public void getImageChooser() {
-        imageUtilityHelper = new ImageUtilityHelper(mContext, imageViewAddImage);
-        pickChooser();
-        imageViewAddImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pickChooser();
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
-        imageUtilityHelper.deleteLocalImage();
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                    addImageViewObject(mContext);
-            }
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList));
+                    setImageToLayout(imagesList, Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class, llAddImage);
+                break;
+            case Constants.TYPE_MULTI_PICKER:
+                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList2));
+                    setImageToLayout(imagesList2, Constants.TYPE_MULTI_CAPTURE, GalleryActivity.class, llAddImage);
+                break;
         }
     }
 
-    private void pickChooser() {
-        Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
-        startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
+    @OnClick({R.id.textView_capture, R.id.textView_pick})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textView_capture:
+                chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
+                break;
+            case R.id.textView_pick:
+                Intent intent = new Intent(mContext, GalleryActivity.class);
+                Params params = new Params();
+                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params.setToolbarColor(R.color.colorPrimaryLight);
+                params.setActionButtonColor(R.color.colorAccentDark);
+                params.setButtonTextColor(R.color.colorWhite);
+                intent.putExtra(Constants.KEY_PARAMS, params);
+                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
+                break;
+        }
     }
 
-    public void addImageViewObject(Context context) {
-        ImageView imageView = new ImageView(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80, 80);
-        layoutParams.setMargins(10, 10, 10, 10);
-        imageView.setLayoutParams(layoutParams);
-        imageView.setBackgroundResource(R.drawable.ic_plus);
-        llUploadImage.addView(imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent imageChooserIntent = imageUtilityHelper.getPickImageChooserIntent();
-                startActivityForResult(imageChooserIntent, IMAGE_CHOOSER_CODE);
-                imageUtilityHelper = new ImageUtilityHelper(mContext, (ImageView) view);
+    private void chooseAction(int type, Class aClass) {
+        Intent intent = new Intent(mContext, aClass);
+        Params params = new Params();
+        params.setCaptureLimit(10);
+        params.setToolbarColor(R.color.colorPrimaryLight);
+        params.setActionButtonColor(R.color.colorAccentDark);
+        params.setButtonTextColor(R.color.colorWhite);
+        intent.putExtra(Constants.KEY_PARAMS, params);
+        startActivityForResult(intent, type);
+    }
+    private void setImageToLayout(ArrayList<Image> imageArrayList, final int type, final Class aClass, LinearLayout layout) {
+        for (Image currentImage : imageArrayList) {
+            if (currentImage.imagePath != null) {
+                Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                ImageView imageView = new ImageView(mContext);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                imageView.setImageBitmap(myBitmap);
+                layout.addView(imageView);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
             }
-        });
+        }
     }
-
-
-
-
 }

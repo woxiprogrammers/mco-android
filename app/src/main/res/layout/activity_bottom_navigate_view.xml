@@ -24,7 +24,6 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/dimen_12dp"
         app:itemBackground="?attr/selectableItemBackground"
-        app:itemTextColor="@drawable/nav_item_color_state"
-        app:menu="@menu/bottom_menu" />
+        app:menu="@menu/bottom_menu"/>
 
 </LinearLayout>

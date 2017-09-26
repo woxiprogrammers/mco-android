@@ -1,8 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.android.inventory.assets.AssetsReadingsFragment">
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.android.inventory.assets.AssetsReadingsFragment">
 
 
 
@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
         android:onClick="onViewClicked"
+        android:src="@drawable/ic_plus"
         android:layout_margin="@dimen/dimen_20dp"/>
 
 </FrameLayout>

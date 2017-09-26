@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
@@ -28,14 +27,12 @@ import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -117,7 +114,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         JSONObject params=new JSONObject();
         try {
             params.put("page_id",0);
-            params.put("project_site_id",6);
+            params.put("project_site_id",5);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -154,7 +151,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

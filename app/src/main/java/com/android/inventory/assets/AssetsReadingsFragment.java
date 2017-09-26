@@ -1,14 +1,11 @@
 package com.android.inventory.assets;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +24,11 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
@@ -45,6 +44,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
+
     private Context mContext;
     private Unbinder unbinder;
     private Realm realm;
@@ -63,17 +63,12 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        View view = inflater.inflate(R.layout.recyclerview_lsiting_for_asset_summary, container, false);
         unbinder = ButterKnife.bind(this, view);
         initializeViews(view);
         setUpAssetListAdapter();
         functionForGettingData();
         return view;
-    }
-
-    private void initializeViews(View view) {
-        unbinder = ButterKnife.bind(this, view);
-        mContext = getActivity();
     }
 
     @Override
@@ -87,11 +82,9 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         unbinder.unbind();
     }
 
-    @OnClick(R.id.floating_add_button)
-    public void onViewClicked() {
-        Intent intent = new Intent(mContext, ActivityAssetsReadings.class);
-        startActivityForResult(intent, 1111);
-
+    private void initializeViews(View view) {
+        unbinder = ButterKnife.bind(this, view);
+        mContext = getActivity();
     }
 
     private void functionForGettingData() {
@@ -105,7 +98,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
         JSONObject params = new JSONObject();
         try {
-            params.put("inventory_component_id", 4);
+            params.put("inventory_component_id", 3);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -155,7 +148,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
         final RealmResults<AssetsSummaryListItem> assetsListItems = realm.where(AssetsSummaryListItem.class).findAllAsync();
-        AssetRadingAdapter assetRadingAdapter = new AssetRadingAdapter(assetsListItems, true, true);
+        AssetRedingAdapter assetRadingAdapter = new AssetRedingAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
         rvMaterialList.setAdapter(assetRadingAdapter);
@@ -182,12 +175,13 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
         }
     }
+
 }
 
-class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem, AssetRadingAdapter.MyViewHolder> {
+class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem, AssetRedingAdapter.MyViewHolder> {
     private OrderedRealmCollection<AssetsSummaryListItem> summaryListItems;
 
-    AssetRadingAdapter(@Nullable OrderedRealmCollection<AssetsSummaryListItem> data, boolean autoUpdate, boolean updateOnModification) {
+    AssetRedingAdapter(@Nullable OrderedRealmCollection<AssetsSummaryListItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, autoUpdate, updateOnModification);
         summaryListItems = data;
     }
@@ -201,13 +195,20 @@ class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         AssetsSummaryListItem assetsSummaryListItem = summaryListItems.get(position);
-        holder.textviewFuelRemaining.setText(assetsSummaryListItem.getFuelRemaining());
-        holder.textviewStartTime.setText(assetsSummaryListItem.getStartTime());
         holder.textviewStopTime.setText(assetsSummaryListItem.getStopTime());
         holder.textviewTopupTime.setText(assetsSummaryListItem.getTopUpTime());
-        holder.textViewAssetUnits.setText(assetsSummaryListItem.getAssetsUnits());
-        holder.textviewDieselConsume.setText(assetsSummaryListItem.getTotalDieselConsume());
-        holder.textviewWorkHour.setText(assetsSummaryListItem.getWorkHourInDay());
+        holder.textViewAssetUnits.setText(" " + assetsSummaryListItem.getAssetsUnits());
+        holder.textviewDieselConsume.setText(" " + assetsSummaryListItem.getTotalDieselConsume());
+        holder.textviewWorkHour.setText("" + assetsSummaryListItem.getWorkHourInDay());
+        setTime(assetsSummaryListItem.getStartTime(), holder.textviewStartTime);
+        setTime(assetsSummaryListItem.getStopTime(), holder.textviewStopTime);
+        setTime(assetsSummaryListItem.getTopUpTime(), holder.textviewTopupTime);
+        if (assetsSummaryListItem.getFuelRemaining() != null) {
+            holder.textviewFuelRemaining.setText(assetsSummaryListItem.getFuelRemaining());
+            holder.textviewFuelRemaining.setVisibility(View.VISIBLE);
+        } else {
+            holder.textviewFuelRemaining.setVisibility(View.GONE);
+        }
 
     }
 
@@ -236,12 +237,25 @@ class AssetRadingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
         TextView textviewWorkHour;
         @BindView(R.id.textview_diesel_consume)
         TextView textviewDieselConsume;
-        @BindView(R.id.floating_add_button)
-        FloatingActionButton floatingAddButton;
+
         MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    private void setTime(String strParse, TextView textView) {
+        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dateObj;
+        String newDateStr = null;
+        try {
+            dateObj = df.parse(strParse);
+            SimpleDateFormat fd = new SimpleDateFormat("HH:mm");
+            newDateStr = fd.format(dateObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        textView.setText(newDateStr);
     }
 }
 
