@@ -12,7 +12,8 @@ public class PurchaseRequestResponse extends RealmObject {
     private String nextUrl;
     @SerializedName("message")
     private String message;
-    @SerializedName("purchaseRequestRespData")
+
+    @SerializedName("data")
     private PurchaseRequestRespData purchaseRequestRespData;
 
     public String getNextUrl() {

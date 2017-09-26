@@ -6,16 +6,21 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class PurchaseRequestListItem extends RealmObject {
+
     @PrimaryKey
-    @SerializedName("id")
+    @SerializedName("purchase_request_id")
     private int id;
+
     @SerializedName("date")
     private String date;
-    @SerializedName("purchase_request_id")
+
+    @SerializedName("purchase_request_format")
     private String purchaseRequestId;
+
     @SerializedName("materials")
     private String materials;
-    @SerializedName("status")
+
+    @SerializedName("component_status_name")
     private String status;
 
     public int getId() {

@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,9 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,7 +115,19 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     }
 
     private void requestPrListOnline() {
-        AndroidNetworking.get(AppURL.API_PURCHASE_REQUEST_LIST)
+        JSONObject params=new JSONObject();
+        try {
+            params.put("project_site_id",5);
+            params.put("month",9);
+            params.put("year",2017);
+            params.put("page",0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i("@@URLRequest",AppURL.API_PURCHASE_REQUEST_LIST + AppUtils.getInstance().getCurrentToken());
+        AndroidNetworking.post(AppURL.API_PURCHASE_REQUEST_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPrListOnline")
                 .build()
@@ -124,6 +140,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                                 @Override
                                 public void execute(Realm realm) {
                                     realm.insertOrUpdate(response);
+                                    Log.i("@@Res",response.toString());
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
@@ -179,6 +196,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             purchaseRequestListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseRequestListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems) {
+
                 }
             });
         } else {
@@ -209,6 +227,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseRequestListItem purchaseRequestListItem = arrPurchaseRequestListItems.get(position);
+            Log.i("@@Data", String.valueOf(purchaseRequestListItem));
             holder.textViewPurchaseRequestId.setText(purchaseRequestListItem.getPurchaseRequestId());
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
