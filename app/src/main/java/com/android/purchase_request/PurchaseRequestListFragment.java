@@ -22,6 +22,7 @@ import com.android.models.purchase_request.PurchaseRequestResponse;
 import com.android.purchase_details.PurchaseRequestDetailsHomeActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.EndlessRecyclerViewScrollListener;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -192,6 +193,13 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
+
+        recyclerView_commonListingView.addOnScrollListener(new EndlessRecyclerViewScrollListener(new LinearLayoutManager(mContext)) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                requestPrListOnline();
+            }
+        });
         if (purchaseRequestListItems != null) {
             purchaseRequestListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseRequestListItem>>() {
                 @Override
@@ -260,4 +268,5 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             }
         }
     }
+
 }
