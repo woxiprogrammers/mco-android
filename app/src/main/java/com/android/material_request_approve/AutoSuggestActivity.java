@@ -183,7 +183,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(final AssetSearchResponse response) {
                     searchAssetListItem = response.getAssetSearchResponseData().getAssetList().get(0);
-                    if (searchAssetListItem.getAssetRequestComponentTypeSlug().contains("new")) {
+                    if (searchAssetListItem.getMaterialRequestComponentTypeSlug().contains("new")) {
                         setUpAddNewButton(true);
                     } else {
                         setUpAddNewButton(false);
@@ -221,30 +221,7 @@ public class AutoSuggestActivity extends AppCompatActivity {
                     AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                 }
             });
-            /*postRequestBuilder.getAsJSONObject(new JSONObjectRequestListener() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Timber.d(String.valueOf(response));
-                }
-
-                @Override
-                public void onError(ANError anError) {
-                    AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
-                }
-            });*/
         }
-
-        /*postRequestBuilder.getAsJSONObject(new JSONObjectRequestListener() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Timber.d(String.valueOf(response));
-            }
-
-            @Override
-            public void onError(ANError anError) {
-                AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
-            }
-        });*/
     }
 
     @Override
@@ -259,8 +236,13 @@ public class AutoSuggestActivity extends AppCompatActivity {
 
     @OnClick(R.id.buttonAddAsNewItem)
     public void onViewClicked() {
-        searchMaterialListItem.setMaterialName(mStrSearch);
-        setResultAndFinish(searchMaterialListItem.getMaterialName(), true);
+        if (isMaterial) {
+            searchMaterialListItem.setMaterialName(mStrSearch);
+            setResultAndFinish(searchMaterialListItem.getMaterialName(), true);
+        } else {
+            searchAssetListItem.setAssetName(mStrSearch);
+            setResultAndFinish(searchAssetListItem.getAssetName(), true);
+        }
     }
 
     private void setResultAndFinish(String searchedItemName, boolean isNewItem) {
@@ -343,6 +325,15 @@ public class AutoSuggestActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+        }
+        mRecyclerViewSearchResultList.setAdapter(null);
+    }
+
     @SuppressWarnings("WeakerAccess")
     protected class MaterialAutoSuggestAdapter extends RealmRecyclerViewAdapter<SearchMaterialListItem, MaterialAutoSuggestAdapter.MyViewHolder> {
         private OrderedRealmCollection<SearchMaterialListItem> arrSearchMaterialListItem;
@@ -383,15 +374,6 @@ public class AutoSuggestActivity extends AppCompatActivity {
                 ButterKnife.bind(this, itemView);
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (realm != null) {
-            realm.close();
-        }
-        mRecyclerViewSearchResultList.setAdapter(null);
     }
 
     @SuppressWarnings("WeakerAccess")

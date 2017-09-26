@@ -207,7 +207,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         mTextViewLabelMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_label_material_asset);
         mEditTextNameMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_name_material_asset);
         mEditTextQuantityMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_quantity_material_asset);
-        mEditTextUnitMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_unit_material_asset);
+//        mEditTextUnitMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_unit_material_asset);
         mLlUploadImage = (LinearLayout) dialogView.findViewById(R.id.ll_uploadImage);
         mIvChooseImage = (ImageView) dialogView.findViewById(R.id.ivChooseImage);
         mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
@@ -262,7 +262,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         final PurchaseMaterialListItem purchaseMaterialListItem = new PurchaseMaterialListItem();
         purchaseMaterialListItem.setItem_name(mEditTextNameMaterialAsset.getText().toString().trim() + "");
         purchaseMaterialListItem.setItem_quantity(mEditTextQuantityMaterialAsset.getText().toString().trim() + "");
-        purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim() + "");
+//        purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim() + "");
         //approve status- "p-r-assigned" or "in-indent"
         //As we are adding item status will always be "p-r-assigned".
         purchaseMaterialListItem.setApproved_status(getString(R.string.tag_p_r_assigned));
@@ -524,6 +524,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 
     /*@SuppressWarnings("WeakerAccess")
     protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseMaterialRvAdapter.MyViewHolder> {

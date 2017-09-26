@@ -59,7 +59,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -100,15 +99,17 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
     private TextView mTextViewLabelMaterialAsset;
     private EditText mEditTextNameMaterialAsset;
     private EditText mEditTextQuantityMaterialAsset;
-    private EditText mEditTextUnitMaterialAsset;
     private LinearLayout mLlUploadImage;
     private ImageView mIvChooseImage;
     private TextView mTextViewCaptureImages;
     private TextView mTextViewPickImages;
     private Button mButtonDismissMaterialAsset;
     private Button mButtonAddMaterialAsset;
-    private SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter;
     private File currentImageFile;
+    private Spinner mSpinnerUnits;
+    private LinearLayout ll_dialog_unit;
+    private SearchMaterialListItem searchMaterialListItem_fromResult = null;
+    private SearchAssetListItem searchAssetListItem_fromResult = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +118,6 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mContext = MaterialRequest_ApproveActivity.this;
         layoutInflater = LayoutInflater.from(mContext);
-//        materialListItemArrayList = new ArrayList<PurchaseMaterialListItem>();
-//        purchaseMaterial_postItem = new PurchaseMaterial_PostItem();
         setUpPrAdapter();
         createAlertDialog();
         requestUsersWithApproveAcl();
@@ -165,11 +164,13 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
                     case R.id.action_add_material:
                         isMaterial = true;
                         AlertDialog alertDialogMaterial = getExistingAlertDialog();
+                        ll_dialog_unit.setVisibility(View.VISIBLE);
                         alertDialogMaterial.show();
                         break;
                     case R.id.action_add_asset:
                         isMaterial = false;
                         AlertDialog alertDialogAsset = getExistingAlertDialog();
+                        ll_dialog_unit.setVisibility(View.INVISIBLE);
                         alertDialogAsset.show();
                         break;
                 }
@@ -194,7 +195,7 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
         try {
             params.put("item_list", purchaseMaterialListItems);
             params.put("is_material_request", true);
-            params.put("project_site_id", 6);
+            params.put("project_site_id", 5);
             params.put("assigned_to", userId);
             params.put("item_list", null);
         } catch (JSONException e) {
@@ -212,13 +213,14 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
         mTextViewLabelMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_label_material_asset);
         mEditTextNameMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_name_material_asset);
         mEditTextQuantityMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_quantity_material_asset);
-        mEditTextUnitMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_unit_material_asset);
         mLlUploadImage = (LinearLayout) dialogView.findViewById(R.id.ll_uploadImage);
         mIvChooseImage = (ImageView) dialogView.findViewById(R.id.ivChooseImage);
         mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
         mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
         mTextViewCaptureImages = (TextView) dialogView.findViewById(R.id.textView_capture_images);
         mTextViewPickImages = (TextView) dialogView.findViewById(R.id.textView_pick_images);
+        mSpinnerUnits = dialogView.findViewById(R.id.spinner_select_units);
+        ll_dialog_unit = dialogView.findViewById(R.id.ll_dialog_unit);
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -255,7 +257,7 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
         mButtonAddMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addItemToLocalRealm();
+                validateEntries_addToLocal();
                 alertDialog.dismiss();
             }
         });
@@ -275,7 +277,7 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
         final PurchaseMaterialListItem purchaseMaterialListItem = new PurchaseMaterialListItem();
         purchaseMaterialListItem.setItem_name(mEditTextNameMaterialAsset.getText().toString().trim() + "");
         purchaseMaterialListItem.setItem_quantity(mEditTextQuantityMaterialAsset.getText().toString().trim() + "");
-        purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim() + "");
+//        purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim() + "");
         //approve status- "p-r-assigned" or "in-indent"
         //As we are adding item status will always be "p-r-assigned".
         purchaseMaterialListItem.setApproved_status(getString(R.string.tag_p_r_assigned));
@@ -453,29 +455,53 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
                     boolean isNewItem = bundleExtras.getBoolean("isNewItem");
                     isMaterial = bundleExtras.getBoolean("isMaterial");
                     String searchedItemName = bundleExtras.getString("searchedItemName");
-                    SearchMaterialListItem searchMaterialListItem;
-                    SearchAssetListItem searchAssetListItem;
                     realm = Realm.getDefaultInstance();
                     if (isMaterial) {
                         if (isNewItem) {
-                            searchMaterialListItem = (SearchMaterialListItem) bundleExtras.getSerializable("searchListItem");
+                            searchMaterialListItem_fromResult = (SearchMaterialListItem) bundleExtras.getSerializable("searchListItem");
                         } else {
-                            searchMaterialListItem = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                            searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
                         }
                     } else {
                         if (isNewItem) {
-                            searchAssetListItem = (SearchAssetListItem) bundleExtras.getSerializable("searchListItem");
+                            searchAssetListItem_fromResult = (SearchAssetListItem) bundleExtras.getSerializable("searchListItem");
                         } else {
-                            searchAssetListItem = realm.where(SearchAssetListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                            searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("materialName", searchedItemName).findFirst();
                         }
                     }
                     Timber.d("AutoSearch complete");
                     if (realm != null) {
                         realm.close();
                     }
+                    if (alertDialog.isShowing()) {
+                        if (isMaterial) {
+                            if (searchMaterialListItem_fromResult != null) {
+                                mEditTextNameMaterialAsset.setText(searchMaterialListItem_fromResult.getMaterialName());
+                                setSpinnerUnits(searchMaterialListItem_fromResult.getUnitQuantity());
+                            }
+                        } else {
+                            if (searchAssetListItem_fromResult != null) {
+                                mEditTextNameMaterialAsset.setText(searchAssetListItem_fromResult.getAssetName());
+                            }
+                        }
+                    } else {
+                        Timber.i("missing alert dialog");
+                    }
                 }
                 break;
         }
+    }
+
+    private void setSpinnerUnits(RealmList<UnitQuantityItem> unitQuantityItems) {
+        List<UnitQuantityItem> arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
+        ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
+        for (UnitQuantityItem quantityItem : arrUnitQuantityItems) {
+            String unitName = quantityItem.getUnitName();
+            arrayOfUnitNames.add(unitName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUnitNames);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerUnits.setAdapter(arrayAdapter);
     }
 
     private void submitPurchaseRequest(JSONObject params) {
@@ -558,6 +584,11 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
                         AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
                     }
                 });
+    }
+
+    private void validateEntries_addToLocal() {
+        mEditTextQuantityMaterialAsset.getText();
+        addItemToLocalRealm();
     }
 
     @SuppressWarnings("WeakerAccess")

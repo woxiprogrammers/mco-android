@@ -11,12 +11,12 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
     private int assetUnit;
     @SerializedName("asset_name")
     private String assetName;
-    @SerializedName("asset_request_component_type_slug")
-    private String assetRequestComponentTypeSlug;
+    @SerializedName("material_request_component_type_slug")
+    private String materialRequestComponentTypeSlug;
     @SerializedName("asset_id")
     private int assetId;
-    @SerializedName("asset_request_component_type_id")
-    private int assetRequestComponentTypeId;
+    @SerializedName("material_request_component_type_id")
+    private int materialRequestComponentTypeId;
 
     public void setAssetUnit(int assetUnit) {
         this.assetUnit = assetUnit;
@@ -34,12 +34,12 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
         return assetName;
     }
 
-    public void setAssetRequestComponentTypeSlug(String assetRequestComponentTypeSlug) {
-        this.assetRequestComponentTypeSlug = assetRequestComponentTypeSlug;
+    public void setMaterialRequestComponentTypeSlug(String materialRequestComponentTypeSlug) {
+        this.materialRequestComponentTypeSlug = materialRequestComponentTypeSlug;
     }
 
-    public String getAssetRequestComponentTypeSlug() {
-        return assetRequestComponentTypeSlug;
+    public String getMaterialRequestComponentTypeSlug() {
+        return materialRequestComponentTypeSlug;
     }
 
     public void setAssetId(int assetId) {
@@ -50,11 +50,11 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
         return assetId;
     }
 
-    public void setAssetRequestComponentTypeId(int assetRequestComponentTypeId) {
-        this.assetRequestComponentTypeId = assetRequestComponentTypeId;
+    public void setMaterialRequestComponentTypeId(int materialRequestComponentTypeId) {
+        this.materialRequestComponentTypeId = materialRequestComponentTypeId;
     }
 
-    public int getAssetRequestComponentTypeId() {
-        return assetRequestComponentTypeId;
+    public int getMaterialRequestComponentTypeId() {
+        return materialRequestComponentTypeId;
     }
 }
