@@ -7,11 +7,9 @@
         android:enabled="true"
         android:title="@string/text_material"
         app:showAsAction="ifRoom" />
-
     <item
         android:id="@+id/action_assets"
         android:enabled="true"
         android:title="@string/text_assets"
         app:showAsAction="ifRoom" />
-
 </menu>

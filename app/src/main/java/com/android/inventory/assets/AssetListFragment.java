@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
@@ -155,9 +153,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
         final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).equalTo("isDiesel",true).findAll();
-
         Timber.d(String.valueOf(assetsListItems));
-        Log.i("@@", String.valueOf(assetsListItems));
         AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);

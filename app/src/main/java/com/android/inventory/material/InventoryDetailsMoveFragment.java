@@ -82,8 +82,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.ll_challanNumber)
     LinearLayout llChallanNumber;
 
-    @BindView(R.id.text_view_addNote)
-    TextView textViewAddNote;
+    @BindView(R.id.editText_addNote)
+    EditText editTextAddNote;
 
     @BindView(R.id.editText_Date)
     EditText editText_Date;
@@ -148,7 +148,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         text_view_materialCount.setOnClickListener(this);
         buttonMove.setOnClickListener(this);
         selectImage.setOnClickListener(this);
-        textViewAddNote.setOnClickListener(this);
         Bundle bundle = getArguments();
         if (bundle != null) {
             integerArrayList = bundle.getIntegerArrayList("arrayMaterialCount");
@@ -229,13 +228,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 break;
             case R.id.button_move:
                 validateEntries();
-                break;
-            case R.id.text_view_addNote:
-                if (textViewAddNote.getText().toString().equalsIgnoreCase("Show")) {
-                    openAddToNoteDialog("Show");
-                } else {
-                    openAddToNoteDialog(getString(R.string.tap_too_add_note));
-                }
                 break;
             case R.id.ivChooseImage:
                 pickAndCropImage(view);
@@ -342,47 +334,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     String str_add_note;
 
-    private void openAddToNoteDialog(String strMessage) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_tap_to_add_note, null);
-        dialogBuilder.setView(dialogView);
-        final AlertDialog alertDialog = dialogBuilder.create();
-        final EditText editText_add_note = ButterKnife.findById(dialogView, R.id.edit_text_add_note);
-        final TextView textViewShowNote = ButterKnife.findById(dialogView, R.id.textViewShowNote);
-        Button buttonOk = ButterKnife.findById(dialogView, R.id.button_ok);
-
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                str_add_note = editText_add_note.getText().toString();
-                if (TextUtils.isEmpty(str_add_note)) {
-                    editText_add_note.setError("Please" + " " + getString(R.string.add_your_note));
-                    editText_add_note.requestFocus();
-                    editText_add_note.requestFocus();
-                    return;
-                } else {
-                    editText_add_note.setError(null);
-                    editText_add_note.requestFocus();
-                    Toast.makeText(mContext, "Note Added", Toast.LENGTH_SHORT).show();
-                    textViewShowNote.setVisibility(View.VISIBLE);
-                    textViewShowNote.setText(str_add_note);
-                    textViewAddNote.setText("Show");
-                    alertDialog.dismiss();
-
-                }
-            }
-
-        });
-        if (str.equalsIgnoreCase(getString(R.string.tap_too_add_note))) {
-            textViewShowNote.setVisibility(View.GONE);
-        } else {
-            editText_add_note.setText(str_add_note);
-            textViewShowNote.setVisibility(View.VISIBLE);
-        }
-
-        alertDialog.show();
-    }
 
     public void pickAndCropImage(View view) {
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

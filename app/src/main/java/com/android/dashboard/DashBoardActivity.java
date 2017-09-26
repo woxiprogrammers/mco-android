@@ -70,10 +70,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     NavigationView navView;
 
     @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;/*
-
-    @BindView(R.id.project_spinner)
-    Spinner projectSpinner;*/
+    DrawerLayout drawerLayout;
 
     private Context mContext;
     private RecyclerView mRvTaskSelection;
@@ -113,6 +110,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         initializeViews();
         getSiteName();
         setSpinnerListener();
+        Log.i("@@Token",AppUtils.getInstance().getCurrentToken());
 
     }
 
@@ -283,13 +281,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         setUpSpinnerAdapter(projectsItemRealmResults);
         if (projectsItemRealmResults != null) {
             Timber.d("availableUsersRealmResults change listener added.");
-            Log.i("@@","availableUsersRealmResults change listener added");
             projectsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<ProjectsItem>>() {
                 @Override
                 public void onChange(RealmResults<ProjectsItem> availableUsersItems) {
                     Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
-
-                    Log.i("@@",String.valueOf(availableUsersItems.size()));
                     setUpSpinnerAdapter(projectsItemRealmResults);
                 }
             });

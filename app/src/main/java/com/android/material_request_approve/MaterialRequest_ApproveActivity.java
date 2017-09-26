@@ -217,10 +217,11 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
         mIvChooseImage = (ImageView) dialogView.findViewById(R.id.ivChooseImage);
         mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
         mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
-        mTextViewCaptureImages = (TextView) dialogView.findViewById(R.id.textView_capture_images);
-        mTextViewPickImages = (TextView) dialogView.findViewById(R.id.textView_pick_images);
         mSpinnerUnits = dialogView.findViewById(R.id.spinner_select_units);
         ll_dialog_unit = dialogView.findViewById(R.id.ll_dialog_unit);
+        View view=dialogView.findViewById(R.id.layoutCamera);
+        mTextViewCaptureImages = (TextView) view.findViewById(R.id.textView_capture);
+        mTextViewPickImages = (TextView) view.findViewById(R.id.textView_pick);
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
