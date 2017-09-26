@@ -32,8 +32,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dimen_5dp"
                 android:layout_weight="0.05"
-                android:textCursorDrawable="@null"
-                android:background="@drawable/ic_remove_material"/>
+                android:background="@drawable/ic_remove_material"
+                android:textCursorDrawable="@null"/>
         </LinearLayout>
 
         <LinearLayout
@@ -48,8 +48,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:digits="0123456789"
                 android:clickable="true"
+                android:digits="0123456789"
                 android:hint="@string/edittext_hint_quantity"
                 android:inputType="number"/>
 

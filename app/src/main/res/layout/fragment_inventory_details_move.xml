@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
@@ -328,9 +327,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textSize="16dp"
                     android:checked="true"
-                    android:text="@string/move_in"/>
+                    android:text="@string/move_in"
+                    android:textSize="16dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -400,6 +399,7 @@
                     android:padding="@dimen/dimen_5dp"
                     android:prompt="@string/destination_prompt"
                     />
+
                 <Spinner
                     android:id="@+id/source_spinner"
                     android:layout_width="match_parent"
@@ -409,7 +409,6 @@
                     android:prompt="@string/destination_prompt"
                     android:visibility="gone"
                     />
-
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -627,13 +626,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
+
                 <ImageView
                     android:id="@+id/ivChooseImage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_plus"
-                    android:contentDescription="@string/client_name"/>
+                    android:contentDescription="@string/client_name"
+                    android:src="@drawable/ic_plus"/>
             </LinearLayout>
 
             <android.support.v7.widget.CardView
@@ -641,13 +641,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 >
+
                 <EditText
                     android:id="@+id/editText_addNote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#FFD740"
-                    android:padding="@dimen/dimen_16dp"
                     android:hint="@string/tap_too_add_note"
+                    android:padding="@dimen/dimen_16dp"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/dimen_16dp"/>
             </android.support.v7.widget.CardView>
@@ -666,6 +667,5 @@
 
         </LinearLayout>
     </ScrollView>
-
 
 </LinearLayout>

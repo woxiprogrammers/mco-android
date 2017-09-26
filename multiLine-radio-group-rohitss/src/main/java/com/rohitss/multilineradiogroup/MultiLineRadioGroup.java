@@ -1,7 +1,6 @@
 /*
  * Written by Tzlil Gavra
  */
-
 package com.rohitss.multilineradiogroup;
 
 import android.content.Context;
@@ -44,28 +43,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  * when the prefix omitted, "text:" inserted implicitly.
  */
 public class MultiLineRadioGroup extends RadioGroup {
-
     private static final String XML_DEFAULT_BUTTON_PREFIX_INDEX = "index:";
-
     private static final String XML_DEFAULT_BUTTON_PREFIX_TEXT = "text:";
-
     private static final int DEF_VAL_MAX_IN_ROW = 0;
-
     // for generating ids to APIs lower than 17
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
-
     // the listener for callbacks to invoke when radio button is checked
     private OnCheckedChangeListener mOnCheckedChangeListener;
-
     // holds the maximum number of radio buttons that should be in a row
     private int mMaxInRow;
-
     // all buttons are stored in table layout
     private TableLayout mTableLayout;
-
     // list to store all the buttons
     private List<RadioButton> mRadioButtons;
-
     // the checked button
     private RadioButton mCheckedButton;
 
@@ -94,10 +84,8 @@ public class MultiLineRadioGroup extends RadioGroup {
     // initializes the layout
     private void init(AttributeSet attrs) {
         mRadioButtons = new ArrayList<>();
-
         mTableLayout = getTableLayout();
         addView(mTableLayout);
-
         if (attrs != null)
             initAttrs(attrs);
     }
@@ -111,17 +99,14 @@ public class MultiLineRadioGroup extends RadioGroup {
             // gets and sets the max in row.
             setMaxInRow(typedArray.getInt(R.styleable.multi_line_radio_group_max_in_row,
                     DEF_VAL_MAX_IN_ROW));
-
             // gets and adds the starting buttons
             CharSequence[] radioButtonStrings = typedArray.getTextArray(
                     R.styleable.multi_line_radio_group_radio_buttons);
             addButtons(radioButtonStrings);
-
             // gets the default button and checks it if presents.
             String string = typedArray.getString(R.styleable.multi_line_radio_group_default_button);
             if (string != null)
                 setDefaultButton(string);
-
         } finally {
             typedArray.recycle();
         }
@@ -131,10 +116,8 @@ public class MultiLineRadioGroup extends RadioGroup {
     private void setDefaultButton(String string) {
         final int START_OF_INDEX = XML_DEFAULT_BUTTON_PREFIX_INDEX.length();
         final int START_OF_TEXT = XML_DEFAULT_BUTTON_PREFIX_TEXT.length();
-
         // the text of the button to check
         String buttonToCheck;
-
         if (string.startsWith(XML_DEFAULT_BUTTON_PREFIX_INDEX)) {
             String indexString = string.substring(START_OF_INDEX);
             int index = Integer.parseInt(indexString);
@@ -142,14 +125,11 @@ public class MultiLineRadioGroup extends RadioGroup {
                 throw new IllegalArgumentException("index must be between 0 to getRadioButtonCount() - 1 [" +
                         (getRadioButtonCount() - 1) + "]: " + index);
             buttonToCheck = mRadioButtons.get(index).getText().toString();
-
         } else if (string.startsWith(XML_DEFAULT_BUTTON_PREFIX_TEXT)) {
             buttonToCheck = string.substring(START_OF_TEXT);
-
         } else { // when there is no prefix assumes the string is the text of the button
             buttonToCheck = string;
         }
-
         check(buttonToCheck);
     }
 
@@ -287,14 +267,12 @@ public class MultiLineRadioGroup extends RadioGroup {
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         if (child instanceof RadioButton) {
             addButtons(index, ((RadioButton) child));
-
         } else {
             // if params are null sets them
             if (params == null) {
                 params = new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
-
             super.addView(child, index, params);
         }
     }
@@ -323,10 +301,8 @@ public class MultiLineRadioGroup extends RadioGroup {
         if (index < -1 || index > mRadioButtons.size())
             throw new IllegalArgumentException("index must be between -1 to getRadioButtonCount() [" +
                     getRadioButtonCount() + "]: " + index);
-
         if (radioButtons == null)
             return;
-
         // creates radio button array
         RadioButton[] buttons = new RadioButton[radioButtons.length];
         for (int i = 0; i < buttons.length; i++) {
@@ -335,7 +311,6 @@ public class MultiLineRadioGroup extends RadioGroup {
             radioButton.setId(generateId());
             buttons[i] = radioButton;
         }
-
         addButtons(index, buttons);
     }
 
@@ -344,22 +319,17 @@ public class MultiLineRadioGroup extends RadioGroup {
         // for API 17 or higher
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return View.generateViewId();
-
             // for API lower than 17
         } else {
-
             while (true) {
                 final int result = sNextGeneratedId.get();
-
                 // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
                 int newValue = result + 1;
                 if (newValue > 0x00FFFFFF)
                     newValue = 1; // Roll over to 1, not 0.
-
                 if (sNextGeneratedId.compareAndSet(result, newValue))
                     return result;
             }
-
         }
     }
 
@@ -387,18 +357,14 @@ public class MultiLineRadioGroup extends RadioGroup {
         if (index < -1 || index > mRadioButtons.size())
             throw new IllegalArgumentException("index must be between -1 to getRadioButtonCount() [" +
                     getRadioButtonCount() + "]: " + index);
-
         if (radioButtons == null)
             return;
-
         int realIndex = (index != -1) ? index : mRadioButtons.size();
-
         // inits the buttons and adds them to the list
         for (RadioButton radioButton : radioButtons) {
             initRadioButton(radioButton);
             mRadioButtons.add(realIndex++, radioButton);
         }
-
         arrangeButtons();
     }
 
@@ -408,7 +374,6 @@ public class MultiLineRadioGroup extends RadioGroup {
             @Override
             public void onClick(View v) {
                 checkButton((RadioButton) v);
-
                 if (mOnCheckedChangeListener != null)
                     mOnCheckedChangeListener.onCheckedChanged(MultiLineRadioGroup.this, mCheckedButton);
             }
@@ -471,7 +436,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     public void removeButton(RadioButton radioButton) {
         if (radioButton == null)
             return;
-
         removeButton(radioButton.getText());
     }
 
@@ -485,9 +449,7 @@ public class MultiLineRadioGroup extends RadioGroup {
     public void removeButton(CharSequence text) {
         if (text == null)
             return;
-
         int index = -1;
-
         for (int i = 0, len = mRadioButtons.size(); i < len; i++) {
             // checks if the texts are equal
             if (mRadioButtons.get(i).getText().equals(text)) {
@@ -495,7 +457,6 @@ public class MultiLineRadioGroup extends RadioGroup {
                 break;
             }
         }
-
         // removes just if the index was found
         if (index != -1)
             removeButton(index);
@@ -526,18 +487,14 @@ public class MultiLineRadioGroup extends RadioGroup {
         if (start < 0 || start >= mRadioButtons.size())
             throw new IllegalArgumentException("start index must be between 0 to getRadioButtonCount() - 1 [" +
                     (getRadioButtonCount() - 1) + "]: " + start);
-
         if (count < 0)
             throw new IllegalArgumentException("count must not be negative: " + count);
-
         if (count == 0)
             return;
-
         int endIndex = start + count - 1;
         // if endIndex is not in the range of the radio buttons sets it to the last index
         if (endIndex >= mRadioButtons.size())
             endIndex = mRadioButtons.size() - 1;
-
         // iterates over the buttons to remove
         for (int i = endIndex; i >= start; i--) {
             RadioButton radiobutton = mRadioButtons.get(i);
@@ -547,7 +504,6 @@ public class MultiLineRadioGroup extends RadioGroup {
             // removes the button from the list
             mRadioButtons.remove(i);
         }
-
         arrangeButtons();
     }
 
@@ -569,11 +525,9 @@ public class MultiLineRadioGroup extends RadioGroup {
             TableRow tableRowToInsert = (mTableLayout.getChildCount() <= rowToInsert)
                     ? addTableRow() : (TableRow) mTableLayout.getChildAt(rowToInsert);
             int tableRowChildCount = tableRowToInsert.getChildCount();
-
             // if there is already a button in the position
             if (tableRowChildCount > columnToInsert) {
                 RadioButton currentButton = (RadioButton) tableRowToInsert.getChildAt(columnToInsert);
-
                 // insert the button just if the current button is different
                 if (currentButton != radioButtonToPlace) {
                     // removes the current button
@@ -583,7 +537,6 @@ public class MultiLineRadioGroup extends RadioGroup {
                     // adds the button to the right place
                     tableRowToInsert.addView(radioButtonToPlace, columnToInsert);
                 }
-
                 // if there isn't already a button in the position
             } else {
                 // removes the button to place from its current position
@@ -592,7 +545,6 @@ public class MultiLineRadioGroup extends RadioGroup {
                 tableRowToInsert.addView(radioButtonToPlace, columnToInsert);
             }
         }
-
         removeRedundancies();
     }
 
@@ -606,34 +558,27 @@ public class MultiLineRadioGroup extends RadioGroup {
             rows = 1;
         else
             rows = (mRadioButtons.size() - 1) / mMaxInRow + 1;
-
         int tableChildCount = mTableLayout.getChildCount();
         // if there are redundant rows remove them
         if (tableChildCount > rows)
             mTableLayout.removeViews(rows, tableChildCount - rows);
-
         tableChildCount = mTableLayout.getChildCount();
         int maxInRow = (mMaxInRow != 0) ? mMaxInRow : mRadioButtons.size();
-
         // iterates over the rows
         for (int i = 0; i < tableChildCount; i++) {
             TableRow tableRow = (TableRow) mTableLayout.getChildAt(i);
             int tableRowChildCount = tableRow.getChildCount();
-
             int startIndexToRemove;
             int count;
-
             // if it is the last row removes all redundancies after the last button in the list
             if (i == tableChildCount - 1) {
                 startIndexToRemove = (mRadioButtons.size() - 1) % maxInRow + 1;
                 count = tableRowChildCount - startIndexToRemove;
-
                 // if it is not the last row removes all the buttons after maxInRow position
             } else {
                 startIndexToRemove = maxInRow;
                 count = tableRowChildCount - maxInRow;
             }
-
             if (count > 0)
                 tableRow.removeViews(startIndexToRemove, count);
         }
@@ -650,7 +595,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     private void removeButtonFromParent(RadioButton radioButton, ViewGroup parent) {
         if (radioButton == null || parent == null)
             return;
-
         parent.removeView(radioButton);
     }
 
@@ -673,7 +617,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     public RadioButton getRadioButtonAt(int index) {
         if (index < 0 || index >= mRadioButtons.size())
             return null;
-
         return mRadioButtons.get(index);
     }
 
@@ -687,7 +630,6 @@ public class MultiLineRadioGroup extends RadioGroup {
         for (RadioButton radioButton : mRadioButtons)
             if (radioButton.getText().equals(button))
                 return true;
-
         return false;
     }
 
@@ -701,7 +643,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     public void check(int id) {
         if (id <= 0)
             return;
-
         for (RadioButton radioButton : mRadioButtons) {
             if (radioButton.getId() == id) {
                 checkButton(radioButton);
@@ -721,7 +662,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     public void check(CharSequence text) {
         if (text == null)
             return;
-
         for (RadioButton radioButton : mRadioButtons) {
             if (radioButton.getText().equals(text)) {
                 checkButton(radioButton);
@@ -739,7 +679,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     public void checkAt(int index) {
         if (index < 0 || index >= mRadioButtons.size())
             return;
-
         checkButton(mRadioButtons.get(index));
     }
 
@@ -747,14 +686,11 @@ public class MultiLineRadioGroup extends RadioGroup {
     private void checkButton(RadioButton button) {
         if (button == null)
             return;
-
         // if the button to check is different from the current checked button
         if (button != mCheckedButton) {
-
             // if exists un-checks mCheckedButton
             if (mCheckedButton != null)
                 mCheckedButton.setChecked(false);
-
             button.setChecked(true);
             mCheckedButton = button;
         }
@@ -779,7 +715,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     public int getCheckedRadioButtonId() {
         if (mCheckedButton == null)
             return -1;
-
         return mCheckedButton.getId();
     }
 
@@ -792,7 +727,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     public int getCheckedRadioButtonIndex() {
         if (mCheckedButton == null)
             return -1;
-
         return mRadioButtons.indexOf(mCheckedButton);
     }
 
@@ -805,7 +739,6 @@ public class MultiLineRadioGroup extends RadioGroup {
     public CharSequence getCheckedRadioButtonText() {
         if (mCheckedButton == null)
             return null;
-
         return mCheckedButton.getText();
     }
 
@@ -817,12 +750,9 @@ public class MultiLineRadioGroup extends RadioGroup {
     @Override
     protected Parcelable onSaveInstanceState() {
         Parcelable parcelable = super.onSaveInstanceState();
-
         SavedState savedState = new SavedState(parcelable);
-
         savedState.mMaxInRow = this.mMaxInRow;
         savedState.mCheckedButtonIndex = getCheckedRadioButtonIndex();
-
         return savedState;
     }
 
@@ -834,12 +764,9 @@ public class MultiLineRadioGroup extends RadioGroup {
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
-
         if (!(state instanceof SavedState))
             return;
-
         SavedState savedState = (SavedState) state;
-
         setMaxInRow(savedState.mMaxInRow);
         checkAt(savedState.mCheckedButtonIndex);
     }
@@ -861,13 +788,11 @@ public class MultiLineRadioGroup extends RadioGroup {
      * A class definition to save and restore a state of this layout.
      */
     private static class SavedState extends BaseSavedState {
-
         /**
          * The creator of this class.
          */
         public static final Parcelable.Creator CREATOR =
                 new Creator<SavedState>() {
-
                     /**
                      * Creates SavedState instance from a specified parcel.
                      *
@@ -890,9 +815,7 @@ public class MultiLineRadioGroup extends RadioGroup {
                     public SavedState[] newArray(int size) {
                         return new SavedState[size];
                     }
-
                 };
-
         int mMaxInRow;
         int mCheckedButtonIndex;
 
@@ -912,7 +835,6 @@ public class MultiLineRadioGroup extends RadioGroup {
          */
         SavedState(Parcel in) {
             super(in);
-
             mMaxInRow = in.readInt();
             mCheckedButtonIndex = in.readInt();
         }
@@ -927,7 +849,6 @@ public class MultiLineRadioGroup extends RadioGroup {
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-
             out.writeInt(mMaxInRow);
             out.writeInt(mCheckedButtonIndex);
         }

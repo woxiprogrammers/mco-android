@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.utils.SelectorAdapter;
 import com.android.interfaces.FragmentInterface;
+import com.android.utils.SelectorAdapter;
 import com.rohitss.multilineradiogroup.MultiLineRadioGroup;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
@@ -28,7 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class PurchaseHomeActivity extends AppCompatActivity {
+public class PurchaseHomeActivity extends BaseActivity {
     @BindView(R.id.tavLayout)
     TabLayout mTabLayout_purchaseHome;
     @BindView(R.id.homeViewPager)

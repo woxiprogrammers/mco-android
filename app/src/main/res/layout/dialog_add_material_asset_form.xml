@@ -20,7 +20,7 @@
             android:textSize="@dimen/text_20sp"/>
 
         <CheckBox
-            android:id="@+id/checkbox_is_material"
+            android:id="@+id/checkbox_is_diesel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -46,9 +46,8 @@
                 android:id="@+id/editText_name_material_asset"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"
-                android:background="@android:drawable/editbox_background_normal"/>
+                android:background="@android:drawable/editbox_background_normal"
+                android:inputType="none"/>
         </LinearLayout>
 
         <LinearLayout
@@ -74,9 +73,9 @@
                     android:id="@+id/editText_quantity_material_asset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
+                    android:background="@android:drawable/editbox_background_normal"
                     android:digits="0123456789"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:inputType="number"/>
             </LinearLayout>
 
             <LinearLayout
@@ -92,12 +91,12 @@
                     android:text="Unit:"
                     android:textColor="@color/colorTextLight"
                     android:textSize="@dimen/text_14sp"/>
+
                 <FrameLayout
-                    android:id="@+id/frameLayout_UnitSpinner"
                     android:layout_width="match_parent"
-                    android:inputType="text"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background">
+                    android:background="@android:drawable/editbox_background"
+                    android:inputType="text">
 
                     <Spinner
                         android:id="@+id/spinner_select_units"
@@ -106,9 +105,11 @@
                 </FrameLayout>
             </LinearLayout>
         </LinearLayout>
+
         <include
-            layout="@layout/layout_multicapture_multicamera"
-            android:id="@+id/layoutCamera"/>
+            android:id="@+id/layoutCamera"
+            layout="@layout/layout_multi_capture_select"/>
+
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

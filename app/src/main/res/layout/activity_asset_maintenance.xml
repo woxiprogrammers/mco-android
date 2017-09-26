@@ -5,13 +5,13 @@
               android:layout_margin="@dimen/dimen_16dp"
               android:orientation="vertical">
 
-   <!-- <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginBottom="8dp"
-        android:text="@string/diesel_powered"
-        android:textSize="18sp"/>-->
+    <!-- <CheckBox
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_vertical"
+         android:layout_marginBottom="8dp"
+         android:text="@string/diesel_powered"
+         android:textSize="18sp"/>-->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -76,9 +76,9 @@
                     android:id="@+id/edit_text_expiryDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="onClickExpiryDate"
+                    android:background="@android:drawable/editbox_background_normal"
                     android:focusable="false"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:onClick="onClickExpiryDate"/>
             </LinearLayout>
 
             <LinearLayout
@@ -97,13 +97,13 @@
                     android:id="@+id/edit_text_remark"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_150dp"
-                    android:gravity="start"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:gravity="start"/>
             </LinearLayout>
 
             <include
                 android:id="@+id/layoutBillImage"
-                layout="@layout/layout_multicapture_multicamera"/>
+                layout="@layout/layout_multi_capture_select"/>
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
@@ -127,11 +127,10 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:background="@drawable/background_button_pressed"
                 android:backgroundTint="@color/colorAccent"
+                android:onClick="onClicked"
                 android:text="@string/button_request"
-                android:textColor="@color/colorWhite"
-                android:onClick="onClicked"/>
+                android:textColor="@color/colorWhite"/>
         </LinearLayout>
     </ScrollView>
-
 
 </LinearLayout>

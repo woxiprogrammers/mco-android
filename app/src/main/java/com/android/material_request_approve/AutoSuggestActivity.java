@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -40,7 +40,7 @@ import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class AutoSuggestActivity extends AppCompatActivity {
+public class AutoSuggestActivity extends BaseActivity {
     @BindView(R.id.editTextAutoSuggest)
     EditText mEditTextAutoSuggest;
     @BindView(R.id.recyclerViewSearchResultList)
@@ -49,8 +49,6 @@ public class AutoSuggestActivity extends AppCompatActivity {
     Button mButtonAddAsNewItem;
     private Context mContext;
     private String mStrSearch;
-    //    private ArrayList<AGPostOfficeName> mPostNameList;
-//    public static View.OnClickListener searchResultClickListener;
     private Realm realm;
     private RealmResults<SearchMaterialListItem> searchMaterialListItemRealmResults;
     private RealmResults<SearchAssetListItem> searchAssetListItemRealmResults;

@@ -4,15 +4,13 @@
              android:layout_height="match_parent"
              tools:context="com.android.inventory.assets.AssetsReadingsFragment">
 
-
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
+        android:layout_margin="@dimen/dimen_20dp"
         android:onClick="onViewClicked"
-        android:src="@drawable/ic_plus"
-        android:layout_margin="@dimen/dimen_20dp"/>
+        android:src="@drawable/ic_plus"/>
 
 </FrameLayout>

@@ -26,8 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:onClick="onViewClicked"
         android:drawableTop="@android:drawable/ic_menu_gallery"
         android:gravity="center_horizontal"
+        android:onClick="onViewClicked"
         android:text="Choose Images"/>
 </LinearLayout>

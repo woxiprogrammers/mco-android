@@ -108,7 +108,7 @@
             android:id="@+id/rv_existing_material_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="gone"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:visibility="gone"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -12,7 +12,11 @@ import io.realm.annotations.PrimaryKey;
 public class PurchaseMaterialListItem extends RealmObject {
     @PrimaryKey
     private int indexId;
-    private String item_name, item_quantity, item_unit, approved_status, item_category;
+    private String item_name, approved_status, item_category, item_unit_name;
+    private long item_quantity;
+    private int item_unit_id;
+    private String materialRequestComponentTypeSlug;
+    private int materialRequestComponentTypeId;
     private boolean is_diesel;
     private RealmList<MaterialImageItem> list_of_images;
 
@@ -33,22 +37,6 @@ public class PurchaseMaterialListItem extends RealmObject {
 
     public void setItem_name(String item_name) {
         this.item_name = item_name;
-    }
-
-    public String getItem_quantity() {
-        return item_quantity;
-    }
-
-    public void setItem_quantity(String item_quantity) {
-        this.item_quantity = item_quantity;
-    }
-
-    public String getItem_unit() {
-        return item_unit;
-    }
-
-    public void setItem_unit(String item_unit) {
-        this.item_unit = item_unit;
     }
 
     public String getApproved_status() {
@@ -81,5 +69,45 @@ public class PurchaseMaterialListItem extends RealmObject {
 
     public void setList_of_images(RealmList<MaterialImageItem> list_of_images) {
         this.list_of_images = list_of_images;
+    }
+
+    public long getItem_quantity() {
+        return item_quantity;
+    }
+
+    public void setItem_quantity(long item_quantity) {
+        this.item_quantity = item_quantity;
+    }
+
+    public int getItem_unit_id() {
+        return item_unit_id;
+    }
+
+    public void setItem_unit_id(int item_unit_id) {
+        this.item_unit_id = item_unit_id;
+    }
+
+    public String getMaterialRequestComponentTypeSlug() {
+        return materialRequestComponentTypeSlug;
+    }
+
+    public void setMaterialRequestComponentTypeSlug(String materialRequestComponentTypeSlug) {
+        this.materialRequestComponentTypeSlug = materialRequestComponentTypeSlug;
+    }
+
+    public int getMaterialRequestComponentTypeId() {
+        return materialRequestComponentTypeId;
+    }
+
+    public void setMaterialRequestComponentTypeId(int materialRequestComponentTypeId) {
+        this.materialRequestComponentTypeId = materialRequestComponentTypeId;
+    }
+
+    public String getItem_unit_name() {
+        return item_unit_name;
+    }
+
+    public void setItem_unit_name(String item_unit_name) {
+        this.item_unit_name = item_unit_name;
     }
 }

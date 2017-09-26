@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@drawable/selector_is_material_selected"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="@dimen/dimen_4dp">
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="8dp"
+                                    android:background="@drawable/selector_is_material_selected"
+                                    app:cardCornerRadius="8dp"
+                                    app:cardElevation="@dimen/dimen_4dp">
 
     <LinearLayout
         android:id="@+id/cardView"
@@ -35,23 +35,23 @@
                 android:id="@+id/asset_model_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/dimen_16dp"
-                android:layout_marginTop="@dimen/dimen_5dp"/>
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:textSize="@dimen/dimen_16dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dimen_10dp"
-                android:paddingBottom="@dimen/dimen_10dp"
                 android:layout_marginTop="@dimen/dimen_8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dimen_10dp"
+                android:paddingTop="@dimen/dimen_10dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:padding="@dimen/dimen_3dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_3dp">
 
                     <TextView
                         android:id="@+id/text_view_asset_units"
@@ -76,10 +76,10 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="@dimen/dimen_2dp"
                     android:layout_marginLeft="@dimen/dimen_3dp"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_2dp">
 
                     <TextView
                         android:id="@+id/textview_work_hour"
@@ -120,9 +120,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/dimen_2dp"
                         android:gravity="center_horizontal"
                         android:text="Diesel Consume"
-                        android:layout_marginTop="@dimen/dimen_2dp"
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_16dp"/>
 

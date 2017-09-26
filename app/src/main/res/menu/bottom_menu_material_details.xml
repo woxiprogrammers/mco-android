@@ -6,12 +6,12 @@
         android:id="@+id/action_move"
         android:enabled="true"
         android:title="@string/text_move"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_history"
         android:enabled="true"
         android:title="@string/text_history"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
 
 </menu>

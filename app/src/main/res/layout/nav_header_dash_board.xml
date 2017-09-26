@@ -24,10 +24,10 @@
         android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:textColor="@color/white"
         android:layout_marginLeft="@dimen/dimen_2dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/white"/>
 
     <Spinner
         android:id="@+id/project_spinner"

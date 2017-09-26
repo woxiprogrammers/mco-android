@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.models.purchase_request.AvailableUsersItem;
 import com.android.models.purchase_request.UsersWithAclResponse;
@@ -65,7 +65,7 @@ import io.realm.RealmList;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class PurchaseMaterialListActivity extends AppCompatActivity {
+public class PurchaseMaterialListActivity extends BaseActivity {
     @BindView(R.id.spinner_select_assign_to)
     Spinner mSpinnerSelectAssignTo;
     private Context mContext;
@@ -203,7 +203,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = layoutInflater.inflate(R.layout.dialog_add_material_asset_form, null);
         mTextViewTitleMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_title_material_asset);
-        mCheckboxIsMaterial = (CheckBox) dialogView.findViewById(R.id.checkbox_is_material);
+        mCheckboxIsMaterial = (CheckBox) dialogView.findViewById(R.id.checkbox_is_diesel);
         mTextViewLabelMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_label_material_asset);
         mEditTextNameMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_name_material_asset);
         mEditTextQuantityMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_quantity_material_asset);
@@ -262,8 +262,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
     private void addItemToLocalRealm() {
         final PurchaseMaterialListItem purchaseMaterialListItem = new PurchaseMaterialListItem();
         purchaseMaterialListItem.setItem_name(mEditTextNameMaterialAsset.getText().toString().trim() + "");
-        purchaseMaterialListItem.setItem_quantity(mEditTextQuantityMaterialAsset.getText().toString().trim() + "");
-//        purchaseMaterialListItem.setItem_unit(mEditTextUnitMaterialAsset.getText().toString().trim() + "");
+//        purchaseMaterialListItem.setItem_quantity(mEditTextQuantityMaterialAsset.getText().toString().trim() + "");
+//        purchaseMaterialListItem.setItem_unit_id(mEditTextUnitMaterialAsset.getText().toString().trim() + "");
         //approve status- "p-r-assigned" or "in-indent"
         //As we are adding item status will always be "p-r-assigned".
         purchaseMaterialListItem.setApproved_status(getString(R.string.tag_p_r_assigned));
@@ -555,8 +555,8 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             final ItemViewHolder itemHolder = (ItemViewHolder) holder;
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             itemHolder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
-            itemHolder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
-            itemHolder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit());
+//            itemHolder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
+            itemHolder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit_id());
         }
 
         @Override
@@ -616,7 +616,7 @@ public class PurchaseMaterialListActivity extends AppCompatActivity {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
             holder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
-            holder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit());
+            holder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit_id());
         }
 
         @Override
