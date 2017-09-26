@@ -451,16 +451,25 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
                 Bundle bundleExtras = intent.getExtras();
                 if (bundleExtras != null) {
                     boolean isNewItem = bundleExtras.getBoolean("isNewItem");
-                    String searchedMaterialName = bundleExtras.getString("searchedMaterialName");
+                    isMaterial = bundleExtras.getBoolean("isMaterial");
+                    String searchedItemName = bundleExtras.getString("searchedItemName");
                     SearchMaterialListItem searchMaterialListItem;
-                    if (isNewItem) {
-                        searchMaterialListItem = (SearchMaterialListItem) bundleExtras.getSerializable("searchMaterialListItem");
-                    } else {
-                        searchMaterialListItem = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedMaterialName).findFirst();
-                    }
-                    Timber.d("RESULT_OK searchedMaterialName: " + searchedMaterialName);
+                    SearchAssetListItem searchAssetListItem;
                     realm = Realm.getDefaultInstance();
-                    Timber.d("RESULT_OK searchMaterialListItem: " + searchMaterialListItem);
+                    if (isMaterial) {
+                        if (isNewItem) {
+                            searchMaterialListItem = (SearchMaterialListItem) bundleExtras.getSerializable("searchListItem");
+                        } else {
+                            searchMaterialListItem = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                        }
+                    } else {
+                        if (isNewItem) {
+                            searchAssetListItem = (SearchAssetListItem) bundleExtras.getSerializable("searchListItem");
+                        } else {
+                            searchAssetListItem = realm.where(SearchAssetListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                        }
+                    }
+                    Timber.d("AutoSearch complete");
                     if (realm != null) {
                         realm.close();
                     }
@@ -594,74 +603,5 @@ public class MaterialRequest_ApproveActivity extends AppCompatActivity {
             }
         }
     }
-    /////////////////////////////////////////
-    /*@SuppressWarnings("WeakerAccess")
-    protected class SectionedPurchaseMaterialRvAdapter extends StatelessSection {
-        private String title;
-        private List<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
-
-        SectionedPurchaseMaterialRvAdapter(String title, List<PurchaseMaterialListItem> list) {
-            super(new SectionParameters.Builder(R.layout.item_purchase_material_list)
-                    .headerResourceId(R.layout.section_ex1_header)
-                    .build());
-            this.title = title;
-            this.arrPurchaseMaterialListItems = list;
-        }
-
-        @Override
-        public int getContentItemsTotal() {
-            return arrPurchaseMaterialListItems.size();
-        }
-
-        @Override
-        public RecyclerView.ViewHolder getItemViewHolder(View view) {
-            return new ItemViewHolder(view);
-        }
-
-        @Override
-        public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
-            final ItemViewHolder itemHolder = (ItemViewHolder) holder;
-            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
-            itemHolder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
-            itemHolder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
-            itemHolder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit());
-        }
-
-        @Override
-        public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
-            return new HeaderViewHolder(view);
-        }
-
-        @Override
-        public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
-            HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
-            headerHolder.tvTitle.setText(title);
-        }
-
-        private class HeaderViewHolder extends RecyclerView.ViewHolder {
-            private final TextView tvTitle;
-
-            HeaderViewHolder(View view) {
-                super(view);
-                tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-            }
-        }
-
-        protected class ItemViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.textView_MaterialName_createPR)
-            TextView textViewMaterialNameCreatePR;
-            @BindView(R.id.textView_MaterialQuantity_createPR)
-            TextView textViewMaterialQuantityCreatePR;
-            @BindView(R.id.textView_MaterialUnit_createPR)
-            TextView textViewMaterialUnitCreatePR;
-            @BindView(R.id.imageButton_deleteMaterial_createPR)
-            ImageButton imageButtonDeleteMaterialCreatePR;
-
-            ItemViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
-            }
-        }
-    }*/
 }
 

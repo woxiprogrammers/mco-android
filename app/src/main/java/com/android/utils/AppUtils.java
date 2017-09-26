@@ -387,4 +387,8 @@ public class AppUtils {
         InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
+    public int getCurrentSiteId() {
+        return 5;
+    }
 }
