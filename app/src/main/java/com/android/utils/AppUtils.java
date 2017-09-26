@@ -37,6 +37,7 @@ public class AppUtils {
     public static AppUtils instance;
     public static Context mContext;
     private String strToken;
+    private String strLoggedInAt;
     private static SharedPreferences preference;
     private static SharedPreferences.Editor editor;
     private final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -386,5 +387,25 @@ public class AppUtils {
     public void hideKeyBoard(View view) {
         InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public String getLoggedInAt() {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
+                    strLoggedInAt = loginResponse.getLoggedInAt().getDate();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return strLoggedInAt;
     }
 }
