@@ -193,7 +193,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             Timber.d("Exception occurred: " + e.getMessage());
         }
         Timber.d(String.valueOf(params));
-        submitPurchaseRequest(params);
+        if (purchaseMaterialListItems.size() > 0) {
+            submitPurchaseRequest(params);
+        } else {
+            Toast.makeText(mContext, "Please some items to the list", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void createAlertDialog() {
