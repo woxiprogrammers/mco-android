@@ -108,7 +108,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_material_request__approve);
+        setContentView(R.layout.activity_material_request_approve);
         ButterKnife.bind(this);
         mContext = MaterialRequest_ApproveActivity.this;
         setUpPrAdapter();
@@ -175,14 +175,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     public void onSubmitClicked() {
         realm = Realm.getDefaultInstance();
         ArrayList<PurchaseMaterialListItem> purchaseMaterialListItems = new ArrayList<PurchaseMaterialListItem>();
-        List<PurchaseMaterialListItem> purchaseMaterialListItems_Approved = realm.copyFromRealm(materialListRealmResults_Pending);
-//        List<PurchaseMaterialListItem> purchaseMaterialListItems_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
-//        Collections.copy(purchaseMaterialListItems, purchaseMaterialListItems_Approved);
-//        Collections.copy(purchaseMaterialListItems, purchaseMaterialListItems_Current);
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId = availableUserArray.get(index).getId();
-//        String userName = availableUserArray.get(index).getUserName();
         try {
             params.put("item_list", purchaseMaterialListItems);
             params.put("is_material_request", true);
