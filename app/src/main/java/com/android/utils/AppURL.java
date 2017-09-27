@@ -11,7 +11,7 @@ public class AppURL { //http://www.mocky.io/v2/59a67e10100000e30408fc23
     private static final String BASE_URL = BuildConfig.BASE_URL;
     public static final String API_PURCHASE_REQUEST_LIST = BASE_URL + "purchase/purchase-request/listing?token=";
     public static final String API_USER_LOGIN = BASE_URL + "login";
-    public static final String API_USER_DASHBOARD=BASE_URL + "dashboard?token=";
+    public static final String API_USER_DASHBOARD = BASE_URL + "dashboard?token=";
     //    public static final String API_USER_LOGIN = "http://www.mocky.io/v2/599c5b5729000020012110ad";
     public static final String API_PURCHASE_ORDER_LIST = "http://www.mocky.io/v2/59a6a7e4100000cd0508fcfe";
     public static final String API_PURCHASE_BILL_LIST = "http://www.mocky.io/v2/59c23f1712000068009c0a47";
@@ -20,7 +20,8 @@ public class AppURL { //http://www.mocky.io/v2/59a67e10100000e30408fc23
     public static final String API_ASSETS_DATA_URL = BASE_URL + "inventory/asset/listing?token=";
     public static final String API_PURCHASE_REQUEST_SUBMIT = "";
     public static final String API_ASSET_SUMMARY_LIST_URL = BASE_URL + "inventory/asset/summary-listing?token=";
-    public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = "http://www.mocky.io/v2/59bb7e190f00009101ff85bb";
+    //    public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = "http://www.mocky.io/v2/59bb7e190f00009101ff85bb";
+    public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = BASE_URL + "users/purchase/purchase-request/approval-acl?token=";
     //Purchase Details
     ///purchase/material-request/create?token=
     public static final String API_PURCHASE_SUMMARY = "http://www.mocky.io/v2/59b905003a0000d300f7f877";

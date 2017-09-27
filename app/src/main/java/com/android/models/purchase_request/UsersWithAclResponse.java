@@ -1,5 +1,6 @@
 package com.android.models.purchase_request;
 
+import com.android.purchase_request.PurchaseMaterialListItem;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -11,6 +12,8 @@ public class UsersWithAclResponse extends RealmObject {
     int id = 0;
     @SerializedName("available_users")
     private RealmList<AvailableUsersItem> availableUsers;
+    @SerializedName("material_list")
+    private RealmList<PurchaseMaterialListItem> materialList;
     @SerializedName("message")
     private String message;
 
@@ -28,5 +31,13 @@ public class UsersWithAclResponse extends RealmObject {
 
     public String getMessage() {
         return message;
+    }
+
+    public RealmList<PurchaseMaterialListItem> getMaterialList() {
+        return materialList;
+    }
+
+    public void setMaterialList(RealmList<PurchaseMaterialListItem> materialList) {
+        this.materialList = materialList;
     }
 }

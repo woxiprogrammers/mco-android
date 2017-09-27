@@ -12,10 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.purchase_request.PurchaseBillListFragment;
-import com.android.constro360.BaseActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 
@@ -26,13 +26,11 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class PayAndBillsActivity extends BaseActivity {
-
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.bottom_navigationPay)
     BottomNavigationView bottomNavigationPay;
     MenuItem prevMenuItem;
-
     public static boolean isForViewOnly;
     public static int idForBillItem;
 
@@ -64,28 +62,23 @@ public class PayAndBillsActivity extends BaseActivity {
         String titlePoName = null;
         if (intent != null) {
             titlePoName = intent.getStringExtra("PONumber");
-
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(titlePoName);
         }
         callMaterialFragment();
-
         bottomNavigationPay.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 switch (item.getItemId()) {
                     case R.id.action_pay:
                         viewPager.setCurrentItem(0);
-                        isForViewOnly=false;
+                        isForViewOnly = false;
                         break;
                     case R.id.action_bills:
                         viewPager.setCurrentItem(1);
                         break;
-
                 }
                 return false;
             }
@@ -95,11 +88,9 @@ public class PayAndBillsActivity extends BaseActivity {
     private void callMaterialFragment() {
         final PurchaseViewPagerAdapter purchaseViewPagerAdapter = new PurchaseViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(purchaseViewPagerAdapter);
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -113,18 +104,14 @@ public class PayAndBillsActivity extends BaseActivity {
                 } else {
                     bottomNavigationPay.getMenu().getItem(0).setChecked(false);
                 }
-
                 bottomNavigationPay.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = bottomNavigationPay.getMenu().getItem(position);
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
-
     }
 
     private class PurchaseViewPagerAdapter extends FragmentPagerAdapter {
@@ -178,5 +165,4 @@ public class PayAndBillsActivity extends BaseActivity {
             viewPager.setCurrentItem(0);
         }
     }
-
 }
