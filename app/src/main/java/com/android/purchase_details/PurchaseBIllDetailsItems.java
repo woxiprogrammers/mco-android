@@ -10,7 +10,7 @@ public class PurchaseBIllDetailsItems extends RealmObject {
 
     private int id;
     private String materialName;
-    private int quantity;
+    private float quantity;
     private String unit;
     private  String challanNumber;
     private String vehicleNumber;
@@ -38,11 +38,11 @@ public class PurchaseBIllDetailsItems extends RealmObject {
         this.materialName = materialName;
     }
 
-    public int getQuantity() {
+    public float getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
 

@@ -13,7 +13,7 @@ public class PurchaseMaterialListItem extends RealmObject {
     @PrimaryKey
     private int indexId;
     private String name, approved_status, item_category, item_unit_name;
-    private long quantity;
+    private float quantity;
     private int unit_id;
     private String materialRequestComponentTypeSlug;
     private int component_type_id;
@@ -71,11 +71,11 @@ public class PurchaseMaterialListItem extends RealmObject {
         this.list_of_images = list_of_images;
     }
 
-    public long getItem_quantity() {
+    public float getItem_quantity() {
         return quantity;
     }
 
-    public void setItem_quantity(long item_quantity) {
+    public void setItem_quantity(float item_quantity) {
         this.quantity = item_quantity;
     }
 

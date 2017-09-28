@@ -282,7 +282,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         alertDialog = alertDialogBuilder.create();
     }
 
-    private void addMaterialToLocalRealm(String strItemName, long longItemQuantity, int unitId, String strUnitName) {
+    private void addMaterialToLocalRealm(String strItemName, float longItemQuantity, int unitId, String strUnitName) {
         final PurchaseMaterialListItem purchaseMaterialListItem = new PurchaseMaterialListItem();
         purchaseMaterialListItem.setItem_name(strItemName);
         purchaseMaterialListItem.setItem_quantity(longItemQuantity);
@@ -738,15 +738,16 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             mEditTextQuantityMaterialAsset.setError(null);
             mEditTextQuantityMaterialAsset.clearFocus();
         }
-        long doubleItemQuantity = Long.parseLong(strQuantity);
+        float floatItemQuantity = Long.parseLong(strQuantity);
         String strUnitName = null;
         int unitId = 0;
         if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
-            double doubleItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
+            float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
-            if (doubleItemQuantity > doubleItemMaxQuantity) {
+            int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
+            if (floatComparison > 0) {
                 Toast.makeText(mContext, "Quantity is greater than allowed max quantity", Toast.LENGTH_SHORT).show();
                 mEditTextQuantityMaterialAsset.setError("Decrease quantity");
                 mEditTextQuantityMaterialAsset.requestFocus();
@@ -754,9 +755,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             }
         }
         if (isMaterial) {
-            addMaterialToLocalRealm(strItemName, doubleItemQuantity, unitId, strUnitName);
+            addMaterialToLocalRealm(strItemName, floatItemQuantity, unitId, strUnitName);
         } else {
-            addMaterialToLocalRealm(strItemName, doubleItemQuantity, 0, "");
+            addMaterialToLocalRealm(strItemName, floatItemQuantity, 0, "");
         }
         alertDialog.dismiss();
     }

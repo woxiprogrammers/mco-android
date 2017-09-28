@@ -8,7 +8,7 @@ public class UnitQuantityItem extends RealmObject {
     @SerializedName("unit_name")
     private String unitName;
     @SerializedName("quantity")
-    private long quantity;
+    private float quantity;
     @SerializedName("unit_id")
     private int unitId;
 
@@ -20,11 +20,11 @@ public class UnitQuantityItem extends RealmObject {
         return unitName;
     }
 
-    public void setQuantity(long quantity) {
+    public void setQuantity(float quantity) {
         this.quantity = quantity;
     }
 
-    public long getQuantity() {
+    public float getQuantity() {
         return quantity;
     }
 
