@@ -98,7 +98,20 @@
                     android:background="@drawable/ic_disapprove"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/linearLayoutpproveDisapprove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
+                <Button
+                    android:id="@+id/button_move_to_indent"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:text="Move To Indent"
+                    style="@style/style_button_18"/>
+                </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

@@ -107,4 +107,6 @@
     <string name="tag_pending">pending</string>
     <string name="add_as_new_item">Add %s as new item</string>
     <string name="tag_new">new</string>
+    <string name="create_material_request">create-material-request</string>
+    <string name="approve_material_request">approve-material-request</string>
 </resources>

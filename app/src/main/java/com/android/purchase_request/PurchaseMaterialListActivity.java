@@ -631,17 +631,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestUsersWithApproveAcl")
                 .build()
-                /*.getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
-                    }
-                });*/
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
                     @Override
                     public void onResponse(final UsersWithAclResponse response) {
