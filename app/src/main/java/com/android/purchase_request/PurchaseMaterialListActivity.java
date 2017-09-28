@@ -105,7 +105,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private TextView mTextViewPickImages;
     private Button mButtonDismissMaterialAsset;
     private Button mButtonAddMaterialAsset;
-    private SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter;
     private File currentImageFile;
     private Spinner mSpinnerUnits;
     private LinearLayout ll_dialog_unit;
@@ -120,7 +119,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         mContext = PurchaseMaterialListActivity.this;
         requestUsersWithApproveAcl();
         setUpUsersSpinnerValueChangeListener();
-        setUpPrAdapter();
+        setUpCurrentMaterialListAdapter();
         createAlertDialog();
     }
 
@@ -446,7 +445,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         }
     }
 
-    private void setUpPrAdapter() {
+    private void setUpCurrentMaterialListAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
@@ -454,7 +453,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_p_r_assigned)).findAll();
         List<PurchaseMaterialListItem> purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
 //        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResult_inIndent, true, true);
-        sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
+        SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
         sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Approved Items", purchaseMaterialList_inIndent));
@@ -655,7 +654,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private void requestUsersWithApproveAcl() {
         AndroidNetworking.post(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
-                .addBodyParameter("component_status_slug", "")
+                .addBodyParameter("can_access", getString(R.string.approve_material_request))
+                .addBodyParameter("component_status_slug", "pending")
                 .setTag("requestUsersWithApproveAcl")
                 .build()
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {

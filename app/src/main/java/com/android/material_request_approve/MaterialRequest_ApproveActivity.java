@@ -132,7 +132,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     isForApproval = false;
                     mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
-                    setUpPrAdapter();
+                    setUpCurrentMaterialListAdapter();
                     requestUsersWithApproveAcl();
                     setUpUsersSpinnerValueChangeListener();
                     createAlertDialog();
@@ -455,7 +455,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
     }
 
-    private void setUpPrAdapter() {
+    private void setUpCurrentMaterialListAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         materialListRealmResults_New = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_new)).findAll();
