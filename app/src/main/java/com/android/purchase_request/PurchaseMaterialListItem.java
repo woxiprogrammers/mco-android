@@ -12,11 +12,11 @@ import io.realm.annotations.PrimaryKey;
 public class PurchaseMaterialListItem extends RealmObject {
     @PrimaryKey
     private int indexId;
-    private String item_name, approved_status, item_category, item_unit_name;
-    private long item_quantity;
-    private int item_unit_id;
+    private String name, approved_status, item_category, item_unit_name;
+    private long quantity;
+    private int unit_id;
     private String materialRequestComponentTypeSlug;
-    private int materialRequestComponentTypeId;
+    private int component_type_id;
     private boolean is_diesel;
     private RealmList<MaterialImageItem> list_of_images;
 
@@ -32,11 +32,11 @@ public class PurchaseMaterialListItem extends RealmObject {
     }
 
     public String getItem_name() {
-        return item_name;
+        return name;
     }
 
     public void setItem_name(String item_name) {
-        this.item_name = item_name;
+        this.name = item_name;
     }
 
     public String getApproved_status() {
@@ -72,19 +72,19 @@ public class PurchaseMaterialListItem extends RealmObject {
     }
 
     public long getItem_quantity() {
-        return item_quantity;
+        return quantity;
     }
 
     public void setItem_quantity(long item_quantity) {
-        this.item_quantity = item_quantity;
+        this.quantity = item_quantity;
     }
 
     public int getItem_unit_id() {
-        return item_unit_id;
+        return unit_id;
     }
 
     public void setItem_unit_id(int item_unit_id) {
-        this.item_unit_id = item_unit_id;
+        this.unit_id = item_unit_id;
     }
 
     public String getMaterialRequestComponentTypeSlug() {
@@ -96,11 +96,11 @@ public class PurchaseMaterialListItem extends RealmObject {
     }
 
     public int getMaterialRequestComponentTypeId() {
-        return materialRequestComponentTypeId;
+        return component_type_id;
     }
 
     public void setMaterialRequestComponentTypeId(int materialRequestComponentTypeId) {
-        this.materialRequestComponentTypeId = materialRequestComponentTypeId;
+        this.component_type_id = materialRequestComponentTypeId;
     }
 
     public String getItem_unit_name() {

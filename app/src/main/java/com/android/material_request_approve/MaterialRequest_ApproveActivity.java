@@ -13,6 +13,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +49,7 @@ import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,6 +75,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     Spinner mSpinnerSelectAssignTo;
     @BindView(R.id.rv_existing_material_list_material_request_approve)
     RecyclerView mRvExistingMaterialListMaterialRequestApprove;
+    @BindView(R.id.linerLayoutItemForMaterialRequest)
+    LinearLayout linerLayoutItemForMaterialRequest;
     private Context mContext;
     @BindView(R.id.textView_purchaseMaterialList_appBarTitle)
     TextView textViewPurchaseMaterialListAppBarTitle;
@@ -85,6 +89,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     @BindView(R.id.button_submit_purchase_request)
     Button buttonSubmitPurchaseRequest;
     private Realm realm;
+    private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending;
     private List<AvailableUsersItem> availableUserArray;
     private AlertDialog alertDialog;
@@ -112,6 +117,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         ButterKnife.bind(this);
         mContext = MaterialRequest_ApproveActivity.this;
         setUpPrAdapter();
+        setUpApprovedStatusAdapter();
         createAlertDialog();
         requestUsersWithApproveAcl();
         setUpUsersSpinnerValueChangeListener();
@@ -174,21 +180,36 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     @OnClick(R.id.button_submit_purchase_request)
     public void onSubmitClicked() {
         realm = Realm.getDefaultInstance();
-        ArrayList<PurchaseMaterialListItem> purchaseMaterialListItems = new ArrayList<PurchaseMaterialListItem>();
+        List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(materialListRealmResults_New);
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId = availableUserArray.get(index).getId();
+        JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
+        JSONObject currentJonObject;
+        for (int i = 0; i < purchaseMaterialListItems_New.size(); i++) {
+            PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(i);
+            currentJonObject = new JSONObject();
+            try {
+                currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
+                currentJonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
+                currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
+                currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+                jsonArrayPurchaseMaterialListItems.put(currentJonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.i("@@Array", String.valueOf(jsonArrayPurchaseMaterialListItems));
         try {
-            params.put("item_list", purchaseMaterialListItems);
+            params.put("item_list", jsonArrayPurchaseMaterialListItems);
             params.put("is_material_request", true);
-            params.put("project_site_id", 5);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("assigned_to", userId);
-            params.put("item_list", null);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
         Timber.d(String.valueOf(params));
-        if (purchaseMaterialListItems.size() > 0) {
+        if (purchaseMaterialListItems_New.size() > 0) {
             submitPurchaseRequest(params);
         } else {
             Toast.makeText(mContext, "Please some items to the list", Toast.LENGTH_SHORT).show();
@@ -267,7 +288,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         purchaseMaterialListItem.setItem_name(strItemName);
         purchaseMaterialListItem.setItem_quantity(longItemQuantity);
         //approve status- "pending"
-        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_pending));
+        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_new));
         if (isMaterial) {
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setItem_unit_name(strUnitName);
@@ -412,12 +433,45 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_pending)).findAll();
-        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(materialListRealmResults_Pending, true, true);
+        materialListRealmResults_New = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_new)).findAll();
+        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(materialListRealmResults_New, true, true);
         mRvMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
         mRvMaterialListMaterialRequestApprove.addOnItemTouchListener(new RecyclerItemClickListener(mContext, mRvMaterialListMaterialRequestApprove,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        PurchaseMaterialListItem purchaseMaterialListItem_New = materialListRealmResults_New.get(position);
+                        Timber.d(String.valueOf(purchaseMaterialListItem_New));
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+        if (materialListRealmResults_New != null) {
+            Timber.d("materialListRealmResults_New change listener added.");
+            materialListRealmResults_New.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
+                @Override
+                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
+                    Timber.d("Size of purchaseRequestListItems: " + String.valueOf(purchaseRequestListItems.size()));
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
+        }
+    }
+
+    private void setUpApprovedStatusAdapter() {
+        realm = Realm.getDefaultInstance();
+        Timber.d("Adapter setup called");
+        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_pending)).findAll();
+        PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true);
+        mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
+        mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
+        mRvExistingMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
+        mRvExistingMaterialListMaterialRequestApprove.addOnItemTouchListener(new RecyclerItemClickListener(mContext, mRvMaterialListMaterialRequestApprove,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
@@ -430,7 +484,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     }
                 }));
         if (materialListRealmResults_Pending != null) {
-            Timber.d("materialListRealmResults_Pending change listener added.");
+            Timber.d("materialListRealmResults_New change listener added.");
             materialListRealmResults_Pending.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
@@ -555,7 +609,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void submitPurchaseRequest(JSONObject params) {
+        Log.i("@@Params", String.valueOf(params));
         String strToken = AppUtils.getInstance().getCurrentToken();
+        Log.i("@@Url", AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken);
         AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
@@ -565,7 +621,35 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
+                        realm = Realm.getDefaultInstance();
+                        final List<PurchaseMaterialListItem> materialListItems = realm.copyFromRealm(materialListRealmResults_New);
+                        for (int i = 0; i < materialListRealmResults_New.size(); i++) {
+                            materialListItems.get(i).setApproved_status(getString(R.string.tag_pending));
+                        }
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(materialListItems);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                                    mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+                                    Timber.d("Realm Execution Successful");
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
                     }
 
                     @Override
@@ -658,7 +742,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         long doubleItemQuantity = Long.parseLong(strQuantity);
         String strUnitName = null;
         int unitId = 0;
-        if (isMaterial) {
+       /* if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             double doubleItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
@@ -669,7 +753,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 mEditTextQuantityMaterialAsset.requestFocus();
                 return;
             }
-        }
+        }*/
+        int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+        double doubleItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
+        unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
+        strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
         if (isMaterial) {
             addMaterialToLocalRealm(strItemName, doubleItemQuantity, unitId, strUnitName);
         } else {
@@ -718,6 +806,67 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+            }
+        }
+    }
+
+    protected class PurchaseStatsRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseStatsRvAdapter.MyViewHolder> {
+        private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
+
+        public PurchaseStatsRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            arrPurchaseMaterialListItems = data;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_request_material, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
+            holder.textViewItemStatus.setText(purchaseMaterialListItem.getApproved_status());
+            holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return arrPurchaseMaterialListItems.get(index).getIndexId();
+        }
+
+        @Override
+        public int getItemCount() {
+            return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            @BindView(R.id.textviewItemName)
+            TextView textViewItemName;
+            @BindView(R.id.textviewItemUnits)
+            TextView textViewItemUnits;
+            @BindView(R.id.textviewItemStatus)
+            TextView textViewItemStatus;
+            @BindView(R.id.iv_approve)
+            ImageView imageViewApproveMaterial;
+            @BindView(R.id.iv_disapprove)
+            ImageView imageViewDisapproveMaterial;
+
+            public MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+                imageViewApproveMaterial.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.iv_approve:
+                        Toast.makeText(mContext, "Approve", Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
         }
     }

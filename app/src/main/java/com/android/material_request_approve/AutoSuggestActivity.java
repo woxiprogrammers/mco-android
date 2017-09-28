@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -137,6 +138,7 @@ public class AutoSuggestActivity extends BaseActivity {
                 @Override
                 public void onResponse(final MaterialSearchResponse response) {
                     searchMaterialListItem = response.getMaterialSearchResponseData().getMaterialList().get(0);
+                    Log.i("@@searchMateri ", String.valueOf(searchMaterialListItem));
                     if (searchMaterialListItem.getMaterialRequestComponentTypeSlug().contains("new")) {
                         setUpAddNewButton(true);
                     } else {
