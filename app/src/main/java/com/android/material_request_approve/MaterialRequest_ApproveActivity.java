@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.models.login_acl.PermissionsItem;
 import com.android.models.purchase_request.AvailableUsersItem;
 import com.android.models.purchase_request.UsersWithAclResponse;
 import com.android.purchase_request.MaterialImageItem;
@@ -43,6 +44,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.google.gson.Gson;
 import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
@@ -109,6 +111,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private LinearLayout ll_dialog_unit;
     private SearchMaterialListItem searchMaterialListItem_fromResult = null;
     private SearchAssetListItem searchAssetListItem_fromResult = null;
+    private boolean isForApproval;
+    private String strToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,11 +120,31 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         setContentView(R.layout.activity_material_request_approve);
         ButterKnife.bind(this);
         mContext = MaterialRequest_ApproveActivity.this;
-        setUpPrAdapter();
+        strToken = AppUtils.getInstance().getCurrentToken();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            bundle.getString("subModuleTag");
+            String permissionsItemList = bundle.getString("permissionsItemList");
+            PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
+            for (PermissionsItem permissionsItem : permissionsItems) {
+                String accessPermission = permissionsItem.getCanAccess();
+                if (accessPermission.equalsIgnoreCase(getString(R.string.create_material_request))) {
+                    isForApproval = false;
+                    mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+                    linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                    setUpPrAdapter();
+                    requestUsersWithApproveAcl();
+                    setUpUsersSpinnerValueChangeListener();
+                    createAlertDialog();
+                } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
+                    isForApproval = true;
+                    mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+                    linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                    requestUsersWithApproveAcl();
+                }
+            }
+        }
         setUpApprovedStatusAdapter();
-        createAlertDialog();
-        requestUsersWithApproveAcl();
-        setUpUsersSpinnerValueChangeListener();
     }
 
     private void setUpUsersSpinnerValueChangeListener() {
@@ -155,6 +179,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
     public void onAddClicked() {
+        linerLayoutItemForMaterialRequest.setVisibility(View.VISIBLE);
+        mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.GONE);
         PopupMenu popup = new PopupMenu(mContext, textViewPurchaseMaterialListAddNew);
         popup.getMenuInflater().inflate(R.menu.options_menu_create_purchase_request, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -465,8 +491,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpApprovedStatusAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_pending)).findAll();
-        PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true);
+        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
+        PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true, isForApproval);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvExistingMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
@@ -608,9 +634,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void submitPurchaseRequest(JSONObject params) {
-        Log.i("@@Params", String.valueOf(params));
-        String strToken = AppUtils.getInstance().getCurrentToken();
-        Log.i("@@Url", AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken);
         AndroidNetworking.post(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
@@ -680,8 +703,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void requestUsersWithApproveAcl() {
-        AndroidNetworking.get(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
+                .addBodyParameter("can_access", getString(R.string.approve_material_request))
+                .addBodyParameter("component_status_slug", "pending")
                 .setTag("requestUsersWithApproveAcl")
                 .build()
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
@@ -808,11 +833,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseStatsRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseStatsRvAdapter.MyViewHolder> {
+        private boolean isApproval;
         private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
 
-        public PurchaseStatsRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        public PurchaseStatsRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification, boolean isForApproval) {
             super(data, autoUpdate, updateOnModification);
             arrPurchaseMaterialListItems = data;
+            isApproval = isForApproval;
         }
 
         @Override
@@ -850,22 +877,74 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             ImageView imageViewApproveMaterial;
             @BindView(R.id.iv_disapprove)
             ImageView imageViewDisapproveMaterial;
+            @BindView(R.id.linearLayoutApproveDisapprove)
+            LinearLayout linearLayoutApproveDisapprove;
+            @BindView(R.id.button_move_to_indent)
+            Button buttonMoveToIndent;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
-                imageViewApproveMaterial.setOnClickListener(this);
+                if (isApproval) {
+                    imageViewApproveMaterial.setOnClickListener(this);
+                    linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                } else {
+                    linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.iv_approve:
-                        Toast.makeText(mContext, "Approve", Toast.LENGTH_SHORT).show();
+                        approveMaterial(3, getAdapterPosition(), arrPurchaseMaterialListItems);
+                        linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                        buttonMoveToIndent.setVisibility(View.VISIBLE);
+                        break;
+                    case R.id.iv_disapprove:
+                        approveMaterial(4, getAdapterPosition(), arrPurchaseMaterialListItems);
+                        linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                         break;
                 }
             }
         }
+    }
+
+    private void approveMaterial(int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems) {
+        List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
+        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
+        int componentId = purchaseMaterialListItem.getMaterialRequestComponentTypeId();
+        JSONObject params = new JSONObject();
+        Log.i("@@Params", String.valueOf(params));
+        try {
+            params.put("material_request_component_id", componentId);
+            params.put("change_component_status_id_to", statusId);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHANGE_STATUS_MATERIAL + strToken)
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("submitPurchaseRequest")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String message = response.getString("message");
+                            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
+                    }
+                });
     }
 }
 

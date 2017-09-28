@@ -30,4 +30,5 @@ public class AppURL {
     public static final String API_SUBMIT_MATERIAL_REQUEST = BASE_URL + "purchase/material-request/create?token=";
     public static final String API_PURCHASE_MATERIAL_UNITS_IMAGES_URL = "http://www.mocky.io/v2/59bf69611100004100fa0151";
     public static final String API_AUTO_SUGGEST_COMMON = BASE_URL + "auto-suggest";
+    public static final String API_CHANGE_STATUS_MATERIAL=BASE_URL + "purchase/material-request/change-status?token=";
 }
