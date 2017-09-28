@@ -1,83 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.CardView
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    android:background="#ffffff"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="@dimen/dimen_4dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#aaeeeeee"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/textview_Date"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_16dp"
             android:layout_marginTop="@dimen/dimen_4dp"
+            android:layout_weight="0.5"
             android:text="30 July"/>
 
-        <android.support.v7.widget.CardView
+        <TextView
+            android:id="@+id/textviewItemStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="Approved"
+            android:layout_weight="0.5"
+            android:textColor="#ff0000"
+            android:textSize="@dimen/dimen_14dp"/>
+        </LinearLayout>
+
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="#ffffff"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="@dimen/dimen_4dp">
+            android:paddingBottom="8dp"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/textviewItemName"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingTop="8dp">
+                    android:drawableTint="@color/colorTextLight"
+                    android:text="Wooden Ply Shaded Door"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_16dp"/>
 
-                    <TextView
-                        android:id="@+id/textviewItemName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableTint="@color/colorTextLight"
-                        android:text="Wooden Ply Shaded Door"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_16dp"/>
+                <TextView
+                    android:id="@+id/textviewItemUnits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="357 units"
+                    android:layout_marginTop="@dimen/dimen_5dp"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_14dp"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textviewItemUnits"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="357 units"
-                            android:textColor="@color/colorTextLight"
-                            android:textSize="@dimen/dimen_14dp"/>
-
-                        <TextView
-                            android:id="@+id/textviewItemStatus"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="right"
-                            android:text="Approved"
-                            android:textColor="#ff0000"
-                            android:textSize="@dimen/dimen_14dp"/>
-                    </LinearLayout>
-
-                </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/iv_approve"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_approve"/>
+
+                <ImageView
+                    android:id="@+id/iv_disapprove"
+                    android:layout_width="@dimen/dimen_50dp"
+                    android:layout_height="@dimen/dimen_50dp"
+                    android:background="@drawable/ic_disapprove"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp">
+
+
+        </LinearLayout>
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+</android.support.v7.widget.CardView>
