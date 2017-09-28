@@ -2,6 +2,7 @@ package com.android.material_request_approve;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -855,7 +856,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
+        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
             @BindView(R.id.textviewItemName)
@@ -867,9 +868,25 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             @BindView(R.id.textviewItemStatus)
             TextView textViewItemStatus;
 
+            @BindView(R.id.iv_approve)
+            ImageView imageViewApproveMaterial;
+
+            @BindView(R.id.iv_disapprove)
+            ImageView imageViewDisapproveMaterial;
+
             public MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+                imageViewApproveMaterial.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()){
+                    case R.id.iv_approve:
+                        Toast.makeText(mContext,"Approve",Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
         }
     }
