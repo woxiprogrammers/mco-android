@@ -53,6 +53,7 @@ import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -180,7 +181,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     @OnClick(R.id.button_submit_purchase_request)
     public void onSubmitClicked() {
         realm = Realm.getDefaultInstance();
-        ArrayList<PurchaseMaterialListItem> purchaseMaterialListItems = new ArrayList<PurchaseMaterialListItem>();
         List<PurchaseMaterialListItem> purchaseMaterialListItems_Approved = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
         List<PurchaseMaterialListItem> purchaseMaterialListItems_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
 //        Collections.copy(purchaseMaterialListItems, purchaseMaterialListItems_Approved);
@@ -188,17 +188,43 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId = availableUserArray.get(index).getId();
+        JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
+        JSONObject currentJonObject;
+        for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Approved) {
+            currentJonObject = new JSONObject();
+            try {
+                currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
+                currentJonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
+                currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
+                currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+                jsonArrayPurchaseMaterialListItems.put(currentJonObject);
+            } catch (JSONException e) {
+                Timber.d("Exception occurred: " + e.getMessage());
+            }
+        }
+        for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Current) {
+            currentJonObject = new JSONObject();
+            try {
+                currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
+                currentJonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
+                currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
+                currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+                jsonArrayPurchaseMaterialListItems.put(currentJonObject);
+            } catch (JSONException e) {
+                Timber.d("Exception occurred: " + e.getMessage());
+            }
+        }
         try {
-            params.put("item_list", purchaseMaterialListItems);
+            params.put("item_list", jsonArrayPurchaseMaterialListItems);
             params.put("is_material_request", true);
-            params.put("project_site_id", 5);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("assigned_to", userId);
             params.put("item_list", null);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
         Timber.d(String.valueOf(params));
-        if (purchaseMaterialListItems.size() > 0) {
+        if (jsonArrayPurchaseMaterialListItems.length() > 0) {
             submitPurchaseRequest(params);
         } else {
             Toast.makeText(mContext, "Please some items to the list", Toast.LENGTH_SHORT).show();
@@ -586,7 +612,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 
     private void submitPurchaseRequest(JSONObject params) {
         String strToken = AppUtils.getInstance().getCurrentToken();
-        AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
+        AndroidNetworking.post(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -595,7 +621,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
+                        finish();
                     }
 
                     @Override
@@ -607,7 +633,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 
     private void uploadMultipart() {
         String strToken = AppUtils.getInstance().getCurrentToken();
-        AndroidNetworking.upload(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
+        AndroidNetworking.upload(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
                 .addMultipartFile("image_file", currentImageFile)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -631,17 +657,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestUsersWithApproveAcl")
                 .build()
-                /*.getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
-                    }
-                });*/
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
                     @Override
                     public void onResponse(final UsersWithAclResponse response) {

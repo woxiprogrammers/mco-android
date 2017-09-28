@@ -7,7 +7,8 @@ import com.android.constro360.BuildConfig;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class AppURL { //http://www.mocky.io/v2/59a67e10100000e30408fc23
+public class AppURL {
+    //http://www.mocky.io/v2/59a67e10100000e30408fc23
     private static final String BASE_URL = BuildConfig.BASE_URL;
     public static final String API_PURCHASE_REQUEST_LIST = BASE_URL + "purchase/purchase-request/listing?token=";
     public static final String API_USER_LOGIN = BASE_URL + "login";
@@ -26,7 +27,7 @@ public class AppURL { //http://www.mocky.io/v2/59a67e10100000e30408fc23
     ///purchase/material-request/create?token=
     public static final String API_PURCHASE_SUMMARY = "http://www.mocky.io/v2/59b905003a0000d300f7f877";
     public static final String API_PURCHASE_ORDER = "http://www.mocky.io/v2/59ba5d100f000094016227ea";
-    public static final String API_SUBMIT_PURCHASE_REQUEST = BASE_URL + "purchase/material-request/create?token=";
+    public static final String API_SUBMIT_MATERIAL_REQUEST = BASE_URL + "purchase/material-request/create?token=";
     public static final String API_PURCHASE_MATERIAL_UNITS_IMAGES_URL = "http://www.mocky.io/v2/59bf69611100004100fa0151";
     public static final String API_AUTO_SUGGEST_COMMON = BASE_URL + "auto-suggest";
 }

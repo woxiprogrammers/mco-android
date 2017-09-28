@@ -186,8 +186,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         int userId = availableUserArray.get(index).getId();
         JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
         JSONObject currentJonObject;
-        for (int i = 0; i < purchaseMaterialListItems_New.size(); i++) {
-            PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(i);
+        for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_New) {
             currentJonObject = new JSONObject();
             try {
                 currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
@@ -196,10 +195,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
                 jsonArrayPurchaseMaterialListItems.put(currentJonObject);
             } catch (JSONException e) {
-                e.printStackTrace();
+                Timber.d("Exception occurred: " + e.getMessage());
             }
         }
-        Log.i("@@Array", String.valueOf(jsonArrayPurchaseMaterialListItems));
         try {
             params.put("item_list", jsonArrayPurchaseMaterialListItems);
             params.put("is_material_request", true);
@@ -279,7 +277,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 startActivityForResult(intentSearch, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST);
             }
         });
-        alertDialogBuilder.setCancelable(false).setView(dialogView);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setView(dialogView);
         alertDialog = alertDialogBuilder.create();
     }
 
@@ -611,8 +610,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void submitPurchaseRequest(JSONObject params) {
         Log.i("@@Params", String.valueOf(params));
         String strToken = AppUtils.getInstance().getCurrentToken();
-        Log.i("@@Url", AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken);
-        AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
+        Log.i("@@Url", AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken);
+        AndroidNetworking.post(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -661,7 +660,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     private void uploadMultipart() {
         String strToken = AppUtils.getInstance().getCurrentToken();
-        AndroidNetworking.upload(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
+        AndroidNetworking.upload(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
                 .addMultipartFile("image_file", currentImageFile)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -681,7 +680,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void requestUsersWithApproveAcl() {
-        AndroidNetworking.get(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL)
+        AndroidNetworking.get(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestUsersWithApproveAcl")
                 .build()
@@ -742,7 +741,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         long doubleItemQuantity = Long.parseLong(strQuantity);
         String strUnitName = null;
         int unitId = 0;
-       /* if (isMaterial) {
+        if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             double doubleItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
@@ -753,11 +752,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 mEditTextQuantityMaterialAsset.requestFocus();
                 return;
             }
-        }*/
-        int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
-        double doubleItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
-        unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
-        strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
+        }
         if (isMaterial) {
             addMaterialToLocalRealm(strItemName, doubleItemQuantity, unitId, strUnitName);
         } else {
@@ -810,6 +805,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected class PurchaseStatsRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseStatsRvAdapter.MyViewHolder> {
         private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
 

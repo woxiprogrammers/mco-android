@@ -74,6 +74,7 @@ public class AutoSuggestActivity extends BaseActivity {
         if (bundle != null) {
             isMaterial = bundle.getBoolean("isMaterial");
         }
+        deletePreviousLocalData();
         mEditTextAutoSuggest.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -94,12 +95,41 @@ public class AutoSuggestActivity extends BaseActivity {
         });
         setUpPrAdapter();
         setUpAddNewButton(false);
-        /*searchResultClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
+    }
+
+    private void deletePreviousLocalData() {
+        realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (isMaterial) {
+                        realm.delete(MaterialSearchResponse.class);
+                        realm.delete(MaterialSearchResponseData.class);
+                        realm.delete(SearchMaterialListItem.class);
+                        realm.delete(UnitQuantityItem.class);
+                    } else {
+                        realm.delete(AssetSearchResponse.class);
+                        realm.delete(AssetSearchResponseData.class);
+                        realm.delete(SearchAssetListItem.class);
+                    }
+                }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    Timber.d("Realm Execution Successful");
+                }
+            }, new Realm.Transaction.OnError() {
+                @Override
+                public void onError(Throwable error) {
+                    AppUtils.getInstance().logRealmExecutionError(error);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
             }
-        };*/
+        }
     }
 
     private void setUpAddNewButton(boolean isVisible) {

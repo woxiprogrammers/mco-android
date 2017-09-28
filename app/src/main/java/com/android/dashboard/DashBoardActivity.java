@@ -31,11 +31,11 @@ import com.android.models.login_acl.ModulesItem;
 import com.android.models.login_acl.PermissionsItem;
 import com.android.models.login_acl.ProjectsItem;
 import com.android.models.login_acl.SubModulesItem;
-import com.android.purchase_details.MaterialNamesItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,32 +53,24 @@ import timber.log.Timber;
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     @BindView(R.id.builderName)
     TextView projectSiteName;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
-
     @BindView(R.id.appBarLayout)
     AppBarLayout appBarLayout;
-
     @BindView(R.id.rv_task_selection)
     RecyclerView rvTaskSelection;
-
     @BindView(R.id.nav_view)
     NavigationView navView;
-
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-
     private Context mContext;
     private RecyclerView mRvTaskSelection;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     private Realm realm;
     private Spinner projectSpinner;
     private TextView userName;
-
     private RealmResults<ProjectsItem> projectsItemRealmResults;
     private List<ProjectsItem> projectsItemList;
 
@@ -110,8 +102,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         initializeViews();
         getSiteName();
         setSpinnerListener();
-        Log.i("@@Token",AppUtils.getInstance().getCurrentToken());
-
+        Log.i("@@Token", AppUtils.getInstance().getCurrentToken());
     }
 
     @Override
@@ -151,9 +142,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private void initializeViews() {
         mContext = DashBoardActivity.this;
         mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
-        View headerLayout =navView.inflateHeaderView(R.layout.nav_header_dash_board);
-        projectSpinner= headerLayout.findViewById(R.id.project_spinner);
-        userName=headerLayout.findViewById(R.id.userName);
+        View headerLayout = navView.inflateHeaderView(R.layout.nav_header_dash_board);
+        projectSpinner = headerLayout.findViewById(R.id.project_spinner);
+        userName = headerLayout.findViewById(R.id.userName);
         realm = Realm.getDefaultInstance();
         modulesItemOrderedRealmCollection = realm.where(LoginResponseData.class).findFirst().getModules();
         ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection);
@@ -172,19 +163,16 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 startCorrespondingAclActivity(subModulesItem);
             }
         });
-
         projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(mContext,"Only  " + projectSpinner.getSelectedItem().toString()  + "can be selected",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext,"Only  " + projectSpinner.getSelectedItem().toString()  + "can be selected",Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
-
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -272,12 +260,11 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         if (projectsItem != null) {
             projectSiteName.setText(projectsItem.getProjectName());
         }
-
     }
 
-    private void setSpinnerListener(){
-        realm=Realm.getDefaultInstance();
-        projectsItemRealmResults=realm.where(ProjectsItem.class).findAll();
+    private void setSpinnerListener() {
+        realm = Realm.getDefaultInstance();
+        projectsItemRealmResults = realm.where(ProjectsItem.class).findAll();
         setUpSpinnerAdapter(projectsItemRealmResults);
         if (projectsItemRealmResults != null) {
             Timber.d("availableUsersRealmResults change listener added.");
