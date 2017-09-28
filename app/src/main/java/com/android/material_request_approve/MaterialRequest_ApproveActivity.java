@@ -145,6 +145,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     isForApproval = true;
                     mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                    requestUsersWithApproveAcl();
                 }
 
             }
@@ -499,7 +500,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpApprovedStatusAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_pending)).findAll();
+        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
         PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true, isForApproval);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
@@ -713,8 +714,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void requestUsersWithApproveAcl() {
-        AndroidNetworking.get(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
+                .addBodyParameter("can_access", getString(R.string.approve_material_request))
+                .addBodyParameter("component_status_slug", "pending")
                 .setTag("requestUsersWithApproveAcl")
                 .build()
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
