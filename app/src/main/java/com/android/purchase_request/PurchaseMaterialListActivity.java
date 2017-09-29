@@ -303,7 +303,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         purchaseMaterialListItem.setItem_name(strItemName);
         purchaseMaterialListItem.setItem_quantity(longItemQuantity);
         //approve status- "pending"
-        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_pending));
+        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_p_r_assigned));
         if (isMaterial) {
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setItem_unit_name(strUnitName);
@@ -765,7 +765,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             itemHolder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
 //            itemHolder.textViewMaterialQuantityCreatePR.setText(purchaseMaterialListItem.getItem_quantity());
-            itemHolder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit_id());
+            itemHolder.textViewMaterialUnitCreatePR.setText(String.valueOf(purchaseMaterialListItem.getItem_unit_id()));
         }
 
         @Override
