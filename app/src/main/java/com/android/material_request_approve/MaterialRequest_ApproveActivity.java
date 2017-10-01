@@ -133,14 +133,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                     setUpCurrentMaterialListAdapter();
-                    requestUsersWithApproveAcl();
+                    requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                     setUpUsersSpinnerValueChangeListener();
                     createAlertDialog();
                 } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
                     isForApproval = true;
                     mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
-                    requestUsersWithApproveAcl();
+                    requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                 }
             }
         }
@@ -491,7 +491,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpApprovedStatusAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
+        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_pending))/*.equalTo("approved_status", getString(R.string.tag_manager_approved))*/.findAll();
         PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true, isForApproval);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
@@ -643,7 +643,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        realm = Realm.getDefaultInstance();
+                        linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                        mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+                        requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
+
+                       /* realm = Realm.getDefaultInstance();
                         final List<PurchaseMaterialListItem> materialListItems = realm.copyFromRealm(materialListRealmResults_New);
                         for (int i = 0; i < materialListRealmResults_New.size(); i++) {
                             materialListItems.get(i).setApproved_status(getString(R.string.tag_pending));
@@ -652,13 +656,12 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.insertOrUpdate(materialListItems);
+//                                    realm.insertOrUpdate(materialListItems);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
-                                    mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+
                                     Timber.d("Realm Execution Successful");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -672,6 +675,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                 realm.close();
                             }
                         }
+*/
                     }
 
                     @Override
@@ -702,11 +706,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 });
     }
 
-    private void requestUsersWithApproveAcl() {
+    private void requestUsersWithApproveAcl(String canAccess, String statusSlug) {
         AndroidNetworking.post(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
-                .addBodyParameter("can_access", getString(R.string.approve_material_request))
-                .addBodyParameter("component_status_slug", "pending")
+                .addBodyParameter("can_access", canAccess)
+                .addBodyParameter("component_status_slug", statusSlug)
+//                .addBodyParameter("can_access", getString(R.string.approve_material_request))
+//                .addBodyParameter("component_status_slug", "in-indent")
                 .setTag("requestUsersWithApproveAcl")
                 .build()
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
