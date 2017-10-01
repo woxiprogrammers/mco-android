@@ -107,7 +107,6 @@
                         android:background="@drawable/ic_disapprove"/>
                 </LinearLayout>
 
-
                 <Button
                     android:id="@+id/button_move_to_indent"
                     android:layout_width="wrap_content"

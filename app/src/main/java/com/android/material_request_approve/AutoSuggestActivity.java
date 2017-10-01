@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,7 +80,7 @@ public class AutoSuggestActivity extends BaseActivity {
                 mStrSearch = s.toString();
                 if (mStrSearch.length() > 2) {
                     requestAutoSearchApi(mStrSearch);
-                    AppUtils.getInstance().hideKeyBoard(mEditTextAutoSuggest);
+//                    AppUtils.getInstance().hideKeyBoard(mEditTextAutoSuggest);
                 }
             }
 
@@ -93,7 +92,7 @@ public class AutoSuggestActivity extends BaseActivity {
             public void afterTextChanged(Editable arg0) {
             }
         });
-        setUpPrAdapter();
+        setUpSearchResultAdapter();
         setUpAddNewButton(false);
     }
 
@@ -168,7 +167,6 @@ public class AutoSuggestActivity extends BaseActivity {
                 @Override
                 public void onResponse(final MaterialSearchResponse response) {
                     searchMaterialListItem = response.getMaterialSearchResponseData().getMaterialList().get(0);
-                    Log.i("@@searchMateri ", String.valueOf(searchMaterialListItem));
                     if (searchMaterialListItem.getMaterialRequestComponentTypeSlug().contains("new")) {
                         setUpAddNewButton(true);
                     } else {
@@ -251,6 +249,17 @@ public class AutoSuggestActivity extends BaseActivity {
                     AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                 }
             });
+            /*postRequestBuilder.getAsJSONObject(new JSONObjectRequestListener() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Timber.d(String.valueOf(response));
+                }
+
+                @Override
+                public void onError(ANError anError) {
+                    AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
+                }
+            });*/
         }
     }
 
@@ -280,11 +289,11 @@ public class AutoSuggestActivity extends BaseActivity {
         intentData.putExtra("isMaterial", isMaterial);
         if (isMaterial) {
             if (isNewItem) {
-                intentData.putExtra("searchListItem", searchMaterialListItem);
+                MaterialRequest_ApproveActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
             }
         } else {
             if (isNewItem) {
-                intentData.putExtra("searchListItem", searchAssetListItem);
+                MaterialRequest_ApproveActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
             }
         }
         intentData.putExtra("searchedItemName", searchedItemName);
@@ -293,7 +302,7 @@ public class AutoSuggestActivity extends BaseActivity {
         finish();
     }
 
-    private void setUpPrAdapter() {
+    private void setUpSearchResultAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         if (isMaterial) {

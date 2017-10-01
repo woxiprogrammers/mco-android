@@ -110,4 +110,5 @@
     <string name="create_material_request">create-material-request</string>
     <string name="approve_material_request">approve-material-request</string>
     <string name="tag_manager_approved">manager-approved</string>
+    <string name="tag_capital_p_pending">Pending</string>
 </resources>

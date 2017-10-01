@@ -341,6 +341,7 @@ public class AppUtils {
             Timber.tag(strApiTag).d("Api errorDetail : " + anError.getErrorDetail());
         } else {
             Timber.tag(strApiTag).d("onError errorDetail : " + anError.getErrorDetail());
+            Timber.tag(strApiTag).d("onError errorMessage : " + anError.getMessage());
         }
     }
 

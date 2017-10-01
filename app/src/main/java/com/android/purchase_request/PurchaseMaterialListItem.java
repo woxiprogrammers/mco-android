@@ -1,8 +1,9 @@
 package com.android.purchase_request;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * <b></b>
@@ -10,25 +11,44 @@ import io.realm.annotations.PrimaryKey;
  * Created by Rohit.
  */
 public class PurchaseMaterialListItem extends RealmObject {
-    @PrimaryKey
-    private int indexId;
-    private String name, approved_status, item_category, item_unit_name;
+    @SerializedName("component_type")
+    private String componentType;
+    //    @SerializedName("unit")
+//    private String unit;
+//    @SerializedName("quantity")
+//    private String quantity;
+    @SerializedName("component_status")
+    private String componentStatus;
+    //    @SerializedName("component_type_id")
+//    private int componentTypeId;
+    @SerializedName("material_request_component_id")
+    private int materialRequestComponentId;
+    //    @SerializedName("name")
+//    private String name;
+    @SerializedName("component_status_id")
+    private int componentStatusId;
+    //    @SerializedName("unit_id")
+//    private int unitId;
+    @SerializedName("material_request_format")
+    private String materialRequestFormat;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("unit")
+    private String item_unit_name;
+    @SerializedName("quantity")
     private float quantity;
+    @SerializedName("unit_id")
     private int unit_id;
-    private String materialRequestComponentTypeSlug;
+    @SerializedName("component_type_id")
     private int component_type_id;
+/////////////////////////
+    private String approved_status;
+    private String item_category;
+    private String materialRequestComponentTypeSlug;
     private boolean is_diesel;
     private RealmList<MaterialImageItem> list_of_images;
 
     public PurchaseMaterialListItem() {
-    }
-
-    public int getIndexId() {
-        return indexId;
-    }
-
-    public void setIndexId(int indexId) {
-        this.indexId = indexId;
     }
 
     public String getItem_name() {

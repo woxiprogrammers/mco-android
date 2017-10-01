@@ -8,7 +8,7 @@ import io.realm.RealmObject;
 
 public class SearchAssetListItem extends RealmObject implements Serializable {
     @SerializedName("asset_unit")
-    private int assetUnit;
+    private String assetUnit;
     @SerializedName("asset_name")
     private String assetName;
     @SerializedName("material_request_component_type_slug")
@@ -18,11 +18,11 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
     @SerializedName("material_request_component_type_id")
     private int materialRequestComponentTypeId;
 
-    public void setAssetUnit(int assetUnit) {
+    public void setAssetUnit(String assetUnit) {
         this.assetUnit = assetUnit;
     }
 
-    public int getAssetUnit() {
+    public String getAssetUnit() {
         return assetUnit;
     }
 

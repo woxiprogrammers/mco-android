@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -60,8 +59,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -110,6 +107,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private LinearLayout ll_dialog_unit;
     private SearchMaterialListItem searchMaterialListItem_fromResult = null;
     private SearchAssetListItem searchAssetListItem_fromResult = null;
+    private boolean isForApproval;
+    private String strToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +116,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         setContentView(R.layout.activity_material_list_purchase_request);
         ButterKnife.bind(this);
         mContext = PurchaseMaterialListActivity.this;
+        strToken = AppUtils.getInstance().getCurrentToken();
         requestUsersWithApproveAcl();
         setUpUsersSpinnerValueChangeListener();
         setUpCurrentMaterialListAdapter();
@@ -218,7 +218,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             params.put("is_material_request", true);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("assigned_to", userId);
-            params.put("item_list", null);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
@@ -226,7 +225,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         if (jsonArrayPurchaseMaterialListItems.length() > 0) {
             submitPurchaseRequest(params);
         } else {
-            Toast.makeText(mContext, "Please some items to the list", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Please add some items to the list", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -320,13 +319,13 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         } else {
             purchaseMaterialListItem.setIs_diesel(false);
         }
-        int randomNum;
+        /*int randomNum;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             randomNum = ThreadLocalRandom.current().nextInt(11, 999999);
         } else {
             randomNum = new Random().nextInt((999999) + 11);
         }
-        purchaseMaterialListItem.setIndexId(randomNum);
+        purchaseMaterialListItem.setIndexId(randomNum);*/
         purchaseMaterialListItem.setList_of_images(new RealmList<MaterialImageItem>());
         realm = Realm.getDefaultInstance();
         try {

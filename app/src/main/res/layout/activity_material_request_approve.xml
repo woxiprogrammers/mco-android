@@ -43,7 +43,7 @@
                     android:paddingRight="@dimen/dimen_16dp"
                     android:text="Add +"
                     android:textColor="@color/colorWhite"
-                    android:textSize="20dp"/>
+                    android:textSize="@dimen/text_20sp"/>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -97,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/dimen_60dp"
+                android:layout_marginTop="@dimen/dimen_10dp"
                 android:text="SUBMIT"/>
         </LinearLayout>
 

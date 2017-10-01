@@ -22,7 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:layout_below="@id/editTextAutoSuggest"
         android:background="@drawable/selectable_button_background_gray"
         android:text="@string/add_as_new_item"/>
 </RelativeLayout>
