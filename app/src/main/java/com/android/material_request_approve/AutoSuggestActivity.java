@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.purchase_request.PurchaseMaterialListActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -55,6 +56,7 @@ public class AutoSuggestActivity extends BaseActivity {
     private SearchMaterialListItem searchMaterialListItem;
     private SearchAssetListItem searchAssetListItem;
     boolean isMaterial = false;
+    boolean isForMaterial = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,12 @@ public class AutoSuggestActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             isMaterial = bundle.getBoolean("isMaterial");
+            String moduleName = bundle.getString("moduleName") + "";
+            if (moduleName.equalsIgnoreCase("purchase")) {
+                isForMaterial = false;
+            } else if (moduleName.equalsIgnoreCase("material")) {
+                isForMaterial = true;
+            }
         }
         deletePreviousLocalData();
         mEditTextAutoSuggest.addTextChangedListener(new TextWatcher() {
@@ -289,11 +297,23 @@ public class AutoSuggestActivity extends BaseActivity {
         intentData.putExtra("isMaterial", isMaterial);
         if (isMaterial) {
             if (isNewItem) {
-                MaterialRequest_ApproveActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
+                Intent intent = getIntent();
+                Timber.i(String.valueOf(intent));
+                if (isForMaterial) {
+                    MaterialRequest_ApproveActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
+                } else {
+                    PurchaseMaterialListActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
+                }
             }
         } else {
             if (isNewItem) {
-                MaterialRequest_ApproveActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
+                Intent intent = getIntent();
+                Timber.i(String.valueOf(intent));
+                if (isForMaterial) {
+                    MaterialRequest_ApproveActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
+                } else {
+                    PurchaseMaterialListActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
+                }
             }
         }
         intentData.putExtra("searchedItemName", searchedItemName);

@@ -306,6 +306,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public void onClick(View view) {
                 Intent intentSearch = new Intent(mContext, AutoSuggestActivity.class);
                 intentSearch.putExtra("isMaterial", isMaterial);
+                intentSearch.putExtra("moduleName","material");
                 startActivityForResult(intentSearch, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST);
             }
         });

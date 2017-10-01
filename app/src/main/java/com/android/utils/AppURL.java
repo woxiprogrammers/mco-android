@@ -32,4 +32,5 @@ public class AppURL {
     public static final String API_AUTO_SUGGEST_COMMON = BASE_URL + "auto-suggest";
     public static final String API_CHANGE_STATUS_MATERIAL = BASE_URL + "purchase/material-request/change-status?token=";
     public static final String API_REQUESTED_MATERIAL_LIST = BASE_URL + "purchase/material-request/listing?token=";
+    public static final String API_SUBMIT_PURCHASE_REQUEST = BASE_URL + "purchase/purchase-request/create?token=";
 }
