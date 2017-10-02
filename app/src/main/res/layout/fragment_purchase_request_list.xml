@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -18,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/dimen_50dp"
+        android:layout_marginBottom="@dimen/dimen_60dp"
         android:layout_marginRight="@dimen/dimen_16dp"
-        android:visibility="gone"/>
+        app:srcCompat="@drawable/ic_plus"/>
 </RelativeLayout>

@@ -7,3 +7,5 @@
 4. Invalid response for  - /purchase/material-request/listing?token=
 
 5. is_material_request flag in create material/purchase request
+
+6. Image upload API does not work

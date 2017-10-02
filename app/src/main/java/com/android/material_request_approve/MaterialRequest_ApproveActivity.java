@@ -113,6 +113,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
     private boolean isForApproval;
     private String strToken;
+    private ArrayList<File> arrayImageFileList;
+    private String strItemName = "", strUnitName = "";
+    private float floatItemQuantity = 0;
+    private int unitId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -306,7 +310,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public void onClick(View view) {
                 Intent intentSearch = new Intent(mContext, AutoSuggestActivity.class);
                 intentSearch.putExtra("isMaterial", isMaterial);
-                intentSearch.putExtra("moduleName","material");
+                intentSearch.putExtra("moduleName", "material");
                 startActivityForResult(intentSearch, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST);
             }
         });
@@ -528,9 +532,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 Timber.d(String.valueOf(imagesList));
                 mLlUploadImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
                 for (Image currentImage : imagesList) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                         ImageView imageView = new ImageView(mContext);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
@@ -551,9 +557,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 Timber.d(String.valueOf(imagesList2));
                 mLlUploadImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
                 for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                         ImageView imageView = new ImageView(mContext);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
@@ -688,6 +696,122 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 });
     }
 
+    private void uploadImages_addItemToLocal() {
+        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+            File sendImageFile = arrayImageFileList.get(0);
+            Timber.i("sendImageFile: " + sendImageFile);
+            String strToken = AppUtils.getInstance().getCurrentToken();
+            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                    .setPriority(Priority.MEDIUM)
+                    .addMultipartFile("image", sendImageFile)
+                    .addMultipartParameter("image_for", "material-request")
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("uploadImages_addItemToLocal")
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Timber.d(String.valueOf(response));
+                            arrayImageFileList.remove(0);
+                            uploadImages_addItemToLocal();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                        }
+                    });
+        } else {
+            addMaterialToLocalRealm(strItemName, floatItemQuantity, unitId, strUnitName);
+            alertDialog.dismiss();
+        }
+    }
+
+    private void requestUsersWithApproveAcl(String canAccess, String statusSlug) {
+        AndroidNetworking.post(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addBodyParameter("can_access", canAccess)
+                .addBodyParameter("component_status_slug", statusSlug)
+//                .addBodyParameter("can_access", getString(R.string.approve_material_request))
+//                .addBodyParameter("component_status_slug", "in-indent")
+                .setTag("requestUsersWithApproveAcl")
+                .build()
+                .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
+                    @Override
+                    public void onResponse(final UsersWithAclResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Timber.d("Realm Execution Successful");
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
+                    }
+                });
+    }
+
+    private void validateEntries_addToLocal() {
+        strItemName = mEditTextNameMaterialAsset.getText().toString().trim();
+        String strQuantity = mEditTextQuantityMaterialAsset.getText().toString().trim();
+        if (TextUtils.isEmpty(strItemName)) {
+            mEditTextNameMaterialAsset.setError("Please enter name");
+            mEditTextNameMaterialAsset.requestFocus();
+            return;
+        } else {
+            mEditTextNameMaterialAsset.setError(null);
+            mEditTextNameMaterialAsset.clearFocus();
+        }
+        if (TextUtils.isEmpty(strQuantity)) {
+            mEditTextQuantityMaterialAsset.setError("Please enter quantity");
+            mEditTextQuantityMaterialAsset.requestFocus();
+            return;
+        } else {
+            mEditTextQuantityMaterialAsset.setError(null);
+            mEditTextQuantityMaterialAsset.clearFocus();
+        }
+        floatItemQuantity = Long.parseLong(strQuantity);
+        strUnitName = "";
+        unitId = 0;
+        if (isMaterial) {
+            int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+            float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
+            unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
+            strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
+            int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
+            if (floatComparison > 0) {
+                Toast.makeText(mContext, "Quantity is greater than allowed max quantity", Toast.LENGTH_SHORT).show();
+                mEditTextQuantityMaterialAsset.setError("Decrease quantity");
+                mEditTextQuantityMaterialAsset.requestFocus();
+                return;
+            } else {
+                mEditTextQuantityMaterialAsset.setError(null);
+                mEditTextQuantityMaterialAsset.clearFocus();
+            }
+        }
+        uploadImages_addItemToLocal();
+    }
+
     private void getRequestedItemList() {
         JSONObject params = new JSONObject();
         try {
@@ -736,117 +860,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         AppUtils.getInstance().logApiError(anError, "getRequestedItemList");
                     }
                 });
-    }
-
-    private void uploadMultipart() {
-        String strToken = AppUtils.getInstance().getCurrentToken();
-        AndroidNetworking.upload(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
-                .setPriority(Priority.MEDIUM)
-                .addMultipartFile("image_file", currentImageFile)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("submitPurchaseRequest")
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
-                    }
-                });
-    }
-
-    private void requestUsersWithApproveAcl(String canAccess, String statusSlug) {
-        AndroidNetworking.post(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
-                .setPriority(Priority.MEDIUM)
-                .addBodyParameter("can_access", canAccess)
-                .addBodyParameter("component_status_slug", statusSlug)
-//                .addBodyParameter("can_access", getString(R.string.approve_material_request))
-//                .addBodyParameter("component_status_slug", "in-indent")
-                .setTag("requestUsersWithApproveAcl")
-                .build()
-                .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
-                    @Override
-                    public void onResponse(final UsersWithAclResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    Timber.d("Realm Execution Successful");
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
-                    }
-                });
-    }
-
-    private void validateEntries_addToLocal() {
-        String strItemName = mEditTextNameMaterialAsset.getText().toString().trim();
-        String strQuantity = mEditTextQuantityMaterialAsset.getText().toString().trim();
-        if (TextUtils.isEmpty(strItemName)) {
-            mEditTextNameMaterialAsset.setError("Please enter name");
-            mEditTextNameMaterialAsset.requestFocus();
-            return;
-        } else {
-            mEditTextNameMaterialAsset.setError(null);
-            mEditTextNameMaterialAsset.clearFocus();
-        }
-        if (TextUtils.isEmpty(strQuantity)) {
-            mEditTextQuantityMaterialAsset.setError("Please enter quantity");
-            mEditTextQuantityMaterialAsset.requestFocus();
-            return;
-        } else {
-            mEditTextQuantityMaterialAsset.setError(null);
-            mEditTextQuantityMaterialAsset.clearFocus();
-        }
-        float floatItemQuantity = Long.parseLong(strQuantity);
-        String strUnitName = null;
-        int unitId = 0;
-        if (isMaterial) {
-            int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
-            float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
-            unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
-            strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
-            int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
-            if (floatComparison > 0) {
-                Toast.makeText(mContext, "Quantity is greater than allowed max quantity", Toast.LENGTH_SHORT).show();
-                mEditTextQuantityMaterialAsset.setError("Decrease quantity");
-                mEditTextQuantityMaterialAsset.requestFocus();
-                return;
-            } else {
-                mEditTextQuantityMaterialAsset.setError(null);
-                mEditTextQuantityMaterialAsset.clearFocus();
-            }
-        }
-        if (isMaterial) {
-            addMaterialToLocalRealm(strItemName, floatItemQuantity, unitId, strUnitName);
-        } else {
-            addMaterialToLocalRealm(strItemName, floatItemQuantity, 0, "");
-        }
-        alertDialog.dismiss();
     }
 
     @SuppressWarnings("WeakerAccess")

@@ -108,7 +108,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private SearchAssetListItem searchAssetListItem_fromResult = null;
     public static SearchMaterialListItem searchMaterialListItem_fromResult_staticNew = null;
     public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
-    private SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter;
+    private ArrayList<File> arrayImageFileList;
+    private String strItemName = "", strUnitName = "";
+    private float floatItemQuantity = 0;
+    private int unitId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +119,33 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         setContentView(R.layout.activity_material_list_purchase_request);
         ButterKnife.bind(this);
         mContext = PurchaseMaterialListActivity.this;
+        ///////////
+        /*Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            bundle.getString("subModuleTag");
+            String permissionsItemList = bundle.getString("permissionsItemList");
+            PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
+            for (PermissionsItem permissionsItem : permissionsItems) {
+                String accessPermission = permissionsItem.getCanAccess();
+                if (accessPermission.equalsIgnoreCase(getString(R.string.create_material_request))) {
+                    textViewPurchaseMaterialListAddNew.setVisibility(View.VISIBLE);
+                    isForApproval = false;
+                    mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+                    linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                    setUpCurrentMaterialListAdapter();
+                    requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
+                    setUpUsersSpinnerValueChangeListener();
+                    createAlertDialog();
+                } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
+                    textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
+                    isForApproval = true;
+                    mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+                    linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                    requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
+                }
+            }
+        }*/
+        ///////////
         requestUsersWithApproveAcl();
         setUpUsersSpinnerValueChangeListener();
         setUpCurrentMaterialListAdapter();
@@ -453,7 +483,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         List<PurchaseMaterialListItem> purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
         purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_p_r_assigned)).findAll();
         List<PurchaseMaterialListItem> purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
-         sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
+        SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
         sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Approved Items", purchaseMaterialList_inIndent));
@@ -509,9 +539,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 Timber.d(String.valueOf(imagesList));
                 mLlUploadImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
                 for (Image currentImage : imagesList) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                         ImageView imageView = new ImageView(mContext);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
@@ -532,9 +564,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 Timber.d(String.valueOf(imagesList2));
                 mLlUploadImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
                 for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                         ImageView imageView = new ImageView(mContext);
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
@@ -637,25 +671,35 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 });
     }
 
-    private void uploadMultipart() {
-        String strToken = AppUtils.getInstance().getCurrentToken();
-        AndroidNetworking.upload(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
-                .setPriority(Priority.MEDIUM)
-                .addMultipartFile("image_file", currentImageFile)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("submitPurchaseRequest")
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
-                    }
+    private void uploadImages_addItemToLocal() {
+        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+            File sendImageFile = arrayImageFileList.get(0);
+            Timber.i("sendImageFile: " + sendImageFile);
+            String strToken = AppUtils.getInstance().getCurrentToken();
+            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                    .setPriority(Priority.MEDIUM)
+                    .addMultipartFile("image", sendImageFile)
+                    .addMultipartParameter("image_for", "material-request")
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("uploadImages_addItemToLocal")
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Timber.d(String.valueOf(response));
+                            arrayImageFileList.remove(0);
+                            uploadImages_addItemToLocal();
+                        }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
-                    }
-                });
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                        }
+                    });
+        } else {
+            addMaterialToLocalRealm(strItemName, floatItemQuantity, unitId, strUnitName);
+            alertDialog.dismiss();
+        }
     }
 
     private void requestUsersWithApproveAcl() {
@@ -701,7 +745,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     }
 
     private void validateEntries_addToLocal() {
-        String strItemName = mEditTextNameMaterialAsset.getText().toString().trim();
+        strItemName = mEditTextNameMaterialAsset.getText().toString().trim();
         String strQuantity = mEditTextQuantityMaterialAsset.getText().toString().trim();
         if (TextUtils.isEmpty(strItemName)) {
             mEditTextNameMaterialAsset.setError("Please enter name");
@@ -719,9 +763,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             mEditTextQuantityMaterialAsset.setError(null);
             mEditTextQuantityMaterialAsset.clearFocus();
         }
-        float floatItemQuantity = Long.parseLong(strQuantity);
-        String strUnitName = null;
-        int unitId = 0;
+        floatItemQuantity = Long.parseLong(strQuantity);
+        strUnitName = "";
+        unitId = 0;
         if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
@@ -733,14 +777,12 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 mEditTextQuantityMaterialAsset.setError("Decrease quantity");
                 mEditTextQuantityMaterialAsset.requestFocus();
                 return;
+            } else {
+                mEditTextQuantityMaterialAsset.setError(null);
+                mEditTextQuantityMaterialAsset.clearFocus();
             }
         }
-        if (isMaterial) {
-            addMaterialToLocalRealm(strItemName, floatItemQuantity, unitId, strUnitName);
-        } else {
-            addMaterialToLocalRealm(strItemName, floatItemQuantity, 0, "");
-        }
-        alertDialog.dismiss();
+        uploadImages_addItemToLocal();
     }
 
     @SuppressWarnings("WeakerAccess")
