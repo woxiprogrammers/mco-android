@@ -62,6 +62,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
@@ -112,6 +113,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private String strItemName = "", strUnitName = "";
     private float floatItemQuantity = 0;
     private int unitId = 0;
+    private SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter;
+    private List<PurchaseMaterialListItem> purchaseMaterialList_inIndent;
+    private List<PurchaseMaterialListItem> purchaseMaterialList_Current;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,6 +390,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         if (alertDialog == null) {
             createAlertDialog();
         }
+        arrayImageFileList = new ArrayList<File>();
         String strDialogTitle = "";
         String strItemNameLabel = "";
         if (isMaterial) {
@@ -479,15 +484,20 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private void setUpCurrentMaterialListAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
-        List<PurchaseMaterialListItem> purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
-        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_p_r_assigned)).findAll();
-        List<PurchaseMaterialListItem> purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
-        SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
+        sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
-        sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Approved Items", purchaseMaterialList_inIndent));
-        sectionedRecyclerViewAdapter.addSection(new SectionedPurchaseMaterialRvAdapter("Current Items", purchaseMaterialList_Current));
+        ///////////
+        purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
+        purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
+        Section sectionIndent = new SectionedPurchaseMaterialRvAdapter("Approved Items", purchaseMaterialList_inIndent);
+        sectionedRecyclerViewAdapter.addSection("indent_items_section", sectionIndent);
+        ///////////
+        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_p_r_assigned)).findAll();
+        purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
+        Section sectionCurrent = new SectionedPurchaseMaterialRvAdapter("Current Items", purchaseMaterialList_Current);
+        sectionedRecyclerViewAdapter.addSection("current_items_section", sectionCurrent);
+        //////////
         recyclerView_materialList.setAdapter(sectionedRecyclerViewAdapter);
         recyclerView_materialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, recyclerView_materialList,
                 new RecyclerItemClickListener.OnItemClickListener() {
@@ -510,6 +520,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
                     Timber.d("Size of purchaseRequestListItems: " + String.valueOf(purchaseRequestListItems.size()));
                     ///////////////////////////////
+                    purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseRequestListItems);
+                    sectionedRecyclerViewAdapter.notifyItemInsertedInSection("indent_items_section", purchaseRequestListItems.size());
                 }
             });
         } else {
@@ -522,6 +534,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
                     Timber.d("Size of purchaseRequestListItems: " + String.valueOf(purchaseRequestListItems.size()));
                     ///////////////////////////////
+                    purchaseMaterialList_Current = realm.copyFromRealm(purchaseRequestListItems);
+                    sectionedRecyclerViewAdapter.notifyItemInsertedInSection("current_items_section", purchaseRequestListItems.size());
                 }
             });
         } else {
