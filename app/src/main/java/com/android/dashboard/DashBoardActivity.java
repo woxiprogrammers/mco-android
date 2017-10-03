@@ -256,9 +256,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 
     private void getSiteName() {
         realm = Realm.getDefaultInstance();
-        ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("id", 2).findFirst();
+        ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("project_id", 2).findFirst();
         if (projectsItem != null) {
-            projectSiteName.setText(projectsItem.getProjectName());
+            projectSiteName.setText(projectsItem.getClient_company_name());
         }
     }
 

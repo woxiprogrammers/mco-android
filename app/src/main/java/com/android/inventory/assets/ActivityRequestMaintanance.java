@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -33,6 +32,7 @@ import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,7 +64,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
     @BindView(R.id.button_request)
     Button buttonRequest;
 
-
     @BindView(R.id.textView_capture)
     TextView textViewCapture;
 
@@ -82,7 +81,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private String strModelNumber;
     private int componentId;
     private ArrayList<File> arrayImageFileList;
-    private File currentImageFile;
+    private JSONObject jsonImageNameObject = new JSONObject();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +104,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
         if (extras != null) {
             strAssetName = extras.getStringExtra("key");
             strModelNumber = extras.getStringExtra("key1");
-            componentId=extras.getIntExtra("ComponentId",-1);
+            componentId = extras.getIntExtra("ComponentId", -1);
         }
         editTextAssetName.setText(strAssetName);
         editTextAssetName.setEnabled(false);
@@ -186,6 +186,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
                 Timber.d(String.valueOf(imagesList));
                 llAddImage.removeAllViews();
                 arrayImageFileList = new ArrayList<File>();
+                File currentImageFile;
                 for (Image currentImage : imagesList) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
@@ -229,7 +230,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
                             }
                         });
                     }
-                }                break;
+                }
+                break;
         }
     }
 
@@ -264,20 +266,24 @@ public class ActivityRequestMaintanance extends BaseActivity {
         startActivityForResult(intent, type);
     }
 
-    private void requestAssetMaintainance(){
+    private void requestAssetMaintenance() {
         JSONObject params = new JSONObject();
+        JSONArray jsonImageNameArray = new JSONArray();
+        jsonImageNameArray.put(jsonImageNameObject);
         try {
-            if(componentId != -1) {
+            if (componentId != -1) {
                 params.put("inventory_component_id", componentId);
             }
             params.put("remark", editTextRemark.getText().toString());
-            params.put("next_maintenance_hour",editTextMaintainanceHours.getText().toString());
+            params.put("next_maintenance_hour", editTextMaintainanceHours.getText().toString());
+            params.put("images",jsonImageNameArray);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         AndroidNetworking.post(AppURL.API_ASSET_REQUEST_MAINTAINANCE + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestAssetMaintainance")
+                .setTag("requestAssetMaintenance")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
@@ -315,8 +321,13 @@ public class ActivityRequestMaintanance extends BaseActivity {
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Timber.d(String.valueOf(response));
                             arrayImageFileList.remove(0);
+                            try {
+                                String fileName = response.getString("filename");
+                                jsonImageNameObject.put("image", fileName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                             uploadImages_addItemToLocal();
                         }
 
@@ -326,7 +337,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
                         }
                     });
         } else {
-            requestAssetMaintainance();
+            requestAssetMaintenance();
         }
     }
 }
