@@ -16,15 +16,26 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.constro360.BaseActivity;
+import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.Realm;
 
 public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
 
@@ -174,6 +185,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         isInValidate = true;
                         invalidateOptionsMenu();
+                        requestToChangeStatus();
                         dialog.dismiss();
                     }
                 }).setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
@@ -187,5 +199,38 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         positiveOk.setBackgroundColor(Color.RED);
 
 
+    }
+
+
+
+    private void requestToChangeStatus(){
+        JSONObject params=new JSONObject();
+        try {
+            params.put("purchase_request_id",mPurchaseRequestId);
+            params.put("change_component_status_id_to",9);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.get(AppURL.API_PURCHASE_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestChangeStatus")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String message=response.getString("message");
+                            Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
 }
