@@ -1,27 +1,20 @@
 package com.android.purchase_request;
 
-import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RadioButton;
+import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
-import com.android.utils.SelectorAdapter;
-import com.rohitss.multilineradiogroup.MultiLineRadioGroup;
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
-import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -30,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class PurchaseHomeActivity extends BaseActivity {
+public class PurchaseHomeActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
     @BindView(R.id.tavLayout)
     TabLayout mTabLayout_purchaseHome;
     @BindView(R.id.homeViewPager)
@@ -103,6 +96,15 @@ public class PurchaseHomeActivity extends BaseActivity {
         String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
         String strYear = calendar.getDisplayName(Calendar.YEAR, Calendar.LONG, Locale.US);
         textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + strYear);
+        final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
+        monthYearPickerDialog.setListener(this);
+        textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
+            }
+        });
+        /*
         textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,6 +136,11 @@ public class PurchaseHomeActivity extends BaseActivity {
                     }
                 }).show();
             }
-        });
+        });*/
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        Timber.i("Date OK  " + i + "  " + i1 + "  " + i2);
     }
 }

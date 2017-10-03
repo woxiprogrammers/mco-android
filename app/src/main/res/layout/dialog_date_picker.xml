@@ -3,21 +3,48 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:multi_line_radio_group="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/colorAccentLight"
+              android:layout_height="wrap_content"
               android:orientation="vertical">
 
     <com.yarolegovich.discretescrollview.DiscreteScrollView
         android:id="@+id/recyclerPicker"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_12dp"
         app:dsv_orientation="horizontal"/>
 
     <com.rohitss.multilineradiogroup.MultiLineRadioGroup
         android:id="@+id/multi_line_radio_group_purchase_home"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        multi_line_radio_group:default_button="button_2"
         multi_line_radio_group:max_in_row="6"
         multi_line_radio_group:radio_buttons="@arrays/values"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_dismiss_date_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/selectable_button_background_gray"
+            android:text="DISMISS"
+            android:textColor="@color/colorWhite"/>
+
+        <View
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/button_set_date_date_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="SET"/>
+    </LinearLayout>
 </LinearLayout>

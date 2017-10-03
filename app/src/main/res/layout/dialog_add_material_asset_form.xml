@@ -137,6 +137,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:text="DISMISS"
+                android:background="@drawable/selectable_button_background_gray"
                 android:textColor="@color/colorWhite"/>
 
             <View
