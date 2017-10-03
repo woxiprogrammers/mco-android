@@ -47,24 +47,22 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
         ItemListItem itemListItem = arrItemList.get(position);
         holder.textviewItemName.setText(itemListItem.getItemName());
         holder.textviewItemQuantity.setText(itemListItem.getItemQuantity() + " " + itemListItem.getItemUnit());
-//        holder.textviewItemUnits.setText(itemListItem.getItemUnit());
-
-        Timber.d(String.valueOf(itemListItem.getListOfImages().size()));
-        Timber.d("Pos" + position);
         holder.llImage.removeAllViews();
-        for (int index = 0; index < itemListItem.getListOfImages().size(); index++) {
-            ImageView imageView = new ImageView(holder.context);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80, 80);
-            layoutParams.setMargins(10, 10, 10, 10);
-            imageView.setLayoutParams(layoutParams);
-            holder.llImage.addView(imageView);
+        if (itemListItem.getListOfImages().size() > 0) {
+            for (int index = 0; index < itemListItem.getListOfImages().size(); index++) {
+                ImageView imageView = new ImageView(holder.context);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80, 80);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                holder.llImage.addView(imageView);
 
-            glideRequestManager.load(itemListItem.getListOfImages().get(index).getImageUrl())
-                    .thumbnail(0.1f)
-                    .crossFade()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(imageView);
+                glideRequestManager.load(itemListItem.getListOfImages().get(index).getImageUrl())
+                        .thumbnail(0.1f)
+                        .crossFade()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(imageView);
+            }
         }
 
     }
@@ -93,7 +91,7 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            context=itemView.getContext();
+            context = itemView.getContext();
         }
     }
 }

@@ -24,8 +24,7 @@ public class AppURL {
     //    public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = "http://www.mocky.io/v2/59bb7e190f00009101ff85bb";
     public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = BASE_URL + "users/purchase/purchase-request/approval-acl?token=";
     //Purchase Details
-    ///purchase/material-request/create?token=
-    public static final String API_PURCHASE_SUMMARY = "http://www.mocky.io/v2/59b905003a0000d300f7f877";
+    public static final String API_PURCHASE_SUMMARY = BASE_URL + "purchase/purchase-request/detail-listing?token=";
     public static final String API_PURCHASE_ORDER = "http://www.mocky.io/v2/59ba5d100f000094016227ea";
     public static final String API_SUBMIT_MATERIAL_REQUEST = BASE_URL + "purchase/material-request/create?token=";
     public static final String API_PURCHASE_MATERIAL_UNITS_IMAGES_URL = "http://www.mocky.io/v2/59bf69611100004100fa0151";
@@ -34,4 +33,6 @@ public class AppURL {
     public static final String API_REQUESTED_MATERIAL_LIST = BASE_URL + "purchase/material-request/listing?token=";
     public static final String API_SUBMIT_PURCHASE_REQUEST = BASE_URL + "purchase/purchase-request/create?token=";
     public static final String API_IMAGE_UPLOAD_INDEPENDENT = BASE_URL + "save-image?token=";
+    public static final String API_PURCHASE_REQUEST_CHANGE_STATUS= BASE_URL + "purchase/purchase-request/change-status?token=";
+    public static final String API_ASSET_REQUEST_MAINTAINANCE=BASE_URL + "inventory/asset/request-maintenance?token=";
 }

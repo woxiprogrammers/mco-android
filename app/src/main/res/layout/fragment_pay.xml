@@ -2,13 +2,12 @@
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="1">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/dimen_8dp"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dimen_16dp">
 
@@ -22,6 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Material Name:"
+                android:layout_marginLeft="@dimen/dimen_3dp"
                 android:textColor="@color/colorTextLight"/>
 
         </LinearLayout>
@@ -87,6 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Quantity:"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
@@ -107,6 +108,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
                     android:text="Unit:"
                     android:textColor="@color/colorTextLight"/>
 
@@ -163,6 +165,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
                 android:text="Challan Number:"
                 android:textColor="@color/colorTextLight"/>
 
@@ -202,6 +205,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Vehicle Number:"
+                android:layout_marginLeft="@dimen/dimen_3dp"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
@@ -221,6 +225,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="In Time:"
+                android:layout_marginLeft="@dimen/dimen_3dp"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
@@ -242,6 +247,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Out Time:"
+                android:layout_marginLeft="@dimen/dimen_3dp"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
@@ -263,6 +269,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Bill Amount:"
+                android:layout_marginLeft="@dimen/dimen_3dp"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
@@ -284,6 +291,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="GRN Number:"
+                android:layout_marginLeft="@dimen/dimen_3dp"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
@@ -305,6 +313,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Payable Amount:"
+                android:layout_marginLeft="@dimen/dimen_3dp"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
@@ -359,9 +368,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginBottom="@dimen/dimen_5dp"
-            android:background="@drawable/background_button_pressed"
-            android:backgroundTint="@color/colorAccent"
-            android:onClick="onClickButtonAction"
-            android:textColor="@color/colorWhite"/>
+            android:text="Pay"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

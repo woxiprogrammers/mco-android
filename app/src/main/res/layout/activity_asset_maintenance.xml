@@ -69,16 +69,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/expiry_date"
+                    android:text="Maintainance Hours"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
-                    android:id="@+id/edit_text_expiryDate"
+                    android:id="@+id/edit_text_maintainance_hours"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:focusable="false"
-                    android:onClick="onClickExpiryDate"/>
+                    android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
             <LinearLayout

@@ -3,25 +3,40 @@ package com.android.purchase_details;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.constro360.BaseActivity;
+import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.Realm;
 
 public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
 
@@ -35,6 +50,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     @BindView(R.id.purchase_details_bottom_navigation)
     BottomNavigationView purchaseDetailsBottomNavigation;
     MenuItem prevMenuItem;
+    private int mPurchaseRequestId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +92,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         Intent extras = getIntent();
         if (extras != null) {
             strRRequestId = extras.getStringExtra("PRNumber");
+            mPurchaseRequestId = extras.getIntExtra("KEY_PURCHASEREQUESTID", -1);
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -144,7 +161,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PurchaseDetailsFragment.newInstance();
+                    return PurchaseDetailsFragment.newInstance(mPurchaseRequestId);
                 case 1:
                     return PurchaseHistoryFragment.newInstance();
                 case 2:
@@ -169,12 +186,53 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         isInValidate = true;
                         invalidateOptionsMenu();
+                        requestToChangeStatus(9);
                         dialog.dismiss();
                     }
-                }).setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                }).setNegativeButton("Disapprove", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        requestToChangeStatus(10);
+                        dialog.dismiss();
             }
-        }).show();
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+        Button positiveOk = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveOk.setBackgroundColor(Color.RED);
+        Button negativeDisapprove=alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        negativeDisapprove.setBackgroundColor(Color.RED);
+
+    }
+
+    private void requestToChangeStatus(int changeComponentStatusId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("purchase_request_id", mPurchaseRequestId);
+            params.put("change_component_status_id_to", changeComponentStatusId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_PURCHASE_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestChangeStatus")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
 }

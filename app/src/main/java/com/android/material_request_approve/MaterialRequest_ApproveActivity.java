@@ -116,6 +116,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private float floatItemQuantity = 0;
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
+    private boolean isApprove, isMoveIndent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +146,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                     setUpUsersSpinnerValueChangeListener();
                     getRequestedItemList();
+                    createAlertDialog();
                 } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
                     textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
                     isForApproval = true;
@@ -988,26 +990,24 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 switch (view.getId()) {
                     case R.id.iv_approve:
                         Timber.i("Approve Clicked");
-                        approveMaterial(3, getAdapterPosition(), arrPurchaseMaterialListItems);
-                        linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-                        buttonMoveToIndent.setVisibility(View.VISIBLE);
+                        isApprove = true;
+                        approveMaterial(3, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.iv_disapprove:
-                        Timber.i("Disapprove Clicked");
-                        approveMaterial(4, getAdapterPosition(), arrPurchaseMaterialListItems);
-                        linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                        isApprove = false;
+                        approveMaterial(4, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.button_move_to_indent:
+                        isMoveIndent = true;
                         Timber.i("Move To Indent Clicked");
-                        approveMaterial(7, getAdapterPosition(), arrPurchaseMaterialListItems);
-                        linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                        approveMaterial(7, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                 }
             }
         }
     }
 
-    private void approveMaterial(int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems) {
+    private void approveMaterial(int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems, final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
         PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
         int componentId = purchaseMaterialListItem.getMaterialRequestComponentTypeId();
@@ -1032,6 +1032,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         try {
                             String message = response.getString("message");
                             Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                            if (isApprove) {
+                                linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                                buttonMoveToIndent.setVisibility(View.VISIBLE);
+                            }
+                            if (isMoveIndent) {
+                                buttonMoveToIndent.setVisibility(View.INVISIBLE);
+                                linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

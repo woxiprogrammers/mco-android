@@ -11,31 +11,31 @@ import io.realm.annotations.PrimaryKey;
 
 public class ItemListItem extends RealmObject{
 
-	@SerializedName("purchase_request_id")
-	private int purchaseRequestId;
+	@SerializedName("unit_id")
+	private int unitId;
 
-	@SerializedName("item_unit")
+	@SerializedName("unit_name")
 	private String itemUnit;
 
 	@SerializedName("list_of_images")
 	private RealmList<ImageItem> listOfImages;
 
-	@SerializedName("item_name")
+	@SerializedName("name")
 	private String itemName;
 
 	@PrimaryKey
 	@SerializedName("id")
 	private int id;
 
-	@SerializedName("item_quantity")
-	private String itemQuantity;
+	@SerializedName("quantity")
+	private float itemQuantity;
 
 	public void setPurchaseRequestId(int purchaseRequestId){
-		this.purchaseRequestId = purchaseRequestId;
+		this.unitId = purchaseRequestId;
 	}
 
 	public int getPurchaseRequestId(){
-		return purchaseRequestId;
+		return unitId;
 	}
 
 	public void setItemUnit(String itemUnit){
@@ -70,11 +70,11 @@ public class ItemListItem extends RealmObject{
 		return id;
 	}
 
-	public void setItemQuantity(String itemQuantity){
+	public void setItemQuantity(float itemQuantity){
 		this.itemQuantity = itemQuantity;
 	}
 
-	public String getItemQuantity(){
+	public float getItemQuantity(){
 		return itemQuantity;
 	}
 }

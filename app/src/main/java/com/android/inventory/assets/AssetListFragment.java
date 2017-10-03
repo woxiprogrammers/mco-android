@@ -166,6 +166,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                         Intent intent=new Intent(mContext,AssetDetailsActivity.class);
                         intent.putExtra("assetName",assetsListItems.get(position).getAssetsName());
                         intent.putExtra("modelNumber",assetsListItems.get(position).getModelNumber());
+                        intent.putExtra("inventory_component_id",assetsListItems.get(position).getId());
                         startActivity(intent);
                     }
 
