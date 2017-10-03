@@ -35,6 +35,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     @BindView(R.id.purchase_details_bottom_navigation)
     BottomNavigationView purchaseDetailsBottomNavigation;
     MenuItem prevMenuItem;
+    private int mPurchaseRequestId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         Intent extras = getIntent();
         if (extras != null) {
             strRRequestId = extras.getStringExtra("PRNumber");
+            mPurchaseRequestId=extras.getIntExtra("KEY_PURCHASEREQUESTID",-1);
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -144,7 +146,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PurchaseDetailsFragment.newInstance();
+                    return PurchaseDetailsFragment.newInstance(mPurchaseRequestId);
                 case 1:
                     return PurchaseHistoryFragment.newInstance();
                 case 2:

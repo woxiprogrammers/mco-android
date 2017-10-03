@@ -186,7 +186,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         if (BuildConfig.DEBUG) {
                             Timber.d(String.valueOf(purchaseRequestListItem));
                         }
-                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber",purchaseRequestListItem.getPurchaseRequestId()));
+                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber",purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID",purchaseRequestListItem.getPurchaseRequestId()));
                     }
 
                     @Override

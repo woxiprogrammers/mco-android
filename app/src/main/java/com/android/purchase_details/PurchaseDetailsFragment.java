@@ -18,8 +18,12 @@ import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.bumptech.glide.Glide;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,14 +45,16 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
     private Context mContext;
     private PurchaseDetailsAdapter purchaseDetailsAdapter;
     private RealmResults<ItemListItem> itemListItems;
+    private static int purchaseRequestId;
 
     public PurchaseDetailsFragment() {
     }
 
-    public static PurchaseDetailsFragment newInstance() {
+    public static PurchaseDetailsFragment newInstance(int requestId) {
         Bundle args = new Bundle();
         PurchaseDetailsFragment fragment = new PurchaseDetailsFragment();
         fragment.setArguments(args);
+        purchaseRequestId=requestId;
         return fragment;
     }
 
@@ -88,8 +94,19 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
     }
 
     private void requestPurchaseDetailsResponse() {
+
+        JSONObject params=new JSONObject();
+        try {
+            if(purchaseRequestId != -1) {
+                params.put("purchase_request_id", purchaseRequestId);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         realm = Realm.getDefaultInstance();
-        AndroidNetworking.get(AppURL.API_PURCHASE_SUMMARY)
+        AndroidNetworking.post(AppURL.API_PURCHASE_SUMMARY + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("requestPurchaseDetailsData")
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -112,8 +129,6 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                                 @Override
                                 public void onError(Throwable error) {
                                     AppUtils.getInstance().logRealmExecutionError(error);
-
-                                    Timber.d("@@error");
                                 }
                             });
                         } finally {
@@ -126,7 +141,6 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logRealmExecutionError(anError);
-                        Timber.d("@@anError");
                     }
                 });
     }
@@ -159,6 +173,26 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseDetailsListFragment");
         }
+    }
+
+    private void requestToChangeStatus(){
+        realm = Realm.getDefaultInstance();
+        AndroidNetworking.get(AppURL.API_PURCHASE_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestChangeStatus")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+
+                    }
+                });
     }
 
 
