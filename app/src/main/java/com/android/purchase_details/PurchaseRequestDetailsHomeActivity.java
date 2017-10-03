@@ -3,16 +3,19 @@ package com.android.purchase_details;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
@@ -177,6 +180,12 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
-        }).show();
+        });
+        AlertDialog alertDialog=alertDialogBuilder.create();
+        alertDialog.show();
+        Button positiveOk=alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveOk.setBackgroundColor(Color.RED);
+
+
     }
 }

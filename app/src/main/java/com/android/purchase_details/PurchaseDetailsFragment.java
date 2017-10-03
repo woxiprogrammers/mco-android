@@ -176,6 +176,13 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
     }
 
     private void requestToChangeStatus(){
+        JSONObject params=new JSONObject();
+        try {
+            params.put("purchase_request_id",purchaseRequestId);
+            params.put("change_component_status_id_to",9);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         realm = Realm.getDefaultInstance();
         AndroidNetworking.get(AppURL.API_PURCHASE_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestChangeStatus")
