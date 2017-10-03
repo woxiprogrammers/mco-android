@@ -123,7 +123,6 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

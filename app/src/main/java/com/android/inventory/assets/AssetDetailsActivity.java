@@ -37,6 +37,7 @@ public class AssetDetailsActivity extends BaseActivity {
     private MenuItem prevMenuItem;
     private Context mContext;
     private String strAssetName, strModelNumber;
+    private int inventoryComponentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class AssetDetailsActivity extends BaseActivity {
         if (extras != null) {
             strAssetName = extras.getStringExtra("assetName");
             strModelNumber = extras.getStringExtra("modelNumber");
+            inventoryComponentId=extras.getIntExtra("inventory_component_id",-1);
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -177,6 +179,7 @@ public class AssetDetailsActivity extends BaseActivity {
         Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
         startIntent.putExtra("key", strAssetName);
         startIntent.putExtra("key1", strModelNumber);
+        startIntent.putExtra("ComponentId",inventoryComponentId);
         startActivity(startIntent);
     }
 

@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -91,7 +92,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         Intent extras = getIntent();
         if (extras != null) {
             strRRequestId = extras.getStringExtra("PRNumber");
-            mPurchaseRequestId=extras.getIntExtra("KEY_PURCHASEREQUESTID",-1);
+            mPurchaseRequestId = extras.getIntExtra("KEY_PURCHASEREQUESTID", -1);
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -185,43 +186,44 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         isInValidate = true;
                         invalidateOptionsMenu();
-                        requestToChangeStatus();
+                        requestToChangeStatus(9);
                         dialog.dismiss();
                     }
-                }).setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                }).setNegativeButton("Disapprove", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        requestToChangeStatus(10);
+                        dialog.dismiss();
             }
         });
-        AlertDialog alertDialog=alertDialogBuilder.create();
+        AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-        Button positiveOk=alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button positiveOk = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         positiveOk.setBackgroundColor(Color.RED);
-
+        Button negativeDisapprove=alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        negativeDisapprove.setBackgroundColor(Color.RED);
 
     }
 
-
-
-    private void requestToChangeStatus(){
-        JSONObject params=new JSONObject();
+    private void requestToChangeStatus(int changeComponentStatusId) {
+        JSONObject params = new JSONObject();
         try {
-            params.put("purchase_request_id",mPurchaseRequestId);
-            params.put("change_component_status_id_to",9);
+            params.put("purchase_request_id", mPurchaseRequestId);
+            params.put("change_component_status_id_to", changeComponentStatusId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        AndroidNetworking.get(AppURL.API_PURCHASE_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_PURCHASE_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestChangeStatus")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            String message=response.getString("message");
-                            Toast.makeText(mContext,message,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

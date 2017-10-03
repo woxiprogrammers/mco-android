@@ -21,13 +21,22 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppConstants;
+import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,8 +55,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
     @BindView(R.id.edit_text_modelName)
     EditText editTextModelName;
 
-    @BindView(R.id.edit_text_expiryDate)
-    EditText editTextExpiryDate;
+    @BindView(R.id.edit_text_maintainance_hours)
+    EditText editTextMaintainanceHours;
 
     @BindView(R.id.edit_text_remark)
     EditText editTextRemark;
@@ -71,7 +80,9 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private DatePickerDialog.OnDateSetListener date;
     private String strAssetName;
     private String strModelNumber;
-
+    private int componentId;
+    private ArrayList<File> arrayImageFileList;
+    private File currentImageFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +104,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
         if (extras != null) {
             strAssetName = extras.getStringExtra("key");
             strModelNumber = extras.getStringExtra("key1");
+            componentId=extras.getIntExtra("ComponentId",-1);
         }
         editTextAssetName.setText(strAssetName);
         editTextAssetName.setEnabled(false);
@@ -115,8 +127,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private void updateEditText() {
         String myFormat = "dd/MM/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextExpiryDate.setText(sdf.format(myCalendar.getTime()));
-        editTextExpiryDate.setError(null);
+        editTextMaintainanceHours.setText(sdf.format(myCalendar.getTime()));
+        editTextMaintainanceHours.setError(null);
     }
 
     @Override
@@ -136,28 +148,18 @@ public class ActivityRequestMaintanance extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.edit_text_expiryDate)
-    void onClickExpiryDate(View view) {
-        if (view.getId() == R.id.edit_text_expiryDate) {
-            AppUtils.getInstance().hideKeyboard(view, mContext);
-            new DatePickerDialog(ActivityRequestMaintanance.this, date, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        }
-    }
-
     private void validateEntries() {
-        strExpiryDate = editTextExpiryDate.getText().toString();
+        strExpiryDate = editTextMaintainanceHours.getText().toString();
         strRemark = editTextRemark.getText().toString();
         //For ExpiryDate
         if (TextUtils.isEmpty(strExpiryDate)) {
-            editTextExpiryDate.setFocusableInTouchMode(true);
-            editTextExpiryDate.requestFocus();
-            editTextExpiryDate.setError(getString(R.string.please_enter_expiry_eate));
+            editTextMaintainanceHours.setFocusableInTouchMode(true);
+            editTextMaintainanceHours.requestFocus();
+            editTextMaintainanceHours.setError(getString(R.string.please_enter_expiry_eate));
             return;
         } else {
-            editTextExpiryDate.requestFocus();
-            editTextExpiryDate.setError(null);
+            editTextMaintainanceHours.requestFocus();
+            editTextMaintainanceHours.setError(null);
         }
 
         //For Remark
@@ -170,7 +172,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
             editTextRemark.requestFocus();
             editTextRemark.setError(null);
         }
-        Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+        uploadImages_addItemToLocal();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -182,13 +184,52 @@ public class ActivityRequestMaintanance extends BaseActivity {
             case Constants.TYPE_MULTI_CAPTURE:
                 ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 Timber.d(String.valueOf(imagesList));
-                    setImageToLayout(imagesList, Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class, llAddImage);
+                llAddImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
+                for (Image currentImage : imagesList) {
+                    if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                        ImageView imageView = new ImageView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                        layoutParams.setMargins(10, 10, 10, 10);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setImageBitmap(myBitmap);
+                        llAddImage.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
                 break;
             case Constants.TYPE_MULTI_PICKER:
                 ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 Timber.d(String.valueOf(imagesList2));
-                    setImageToLayout(imagesList2, Constants.TYPE_MULTI_CAPTURE, GalleryActivity.class, llAddImage);
-                break;
+                llAddImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
+                for (Image currentImage : imagesList2) {
+                    if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                        ImageView imageView = new ImageView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                        layoutParams.setMargins(10, 10, 10, 10);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setImageBitmap(myBitmap);
+                        llAddImage.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }                break;
         }
     }
 
@@ -222,24 +263,70 @@ public class ActivityRequestMaintanance extends BaseActivity {
         intent.putExtra(Constants.KEY_PARAMS, params);
         startActivityForResult(intent, type);
     }
-    private void setImageToLayout(ArrayList<Image> imageArrayList, final int type, final Class aClass, LinearLayout layout) {
-        for (Image currentImage : imageArrayList) {
-            if (currentImage.imagePath != null) {
-                Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                ImageView imageView = new ImageView(mContext);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                layoutParams.setMargins(10, 10, 10, 10);
-                imageView.setLayoutParams(layoutParams);
-                imageView.setImageBitmap(myBitmap);
-                layout.addView(imageView);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
 
+    private void requestAssetMaintainance(){
+        JSONObject params = new JSONObject();
+        try {
+            if(componentId != -1) {
+                params.put("inventory_component_id", componentId);
+            }
+            params.put("remark", editTextRemark.getText().toString());
+            params.put("next_maintenance_hour",editTextMaintainanceHours.getText().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_ASSET_REQUEST_MAINTAINANCE + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestAssetMaintainance")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
-            }
+    }
+
+    private void uploadImages_addItemToLocal() {
+        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+            File sendImageFile = arrayImageFileList.get(0);
+            Timber.i("sendImageFile: " + sendImageFile);
+            String strToken = AppUtils.getInstance().getCurrentToken();
+            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                    .setPriority(Priority.MEDIUM)
+                    .addMultipartFile("image", sendImageFile)
+                    .addMultipartParameter("image_for", "request-maintenance")
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("uploadImages_addItemToLocal")
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Timber.d(String.valueOf(response));
+                            arrayImageFileList.remove(0);
+                            uploadImages_addItemToLocal();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                        }
+                    });
+        } else {
+            requestAssetMaintainance();
         }
     }
 }

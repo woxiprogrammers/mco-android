@@ -11,7 +11,7 @@ public class AssetsListItem extends RealmObject{
     private String totalDieselConsume;
 
     @PrimaryKey
-    @SerializedName("id")
+    @SerializedName("inventory_component_id")
     private int id;
 
     @SerializedName("model_number")
