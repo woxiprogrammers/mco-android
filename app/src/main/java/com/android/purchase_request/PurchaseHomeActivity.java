@@ -91,12 +91,15 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     }
 
     private void setUpAppBarDatePicker() {
-        Timber.d(String.valueOf(Calendar.getInstance().get(Calendar.MONTH)));
         Calendar calendar = Calendar.getInstance();
         String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
-        String strYear = calendar.getDisplayName(Calendar.YEAR, Calendar.LONG, Locale.US);
-        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + strYear);
+        int intYear = calendar.get(Calendar.YEAR);
+        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + intYear);
         final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
+        Bundle bundleArgs = new Bundle();
+        bundleArgs.putInt("maxYear", 2019);
+        bundleArgs.putInt("minYear", 2016);
+        monthYearPickerDialog.setArguments(bundleArgs);
         monthYearPickerDialog.setListener(this);
         textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,43 +107,10 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
                 monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
             }
         });
-        /*
-        textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                alertDialogBuilder.setCancelable(false);
-                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                View dialogView = layoutInflater.inflate(R.layout.dialog_date_picker, null);
-                //////////////////
-                DiscreteScrollView scrollView = (DiscreteScrollView) dialogView.findViewById(R.id.recyclerPicker);
-                scrollView.setAdapter(new SelectorAdapter());
-                scrollView.setItemTransformer(new ScaleTransformer.Builder().setMinScale(0.8f).build());
-                //
-                MultiLineRadioGroup mMultiLineRadioGroup = (MultiLineRadioGroup) dialogView.findViewById(R.id.multi_line_radio_group_purchase_home);
-                mMultiLineRadioGroup.setOnCheckedChangeListener(new MultiLineRadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(ViewGroup group, RadioButton button) {
-                        Toast.makeText(mContext, button.getText() + " was clicked", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                //////////////////////
-                alertDialogBuilder.setView(dialogView);
-                alertDialogBuilder.setTitle(R.string.select_month).setPositiveButton(R.string.select, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
-            }
-        });*/
     }
 
     @Override
-    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-        Timber.i("Date OK  " + i + "  " + i1 + "  " + i2);
+    public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
+        Timber.i("Date OK  " + year + "  " + month + "  " + i2);
     }
 }

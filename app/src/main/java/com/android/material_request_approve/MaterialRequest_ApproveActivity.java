@@ -115,13 +115,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private String strItemName = "", strUnitName = "";
     private float floatItemQuantity = 0;
     private int unitId = 0;
+    private JSONObject jsonImageNameObject = new JSONObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_material_request_approve);
         ButterKnife.bind(this);
-        toolbarMaterialRequest.setTitle("Material Request");
         setSupportActionBar(toolbarMaterialRequest);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -140,10 +140,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     isForApproval = false;
                     mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                    createAlertDialog();
                     setUpCurrentMaterialListAdapter();
                     requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                     setUpUsersSpinnerValueChangeListener();
-                    createAlertDialog();
+                    getRequestedItemList();
                 } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
                     textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
                     isForApproval = true;
@@ -151,9 +152,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                     requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                 }
+                setUpApprovedStatusAdapter();
             }
         }
-        setUpApprovedStatusAdapter();
     }
 
     private void setUpUsersSpinnerValueChangeListener() {
@@ -244,10 +245,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         Timber.d(String.valueOf(params));
         if (jsonArrayPurchaseMaterialListItems.length() > 0) {
             //TODO: UnDo following lines
-            linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
-            mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
-            getRequestedItemList();
-//            submitPurchaseRequest(params);
+//            linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+//            mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+//            getRequestedItemList();
+            submitPurchaseRequest(params);
         } else {
             Toast.makeText(mContext, "Please add some items to the list", Toast.LENGTH_SHORT).show();
         }
