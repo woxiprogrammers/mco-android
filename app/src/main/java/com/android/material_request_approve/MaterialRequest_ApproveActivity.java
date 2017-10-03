@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.dummy.RequestedItemResponse;
 import com.android.models.login_acl.PermissionsItem;
 import com.android.models.purchase_request.AvailableUsersItem;
 import com.android.models.purchase_request.UsersWithAclResponse;
@@ -82,15 +81,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     TextView textViewPurchaseMaterialListAppBarTitle;
     @BindView(R.id.textView_purchaseMaterialList_addNew)
     TextView textViewPurchaseMaterialListAddNew;
-    @BindView(R.id.toolbarPurchase)
-    Toolbar toolbarPurchase;
+    @BindView(R.id.toolbarMaterialRequest)
+    Toolbar toolbarMaterialRequest;
     @BindView(R.id.rv_material_list_material_request_approve)
     RecyclerView mRvMaterialListMaterialRequestApprove;
     @BindView(R.id.button_submit_purchase_request)
     Button buttonSubmitPurchaseRequest;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
-    private RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending;
     private List<AvailableUsersItem> availableUserArray;
     private AlertDialog alertDialog;
     private boolean isMaterial;
@@ -123,6 +121,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_material_request_approve);
         ButterKnife.bind(this);
+        toolbarMaterialRequest.setTitle("Material Request");
+        setSupportActionBar(toolbarMaterialRequest);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         mContext = MaterialRequest_ApproveActivity.this;
         strToken = AppUtils.getInstance().getCurrentToken();
         Bundle bundle = getIntent().getExtras();
@@ -248,6 +251,16 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         } else {
             Toast.makeText(mContext, "Please add some items to the list", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void createAlertDialog() {
@@ -504,7 +517,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpApprovedStatusAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_capital_p_pending))/*.equalTo("approved_status", getString(R.string.tag_manager_approved))*/.findAllAsync();
+        RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_capital_p_pending))/*.equalTo("approved_status", getString(R.string.tag_manager_approved))*/.findAllAsync();
         PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true, isForApproval);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
@@ -655,9 +668,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                         mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
-//                        requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                         getRequestedItemList();
-
+//                        requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                        /* realm = Realm.getDefaultInstance();
                         final List<PurchaseMaterialListItem> materialListItems = realm.copyFromRealm(materialListRealmResults_New);
                         for (int i = 0; i < materialListRealmResults_New.size(); i++) {

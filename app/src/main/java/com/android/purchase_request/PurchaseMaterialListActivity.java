@@ -80,8 +80,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     TextView textViewPurchaseMaterialListAppBarTitle;
     @BindView(R.id.textView_purchaseMaterialList_addNew)
     TextView textViewPurchaseMaterialListAddNew;
-    @BindView(R.id.toolbarPurchase)
-    Toolbar toolbarPurchase;
+    @BindView(R.id.toolbarPurchaseRequestAdd)
+    Toolbar toolbarPurchaseRequestAdd;
     @BindView(R.id.rv_material_list_purchase_request)
     RecyclerView recyclerView_materialList;
     @BindView(R.id.button_submit_purchase_request)
@@ -123,6 +123,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         setContentView(R.layout.activity_material_list_purchase_request);
         ButterKnife.bind(this);
         mContext = PurchaseMaterialListActivity.this;
+        toolbarPurchaseRequestAdd.setTitle("Create PR");
+        setSupportActionBar(toolbarPurchaseRequestAdd);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         ///////////
         /*Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -208,6 +213,16 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             }
         });
         popup.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @OnClick(R.id.button_submit_purchase_request)

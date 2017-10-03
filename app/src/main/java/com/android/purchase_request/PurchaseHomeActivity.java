@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
@@ -35,8 +37,8 @@ public class PurchaseHomeActivity extends BaseActivity {
     ViewPager mViewPager_purchaseHome;
     @BindView(R.id.textView_purchaseHome_appBarTitle)
     TextView textViewPurchaseHomeAppBarTitle;
-    //    @BindView(R.id.toolbarPurchase)
-//    Toolbar toolbarPurchase;
+    @BindView(R.id.toolbarPurchaseHome)
+    Toolbar toolbarPurchaseHome;
     private Context mContext;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
 
@@ -45,6 +47,11 @@ public class PurchaseHomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_home);
         ButterKnife.bind(this);
+        toolbarPurchaseHome.setTitle("Purchase");
+        setSupportActionBar(toolbarPurchaseHome);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         //Calling function to initialize required views.
         initializeViews();
     }
@@ -78,6 +85,16 @@ public class PurchaseHomeActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setUpAppBarDatePicker() {

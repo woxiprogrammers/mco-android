@@ -1,6 +1,5 @@
 package com.android.purchase_details;
 
-import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -63,86 +62,60 @@ import static android.app.Activity.RESULT_OK;
  * A simple {@link Fragment} subclass.
  */
 public class PayFragment extends Fragment implements FragmentInterface {
-
     @BindView(R.id.spinner_select_material)
     Spinner spinner;
-
     @BindView(R.id.edittextQuantity)
     EditText edittextQuantity;
-
     @BindView(R.id.editText_Challan_Number)
     EditText editTextChallanNumber;
-
     @BindView(R.id.editText_VehicleNumber)
     EditText editTextVehicleNumber;
-
     @BindView(R.id.editText_InTime)
     EditText editTextInTime;
-
     @BindView(R.id.editText_OutTime)
     EditText editTextOutTime;
-
     @BindView(R.id.editText_BillAmount)
     EditText editTextBillAmount;
-
     @BindView(R.id.editText_PayableAmount)
     EditText editTextPayableAmount;
-
     @BindView(R.id.ll_PayableAmount)
     LinearLayout llPayableAmount;
-
     @BindView(R.id.editText_grnNumber)
     EditText editTextGrnNumber;
-
     @BindView(R.id.llgrnNumber)
     LinearLayout llgrnNumber;
-
     @BindView(R.id.editext_tapToAddNote)
     EditText editext_tapToAddNote;
-
     @BindView(R.id.buttonAction)
     Button buttonAction;
-
     @BindView(R.id.radio_Group)
     RadioGroup radioGroup;
-
     TextView textViewCaptureImages;
     TextView textViewPickImages;
-
     @BindView(R.id.spinner_select_units)
     Spinner spinnerSelectUnits;
-
     @BindView(R.id.llIm)
     LinearLayout llIm;
-
     @BindView(R.id.edittext_setNameOfMaterial)
     EditText edittextSetNameOfMaterial;
-
     @BindView(R.id.ll_materialName)
     LinearLayout llMaterialName;
-
     @BindView(R.id.edittext_setUnit)
     EditText edittextSetUnit;
-
     @BindView(R.id.ll_unit)
     LinearLayout llUnit;
-
     @BindView(R.id.frameLayout_materialSpinner)
     FrameLayout frameLayoutMaterialSpinner;
-
     @BindView(R.id.frameLayout_UnitSpinner)
     FrameLayout frameLayoutUnitSpinner;
     @BindView(R.id.ll_addImage)
     LinearLayout llAddImage;
     @BindView(R.id.ll_PaymentImageLayout)
     LinearLayout llPaymentImageLayout;
-
     @BindView(R.id.layoutBillImage)
     LinearLayout layoutBill_Image;
-
     @BindView(R.id.billPaymentImageLayout)
     LinearLayout billPayment_ImageLayout;
-
     private RadioButton radioPayButton;
     private Unbinder unbinder;
     private Realm realm;
@@ -153,7 +126,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private List<MaterialNamesItem> availableMaterialArray;
     private List<MaterialUnitsItem> unitsArray;
     PurchaseBillListItem purchaseBIllDetailsItems = new PurchaseBillListItem();
-
     private List<MaterialImagesItem> materialImagesItemList;
     private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str;
 
@@ -173,8 +145,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pay, container, false);
-        textViewPickImages=view.findViewById(R.id.textView_pick);
-        textViewCaptureImages=view.findViewById(R.id.textView_capture);
+        textViewPickImages = view.findViewById(R.id.textView_pick);
+        textViewCaptureImages = view.findViewById(R.id.textView_capture);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -186,7 +158,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
         requestForMaterialNames();
@@ -207,7 +178,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
         textViewCaptureImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
             }
         });
@@ -236,10 +206,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
         }
     }
 
-
-
-
-
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode != RESULT_OK) {
@@ -249,22 +215,21 @@ public class PayFragment extends Fragment implements FragmentInterface {
             case Constants.TYPE_MULTI_CAPTURE:
                 ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 Timber.d(String.valueOf(imagesList));
-                if(PayAndBillsActivity.isForViewOnly) {
+                if (PayAndBillsActivity.isForViewOnly) {
                     setImageToLayout(imagesList, Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class, llPaymentImageLayout);
-                }else {
+                } else {
                     setImageToLayout(imagesList, Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class, llAddImage);
-
                 }
                 break;
             case Constants.TYPE_MULTI_PICKER:
                 ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 Timber.d(String.valueOf(imagesList2));
-                if(PayAndBillsActivity.isForViewOnly) {
+                if (PayAndBillsActivity.isForViewOnly) {
                     setImageToLayout(imagesList2, Constants.TYPE_MULTI_CAPTURE, GalleryActivity.class, llPaymentImageLayout);
-                }else {
+                } else {
                     setImageToLayout(imagesList2, Constants.TYPE_MULTI_CAPTURE, GalleryActivity.class, llAddImage);
-
-                }                break;
+                }
+                break;
         }
     }
 
@@ -276,7 +241,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
         strInTime = editTextInTime.getText().toString();
         strOutTime = editTextOutTime.getText().toString();
         strBillAmount = editTextBillAmount.getText().toString();
-
         //For Quantity
         if (TextUtils.isEmpty(strQuantity)) {
             edittextQuantity.setFocusableInTouchMode(true);
@@ -347,7 +311,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
         purchaseBIllDetailsItems.setOutTime(strOutTime);
         purchaseBIllDetailsItems.setMaterialQuantity(strQuantity);
         purchaseBIllDetailsItems.setBillAmount(Integer.parseInt(strBillAmount));
-
         realm = Realm.getDefaultInstance();
         try {
             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -471,7 +434,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             unitsRealmResults = materialNamesItem.getMaterialUnits();
         }
         setUpSpinnerAdapterForUnits(unitsRealmResults);
-
     }
 
     private void setUpSpinnerAdapter(RealmResults<MaterialNamesItem> availableUsersItems) {
@@ -512,7 +474,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
     }
 
     private void setData(boolean isFromClick) {
-
         if (isFromClick) {
             llgrnNumber.setVisibility(View.VISIBLE);
             llPayableAmount.setVisibility(View.VISIBLE);
@@ -534,7 +495,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             edittextQuantity.setEnabled(false);
             editTextGrnNumber.setEnabled(false);
             spinner.setEnabled(false);
-
             realm = Realm.getDefaultInstance();
             PurchaseBillListItem purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("id", PayAndBillsActivity.idForBillItem).findFirst();
             if (purchaseBIllDetailsItems != null) {
@@ -549,7 +509,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
                 editTextGrnNumber.setText(purchaseBIllDetailsItems.getPurchaseBillGrn());
                 buttonAction.setText("Pay");
             }
-
         } else {
             buttonAction.setText("Submit");
             llgrnNumber.setVisibility(View.GONE);
@@ -563,7 +522,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             layoutBill_Image.setVisibility(View.VISIBLE);
             billPayment_ImageLayout.setVisibility(View.GONE);
             billPayment_ImageLayout.setVisibility(View.GONE);
-
             editTextChallanNumber.setEnabled(true);
             editTextVehicleNumber.setEnabled(true);
             editTextInTime.setEnabled(true);
@@ -573,7 +531,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             editTextGrnNumber.setEnabled(false);
             spinner.setEnabled(true);
         }
-
     }
 
     @OnClick(R.id.editText_InTime)
@@ -612,7 +569,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
         startActivityForResult(intent, type);
     }
 
-    private void setImageToLayout(ArrayList<Image> imageArrayList, final int type, final Class aClass,LinearLayout layout) {
+    private void setImageToLayout(ArrayList<Image> imageArrayList, final int type, final Class aClass, LinearLayout layout) {
         for (Image currentImage : imageArrayList) {
             if (currentImage.imagePath != null) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
@@ -626,7 +583,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-
                     }
                 });
             }

@@ -1,4 +1,4 @@
-package com.android.dummy;
+package com.android.material_request_approve;
 
 import com.google.gson.annotations.SerializedName;
 
