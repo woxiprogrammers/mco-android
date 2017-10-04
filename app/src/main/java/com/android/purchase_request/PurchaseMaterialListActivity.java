@@ -157,9 +157,23 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         }*/
         ///////////
         requestUsersWithApproveAcl();
+        deleteExistingItemEntries();
         setUpUsersSpinnerValueChangeListener();
         setUpCurrentMaterialListAdapter();
         createAlertDialog();
+    }
+
+    private void deleteExistingItemEntries() {
+        realm=Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
+                purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_p_r_assigned)).findAll();
+                purchaseMaterialListRealmResult_inIndent.deleteAllFromRealm();
+                purchaseMaterialListRealmResults_Current.deleteAllFromRealm();
+            }
+        });
     }
 
     private void setUpUsersSpinnerValueChangeListener() {
@@ -541,8 +555,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
                     Timber.d("Size of purchaseRequestListItems: " + String.valueOf(purchaseRequestListItems.size()));
                     ///////////////////////////////
-                    purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseRequestListItems);
-                    sectionedRecyclerViewAdapter.notifyItemInsertedInSection("indent_items_section", purchaseRequestListItems.size());
+//                    purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseRequestListItems);
+//                    sectionedRecyclerViewAdapter.notifyItemInsertedInSection("indent_items_section", purchaseRequestListItems.size());
+                    setUpCurrentMaterialListAdapter();
                 }
             });
         } else {
@@ -555,8 +570,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseRequestListItems) {
                     Timber.d("Size of purchaseRequestListItems: " + String.valueOf(purchaseRequestListItems.size()));
                     ///////////////////////////////
-                    purchaseMaterialList_Current = realm.copyFromRealm(purchaseRequestListItems);
-                    sectionedRecyclerViewAdapter.notifyItemInsertedInSection("current_items_section", purchaseRequestListItems.size());
+//                    purchaseMaterialList_Current = realm.copyFromRealm(purchaseRequestListItems);
+//                    sectionedRecyclerViewAdapter.notifyItemInsertedInSection("current_items_section", purchaseRequestListItems.size());
+                    setUpCurrentMaterialListAdapter();
                 }
             });
         } else {
