@@ -370,7 +370,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         purchaseMaterialListItem.setItem_name(strItemName);
         purchaseMaterialListItem.setItem_quantity(longItemQuantity);
         //approve status- "pending"
-        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_p_r_assigned));
+        purchaseMaterialListItem.setComponentStatus(getString(R.string.tag_p_r_assigned));
         if (isMaterial) {
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setItem_unit_name(strUnitName);

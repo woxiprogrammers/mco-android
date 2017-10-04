@@ -18,17 +18,14 @@ public class PurchaseMaterialListItem extends RealmObject {
 //    private String unit;
 //    @SerializedName("quantity")
 //    private String quantity;
-    @SerializedName("component_status")
-    private String componentStatus;
+//    @SerializedName("component_status")
+//    private String componentStatus;
     //    @SerializedName("component_type_id")
 //    private int componentTypeId;
-    @PrimaryKey
-    @SerializedName("material_request_component_id")
-    private int materialRequestComponentId;
     //    @SerializedName("name")
 //    private String name;
-    @SerializedName("component_status_id")
-    private int componentStatusId;
+//    @SerializedName("component_status_id")
+//    private int componentStatusId;
     //    @SerializedName("unit_id")
 //    private int unitId;
     @SerializedName("material_request_format")
@@ -43,8 +40,12 @@ public class PurchaseMaterialListItem extends RealmObject {
     private int unit_id;
     @SerializedName("component_type_id")
     private int component_type_id;
+    @SerializedName("component_status")
+    private String componentStatus;
+    @PrimaryKey
+    @SerializedName("material_request_component_id")
+    private int materialRequestComponentId;
     /////////////////////////
-    private String approved_status;
     private String item_category;
     private String materialRequestComponentTypeSlug;
     private boolean is_diesel;
@@ -61,12 +62,12 @@ public class PurchaseMaterialListItem extends RealmObject {
         this.name = item_name;
     }
 
-    public String getApproved_status() {
-        return approved_status;
+    public String getComponentStatus() {
+        return componentStatus;
     }
 
-    public void setApproved_status(String approved_status) {
-        this.approved_status = approved_status;
+    public void setComponentStatus(String componentStatus) {
+        this.componentStatus = componentStatus;
     }
 
     public String getItem_category() {

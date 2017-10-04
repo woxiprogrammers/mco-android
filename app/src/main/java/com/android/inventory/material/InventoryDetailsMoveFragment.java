@@ -110,16 +110,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private ImageUtilityHelper imageUtilityHelper;
 
     private String str;
+    private static String strMaterialName;
 
     private Context mContext;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;
-    private ArrayList<Integer> integerArrayList = new ArrayList<Integer>();
 
-    public static InventoryDetailsMoveFragment newInstance(ArrayList<Integer> arrayMaterialCount) {
+    public static InventoryDetailsMoveFragment newInstance(String materialName) {
         Bundle args = new Bundle();
-        args.putIntegerArrayList("arrayMaterialCount", arrayMaterialCount);
         InventoryDetailsMoveFragment fragment = new InventoryDetailsMoveFragment();
         fragment.setArguments(args);
+        strMaterialName=materialName;
         return fragment;
     }
 
@@ -145,20 +145,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void initializeViews() {
         ButterKnife.bind(this, mParentView);
         mContext = getActivity();
-        text_view_materialCount.setOnClickListener(this);
+//        text_view_materialCount.setOnClickListener(this);
         buttonMove.setOnClickListener(this);
         selectImage.setOnClickListener(this);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            integerArrayList = bundle.getIntegerArrayList("arrayMaterialCount");
-        }
-        intMaterialCount = integerArrayList.size();
-        text_view_materialCount.setText(intMaterialCount + " " + "Item(s) selected");
+        text_view_materialCount.setText(strMaterialName);
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
 
+                    llChallanNumber.setVisibility(View.VISIBLE);
                 } else {
                     llChallanNumber.setVisibility(View.GONE);
                 }
@@ -222,10 +218,10 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.textview_materialCount:
+            /*case R.id.textview_materialCount:
                 openMaterialListDialog();
                 Toast.makeText(mContext, "onClick", Toast.LENGTH_SHORT).show();
-                break;
+                break;*/
             case R.id.button_move:
                 validateEntries();
                 break;

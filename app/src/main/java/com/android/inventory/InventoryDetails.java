@@ -46,6 +46,7 @@ public class InventoryDetails extends BaseActivity {
     private Context mContext;
     public static final int WRITE_PERMISSION_CODE = 5;
     private InventoryDetailsMoveFragment inventoryDetailsMoveFragment;
+    private String materialName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class InventoryDetails extends BaseActivity {
         }
         Intent intent = getIntent();
         if (intent != null) {
-            arrayList = intent.getIntegerArrayListExtra("Array");
+            materialName=intent.getStringExtra("ClickedMaterialName");
         }
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -98,9 +99,10 @@ public class InventoryDetails extends BaseActivity {
                     case R.id.action_move:
                         viewPagerInventory.setCurrentItem(0);
                         break;
-                    case R.id.action_history:
+                    //ToDo History Inventory
+                    /*case R.id.action_history:
                         viewPagerInventory.setCurrentItem(1);
-                        break;
+                        break;*/
 
                 }
                 return false;
@@ -160,7 +162,7 @@ public class InventoryDetails extends BaseActivity {
     }
 
     private class InventoryDetailsViewPagerAdapter extends FragmentPagerAdapter {
-        private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
+        private String[] arrBottomTitle = {"Bottom1"/*, "Bottom2"*/};
 
         public InventoryDetailsViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -170,7 +172,7 @@ public class InventoryDetails extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return InventoryDetailsMoveFragment.newInstance(arrayList);
+                    return InventoryDetailsMoveFragment.newInstance(materialName);
                 case 1:
                     return MaterialHistoryFragment.newInstance();
                 default:
