@@ -254,7 +254,7 @@ public class AppUtils {
     }
 
     public int getCurrentSiteId() {
-        return 5;
+        return 2;
     }
 
     public String getLoggedInAt() {

@@ -55,8 +55,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -128,6 +131,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         mContext = MaterialRequest_ApproveActivity.this;
+        deleteExistingItemEntries();
         strToken = AppUtils.getInstance().getCurrentToken();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -144,7 +148,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     createAlertDialog();
                     setUpCurrentMaterialListAdapter();
                     setUpApprovedStatusAdapter();
-                    requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
+                    requestUsersWithApproveAcl(getString(R.string.create_material_request), getString(R.string.tag_pending));
                     setUpUsersSpinnerValueChangeListener();
                     getRequestedItemList();
                 } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
@@ -157,6 +161,17 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
             }
         }
+    }
+
+    private void deleteExistingItemEntries() {
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<AvailableUsersItem> availableUsersRealmResults = realm.where(AvailableUsersItem.class).findAll();
+                availableUsersRealmResults.deleteAllFromRealm();
+            }
+        });
     }
 
     private void setUpUsersSpinnerValueChangeListener() {
@@ -240,7 +255,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
                 currentJonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
                 currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
-                currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+                currentJonObject.put("component_type_id", purchaseMaterialListItem.getComponentTypeId());
                 jsonArrayPurchaseMaterialListItems.put(currentJonObject);
             } catch (JSONException e) {
                 Timber.d("Exception occurred: " + e.getMessage());
@@ -345,11 +360,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setItem_unit_name(strUnitName);
             purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
-            purchaseMaterialListItem.setMaterialRequestComponentTypeId(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeId());
+            purchaseMaterialListItem.setComponentTypeId(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
         } else {
             purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
-            purchaseMaterialListItem.setMaterialRequestComponentTypeId(searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
+            purchaseMaterialListItem.setComponentTypeId(searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchAssetListItem_fromResult.getMaterialRequestComponentTypeSlug());
         }
         if (mCheckboxIsDiesel.isChecked()) {
@@ -489,7 +504,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpCurrentMaterialListAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        materialListRealmResults_New = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_new)).findAll();
+        materialListRealmResults_New = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_new)).findAll();
         PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(materialListRealmResults_New, true, true);
         mRvMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvMaterialListMaterialRequestApprove.setHasFixedSize(true);
@@ -522,7 +537,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpApprovedStatusAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_pending))/*.equalTo("approved_status", getString(R.string.tag_manager_approved))*/.findAll();
+        RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class)/*.equalTo("componentStatus", getString(R.string.tag_pending)).or().equalTo("componentStatus", getString(R.string.tag_manager_approved))*/.findAll();
         PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true, isForApproval);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
@@ -925,30 +940,34 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
+            setTime(purchaseMaterialListItem.getCreatedAt(), holder.textviewDate);
             holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
-            if (strStatus.equalsIgnoreCase("pending")) {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-                holder.buttonMoveToIndent.setVisibility(View.GONE);
-            } else if (strStatus.equalsIgnoreCase("manager-approved")) {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-                holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
-            } else if (strStatus.equalsIgnoreCase("manager-disapproved")) {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-                holder.buttonMoveToIndent.setVisibility(View.GONE);
-            } else if (strStatus.equalsIgnoreCase("in-indent")) {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-                holder.buttonMoveToIndent.setVisibility(View.GONE);
+            if (isApproval) {
+                if (strStatus.equalsIgnoreCase("pending")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                    holder.buttonMoveToIndent.setVisibility(View.GONE);
+                } else if (strStatus.equalsIgnoreCase("manager-approved")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                    holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
+                } else if (strStatus.equalsIgnoreCase("manager-disapproved")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                    holder.buttonMoveToIndent.setVisibility(View.GONE);
+                } else if (strStatus.equalsIgnoreCase("in-indent")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                    holder.buttonMoveToIndent.setVisibility(View.GONE);
+                }
+            } else {
+                holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
             }
         }
 
         @Override
         public long getItemId(int index) {
-            return arrPurchaseMaterialListItems.get(index).getMaterialRequestComponentTypeId();
+            return arrPurchaseMaterialListItems.get(index).getMaterialRequestComponentId();
         }
 
         @Override
@@ -971,6 +990,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             LinearLayout linearLayoutApproveDisapprove;
             @BindView(R.id.button_move_to_indent)
             Button buttonMoveToIndent;
+            @BindView(R.id.textview_Date)
+            TextView textviewDate;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
@@ -1003,16 +1024,29 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
             }
         }
+
+        private void setTime(String strParse, TextView textView) {
+            final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            Date dateObj;
+            String newDateStr = null;
+            try {
+                dateObj = df.parse(strParse);
+                SimpleDateFormat fd = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                newDateStr = fd.format(dateObj);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            textView.setText(newDateStr);
+        }
     }
 
     private void approveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems, final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
-
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
         final PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
-        int componentId = purchaseMaterialListItem.getMaterialRequestComponentTypeId();
+        int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
         JSONObject params = new JSONObject();
         try {
-            params.put("material_request_component_id", componentId);
+            params.put("material_request_component_id", materialRequestComponentId);
             params.put("change_component_status_id_to", statusId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             Log.i("@@Params", String.valueOf(params));
@@ -1044,7 +1078,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                         case 7:
                                             status = "in-indent";
                                             break;
-
                                     }
                                     purchaseMaterialListItem.setComponentStatus(status);
                                     realm.insertOrUpdate(purchaseMaterialListItem);
@@ -1052,7 +1085,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-
                                     try {
                                         if (isApprove) {
                                             linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);

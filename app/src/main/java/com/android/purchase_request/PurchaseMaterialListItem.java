@@ -45,6 +45,8 @@ public class PurchaseMaterialListItem extends RealmObject {
     @PrimaryKey
     @SerializedName("material_request_component_id")
     private int materialRequestComponentId;
+    @SerializedName("created_at")
+    private String createdAt;
     /////////////////////////
     private String item_category;
     private String materialRequestComponentTypeSlug;
@@ -118,11 +120,11 @@ public class PurchaseMaterialListItem extends RealmObject {
         this.materialRequestComponentTypeSlug = materialRequestComponentTypeSlug;
     }
 
-    public int getMaterialRequestComponentTypeId() {
+    public int getComponentTypeId() {
         return component_type_id;
     }
 
-    public void setMaterialRequestComponentTypeId(int materialRequestComponentTypeId) {
+    public void setComponentTypeId(int materialRequestComponentTypeId) {
         this.component_type_id = materialRequestComponentTypeId;
     }
 
@@ -132,5 +134,21 @@ public class PurchaseMaterialListItem extends RealmObject {
 
     public void setItem_unit_name(String item_unit_name) {
         this.item_unit_name = item_unit_name;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getMaterialRequestComponentId() {
+        return materialRequestComponentId;
+    }
+
+    public void setMaterialRequestComponentId(int materialRequestComponentId) {
+        this.materialRequestComponentId = materialRequestComponentId;
     }
 }

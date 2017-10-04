@@ -39,7 +39,6 @@ import com.android.models.purchase_request.UsersWithAclResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -156,8 +155,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             }
         }*/
         ///////////
-        requestUsersWithApproveAcl();
         deleteExistingItemEntries();
+        requestUsersWithApproveAcl();
         setUpUsersSpinnerValueChangeListener();
         setUpCurrentMaterialListAdapter();
         createAlertDialog();
@@ -168,8 +167,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
-                purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_p_r_assigned)).findAll();
+                purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).findAll();
+                purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAll();
                 purchaseMaterialListRealmResult_inIndent.deleteAllFromRealm();
                 purchaseMaterialListRealmResults_Current.deleteAllFromRealm();
             }
@@ -259,9 +258,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 //                currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
 //                currentJonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
 //                currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
-//                currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+//                currentJonObject.put("component_type_id", purchaseMaterialListItem.getComponentTypeId());
 //                jsonArrayPurchaseMaterialListItems.put(currentJonObject);
-            jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+            jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentId());
 //            } catch (JSONException e) {
 //                Timber.d("Exception occurred: " + e.getMessage());
 //            }
@@ -272,9 +271,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
                 currentJonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
                 currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
-                currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+                currentJonObject.put("component_type_id", purchaseMaterialListItem.getComponentTypeId());
                 jsonArrayPurchaseMaterialListItems.put(currentJonObject);
-//                jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+//                jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getComponentTypeId());
             } catch (JSONException e) {
                 Timber.d("Exception occurred: " + e.getMessage());
             }
@@ -284,7 +283,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 //            params.put("is_material_request", false);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("assigned_to", userId);
-            params.put("material_request_component_id", jsonArrayMaterialRequestCompoId);
+            if (jsonArrayMaterialRequestCompoId.length() > 0) {
+                params.put("material_request_component_id", jsonArrayMaterialRequestCompoId);
+            }
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
@@ -375,11 +376,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setItem_unit_name(strUnitName);
             purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
-            purchaseMaterialListItem.setMaterialRequestComponentTypeId(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeId());
+            purchaseMaterialListItem.setComponentTypeId(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
         } else {
             purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
-            purchaseMaterialListItem.setMaterialRequestComponentTypeId(searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
+            purchaseMaterialListItem.setComponentTypeId(searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchAssetListItem_fromResult.getMaterialRequestComponentTypeSlug());
         }
         if (mCheckboxIsDiesel.isChecked()) {
@@ -523,12 +524,12 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
         ///////////
-        purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_in_indent)).findAll();
+        purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).findAll();
         purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
         Section sectionIndent = new SectionedPurchaseMaterialRvAdapter("Approved Items", purchaseMaterialList_inIndent);
         sectionedRecyclerViewAdapter.addSection("indent_items_section", sectionIndent);
         ///////////
-        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("approved_status", getString(R.string.tag_p_r_assigned)).findAll();
+        purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAll();
         purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
         Section sectionCurrent = new SectionedPurchaseMaterialRvAdapter("Current Items", purchaseMaterialList_Current);
         sectionedRecyclerViewAdapter.addSection("current_items_section", sectionCurrent);
