@@ -164,7 +164,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     }
 
     private void deleteExistingItemEntries() {
-        realm=Realm.getDefaultInstance();
+        realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -254,17 +254,17 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         JSONObject currentJonObject;
         JSONArray jsonArrayMaterialRequestCompoId = new JSONArray();
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Approved) {
-            currentJonObject = new JSONObject();
-            try {
-                currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
-                currentJonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
-                currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
-                currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
-                jsonArrayPurchaseMaterialListItems.put(currentJonObject);
-                jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentTypeId());
-            } catch (JSONException e) {
-                Timber.d("Exception occurred: " + e.getMessage());
-            }
+//            currentJonObject = new JSONObject();
+//            try {
+//                currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
+//                currentJonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
+//                currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
+//                currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+//                jsonArrayPurchaseMaterialListItems.put(currentJonObject);
+            jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+//            } catch (JSONException e) {
+//                Timber.d("Exception occurred: " + e.getMessage());
+//            }
         }
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Current) {
             currentJonObject = new JSONObject();
@@ -274,7 +274,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
                 currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
                 jsonArrayPurchaseMaterialListItems.put(currentJonObject);
-                jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentTypeId());
+//                jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentTypeId());
             } catch (JSONException e) {
                 Timber.d("Exception occurred: " + e.getMessage());
             }
@@ -284,7 +284,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 //            params.put("is_material_request", false);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("assigned_to", userId);
-            params.put("material_request_component_id",jsonArrayMaterialRequestCompoId);
+            params.put("material_request_component_id", jsonArrayMaterialRequestCompoId);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
@@ -534,7 +534,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         sectionedRecyclerViewAdapter.addSection("current_items_section", sectionCurrent);
         //////////
         recyclerView_materialList.setAdapter(sectionedRecyclerViewAdapter);
-        recyclerView_materialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, recyclerView_materialList,
+        /*recyclerView_materialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, recyclerView_materialList,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
@@ -547,7 +547,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
-                }));
+                }));*/
         if (purchaseMaterialListRealmResult_inIndent != null) {
             Timber.d("purchaseMaterialListRealmResult_inIndent change listener added.");
             purchaseMaterialListRealmResult_inIndent.addChangeListener(new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
