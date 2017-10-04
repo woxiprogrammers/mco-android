@@ -733,6 +733,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     .addMultipartParameter("image_for", "material-request")
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")
+                    .setPercentageThresholdForCancelling(50)
                     .build()
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
