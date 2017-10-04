@@ -116,6 +116,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter;
     private List<PurchaseMaterialListItem> purchaseMaterialList_inIndent;
     private List<PurchaseMaterialListItem> purchaseMaterialList_Current;
+    private JSONObject jsonImageNameObject = new JSONObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,10 +142,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     isForApproval = false;
                     mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                    createAlertDialog();
                     setUpCurrentMaterialListAdapter();
                     requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                     setUpUsersSpinnerValueChangeListener();
-                    createAlertDialog();
                 } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
                     textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
                     isForApproval = true;
@@ -237,6 +238,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         int userId = availableUserArray.get(index).getId();
         JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
         JSONObject currentJonObject;
+        JSONArray jsonArrayMaterialRequestCompoId = new JSONArray();
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Approved) {
             currentJonObject = new JSONObject();
             try {
@@ -245,6 +247,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
                 currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
                 jsonArrayPurchaseMaterialListItems.put(currentJonObject);
+                jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentTypeId());
             } catch (JSONException e) {
                 Timber.d("Exception occurred: " + e.getMessage());
             }
@@ -257,6 +260,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 currentJonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
                 currentJonObject.put("component_type_id", purchaseMaterialListItem.getMaterialRequestComponentTypeId());
                 jsonArrayPurchaseMaterialListItems.put(currentJonObject);
+                jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentTypeId());
             } catch (JSONException e) {
                 Timber.d("Exception occurred: " + e.getMessage());
             }
@@ -266,6 +270,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 //            params.put("is_material_request", false);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("assigned_to", userId);
+            params.put("material_request_component_id",jsonArrayMaterialRequestCompoId);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
@@ -421,6 +426,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         mEditTextNameMaterialAsset.clearFocus();
         mEditTextQuantityMaterialAsset.setText("");
         mEditTextQuantityMaterialAsset.clearFocus();
+        mEditTextQuantityMaterialAsset.setError(null);
         mLlUploadImage.removeAllViews();
         mSpinnerUnits.setAdapter(null);
         mCheckboxIsDiesel.setChecked(false);

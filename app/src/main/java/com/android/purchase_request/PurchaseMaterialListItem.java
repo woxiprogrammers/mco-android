@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * <b></b>
@@ -22,6 +21,7 @@ public class PurchaseMaterialListItem extends RealmObject {
     private String componentStatus;
     //    @SerializedName("component_type_id")
 //    private int componentTypeId;
+//    @PrimaryKey
     @SerializedName("material_request_component_id")
     private int materialRequestComponentId;
     //    @SerializedName("name")
@@ -40,7 +40,6 @@ public class PurchaseMaterialListItem extends RealmObject {
     private float quantity;
     @SerializedName("unit_id")
     private int unit_id;
-    @PrimaryKey
     @SerializedName("component_type_id")
     private int component_type_id;
 /////////////////////////

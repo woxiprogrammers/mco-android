@@ -1,13 +1,7 @@
 package com.android.utils;
 
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.util.Log;
 import android.view.View;
@@ -17,9 +11,6 @@ import android.widget.Toast;
 import com.android.models.login_acl.LoginResponse;
 import com.androidnetworking.error.ANError;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -180,86 +171,6 @@ public class AppUtils {
     }
 
     /**
-     * this utility method helps to save images in internal memory. Since the image is saved in the internal memory, the image is private
-     *
-     * @param bitmap    image in bitmap form
-     * @param name      name of the file
-     * @param type      format of the image. only png and jpg formats are allowed. parameter should be of following format. "png" or "jpg"
-     * @param path      path of the folder in which image to be saved. sample path format: /folder1/folder2/folder3/
-     * @param quality   quality of the image
-     * @param isPrivate
-     * @return path in which image is saved
-     */
-    public String SaveImage(Bitmap bitmap, String name, String type, String path, int quality, boolean isPrivate) {
-        File file_path = null;
-        File dir2 = null;
-        String a = File.separator;
-        if (path == null || path.isEmpty() || path.length() <= 3 || !path.contains("/")) {
-            Log.e("Utils Plus", "Folder path seems to be incorrect. Please correct the path");
-        }
-        if (type == null || type.isEmpty()) {
-            Log.e("Utils Plus", "Image type can not be null or empty.");
-        }
-        if (name == null || name.isEmpty()) {
-            Log.e("Utils Plus", "Image name can not be null or empty.");
-        }
-        if (quality < 0 || quality > 100) {
-            Log.e("Utils Plus", "Quality must be greater than 0 and less than 100");
-        }
-        if (type != null) {
-            if (!type.equalsIgnoreCase("PNG") && !type.equalsIgnoreCase("JPG")) {
-                Log.e("Utils Plus", "format not supported except png and jpg");
-            }
-        }
-        if (type.equalsIgnoreCase("PNG")) {
-            name = name + ".png";
-        } else if (type.equalsIgnoreCase("JPG")) {
-            name = name + ".jpg";
-        }
-        if (!isPrivate) {
-            File rootDir = null;
-            path = path.replaceAll("//*", "/");
-            String[] folders = path.split("/");
-            for (int i = 0; i < folders.length; i++) {
-                if (i == 0) {
-                    rootDir = mContext.getDir(folders[i], Context.MODE_APPEND); //Creating an internal dir;
-                    if (!rootDir.exists()) {
-                        rootDir.mkdirs();
-                    }
-                } else {
-                    rootDir = new File(rootDir, folders[i]);
-                    rootDir.mkdir();
-                }
-            }
-            return rootDir.getAbsolutePath();
-        }
-        ContextWrapper cw = new ContextWrapper(mContext);
-        File dir = cw.getFilesDir();
-        dir2 = new File(dir, path);
-        dir2.mkdirs();
-        file_path = new File(dir2, name);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file_path);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            if (type.equalsIgnoreCase("PNG")) {
-                bitmap.compress(Bitmap.CompressFormat.PNG, quality, fos);
-            } else if (type.equalsIgnoreCase("JPG")) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return dir2.getAbsolutePath();
-    }
-
-    /**
      * Checks whether there is an active network connection or not
      *
      * @return true or false
@@ -267,27 +178,6 @@ public class AppUtils {
     public boolean checkNetworkState() {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-    }
-
-    /**
-     * converts image of the form "drawable" to "bitmap"
-     *
-     * @param drawable drawable resource
-     * @return bitmap obtained from drawable
-     */
-    private Bitmap drawableToBitmap(Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-        int width = drawable.getIntrinsicWidth();
-        width = width > 0 ? width : 1;
-        int height = drawable.getIntrinsicHeight();
-        height = height > 0 ? height : 1;
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
     }
 
     /**
@@ -305,34 +195,6 @@ public class AppUtils {
         }
     }
 
-    /**
-     * sendEmail method is used to send email from available email clients installed in the app
-     *
-     * @param chooserTitle title of the client. Can not be null
-     * @param subject      email subject. Can not be null.
-     * @param body         body of the email. Can not be null
-     * @param recipients   list of recipients. For example, "abc@xyz.com, xyz@dfc.com". this parameter can not be null
-     */
-    public void sendEmail(String chooserTitle, String subject, String body, String... recipients) {
-        checkNull("chooserTitle not allowed to be null", chooserTitle);
-        checkNull("subject not allowed to be null", subject);
-        checkNull("body not allowed to be null", body);
-        checkNull("recipients not allowed to be null", recipients);
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setType("message/rfc822");
-        intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, body);
-        try {
-            Intent chooserIntent = Intent.createChooser(intent, chooserTitle);
-            chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(chooserIntent);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Log.d("Utils Plus", "Activity Not Found");
-        }
-    }
-
     public void logApiError(ANError anError, String strApiTag) {
         if (anError.getErrorCode() != 0) {
             Timber.tag(strApiTag).d("Api errorCode : " + anError.getErrorCode());
@@ -343,6 +205,7 @@ public class AppUtils {
             Timber.tag(strApiTag).d("onError errorDetail : " + anError.getErrorDetail());
             Timber.tag(strApiTag).d("onError errorMessage : " + anError.getMessage());
         }
+        Toast.makeText(mContext, "API Error: " + anError.getErrorDetail(), Toast.LENGTH_SHORT).show();
     }
 
     public void logRealmExecutionError(Throwable error) {

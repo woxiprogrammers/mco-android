@@ -116,16 +116,16 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     }
 
     private void requestPrListOnline() {
-        JSONObject params=new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id",5);
-            params.put("month",9);
-            params.put("year",2017);
-            params.put("page",0);
+            params.put("project_site_id", 5);
+            params.put("month", 10);
+            params.put("year", 2017);
+            params.put("page", 0);
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("@@URLRequest",AppURL.API_PURCHASE_REQUEST_LIST + AppUtils.getInstance().getCurrentToken());
         AndroidNetworking.post(AppURL.API_PURCHASE_REQUEST_LIST + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -141,7 +141,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                                 @Override
                                 public void execute(Realm realm) {
                                     realm.insertOrUpdate(response);
-                                    Log.i("@@Res",response.toString());
+                                    Log.i("@@Res", response.toString());
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
@@ -186,14 +186,13 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         if (BuildConfig.DEBUG) {
                             Timber.d(String.valueOf(purchaseRequestListItem));
                         }
-                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber",purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID",purchaseRequestListItem.getId()));
+                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-
         recyclerView_commonListingView.addOnScrollListener(new EndlessRecyclerViewScrollListener(new LinearLayoutManager(mContext)) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -204,7 +203,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             purchaseRequestListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseRequestListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems) {
-
                 }
             });
         } else {
@@ -268,5 +266,4 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             }
         }
     }
-
 }

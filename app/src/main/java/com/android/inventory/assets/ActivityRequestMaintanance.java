@@ -282,7 +282,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
             e.printStackTrace();
         }
 
-        AndroidNetworking.post(AppURL.API_ASSET_REQUEST_MAINTAINANCE + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_ASSET_REQUEST_MAINTENANCE + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestAssetMaintenance")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
