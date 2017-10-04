@@ -119,7 +119,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private float floatItemQuantity = 0;
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
-    private boolean isApprove, isMoveIndent;
+    private boolean isApprove, isMoveIndent, isNewItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -364,6 +364,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
         } else {
             purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
+            purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setComponentTypeId(searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchAssetListItem_fromResult.getMaterialRequestComponentTypeSlug());
         }
@@ -416,14 +417,17 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             strItemNameLabel = getString(R.string.dialog_label_add_material);
             strDialogTitle = getString(R.string.dialog_title_add_material);
             ll_dialog_unit.setVisibility(View.VISIBLE);
+            mEditTextQuantityMaterialAsset.setText("");
+            mEditTextQuantityMaterialAsset.setFocusableInTouchMode(true);
         } else {
             strItemNameLabel = getString(R.string.dialog_label_add_asset);
             strDialogTitle = getString(R.string.dialog_title_add_asset);
             ll_dialog_unit.setVisibility(View.INVISIBLE);
+            mEditTextQuantityMaterialAsset.setText("1");
+            mEditTextQuantityMaterialAsset.setFocusable(false);
         }
         mEditTextNameMaterialAsset.setText("");
         mEditTextNameMaterialAsset.clearFocus();
-        mEditTextQuantityMaterialAsset.setText("");
         mEditTextQuantityMaterialAsset.clearFocus();
         mEditTextQuantityMaterialAsset.setError(null);
         mLlUploadImage.removeAllViews();
@@ -621,7 +625,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             mEditTextNameMaterialAsset.clearFocus();
-            boolean isNewItem = bundleExtras.getBoolean("isNewItem");
+            isNewItem = bundleExtras.getBoolean("isNewItem");
             isMaterial = bundleExtras.getBoolean("isMaterial");
             String searchedItemName = bundleExtras.getString("searchedItemName");
             realm = Realm.getDefaultInstance();
@@ -796,11 +800,12 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         floatItemQuantity = Long.parseLong(strQuantity);
         strUnitName = "";
         unitId = 0;
-        if (isMaterial) {
+        if (isMaterial && !isNewItem) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
+            Timber.i("Material Old: unitId: " + unitId + " strUnitName " + strUnitName);
             int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
             if (floatComparison > 0) {
                 Toast.makeText(mContext, "Quantity is greater than allowed max quantity", Toast.LENGTH_SHORT).show();
@@ -811,6 +816,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 mEditTextQuantityMaterialAsset.setError(null);
                 mEditTextQuantityMaterialAsset.clearFocus();
             }
+        } else if (isMaterial) {
+            int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+            unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
+            strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
+            Timber.i("Material New: unitId: " + unitId + " strUnitName " + strUnitName);
+        }
+        if (!isMaterial) {
+            unitId = searchAssetListItem_fromResult.getAssetUnitId();
         }
         uploadImages_addItemToLocal();
     }
@@ -942,7 +955,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
-            setTime(purchaseMaterialListItem.getCreatedAt(), holder.textviewDate);
+//            setTime(purchaseMaterialListItem.getCreatedAt(), holder.textviewDate);
             holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();

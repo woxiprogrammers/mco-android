@@ -15,6 +15,8 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
     private String materialRequestComponentTypeSlug;
     @SerializedName("asset_id")
     private int assetId;
+    @SerializedName("asset_unit_id")
+    private int assetUnitId;
     @SerializedName("material_request_component_type_id")
     private int materialRequestComponentTypeId;
 
@@ -56,5 +58,13 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
 
     public int getMaterialRequestComponentTypeId() {
         return materialRequestComponentTypeId;
+    }
+
+    public int getAssetUnitId() {
+        return assetUnitId;
+    }
+
+    public void setAssetUnitId(int assetUnitId) {
+        this.assetUnitId = assetUnitId;
     }
 }
