@@ -191,7 +191,15 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         rv_material_list.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rv_material_list, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-                realm.executeTransaction(new Realm.Transaction() {
+                Intent intent = new Intent(mContext, InventoryDetails.class);
+                intent.putExtra("ClickedMaterialName",materialListItems.get(position).getMaterialName());
+//                intent.putExtra("Array", strMaterialName);
+                startActivity(intent);
+
+
+
+
+                /*realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
                         materialListItems.get(position).setSelected(true);
@@ -206,18 +214,14 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                         .setAction("Ok", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent(mContext, InventoryDetails.class);
-                                intent.putExtra("Array", strMaterialName);
-                                startActivity(intent);
+
                             }
                         });
-                // Changing message text color
-                //snackbar.setActionTextColor("#ffffff");
-                // Changing action button text color
+                snackbar.setActionTextColor("#ffffff");
                 View sbView = snackbar.getView();
                 TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
                 textView.setTextColor(Color.YELLOW);
-                snackbar.show();
+                snackbar.show();*/
             }
 
             @Override

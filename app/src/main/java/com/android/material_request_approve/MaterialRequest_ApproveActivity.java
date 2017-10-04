@@ -340,7 +340,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         purchaseMaterialListItem.setItem_name(strItemName);
         purchaseMaterialListItem.setItem_quantity(longItemQuantity);
         //approve status- "pending"
-        purchaseMaterialListItem.setApproved_status(getString(R.string.tag_new));
+        purchaseMaterialListItem.setComponentStatus(getString(R.string.tag_new));
         if (isMaterial) {
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setItem_unit_name(strUnitName);
@@ -522,7 +522,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpApprovedStatusAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_capital_p_pending))/*.equalTo("approved_status", getString(R.string.tag_manager_approved))*/.findAll();
+        RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_pending))/*.equalTo("approved_status", getString(R.string.tag_manager_approved))*/.findAll();
         PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true, isForApproval);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
@@ -925,16 +925,31 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
+
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
-            holder.textViewItemStatus.setText(purchaseMaterialListItem.getApproved_status());
+            holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
+            String strStatus = purchaseMaterialListItem.getComponentStatus();
+            if (strStatus.equalsIgnoreCase("pending")) {
+                holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                holder.buttonMoveToIndent.setVisibility(View.GONE);
+            } else if (strStatus.equalsIgnoreCase("manager-approved")) {
+                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
+            } else if (strStatus.equalsIgnoreCase("manager-disapproved")) {
+                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                holder.buttonMoveToIndent.setVisibility(View.GONE);
+            } else if (strStatus.equalsIgnoreCase("in-indent")) {
+                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                holder.buttonMoveToIndent.setVisibility(View.GONE);
+            }
         }
 
-        /*@Override
+        @Override
         public long getItemId(int index) {
-            return arrPurchaseMaterialListItems.get(index).getIndexId();
-        }*/
+            return arrPurchaseMaterialListItems.get(index).getMaterialRequestComponentTypeId();
+        }
 
         @Override
         public int getItemCount() {
@@ -974,7 +989,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.iv_approve:
-                        Timber.i("Approve Clicked");
                         isApprove = true;
                         approveMaterial(3, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
@@ -984,7 +998,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         break;
                     case R.id.button_move_to_indent:
                         isMoveIndent = true;
-                        Timber.i("Move To Indent Clicked");
                         approveMaterial(7, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                 }
@@ -992,9 +1005,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
     }
 
-    private void approveMaterial(int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems, final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
+    private void approveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems, final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
+
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
-        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
+        final PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
         int componentId = purchaseMaterialListItem.getMaterialRequestComponentTypeId();
         JSONObject params = new JSONObject();
         try {
@@ -1014,20 +1028,62 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        realm = Realm.getDefaultInstance();
                         try {
-                            String message = response.getString("message");
-                            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-                            if (isApprove) {
-                                linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-                                buttonMoveToIndent.setVisibility(View.VISIBLE);
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    String status = "";
+                                    switch (statusId) {
+                                        case 3:
+                                            status = "manager-approved";
+                                            break;
+                                        case 4:
+                                            status = "manager-disapproved";
+                                            break;
+                                        case 7:
+                                            status = "in-indent";
+                                            break;
+
+                                    }
+                                    purchaseMaterialListItem.setComponentStatus(status);
+                                    realm.insertOrUpdate(purchaseMaterialListItem);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+
+                                    try {
+                                        if (isApprove) {
+                                            linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                                            buttonMoveToIndent.setVisibility(View.VISIBLE);
+                                        }
+                                        if (isMoveIndent) {
+                                            buttonMoveToIndent.setVisibility(View.INVISIBLE);
+                                            linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
                             }
-                            if (isMoveIndent) {
-                                buttonMoveToIndent.setVisibility(View.INVISIBLE);
-                                linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-                            }
+                        }
+                        String message = null;
+                        try {
+                            message = response.getString("message");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

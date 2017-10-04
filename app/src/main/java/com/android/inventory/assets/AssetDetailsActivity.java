@@ -142,9 +142,11 @@ public class AssetDetailsActivity extends BaseActivity {
 
     @OnClick(R.id.floating_add_button)
     public void onViewClicked() {
-        Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
+        Toast.makeText(mContext,"In Progress",Toast.LENGTH_SHORT).show();
+        //ToDo Start Reading
+        /*Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
         intent.putExtra("asset_name",strAssetName);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {

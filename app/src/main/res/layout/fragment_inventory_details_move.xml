@@ -344,12 +344,6 @@
                     android:layout_height="wrap_content"
                     android:text="Material Names:"
                     android:textColor="@color/colorTextLight"/>
-                <!--
-                                <EditText
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@android:drawable/editbox_background_normal"
-                                    android:text="Electric Welding Machine Bits"/>-->
             </LinearLayout>
 
             <LinearLayout
@@ -409,12 +403,6 @@
                     android:prompt="@string/destination_prompt"
                     android:visibility="gone"
                     />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="*options: site, client, labour, sub-contractor, supplier."
-                    android:textColor="@color/colorTextLight"/>
             </LinearLayout>
 
             <LinearLayout

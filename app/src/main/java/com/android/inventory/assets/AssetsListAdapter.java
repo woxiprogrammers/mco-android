@@ -40,9 +40,9 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
                 assetsListItem = assetsListItemCollection.get(position);
-                holder.textViewAssetListName.setText("Asset Name:- " + assetsListItem.getAssetsName());
+                holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
                 holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
-                holder.assetModelNumber.setText("Model Number:- " + assetsListItem.getModelNumber());
+                holder.assetModelNumber.setText(assetsListItem.getModelNumber());
                 holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
                 holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume() + " "));
     }

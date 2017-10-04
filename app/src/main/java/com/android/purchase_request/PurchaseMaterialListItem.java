@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * <b></b>
@@ -17,11 +18,11 @@ public class PurchaseMaterialListItem extends RealmObject {
 //    private String unit;
 //    @SerializedName("quantity")
 //    private String quantity;
-    @SerializedName("component_status")
-    private String componentStatus;
+//    @SerializedName("component_status")
+//    private String componentStatus;
     //    @SerializedName("component_type_id")
 //    private int componentTypeId;
-//    @PrimaryKey
+    @PrimaryKey
     @SerializedName("material_request_component_id")
     private int materialRequestComponentId;
     //    @SerializedName("name")
@@ -42,8 +43,9 @@ public class PurchaseMaterialListItem extends RealmObject {
     private int unit_id;
     @SerializedName("component_type_id")
     private int component_type_id;
-/////////////////////////
-    private String approved_status;
+    @SerializedName("component_status")
+    private String componentStatus;
+    /////////////////////////
     private String item_category;
     private String materialRequestComponentTypeSlug;
     private boolean is_diesel;
@@ -60,12 +62,12 @@ public class PurchaseMaterialListItem extends RealmObject {
         this.name = item_name;
     }
 
-    public String getApproved_status() {
-        return approved_status;
+    public String getComponentStatus() {
+        return componentStatus;
     }
 
-    public void setApproved_status(String approved_status) {
-        this.approved_status = approved_status;
+    public void setComponentStatus(String componentStatus) {
+        this.componentStatus = componentStatus;
     }
 
     public String getItem_category() {
