@@ -148,7 +148,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     createAlertDialog();
                     setUpCurrentMaterialListAdapter();
                     setUpApprovedStatusAdapter();
-                    requestUsersWithApproveAcl(getString(R.string.create_material_request), getString(R.string.tag_pending));
+                    requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                     setUpUsersSpinnerValueChangeListener();
                     getRequestedItemList();
                 } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
@@ -955,7 +955,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
-//            setTime(purchaseMaterialListItem.getCreatedAt(), holder.textviewDate);
+            setTime(purchaseMaterialListItem.getCreatedAt(), holder.textViewDate);
             holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
@@ -1004,7 +1004,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             @BindView(R.id.button_move_to_indent)
             Button buttonMoveToIndent;
             @BindView(R.id.textview_Date)
-            TextView textviewDate;
+            TextView textViewDate;
 
             public MyViewHolder(View itemView) {
                 super(itemView);

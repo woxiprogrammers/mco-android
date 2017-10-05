@@ -118,7 +118,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", 5);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("month", 10);
             params.put("year", 2017);
             params.put("page", 0);
