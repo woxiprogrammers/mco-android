@@ -376,11 +376,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         if (isMaterial) {
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setItem_unit_name(strUnitName);
-            purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
+//            purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
             purchaseMaterialListItem.setComponentTypeId(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
         } else {
-            purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
+//            purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setComponentTypeId(searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchAssetListItem_fromResult.getMaterialRequestComponentTypeSlug());

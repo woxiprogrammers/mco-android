@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,6 +61,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -359,11 +363,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         if (isMaterial) {
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setItem_unit_name(strUnitName);
-            purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
+//            purchaseMaterialListItem.setItem_category(getString(R.string.tag_material));
             purchaseMaterialListItem.setComponentTypeId(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
         } else {
-            purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
+//            purchaseMaterialListItem.setItem_category(getString(R.string.tag_asset));
             purchaseMaterialListItem.setItem_unit_id(unitId);
             purchaseMaterialListItem.setComponentTypeId(searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
             purchaseMaterialListItem.setMaterialRequestComponentTypeSlug(searchAssetListItem_fromResult.getMaterialRequestComponentTypeSlug());
@@ -373,13 +377,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         } else {
             purchaseMaterialListItem.setIs_diesel(false);
         }
-        /*int randomNum;
+        int randomNum;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             randomNum = ThreadLocalRandom.current().nextInt(11, 999999);
         } else {
             randomNum = new Random().nextInt((999999) + 11);
         }
-        purchaseMaterialListItem.setIndexId(randomNum);*/
+        purchaseMaterialListItem.setIndexId(randomNum);
         purchaseMaterialListItem.setList_of_images(new RealmList<MaterialImageItem>());
         realm = Realm.getDefaultInstance();
         try {

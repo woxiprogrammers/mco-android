@@ -12,22 +12,10 @@ import io.realm.annotations.PrimaryKey;
  * Created by Rohit.
  */
 public class PurchaseMaterialListItem extends RealmObject {
+    @PrimaryKey
+    private String primaryKey;
     @SerializedName("component_type")
     private String componentType;
-    //    @SerializedName("unit")
-//    private String unit;
-//    @SerializedName("quantity")
-//    private String quantity;
-//    @SerializedName("component_status")
-//    private String componentStatus;
-    //    @SerializedName("component_type_id")
-//    private int componentTypeId;
-    //    @SerializedName("name")
-//    private String name;
-//    @SerializedName("component_status_id")
-//    private int componentStatusId;
-    //    @SerializedName("unit_id")
-//    private int unitId;
     @SerializedName("material_request_format")
     private String materialRequestFormat;
     @SerializedName("name")
@@ -42,13 +30,13 @@ public class PurchaseMaterialListItem extends RealmObject {
     private int component_type_id;
     @SerializedName("component_status")
     private String componentStatus;
-    @PrimaryKey
+    //    @PrimaryKey
     @SerializedName("material_request_component_id")
     private int materialRequestComponentId;
     @SerializedName("created_at")
     private String createdAt;
     /////////////////////////
-    private String item_category;
+//    private String item_category;
     private String materialRequestComponentTypeSlug;
     private boolean is_diesel;
     private RealmList<MaterialImageItem> list_of_images;
@@ -72,13 +60,13 @@ public class PurchaseMaterialListItem extends RealmObject {
         this.componentStatus = componentStatus;
     }
 
-    public String getItem_category() {
+    /*public String getItem_category() {
         return item_category;
     }
 
     public void setItem_category(String item_category) {
         this.item_category = item_category;
-    }
+    }*/
 
     public boolean is_diesel() {
         return is_diesel;
@@ -150,5 +138,13 @@ public class PurchaseMaterialListItem extends RealmObject {
 
     public void setMaterialRequestComponentId(int materialRequestComponentId) {
         this.materialRequestComponentId = materialRequestComponentId;
+    }
+
+    // local defined primary key
+    public void compoundPrimaryKey() {
+        if (!isManaged()) {
+            // only un-managed objects needs compound key
+            this.primaryKey = String.format("[I:%d][T:%d]", this.name, this.materialRequestComponentId);
+        }
     }
 }
