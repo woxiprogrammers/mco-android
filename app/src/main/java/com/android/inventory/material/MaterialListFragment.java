@@ -114,7 +114,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         JSONObject params=new JSONObject();
         try {
             params.put("page_id",0);
-            params.put("project_site_id",5);
+            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -194,35 +194,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                 Intent intent = new Intent(mContext, InventoryDetails.class);
                 intent.putExtra("ClickedMaterialName",materialListItems.get(position).getMaterialName());
 //                intent.putExtra("Array", strMaterialName);
-                startActivity(intent);
-
-
-
-
-                /*realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        materialListItems.get(position).setSelected(true);
-                    }
-                });
-                View itemView = rv_material_list.getRootView();
-                LinearLayout cardView = ButterKnife.findById(itemView, R.id.cardView);
-                cardView.setSelected(true);
-                rv_material_list.getAdapter().notifyDataSetChanged();
-                Snackbar snackbar = Snackbar
-                        .make(view, "Select Materials", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("Ok", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        });
-                snackbar.setActionTextColor("#ffffff");
-                View sbView = snackbar.getView();
-                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setTextColor(Color.YELLOW);
-                snackbar.show();*/
-            }
+                startActivity(intent); }
 
             @Override
             public void onLongItemClick(View view, int position) {

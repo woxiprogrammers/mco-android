@@ -148,19 +148,6 @@ public class InventoryDetails extends BaseActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        imageUtilityHelper.onSelectionResult(requestCode, resultCode, data);
-        imageUtilityHelper.deleteLocalImage();
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                inventoryDetailsMoveFragment = (InventoryDetailsMoveFragment) viewPagerInventory.getAdapter().instantiateItem(viewPagerInventory, 0);
-                inventoryDetailsMoveFragment.addImageViewObject(mContext);
-            }
-        }
-    }
-
     private class InventoryDetailsViewPagerAdapter extends FragmentPagerAdapter {
         private String[] arrBottomTitle = {"Bottom1"/*, "Bottom2"*/};
 
@@ -186,53 +173,6 @@ public class InventoryDetails extends BaseActivity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //TODO: Function that requires permission
-                inventoryDetailsMoveFragment = (InventoryDetailsMoveFragment) viewPagerInventory.getAdapter().instantiateItem(viewPagerInventory, 0);
-                inventoryDetailsMoveFragment.getImageChooser();
-            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    //Show permission explanation dialog...
-                    Snackbar.make(findViewById(android.R.id.content), "Permission required for the function to work properly.", Snackbar.LENGTH_LONG)
-                            .setAction("OK", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    ActivityCompat.requestPermissions(InventoryDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_PERMISSION_CODE);
-                                }
-                            })
-                            .show();
-                } else {
-                    //Never ask again selected, or device policy prohibits the app from having that permission.
-                    //So, disable that feature, or fall back to another situation...
-                    //Open App Settings Page
-                    Snackbar.make(findViewById(android.R.id.content), "You have denied this permission. Please allow this permission.", Snackbar.LENGTH_LONG)
-                            .setAction("Settings", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent intentSettings = new Intent();
-                                    intentSettings.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                    intentSettings.addCategory(Intent.CATEGORY_DEFAULT);
-                                    intentSettings.setData(Uri.parse("package:" + mContext.getPackageName()));
-                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                                    mContext.startActivity(intentSettings);
-                                }
-                            }).show();
-                }
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    public void createObject(ImageView imageView) {
-        imageUtilityHelper = new ImageUtilityHelper(mContext, imageView);
-    }
 
 
 
