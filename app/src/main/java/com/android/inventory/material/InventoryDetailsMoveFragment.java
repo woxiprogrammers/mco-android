@@ -114,7 +114,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     EditText edittextUnit;
 
     private View mParentView;
-    private String strSourceName, strDate, strVehicleNumber, strInTime, strOutTime, strBillNumber, strQuantity, strUnit;
+    private String strSourceName, strDate, strVehicleNumber, strInTime, strOutTime, strBillNumber, strQuantity, strUnit,strBillAmount;
     private boolean isChecked;
     private ImageUtilityHelper imageUtilityHelper;
 
@@ -346,6 +346,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             editTextChallanNumber.requestFocus();
         }
 
+        if(!checkboxMoveInOut.isChecked()){
+            strBillAmount=editTextBillamount.getText().toString();
+            if(TextUtils.isEmpty(strBillAmount)){
+                editTextBillamount.setError("Please Enter Bill Amount");
+                return;
+            }else {
+                editTextBillamount.requestFocus();
+                editTextBillamount.setError(null);
+            }
+        }
         if (isChecked) {
             //Vehicle Number
             strVehicleNumber = editTextVehicleNumber.getText().toString();
@@ -409,11 +419,11 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             params.put("type", transferType);
             params.put("quantity", strQuantity);
             params.put("unit_id", strMaterialName);
-            params.put("date", strMaterialName);
-            params.put("in_time", strMaterialName);
-            params.put("out_time", strMaterialName);
-            params.put("vehicle_number", strMaterialName);
-            params.put("bill_number", strMaterialName);
+            params.put("date", strDate);
+            params.put("in_time", strInTime);
+            params.put("out_time", strOutTime);
+            params.put("vehicle_number", strVehicleNumber);
+            params.put("bill_number", strBillNumber);
             params.put("bill_amount", strMaterialName);
             params.put("remark", strMaterialName);
         } catch (JSONException e) {
