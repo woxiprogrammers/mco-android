@@ -377,13 +377,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         } else {
             purchaseMaterialListItem.setIs_diesel(false);
         }
-        int randomNum;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            randomNum = ThreadLocalRandom.current().nextInt(11, 999999);
-        } else {
-            randomNum = new Random().nextInt((999999) + 11);
-        }
-        purchaseMaterialListItem.setIndexId(randomNum);
+        purchaseMaterialListItem.compoundPrimaryKey();
         purchaseMaterialListItem.setList_of_images(new RealmList<MaterialImageItem>());
         realm = Realm.getDefaultInstance();
         try {

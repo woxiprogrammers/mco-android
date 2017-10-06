@@ -1,6 +1,10 @@
 package com.android.purchase_request;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Random;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -44,6 +48,14 @@ public class PurchaseMaterialListItem extends RealmObject {
     public PurchaseMaterialListItem() {
     }
 
+    public String getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(String primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+
     public String getItem_name() {
         return name;
     }
@@ -59,14 +71,6 @@ public class PurchaseMaterialListItem extends RealmObject {
     public void setComponentStatus(String componentStatus) {
         this.componentStatus = componentStatus;
     }
-
-    /*public String getItem_category() {
-        return item_category;
-    }
-
-    public void setItem_category(String item_category) {
-        this.item_category = item_category;
-    }*/
 
     public boolean is_diesel() {
         return is_diesel;
@@ -141,10 +145,12 @@ public class PurchaseMaterialListItem extends RealmObject {
     }
 
     // local defined primary key
+    @SuppressLint("DefaultLocale")
     public void compoundPrimaryKey() {
         if (!isManaged()) {
             // only un-managed objects needs compound key
-            this.primaryKey = String.format("[I:%d][T:%d]", this.name, this.materialRequestComponentId);
+            int randomNum = new Random().nextInt((999999) + 11);
+            this.primaryKey = String.format("%s%d%d", this.name.replaceAll("[^a-zA-Z]+", ""), this.materialRequestComponentId, randomNum);
         }
     }
 }
