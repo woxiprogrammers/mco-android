@@ -6,7 +6,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -58,11 +57,24 @@ public class LoginActivity extends BaseActivity implements LoginView {
         edPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                /*if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     mLoginPresenter.validateCred(edUserName.getText().toString().trim(), edPassword.getText().toString().trim());
                     return true;
                 }
-                return false;
+                return false;*/
+                ////////////////
+                // If triggered by an enter key, this is the event; otherwise, this is null.
+                if (keyEvent != null) {
+                    // if shift key is down, then we want to insert the '\n' char in the TextView;
+                    // otherwise, the default action is to send the message.
+                    if (!keyEvent.isShiftPressed()) {
+                        mLoginPresenter.validateCred(edUserName.getText().toString().trim(), edPassword.getText().toString().trim());
+                        return true;
+                    }
+                    return false;
+                }
+                mLoginPresenter.validateCred(edUserName.getText().toString().trim(), edPassword.getText().toString().trim());
+                return true;
             }
         });
     }
