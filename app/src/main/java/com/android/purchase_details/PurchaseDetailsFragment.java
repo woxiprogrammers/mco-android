@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import timber.log.Timber;
+
+import static timber.log.Timber.i;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -100,6 +103,8 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
             if(purchaseRequestId != -1) {
                 params.put("purchase_request_id", purchaseRequestId);
             }
+
+            Log.i("@@ID", String.valueOf(purchaseRequestId));
         } catch (JSONException e) {
             e.printStackTrace();
         }

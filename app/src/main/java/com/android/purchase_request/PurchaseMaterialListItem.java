@@ -12,6 +12,29 @@ import io.realm.annotations.PrimaryKey;
  * Created by Rohit.
  */
 public class PurchaseMaterialListItem extends RealmObject {
+
+    ///////////////////////////////
+    /*
+
+            "material_request_format": "MR21710071",
+            "name": "AGGREGATE 10 MM",
+            "quantity": "1",
+            "unit_id": 2,
+            "unit": "BRASS(AGGREGATE)",
+            "component_type_id": 3,
+            "component_type": "Structure Material",
+            "component_status_id": 8,
+            "component_status": "p-r-assigned",
+            "created_at": "2017-10-07 12:09:00"*/
+
+//////////////////////////////////////////////
+
+
+
+
+
+
+
     @SerializedName("component_type")
     private String componentType;
     //    @SerializedName("unit")
@@ -45,6 +68,77 @@ public class PurchaseMaterialListItem extends RealmObject {
     @PrimaryKey
     @SerializedName("material_request_component_id")
     private int materialRequestComponentId;
+
+    @SerializedName("material_request_component_format")
+    private String materialRequestComponentFormat;
+
+    @SerializedName("material_request_id")
+    private int materialRequestId;
+
+    public String getComponentType() {
+        return componentType;
+    }
+
+    public void setComponentType(String componentType) {
+        this.componentType = componentType;
+    }
+
+    public String getMaterialRequestFormat() {
+        return materialRequestFormat;
+    }
+
+    public void setMaterialRequestFormat(String materialRequestFormat) {
+        this.materialRequestFormat = materialRequestFormat;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public float getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(float quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(int unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public int getComponent_type_id() {
+        return component_type_id;
+    }
+
+    public void setComponent_type_id(int component_type_id) {
+        this.component_type_id = component_type_id;
+    }
+
+    public String getMaterialRequestComponentFormat() {
+        return materialRequestComponentFormat;
+    }
+
+    public void setMaterialRequestComponentFormat(String materialRequestComponentFormat) {
+        this.materialRequestComponentFormat = materialRequestComponentFormat;
+    }
+
+    public int getMaterialRequestId() {
+        return materialRequestId;
+    }
+
+    public void setMaterialRequestId(int materialRequestId) {
+        this.materialRequestId = materialRequestId;
+    }
+
     @SerializedName("created_at")
     private String createdAt;
     /////////////////////////

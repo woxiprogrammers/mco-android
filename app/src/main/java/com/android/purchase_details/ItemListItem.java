@@ -12,6 +12,7 @@ import io.realm.annotations.PrimaryKey;
 public class ItemListItem extends RealmObject{
 
 
+
 	/*"material_request_component_id": 42,
 			"material_request_component_format_id": "MRM21710071",
 			"material_request_id": 23,
@@ -20,6 +21,7 @@ public class ItemListItem extends RealmObject{
 			"quantity": "1",
 			"unit_id": 2,
 			"unit_name": "BRASS(AGGREGATE)",
+
 			"list_of_images": [
 	{
 		"image_url": null
@@ -28,7 +30,7 @@ public class ItemListItem extends RealmObject{
 
 
 	@SerializedName("material_request_component_format_id")
-	private int materialRequestComponentId;
+	private String materialRequestComponentFormatId;
 
 	@SerializedName("material_request_id")
 	private int materialRequestId;
@@ -101,5 +103,37 @@ public class ItemListItem extends RealmObject{
 
 	public float getItemQuantity(){
 		return itemQuantity;
+	}
+
+	public int getMaterialRequestId() {
+		return materialRequestId;
+	}
+
+	public void setMaterialRequestId(int materialRequestId) {
+		this.materialRequestId = materialRequestId;
+	}
+
+	public int getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(int unitId) {
+		this.unitId = unitId;
+	}
+
+	public String getMaterialRequestFormat() {
+		return materialRequestFormat;
+	}
+
+	public void setMaterialRequestFormat(String materialRequestFormat) {
+		this.materialRequestFormat = materialRequestFormat;
+	}
+
+	public String getMaterialRequestComponentFormatId() {
+		return materialRequestComponentFormatId;
+	}
+
+	public void setMaterialRequestComponentFormatId(String materialRequestComponentFormatId) {
+		this.materialRequestComponentFormatId = materialRequestComponentFormatId;
 	}
 }

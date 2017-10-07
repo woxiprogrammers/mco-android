@@ -8,10 +8,8 @@ import io.realm.annotations.PrimaryKey;
 public class PurchaseOrderResponse extends RealmObject {
     @PrimaryKey
     private int intIndex = 0;
-    @SerializedName("purchaseOrderRespData")
+    @SerializedName("data")
     private PurchaseOrderRespData purchaseOrderRespData;
-    @SerializedName("next_url")
-    private String nextUrl;
     @SerializedName("message")
     private String message;
 
@@ -23,13 +21,6 @@ public class PurchaseOrderResponse extends RealmObject {
         return purchaseOrderRespData;
     }
 
-    public void setNextUrl(String nextUrl) {
-        this.nextUrl = nextUrl;
-    }
-
-    public String getNextUrl() {
-        return nextUrl;
-    }
 
     public void setMessage(String message) {
         this.message = message;

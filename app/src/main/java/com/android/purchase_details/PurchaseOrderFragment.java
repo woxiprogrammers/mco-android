@@ -166,10 +166,6 @@ public class PurchaseOrderFragment extends Fragment implements FragmentInterface
             }
         }));
 
-
-
-
-
         if (itemListItems != null) {
             itemListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderListItem>>() {
                 @Override

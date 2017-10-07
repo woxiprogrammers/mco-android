@@ -29,7 +29,7 @@ class PurchaseHomeViewPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return PurchaseRequestListFragment.newInstance();
             case 1:
-                return PurchaseOrderListFragment.newInstance();
+                return PurchaseOrderListFragment.newInstance(0);
             case 2:
                 return PurchaseBillListFragment.newInstance();
             default:

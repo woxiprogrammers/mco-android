@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,9 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,15 +51,16 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
-
+    private static int purchaseRequestId;
     public PurchaseOrderListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseOrderListFragment newInstance() {
+    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId) {
         Bundle args = new Bundle();
         PurchaseOrderListFragment fragment = new PurchaseOrderListFragment();
         fragment.setArguments(args);
+        purchaseRequestId=mPurchaseRequestId;
         return fragment;
     }
 
@@ -105,7 +110,16 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     }
 
     private void requestPrListOnline() {
-        AndroidNetworking.get(AppURL.API_PURCHASE_ORDER_LIST)
+        JSONObject params=new JSONObject();
+        try {
+            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
+            params.put("purchase_request_id",purchaseRequestId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPrListOnline")
                 .build()
@@ -117,6 +131,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    Log.i("@@POREsp", String.valueOf(response));
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -159,7 +174,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     public void onItemClick(View view, final int position) {
                         Timber.d(String.valueOf(purchaseOrderListItems));
                         Intent intent=new Intent(mContext, PayAndBillsActivity.class);
-                        intent.putExtra("PONumber",purchaseOrderListItems.get(position).getPurchaseOrderId());
+                        intent.putExtra("PONumber",purchaseOrderListItems.get(position).getId());
                         startActivity(intent);
                     }
 

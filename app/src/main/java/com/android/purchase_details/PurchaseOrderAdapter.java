@@ -38,7 +38,7 @@ public class PurchaseOrderAdapter extends RealmRecyclerViewAdapter<PurchaseOrder
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         PurchaseOrderListItem orderListItem=orderListItems.get(position);
-        holder.textviewPoNumber.setText(orderListItem.getPurchaseOrderId());
+        holder.textviewPoNumber.setText(orderListItem.getId());
         holder.textviewVendorsDetails.setText(orderListItem.getClientName() + " " + orderListItem.getProject());
         holder.textviewDate.setText(orderListItem.getDate());
         holder.textviewMaterialSummary.setText(orderListItem.getMaterials());
