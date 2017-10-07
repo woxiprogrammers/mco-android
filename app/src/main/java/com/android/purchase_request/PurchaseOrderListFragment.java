@@ -52,6 +52,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
     private static int purchaseRequestId;
+
     public PurchaseOrderListFragment() {
         // Required empty public constructor
     }
@@ -60,7 +61,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         Bundle args = new Bundle();
         PurchaseOrderListFragment fragment = new PurchaseOrderListFragment();
         fragment.setArguments(args);
-        purchaseRequestId=mPurchaseRequestId;
+        purchaseRequestId = mPurchaseRequestId;
         return fragment;
     }
 
@@ -110,10 +111,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     }
 
     private void requestPrListOnline() {
-        JSONObject params=new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
-            params.put("purchase_request_id",purchaseRequestId);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("purchase_request_id", purchaseRequestId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -173,8 +174,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     @Override
                     public void onItemClick(View view, final int position) {
                         Timber.d(String.valueOf(purchaseOrderListItems));
-                        Intent intent=new Intent(mContext, PayAndBillsActivity.class);
-                        intent.putExtra("PONumber",purchaseOrderListItems.get(position).getId());
+                        Intent intent = new Intent(mContext, PayAndBillsActivity.class);
+                        intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
                         startActivity(intent);
                     }
 
@@ -211,7 +212,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseOrderListItem purchaseOrderListItem = arrPurchaseOrderListItems.get(position);
-            holder.textViewPurchaseRequestId.setText(purchaseOrderListItem.getPurchaseRequestId());
+            holder.textViewPurchaseRequestId.setText(purchaseOrderListItem.getPurchaseOrderFormatId());
+            holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
             holder.textViewPurchaseRequestStatus.setText(purchaseOrderListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseOrderListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
@@ -236,6 +238,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             TextView textViewPurchaseRequestDate;
             @BindView(R.id.textView_purchase_request_materials)
             TextView textViewPurchaseRequestMaterials;
+
+            @BindView(R.id.textview_client_name)
+            TextView textviewClientName;
 
             MyViewHolder(View itemView) {
                 super(itemView);
