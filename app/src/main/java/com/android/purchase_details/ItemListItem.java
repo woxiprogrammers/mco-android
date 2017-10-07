@@ -11,8 +11,33 @@ import io.realm.annotations.PrimaryKey;
 
 public class ItemListItem extends RealmObject{
 
+
+	/*"material_request_component_id": 42,
+			"material_request_component_format_id": "MRM21710071",
+			"material_request_id": 23,
+			"material_request_format": "MR21710071",
+			"name": "AGGREGATE 10 MM",
+			"quantity": "1",
+			"unit_id": 2,
+			"unit_name": "BRASS(AGGREGATE)",
+			"list_of_images": [
+	{
+		"image_url": null
+	}*/
+
+
+
+	@SerializedName("material_request_component_format_id")
+	private int materialRequestComponentId;
+
+	@SerializedName("material_request_id")
+	private int materialRequestId;
+
 	@SerializedName("unit_id")
 	private int unitId;
+
+	@SerializedName("material_request_format")
+	private String materialRequestFormat;
 
 	@SerializedName("unit_name")
 	private String itemUnit;
@@ -24,7 +49,7 @@ public class ItemListItem extends RealmObject{
 	private String itemName;
 
 	@PrimaryKey
-	@SerializedName("id")
+	@SerializedName("material_request_component_id")
 	private int id;
 
 	@SerializedName("quantity")
