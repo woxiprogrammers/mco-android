@@ -1,5 +1,6 @@
 package com.android.models.inventory;
 
+import com.android.material_request_approve.UnitQuantityItem;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -15,5 +16,16 @@ public class InventoryDataResponse extends RealmObject {
 
     public void setMaterialList(RealmList<MaterialListItem> materialList) {
         this.materialList = materialList;
+    }
+
+    @SerializedName("units")
+    private RealmList<UnitQuantityItem> unitQuantityItems;
+
+    public RealmList<UnitQuantityItem> getUnitQuantityItems() {
+        return unitQuantityItems;
+    }
+
+    public void setUnitQuantityItems(RealmList<UnitQuantityItem> unitQuantityItems) {
+        this.unitQuantityItems = unitQuantityItems;
     }
 }

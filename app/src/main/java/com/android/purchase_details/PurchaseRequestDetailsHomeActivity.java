@@ -165,7 +165,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 case 1:
                     return PurchaseHistoryFragment.newInstance();
                 case 2:
-                    return PurchaseOrderListFragment.newInstance();
+                    return PurchaseOrderListFragment.newInstance(mPurchaseRequestId);
                 default:
                     return null;
             }
