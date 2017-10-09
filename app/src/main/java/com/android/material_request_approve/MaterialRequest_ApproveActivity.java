@@ -153,7 +153,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                     setUpUsersSpinnerValueChangeListener();
                     getRequestedItemList();
-                    textViewPurchaseMaterialListAddNew.setVisibility(View.VISIBLE);
                 } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
                     textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
                     isForApproval = true;
@@ -161,7 +160,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                     setUpApprovedStatusAdapter();
                     requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
-                    textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
                 }
             }
         }

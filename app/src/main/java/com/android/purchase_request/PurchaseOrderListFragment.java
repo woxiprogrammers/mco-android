@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -81,6 +84,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         recyclerView_commonListingView.setAdapter(null);
@@ -88,6 +96,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             realm.close();
         }
         unbinder.unbind();
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem item = menu.findItem(R.id.action_approve);
+        item.setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**

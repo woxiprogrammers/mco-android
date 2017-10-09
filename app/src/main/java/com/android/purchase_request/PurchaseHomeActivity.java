@@ -4,8 +4,12 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -15,6 +19,8 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.login_acl.PermissionsItem;
+import com.google.gson.Gson;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -34,6 +40,7 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     Toolbar toolbarPurchaseHome;
     private Context mContext;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
+    String shar,permissionsItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,13 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         }
         //Calling function to initialize required views.
         initializeViews();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+             shar=bundle.getString("subModuleTag");
+             permissionsItemList = bundle.getString("permissionsItemList");
+
+        }
+
     }
 
     /**
@@ -112,5 +126,40 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
         Timber.i("Date OK  " + year + "  " + month + "  " + i2);
+    }
+
+
+    class PurchaseHomeViewPagerAdapter extends FragmentStatePagerAdapter {
+        private String[] arrTabTitles = {
+                "Purchase \nRequest", "Purchase \nOrder", "Purchase \nBill"
+        };
+
+        PurchaseHomeViewPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public int getCount() {
+            return arrTabTitles.length;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return PurchaseRequestListFragment.newInstance(shar,permissionsItemList);
+                case 1:
+                    return PurchaseOrderListFragment.newInstance(0);
+                case 2:
+                    return PurchaseBillListFragment.newInstance();
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return arrTabTitles[position];
+        }
     }
 }

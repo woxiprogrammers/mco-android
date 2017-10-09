@@ -57,15 +57,18 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
+    private  static String subModuleTag,permissionList;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseRequestListFragment newInstance() {
+    public static PurchaseRequestListFragment newInstance(String subModule_Tag, String permissionsItemList) {
         Bundle args = new Bundle();
         PurchaseRequestListFragment fragment = new PurchaseRequestListFragment();
         fragment.setArguments(args);
+        subModuleTag=subModule_Tag;
+        permissionList=permissionsItemList;
         return fragment;
     }
 
@@ -186,7 +189,13 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         if (BuildConfig.DEBUG) {
                             Timber.d(String.valueOf(purchaseRequestListItem));
                         }
-                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
+                        Intent intent=new Intent(mContext,PurchaseRequestDetailsHomeActivity.class);
+                        intent.putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId());
+                        intent.putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId());
+                        intent.putExtra("ss",subModuleTag);
+                        intent.putExtra("per",per);
+                        startActivity(intent);
+//                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
                     }
 
                     @Override

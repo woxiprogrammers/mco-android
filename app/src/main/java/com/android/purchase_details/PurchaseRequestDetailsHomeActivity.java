@@ -16,11 +16,14 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.login_acl.PermissionsItem;
+import com.android.models.login_acl.SubModulesItem;
 import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.constro360.BaseActivity;
 import com.android.utils.AppURL;
@@ -29,9 +32,12 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +57,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     BottomNavigationView purchaseDetailsBottomNavigation;
     MenuItem prevMenuItem;
     private int mPurchaseRequestId;
+    private boolean isForApproval;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,22 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         setContentView(R.layout.activity_purchase_request_details_home);
         initializeViews();
         callFragments();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            bundle.getString("ss");
+            String permissionsItemList = bundle.getString("per");
+            PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
+            for (PermissionsItem permissionsItem : permissionsItems) {
+                String accessPermission = permissionsItem.getCanAccess();
+                if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
+                    isForApproval=true;
+                } else if (accessPermission.equalsIgnoreCase(getString(R.string.create_purchase_request))) {
+                    isForApproval=false;
+                }
+            }
+        }
+
+
     }
 
     @Override
@@ -67,6 +90,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         if (isInValidate) {
             menu.findItem(R.id.action_approve).setVisible(false);
         }
+
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -150,33 +174,6 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         });
     }
 
-    private class PurchaseDetailsAdapter extends FragmentPagerAdapter {
-        private String[] arrBottomTitle = {"Bottom1", "Bottom2", "Bottom3"};
-
-        public PurchaseDetailsAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return PurchaseDetailsFragment.newInstance(mPurchaseRequestId);
-                case 1:
-                    return PurchaseHistoryFragment.newInstance();
-                case 2:
-                    return PurchaseOrderListFragment.newInstance(mPurchaseRequestId);
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return arrBottomTitle.length;
-        }
-    }
-
     private void openApproveDialog(final MenuItem item) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder
@@ -234,5 +231,32 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
+    }
+
+    private class PurchaseDetailsAdapter extends FragmentPagerAdapter {
+        private String[] arrBottomTitle = {"Bottom1", "Bottom2", "Bottom3"};
+
+        public PurchaseDetailsAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return PurchaseDetailsFragment.newInstance(mPurchaseRequestId,isForApproval);
+                case 1:
+                    return PurchaseHistoryFragment.newInstance();
+                case 2:
+                    return PurchaseOrderListFragment.newInstance(mPurchaseRequestId);
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return arrBottomTitle.length;
+        }
     }
 }

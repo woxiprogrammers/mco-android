@@ -2,11 +2,15 @@ package com.android.purchase_details;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -49,15 +53,17 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
     private PurchaseDetailsAdapter purchaseDetailsAdapter;
     private RealmResults<ItemListItem> itemListItems;
     private static int purchaseRequestId;
+    private static boolean isApproval;
 
     public PurchaseDetailsFragment() {
     }
 
-    public static PurchaseDetailsFragment newInstance(int requestId) {
+    public static PurchaseDetailsFragment newInstance(int requestId, boolean isForApproval) {
         Bundle args = new Bundle();
         PurchaseDetailsFragment fragment = new PurchaseDetailsFragment();
         fragment.setArguments(args);
         purchaseRequestId=requestId;
+        isApproval=isForApproval;
         return fragment;
     }
 
@@ -74,6 +80,26 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
     private void initializeViews() {
         mContext=getActivity();
         functionForGettingData();
+
+
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem item = menu.findItem(R.id.action_approve);
+        if(isApproval){
+            item.setVisible(true);
+        }else {
+            item.setVisible(false);
+
+        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -103,8 +129,6 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
             if(purchaseRequestId != -1) {
                 params.put("purchase_request_id", purchaseRequestId);
             }
-
-            Log.i("@@ID", String.valueOf(purchaseRequestId));
         } catch (JSONException e) {
             e.printStackTrace();
         }
