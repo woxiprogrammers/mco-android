@@ -1,7 +1,5 @@
 package com.android.purchase_request;
 
-import android.annotation.SuppressLint;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Random;
@@ -17,7 +15,7 @@ import io.realm.annotations.PrimaryKey;
  */
 public class PurchaseMaterialListItem extends RealmObject {
     @PrimaryKey
-    private String primaryKey;
+    private int primaryKey = new Random().nextInt((999999) + 11) + new Random().nextInt((999999) + 11);
     @SerializedName("component_type")
     private String componentType;
     @SerializedName("material_request_format")
@@ -37,10 +35,8 @@ public class PurchaseMaterialListItem extends RealmObject {
     //    @PrimaryKey
     @SerializedName("material_request_component_id")
     private int materialRequestComponentId;
-
     @SerializedName("material_request_component_format")
     private String materialRequestComponentFormat;
-
     @SerializedName("material_request_id")
     private int materialRequestId;
 
@@ -119,11 +115,11 @@ public class PurchaseMaterialListItem extends RealmObject {
     public PurchaseMaterialListItem() {
     }
 
-    public String getPrimaryKey() {
+    public int getPrimaryKey() {
         return primaryKey;
     }
 
-    public void setPrimaryKey(String primaryKey) {
+    public void setPrimaryKey(int primaryKey) {
         this.primaryKey = primaryKey;
     }
 
@@ -214,8 +210,7 @@ public class PurchaseMaterialListItem extends RealmObject {
     public void setMaterialRequestComponentId(int materialRequestComponentId) {
         this.materialRequestComponentId = materialRequestComponentId;
     }
-
-    // local defined primary key
+    /*// local defined primary key
     @SuppressLint("DefaultLocale")
     public void compoundPrimaryKey() {
         if (!isManaged()) {
@@ -223,5 +218,5 @@ public class PurchaseMaterialListItem extends RealmObject {
             int randomNum = new Random().nextInt((999999) + 11);
             this.primaryKey = String.format("%s%d%d", this.name.replaceAll("[^a-zA-Z]+", ""), this.materialRequestComponentId, randomNum);
         }
-    }
+    }*/
 }
