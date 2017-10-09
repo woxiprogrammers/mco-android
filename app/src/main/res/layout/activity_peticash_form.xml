@@ -67,13 +67,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Particulars:"
+                android:text="Paid To:"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
                 android:id="@+id/editText_BillParticulars"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 
@@ -178,17 +178,50 @@
             android:layout_marginBottom="8dp"
             android:text="Add To Inventory"/>
 
-        <CheckBox
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Add To DGR"/>
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/editText_Note1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:gravity="top"
+                android:text="Previous comment which is partially resolved., Previous comment which is partially resolved. Previous comment which is partially resolved. Previous comment which is partially resolved."
+                android:textColor="@color/colorTextLight"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/editText_Note2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:gravity="top"
+                android:text="Latest comment to be resolved. Latest comment to be resolved. Latest comment to be resolved. Latest comment to be resolved."
+                android:textColor="@color/colorTextLight"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/editText_Note2"
+                android:background="@drawable/selectable_button_background_gray"
+                android:text="RESOLVE"/>
+        </RelativeLayout>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/dimen_8dp"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/dimen_8dp"
             android:text="Submit"/>
 
