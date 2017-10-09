@@ -120,4 +120,5 @@
     <string name="tag_capital_p_pending">Pending</string>
     <string name="shop_name">Shop Name</string>
     <string name="bill_amount">Bill Amount</string>
+    <string name="approve_purchase_request">approve-purchase-request</string>
 </resources>

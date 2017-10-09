@@ -275,10 +275,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
         Timber.d(String.valueOf(params));
         if (jsonArrayPurchaseMaterialListItems.length() > 0) {
-            //TODO: UnDo following lines
-//            linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
-//            mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
-//            getRequestedItemList();
             submitPurchaseRequest(params);
         } else {
             Toast.makeText(mContext, "Please add some items to the list", Toast.LENGTH_SHORT).show();
@@ -377,7 +373,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         } else {
             purchaseMaterialListItem.setIs_diesel(false);
         }
-//        purchaseMaterialListItem.compoundPrimaryKey();
         purchaseMaterialListItem.setList_of_images(new RealmList<MaterialImageItem>());
         realm = Realm.getDefaultInstance();
         try {
@@ -522,18 +517,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         mRvMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
-        /*mRvMaterialListMaterialRequestApprove.addOnItemTouchListener(new RecyclerItemClickListener(mContext, mRvMaterialListMaterialRequestApprove,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, final int position) {
-                        PurchaseMaterialListItem purchaseMaterialListItem_New = materialListRealmResults_New.get(position);
-                        Timber.d(String.valueOf(purchaseMaterialListItem_New));
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                }));*/
         if (materialListRealmResults_New != null) {
             Timber.d("materialListRealmResults_New change listener added.");
             materialListRealmResults_New.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
