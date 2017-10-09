@@ -67,8 +67,8 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         callFragments();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            bundle.getString("ss");
-            String permissionsItemList = bundle.getString("per");
+            bundle.getString("KEY_SUBMODULETAG");
+            String permissionsItemList = bundle.getString("KEY_PERMISSIONLIST");
             PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
             for (PermissionsItem permissionsItem : permissionsItems) {
                 String accessPermission = permissionsItem.getCanAccess();

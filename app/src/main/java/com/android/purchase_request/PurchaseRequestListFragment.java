@@ -8,15 +8,19 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.login_acl.PermissionsItem;
 import com.android.models.purchase_request.PurchaseRequestListItem;
 import com.android.models.purchase_request.PurchaseRequestResponse;
 import com.android.purchase_details.PurchaseRequestDetailsHomeActivity;
@@ -28,6 +32,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,11 +58,14 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     RecyclerView recyclerView_commonListingView;
     @BindView(R.id.floating_create_purchase_request)
     FloatingActionButton floatingCreatePurchaseRequest;
+    @BindView(R.id.toolbarPurchaseHome)
+    Toolbar toolbarPurchaseHome;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
     private  static String subModuleTag,permissionList;
+    private boolean isForCreate;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
@@ -84,8 +92,17 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         //Initialize Views
         initializeViews();
         setUpPrAdapter();
+        toolbarPurchaseHome.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext,"CLicked",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
         return mParentView;
     }
+
 
     @Override
     public void onDestroyView() {
@@ -104,8 +121,20 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
      */
     private void initializeViews() {
         mContext = getActivity();
+        ((BaseActivity)getActivity()).getSupportActionBar().hide();
         floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
         functionForGettingData();
+        PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
+        for (PermissionsItem permissionsItem : permissionsItems) {
+            String accessPermission = permissionsItem.getCanAccess();
+            if (accessPermission.equalsIgnoreCase(getString(R.string.create_purchase_request))) {
+                floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
+            } else if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
+                floatingCreatePurchaseRequest.setVisibility(View.GONE);
+            }
+        }
+
+
     }
 
     private void functionForGettingData() {
@@ -192,8 +221,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         Intent intent=new Intent(mContext,PurchaseRequestDetailsHomeActivity.class);
                         intent.putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId());
                         intent.putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId());
-                        intent.putExtra("ss",subModuleTag);
-                        intent.putExtra("per",per);
+                        intent.putExtra("KEY_SUBMODULETAG",subModuleTag);
+                        intent.putExtra("KEY_PERMISSIONLIST",permissionList);
                         startActivity(intent);
 //                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
                     }

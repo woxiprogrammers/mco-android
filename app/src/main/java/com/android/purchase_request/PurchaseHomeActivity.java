@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -19,8 +18,6 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
-import com.android.models.login_acl.PermissionsItem;
-import com.google.gson.Gson;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -40,7 +37,7 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     Toolbar toolbarPurchaseHome;
     private Context mContext;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
-    String shar,permissionsItemList;
+    String strSubModuleTag, permissionsItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +53,8 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         initializeViews();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-             shar=bundle.getString("subModuleTag");
-             permissionsItemList = bundle.getString("permissionsItemList");
-
+            strSubModuleTag = bundle.getString("subModuleTag");
+            permissionsItemList = bundle.getString("permissionsItemList");
         }
 
     }
@@ -115,19 +111,18 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         bundleArgs.putInt("minYear", 2016);
         monthYearPickerDialog.setArguments(bundleArgs);
         monthYearPickerDialog.setListener(this);
-        textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
+        /*textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
             }
-        });
+        });*/
     }
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
         Timber.i("Date OK  " + year + "  " + month + "  " + i2);
     }
-
 
     class PurchaseHomeViewPagerAdapter extends FragmentStatePagerAdapter {
         private String[] arrTabTitles = {
@@ -147,7 +142,7 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PurchaseRequestListFragment.newInstance(shar,permissionsItemList);
+                    return PurchaseRequestListFragment.newInstance(strSubModuleTag, permissionsItemList);
                 case 1:
                     return PurchaseOrderListFragment.newInstance(0);
                 case 2:
