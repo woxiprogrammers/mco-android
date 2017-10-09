@@ -524,10 +524,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         ///////////
         purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).findAll();
         purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
-        if (purchaseMaterialList_inIndent.size() > 0) {
+//        if (purchaseMaterialList_inIndent.size() > 0) {
         Section sectionIndent = new SectionedPurchaseMaterialRvAdapter("Approved Items", purchaseMaterialList_inIndent, sectionedRecyclerViewClickListener);
         sectionedRecyclerViewAdapter.addSection("indent_items_section", sectionIndent);
-        }
+//        }
         ///////////
         purchaseMaterialListRealmResults_Current = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAll();
         purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResults_Current);
@@ -535,7 +535,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         sectionedRecyclerViewAdapter.addSection("current_items_section", sectionCurrent);
         //////////
         recyclerView_materialList.setAdapter(sectionedRecyclerViewAdapter);
-        /*if (purchaseMaterialListRealmResult_inIndent != null) {
+        if (purchaseMaterialListRealmResult_inIndent != null) {
             Timber.d("purchaseMaterialListRealmResult_inIndent change listener added.");
             purchaseMaterialListRealmResult_inIndent.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
                 @Override
@@ -563,7 +563,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }*/
+        }
         if (purchaseMaterialListRealmResults_Current != null) {
             Timber.d("purchaseMaterialListRealmResults_Current change listener added.");
             purchaseMaterialListRealmResults_Current.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
