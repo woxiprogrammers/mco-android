@@ -102,7 +102,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         initializeViews();
         getSiteName();
         setSpinnerListener();
-        Log.i("@@Token", AppUtils.getInstance().getCurrentToken());
     }
 
     @Override

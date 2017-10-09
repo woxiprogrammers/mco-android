@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
@@ -21,6 +22,7 @@ import com.android.interfaces.FragmentInterface;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,27 +37,26 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     TextView textViewPurchaseHomeAppBarTitle;
     @BindView(R.id.toolbarPurchaseHome)
     Toolbar toolbarPurchaseHome;
+
+    @BindView(R.id.relative_layout_selectDate)
+    RelativeLayout relativeLayoutSelectDate;
     private Context mContext;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
     String strSubModuleTag, permissionsItemList;
+    public static int passYear, passMonth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_home);
         ButterKnife.bind(this);
-        toolbarPurchaseHome.setTitle("Purchase");
+        toolbarPurchaseHome.setTitle("");
         setSupportActionBar(toolbarPurchaseHome);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         //Calling function to initialize required views.
         initializeViews();
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            strSubModuleTag = bundle.getString("subModuleTag");
-            permissionsItemList = bundle.getString("permissionsItemList");
-        }
 
     }
 
@@ -67,6 +68,15 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     private void initializeViews() {
         mContext = PurchaseHomeActivity.this;
         setUpAppBarDatePicker();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            strSubModuleTag = bundle.getString("subModuleTag");
+            permissionsItemList = bundle.getString("permissionsItemList");
+        }
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passYear = calendar.get(Calendar.YEAR);
+
         viewPagerAdapter = new PurchaseHomeViewPagerAdapter(getSupportFragmentManager());
         mViewPager_purchaseHome.setAdapter(viewPagerAdapter);
         mTabLayout_purchaseHome.setupWithViewPager(mViewPager_purchaseHome);
@@ -105,23 +115,35 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
         int intYear = calendar.get(Calendar.YEAR);
         textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + intYear);
-        final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
-        Bundle bundleArgs = new Bundle();
-        bundleArgs.putInt("maxYear", 2019);
-        bundleArgs.putInt("minYear", 2016);
-        monthYearPickerDialog.setArguments(bundleArgs);
-        monthYearPickerDialog.setListener(this);
-        /*textViewPurchaseHomeAppBarTitle.setOnClickListener(new View.OnClickListener() {
+        relativeLayoutSelectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
+                Bundle bundleArgs = new Bundle();
+                bundleArgs.putInt("maxYear", 2019);
+                bundleArgs.putInt("minYear", 2016);
+                monthYearPickerDialog.setArguments(bundleArgs);
+                monthYearPickerDialog.setListener(PurchaseHomeActivity.this);
                 monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
             }
-        });*/
+        });
     }
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
-        Timber.i("Date OK  " + year + "  " + month + "  " + i2);
+        passYear=year;
+        passMonth=month;
+    }
+
+    public void hideDateLayout(boolean isPurchaseRequest){
+        if(isPurchaseRequest){
+            relativeLayoutSelectDate.setVisibility(View.VISIBLE);
+            toolbarPurchaseHome.setTitle("");
+        }else {
+            relativeLayoutSelectDate.setVisibility(View.GONE);
+            toolbarPurchaseHome.setTitle("Purchase");
+        }
+
     }
 
     class PurchaseHomeViewPagerAdapter extends FragmentStatePagerAdapter {

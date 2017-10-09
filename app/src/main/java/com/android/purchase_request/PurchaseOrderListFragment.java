@@ -70,7 +70,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public void fragmentBecameVisible() {
-        Timber.d("fragmentBecameVisible");
+        if (getUserVisibleHint()) {
+            ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+        }
+
     }
 
     @Override
@@ -88,6 +91,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -98,9 +102,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         unbinder.unbind();
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
         MenuItem item = menu.findItem(R.id.action_approve);
         item.setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
@@ -148,7 +152,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    Log.i("@@POREsp", String.valueOf(response));
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -248,10 +251,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         class MyViewHolder extends RecyclerView.ViewHolder {
             @BindView(R.id.textView_purchase_request_id)
             TextView textViewPurchaseRequestId;
+
             @BindView(R.id.textView_purchase_request_status)
             TextView textViewPurchaseRequestStatus;
+
             @BindView(R.id.textView_purchase_request_date)
             TextView textViewPurchaseRequestDate;
+
             @BindView(R.id.textView_purchase_request_materials)
             TextView textViewPurchaseRequestMaterials;
 

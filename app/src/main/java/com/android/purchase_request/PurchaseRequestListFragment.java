@@ -19,7 +19,9 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
+import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
+import com.android.interfaces.InterfacePurchaseRequest;
 import com.android.models.login_acl.PermissionsItem;
 import com.android.models.purchase_request.PurchaseRequestListItem;
 import com.android.models.purchase_request.PurchaseRequestResponse;
@@ -58,13 +60,11 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     RecyclerView recyclerView_commonListingView;
     @BindView(R.id.floating_create_purchase_request)
     FloatingActionButton floatingCreatePurchaseRequest;
-    @BindView(R.id.toolbarPurchaseHome)
-    Toolbar toolbarPurchaseHome;
     private Unbinder unbinder;
-    private Context mContext;
+    public static Context mContext;
     private Realm realm;
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
-    private  static String subModuleTag,permissionList;
+    private static String subModuleTag, permissionList;
     private boolean isForCreate;
 
     public PurchaseRequestListFragment() {
@@ -75,14 +75,17 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         Bundle args = new Bundle();
         PurchaseRequestListFragment fragment = new PurchaseRequestListFragment();
         fragment.setArguments(args);
-        subModuleTag=subModule_Tag;
-        permissionList=permissionsItemList;
+        subModuleTag = subModule_Tag;
+        permissionList = permissionsItemList;
         return fragment;
     }
 
     @Override
     public void fragmentBecameVisible() {
-        Timber.d("fragmentBecameVisible");
+        if(getUserVisibleHint()) {
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+        }
+
     }
 
     @Override
@@ -92,17 +95,17 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         //Initialize Views
         initializeViews();
         setUpPrAdapter();
-        toolbarPurchaseHome.setNavigationOnClickListener(new View.OnClickListener() {
+        InterfacePurchaseRequest interfacePurchaseRequest = new InterfacePurchaseRequest() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext,"CLicked",Toast.LENGTH_SHORT).show();
-
+            public void requestForPurchaseRequestList() {
+                requestPrListOnline();
             }
-        });
+        };
+
+        MonthYearPickerDialog.setDateListenerInterface(interfacePurchaseRequest);
 
         return mParentView;
     }
-
 
     @Override
     public void onDestroyView() {
@@ -114,6 +117,14 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         unbinder.unbind();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getUserVisibleHint()) {
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+        }
+    }
+
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
@@ -121,19 +132,19 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
      */
     private void initializeViews() {
         mContext = getActivity();
-        ((BaseActivity)getActivity()).getSupportActionBar().hide();
         floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
         functionForGettingData();
+
         PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
         for (PermissionsItem permissionsItem : permissionsItems) {
             String accessPermission = permissionsItem.getCanAccess();
             if (accessPermission.equalsIgnoreCase(getString(R.string.create_purchase_request))) {
                 floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
-            } else if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
+            }//ToDO Sharvari
+            /*else if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
                 floatingCreatePurchaseRequest.setVisibility(View.GONE);
-            }
+            }*/
         }
-
 
     }
 
@@ -151,10 +162,9 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("month", 10);
-            params.put("year", 2017);
+            params.put("month", PurchaseHomeActivity.passMonth);
+            params.put("year", PurchaseHomeActivity.passYear);
             params.put("page", 0);
-            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -173,7 +183,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                                 @Override
                                 public void execute(Realm realm) {
                                     realm.insertOrUpdate(response);
-                                    Log.i("@@Res", response.toString());
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
@@ -218,11 +227,11 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         if (BuildConfig.DEBUG) {
                             Timber.d(String.valueOf(purchaseRequestListItem));
                         }
-                        Intent intent=new Intent(mContext,PurchaseRequestDetailsHomeActivity.class);
+                        Intent intent = new Intent(mContext, PurchaseRequestDetailsHomeActivity.class);
                         intent.putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId());
                         intent.putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId());
-                        intent.putExtra("KEY_SUBMODULETAG",subModuleTag);
-                        intent.putExtra("KEY_PERMISSIONLIST",permissionList);
+                        intent.putExtra("KEY_SUBMODULETAG", subModuleTag);
+                        intent.putExtra("KEY_PERMISSIONLIST", permissionList);
                         startActivity(intent);
 //                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
                     }
@@ -271,7 +280,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseRequestListItem purchaseRequestListItem = arrPurchaseRequestListItems.get(position);
-            Log.i("@@Data", String.valueOf(purchaseRequestListItem));
             holder.textViewPurchaseRequestId.setText(purchaseRequestListItem.getPurchaseRequestId());
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());

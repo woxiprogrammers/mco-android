@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 
 import com.android.constro360.R;
+import com.android.interfaces.InterfacePurchaseRequest;
 
 import java.util.Calendar;
 
@@ -24,6 +25,7 @@ public class MonthYearPickerDialog extends DialogFragment {
     private int maxYear = 2050;
     private int minYear = 2017;
     private DatePickerDialog.OnDateSetListener listener;
+    private static InterfacePurchaseRequest interfacePurchaseRequest;
 
     public MonthYearPickerDialog() {
     }
@@ -62,6 +64,7 @@ public class MonthYearPickerDialog extends DialogFragment {
             public void onClick(View view) {
                 listener.onDateSet(null, yearPicker.getValue(), monthPicker.getValue(), 0);
                 MonthYearPickerDialog.this.getDialog().dismiss();
+                interfacePurchaseRequest.requestForPurchaseRequestList();
             }
         });
         buttonDismiss.setOnClickListener(new View.OnClickListener() {
@@ -71,5 +74,10 @@ public class MonthYearPickerDialog extends DialogFragment {
             }
         });
         return builder.create();
+    }
+
+    public static void setDateListenerInterface(InterfacePurchaseRequest interfacePurchaseRequest2) {
+        interfacePurchaseRequest = interfacePurchaseRequest2;
+
     }
 }

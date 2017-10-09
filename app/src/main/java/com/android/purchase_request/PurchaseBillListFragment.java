@@ -75,7 +75,9 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
     @Override
     public void fragmentBecameVisible() {
-        Timber.d("fragmentBecameVisible");
+        if (getUserVisibleHint()) {
+            ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+        }
     }
 
     @Override
@@ -107,6 +109,8 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private void initializeViews() {
         mContext = getActivity();
         functionForGettingData();
+        ((PurchaseHomeActivity)mContext).hideDateLayout(false);
+
     }
 
     private void functionForGettingData() {

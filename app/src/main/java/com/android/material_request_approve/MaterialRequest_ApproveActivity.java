@@ -1148,7 +1148,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             params.put("material_request_component_id", materialRequestComponentId);
             params.put("change_component_status_id_to", statusId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            Log.i("@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }

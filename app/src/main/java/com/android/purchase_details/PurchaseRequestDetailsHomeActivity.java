@@ -74,7 +74,8 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 String accessPermission = permissionsItem.getCanAccess();
                 if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
                     isForApproval=true;
-                } else if (accessPermission.equalsIgnoreCase(getString(R.string.create_purchase_request))) {
+                }//ToDo Sharvari
+                else if (accessPermission.equalsIgnoreCase(getString(R.string.create_purchase_request))) {
                     isForApproval=false;
                 }
             }
