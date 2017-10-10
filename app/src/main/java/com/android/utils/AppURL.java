@@ -16,10 +16,8 @@ public class AppURL {
     //    public static final String API_USER_LOGIN = "http://www.mocky.io/v2/599c5b5729000020012110ad";
     public static final String API_PURCHASE_ORDER_LIST = BASE_URL + "purchase/purchase-order/listing?token=";
     public static final String API_PURCHASE_BILL_LIST = "http://www.mocky.io/v2/59c23f1712000068009c0a47";
-    public static final String API_INVENTORY_DATA_URL = "http://www.mocky.io/v2/599c5a5229000011012110ac";
     public static final String API_MATERIAL_LISTING_URL = BASE_URL + "inventory/material/listing?token=";
     public static final String API_ASSETS_DATA_URL = BASE_URL + "inventory/asset/listing?token=";
-    public static final String API_PURCHASE_REQUEST_SUBMIT = "";
     public static final String API_ASSET_SUMMARY_LIST_URL = BASE_URL + "inventory/asset/summary-listing?token=";
     //    public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = "http://www.mocky.io/v2/59bb7e190f00009101ff85bb";
     public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = BASE_URL + "users/purchase/purchase-request/approval-acl?token=";

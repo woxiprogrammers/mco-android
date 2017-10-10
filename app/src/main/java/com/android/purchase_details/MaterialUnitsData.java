@@ -6,7 +6,7 @@ import io.realm.RealmObject;
 
 public class MaterialUnitsData extends RealmObject{
 
-	@SerializedName("material_names")
+	@SerializedName("material_list")
 	private RealmList<MaterialNamesItem> materialNames;
 
 	public void setMaterialNames(RealmList<MaterialNamesItem> materialNames){

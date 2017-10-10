@@ -166,9 +166,9 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
                 case 0:
                     return PurchaseRequestListFragment.newInstance(strSubModuleTag, permissionsItemList);
                 case 1:
-                    return PurchaseOrderListFragment.newInstance(0);
+                    return PurchaseOrderListFragment.newInstance(0,false);
                 case 2:
-                    return PurchaseBillListFragment.newInstance();
+                    return PurchaseBillListFragment.newInstance(true);
                 default:
                     return null;
             }

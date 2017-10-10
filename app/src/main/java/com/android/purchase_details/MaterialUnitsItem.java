@@ -5,10 +5,10 @@ import io.realm.RealmObject;
 
 public class MaterialUnitsItem extends RealmObject {
 
-	@SerializedName("unit")
+	@SerializedName("name")
 	private String unit;
 
-	@SerializedName("unit_id")
+	@SerializedName("id")
 	private int unitId;
 
 	public void setUnit(String unit){

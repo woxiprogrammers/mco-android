@@ -55,23 +55,27 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
     private static int purchaseRequestId;
+    private static boolean isFromPurchaseRequest;
 
     public PurchaseOrderListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId) {
+    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId,boolean isFrom) {
         Bundle args = new Bundle();
         PurchaseOrderListFragment fragment = new PurchaseOrderListFragment();
         fragment.setArguments(args);
         purchaseRequestId = mPurchaseRequestId;
+        isFromPurchaseRequest=isFrom;
         return fragment;
     }
 
     @Override
     public void fragmentBecameVisible() {
-        if (getUserVisibleHint()) {
-            ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+        if(!isFromPurchaseRequest) {
+            if (getUserVisibleHint()) {
+                ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+            }
         }
 
     }

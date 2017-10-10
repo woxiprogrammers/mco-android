@@ -50,15 +50,17 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private Realm realm;
     private RealmResults<PurchaseBillListItem> purchaseBillListItems;
     private PurchaseBIllDetailsItems purchaseBIllDetailsItems=new PurchaseBIllDetailsItems();
+    private static boolean isFromPurchaseRequestHome;
 
     public PurchaseBillListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseBillListFragment newInstance() {
+    public static PurchaseBillListFragment newInstance(boolean isFromPurchaseHome) {
         Bundle args = new Bundle();
         PurchaseBillListFragment fragment = new PurchaseBillListFragment();
         fragment.setArguments(args);
+        isFromPurchaseRequestHome=isFromPurchaseHome;
         return fragment;
     }
 
@@ -75,8 +77,10 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
     @Override
     public void fragmentBecameVisible() {
-        if (getUserVisibleHint()) {
-            ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+        if(isFromPurchaseRequestHome) {
+            if (getUserVisibleHint()) {
+                ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+            }
         }
     }
 
@@ -109,7 +113,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private void initializeViews() {
         mContext = getActivity();
         functionForGettingData();
-        ((PurchaseHomeActivity)mContext).hideDateLayout(false);
+
 
     }
 

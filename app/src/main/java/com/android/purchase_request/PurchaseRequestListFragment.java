@@ -58,14 +58,15 @@ import timber.log.Timber;
 public class PurchaseRequestListFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
+
     @BindView(R.id.floating_create_purchase_request)
     FloatingActionButton floatingCreatePurchaseRequest;
+
     private Unbinder unbinder;
-    public static Context mContext;
+    private  Context mContext;
     private Realm realm;
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
     private static String subModuleTag, permissionList;
-    private boolean isForCreate;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor

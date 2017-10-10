@@ -58,6 +58,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     MenuItem prevMenuItem;
     private int mPurchaseRequestId;
     private boolean isForApproval;
+    private boolean isFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,7 +250,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 case 1:
                     return PurchaseHistoryFragment.newInstance();
                 case 2:
-                    return PurchaseOrderListFragment.newInstance(mPurchaseRequestId);
+                    return PurchaseOrderListFragment.newInstance(mPurchaseRequestId,true);
                 default:
                     return null;
             }

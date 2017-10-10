@@ -7,18 +7,21 @@ import io.realm.annotations.PrimaryKey;
 
 public class MaterialNamesItem extends RealmObject{
 
-	@SerializedName("material_units")
+	@SerializedName("material_component_units")
 	private RealmList<MaterialUnitsItem> materialUnits;
 
-	@SerializedName("material_images")
+	@SerializedName("material_component_images")
 	private RealmList<MaterialImagesItem> materialImages;
 
 	@PrimaryKey
-	@SerializedName("id")
+	@SerializedName("purchase_order_component_id")
 	private int id;
 
-	@SerializedName("material_name")
+	@SerializedName("material_component_name")
 	private String materialName;
+
+	@SerializedName("material_request_component_id")
+	private int materialRequestComponentId;
 
 	public void setMaterialUnits(RealmList<MaterialUnitsItem> materialUnits){
 		this.materialUnits = materialUnits;

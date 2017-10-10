@@ -5,7 +5,7 @@ import io.realm.RealmObject;
 
 public class MaterialUnitsImagesResponse extends RealmObject{
 
-	@SerializedName("material_units_data")
+	@SerializedName("data")
 	private MaterialUnitsData materialUnitsData;
 
 	@SerializedName("message")

@@ -127,7 +127,7 @@ public class PayAndBillsActivity extends BaseActivity {
                 case 0:
                     return PayFragment.newInstance();
                 case 1:
-                    return PurchaseBillListFragment.newInstance();
+                    return PurchaseBillListFragment.newInstance(false);
                 default:
                     return null;
             }
