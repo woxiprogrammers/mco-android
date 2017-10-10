@@ -49,6 +49,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -70,58 +71,93 @@ import static android.app.Activity.RESULT_OK;
 public class PayFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.spinner_select_material)
     Spinner spinner;
+
     @BindView(R.id.edittextQuantity)
     EditText edittextQuantity;
+
     @BindView(R.id.editText_Challan_Number)
     EditText editTextChallanNumber;
+
     @BindView(R.id.editText_VehicleNumber)
     EditText editTextVehicleNumber;
+
     @BindView(R.id.editText_InTime)
     EditText editTextInTime;
+
     @BindView(R.id.editText_OutTime)
     EditText editTextOutTime;
+
     @BindView(R.id.editText_BillAmount)
     EditText editTextBillAmount;
+
     @BindView(R.id.editText_PayableAmount)
     EditText editTextPayableAmount;
+
     @BindView(R.id.ll_PayableAmount)
     LinearLayout llPayableAmount;
+
     @BindView(R.id.editText_grnNumber)
     EditText editTextGrnNumber;
+
     @BindView(R.id.llgrnNumber)
     LinearLayout llgrnNumber;
+
     @BindView(R.id.editext_tapToAddNote)
     EditText editext_tapToAddNote;
+
     @BindView(R.id.buttonAction)
     Button buttonAction;
+
     @BindView(R.id.radio_Group)
     RadioGroup radioGroup;
-    TextView textViewCaptureImages;
-    TextView textViewPickImages;
     @BindView(R.id.spinner_select_units)
     Spinner spinnerSelectUnits;
+
     @BindView(R.id.llIm)
     LinearLayout llIm;
+
     @BindView(R.id.edittext_setNameOfMaterial)
     EditText edittextSetNameOfMaterial;
+
     @BindView(R.id.ll_materialName)
     LinearLayout llMaterialName;
+
     @BindView(R.id.edittext_setUnit)
     EditText edittextSetUnit;
+
     @BindView(R.id.ll_unit)
     LinearLayout llUnit;
+
     @BindView(R.id.frameLayout_materialSpinner)
     FrameLayout frameLayoutMaterialSpinner;
+
     @BindView(R.id.frameLayout_UnitSpinner)
     FrameLayout frameLayoutUnitSpinner;
+
     @BindView(R.id.ll_addImage)
     LinearLayout llAddImage;
+
     @BindView(R.id.ll_PaymentImageLayout)
     LinearLayout llPaymentImageLayout;
-    @BindView(R.id.layoutBillImage)
-    LinearLayout layoutBill_Image;
-    @BindView(R.id.billPaymentImageLayout)
-    LinearLayout billPayment_ImageLayout;
+
+    @BindView(R.id.radioButtonUploadBill)
+    RadioButton radioButton_UploadBill;
+
+    @BindView(R.id.radioButtonCreateAmmetment)
+    RadioButton radioButton_CreateAmmetment;
+    @BindView(R.id.textView_capture_image)
+    TextView textViewCaptureImage;
+    @BindView(R.id.textView_pick_image)
+    TextView textViewPickImage;
+    @BindView(R.id.textView_capture_image1)
+    TextView textViewCaptureImage1;
+    @BindView(R.id.textView_pick_image1)
+    TextView textViewPickImage1;
+    @BindView(R.id.linearLayoutFirstImages)
+    LinearLayout linearLayoutFirstImages;
+    @BindView(R.id.linearLayoutSecondImages)
+    LinearLayout linearLayoutSecondImages;
+
     private RadioButton radioPayButton;
     private Unbinder unbinder;
     private Realm realm;
@@ -134,6 +170,12 @@ public class PayFragment extends Fragment implements FragmentInterface {
     PurchaseBillListItem purchaseBIllDetailsItems = new PurchaseBillListItem();
     private List<MaterialImagesItem> materialImagesItemList;
     private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str;
+    private int purchaseOrderComponentId, unitId;
+    private ArrayList<File> arrayImageFileList;
+    private File currentImageFile;
+    private boolean isForImage;
+    private JSONObject jsonImageNameObject = new JSONObject();
+    private int materialReqComId;
 
     public PayFragment() {
         // Required empty public constructor
@@ -151,42 +193,36 @@ public class PayFragment extends Fragment implements FragmentInterface {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pay, container, false);
-        textViewPickImages = view.findViewById(R.id.textView_pick);
-        textViewCaptureImages = view.findViewById(R.id.textView_capture);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setUpSpinnerValueForUnits(availableMaterialRealmResults.get(i).getId());
-                getMaterialImages(availableMaterialRealmResults.get(i).getId());
+                purchaseOrderComponentId = availableMaterialRealmResults.get(i).getId();
+                Log.i("##P", String.valueOf(purchaseOrderComponentId));
+                setUpSpinnerValueForUnits(purchaseOrderComponentId);
+                getMaterialImages(purchaseOrderComponentId);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+
+        spinnerSelectUnits.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                unitId = unitsRealmResults.get(i).getUnitId();
+                Log.i("##U", String.valueOf(unitId));
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         requestForMaterialNames();
-        textViewPickImages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
-            }
-        });
-        textViewCaptureImages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-            }
-        });
         return view;
     }
 
@@ -209,33 +245,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
     void onClickButtonAction(View view) {
         if (view.getId() == R.id.buttonAction) {
             validateEntries();
-        }
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        switch (requestCode) {
-            case Constants.TYPE_MULTI_CAPTURE:
-                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList));
-                if (PayAndBillsActivity.isForViewOnly) {
-                    setImageToLayout(imagesList, Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class, llPaymentImageLayout);
-                } else {
-                    setImageToLayout(imagesList, Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class, llAddImage);
-                }
-                break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                if (PayAndBillsActivity.isForViewOnly) {
-                    setImageToLayout(imagesList2, Constants.TYPE_MULTI_CAPTURE, GalleryActivity.class, llPaymentImageLayout);
-                } else {
-                    setImageToLayout(imagesList2, Constants.TYPE_MULTI_CAPTURE, GalleryActivity.class, llAddImage);
-                }
-                break;
         }
     }
 
@@ -311,10 +320,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
         purchaseBIllDetailsItems.setMaterialName(name);
         purchaseBIllDetailsItems.setMaterialUnit(strUnit);
         purchaseBIllDetailsItems.setPurchaseOrderId(strQuantity);
-        purchaseBIllDetailsItems.setChallanNumber(strChallanNumber);
+       /* purchaseBIllDetailsItems.setChallanNumber(strChallanNumber);
         purchaseBIllDetailsItems.setVehicleNumber(strVehicleNumber);
         purchaseBIllDetailsItems.setInTime(strInTime);
-        purchaseBIllDetailsItems.setOutTime(strOutTime);
+        purchaseBIllDetailsItems.setOutTime(strOutTime);*/
         purchaseBIllDetailsItems.setMaterialQuantity(strQuantity);
         purchaseBIllDetailsItems.setBillAmount(Integer.parseInt(strBillAmount));
         realm = Realm.getDefaultInstance();
@@ -343,7 +352,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             }
         }
 
-        requestForPayment();
+        uploadImages_addItemToLocal();
     }
 
     private void requestForPayment() {
@@ -358,24 +367,30 @@ public class PayFragment extends Fragment implements FragmentInterface {
         bill_amount =>500
         images[0] => 17991814444f81f9a8a1a36eb6d3cc1b9bdcd6419c70ac9d01.jpg*/
 
+        JSONArray jsonImageNameArray = new JSONArray();
+        jsonImageNameArray.put(jsonImageNameObject);
         JSONObject params = new JSONObject();
         try {
-            params.put("material_name",spinner.getSelectedItem().toString());
-            params.put("purchase_order_component_id",1);
-            params.put("type","");
-            params.put("quantity",strQuantity);
-            params.put("unit_id","");
-            params.put("bill_number",strChallanNumber);
-            params.put("vehicle_number",strVehicleNumber);
-            params.put("in_time",strInTime);
-            params.put("out_time",strOutTime);
-            params.put("bill_amount",strOutTime);
-
+            params.put("purchase_order_component_id", purchaseOrderComponentId);
+            if (radioButton_UploadBill.isChecked()) {
+                params.put("type", "upload_bill");
+            } else if (radioButton_CreateAmmetment.isChecked()) {
+                params.put("type", "create-amendment");
+            }
+            params.put("quantity", strQuantity);
+            params.put("unit_id", unitId);
+            params.put("bill_number", strChallanNumber);
+            params.put("vehicle_number", strVehicleNumber);
+            params.put("in_time", strInTime);
+            params.put("out_time", strOutTime);
+            params.put("bill_amount", strOutTime);
+            params.put("images",jsonImageNameArray);
+            Log.i("##PArams", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        AndroidNetworking.post(AppURL.API_ASSET_REQUEST_MAINTENANCE + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_BILL_TRANSACTION + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestBillTransaction")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -400,9 +415,9 @@ public class PayFragment extends Fragment implements FragmentInterface {
     }
 
     private void requestForMaterialNames() {
-        JSONObject params=new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("purchase_order_id",1);
+            params.put("purchase_order_id", 1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -468,8 +483,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
             layoutParams.setMargins(10, 10, 10, 10);
             imageView.setLayoutParams(layoutParams);
             llIm.addView(imageView);
-            Log.i("##Url",strMaterialImageUrl);
-            Glide.with(mContext).load("http://test.mconstruction.co.in" +strMaterialImageUrl)
+            Log.i("##Url", strMaterialImageUrl);
+            Glide.with(mContext).load("http://test.mconstruction.co.in" + strMaterialImageUrl)
                     .thumbnail(0.1f)
                     .crossFade()
                     .skipMemoryCache(true)
@@ -499,6 +514,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private void setUpSpinnerValueForUnits(int selectedId) {
         realm = Realm.getDefaultInstance();
         MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", selectedId).findFirst();
+        materialReqComId = materialNamesItem.getMaterialRequestComponentId();
         if (materialNamesItem != null) {
             unitsRealmResults = materialNamesItem.getMaterialUnits();
         }
@@ -552,9 +568,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
             frameLayoutUnitSpinner.setVisibility(View.GONE);
             radioGroup.setVisibility(View.GONE);
             llAddImage.setVisibility(View.GONE);
-            layoutBill_Image.setVisibility(View.GONE);
-            billPayment_ImageLayout.setVisibility(View.VISIBLE);
-            billPayment_ImageLayout.setVisibility(View.VISIBLE);
+            linearLayoutFirstImages.setVisibility(View.GONE);
+            linearLayoutSecondImages.setVisibility(View.VISIBLE);
             //Non Editable Fields
             editTextChallanNumber.setEnabled(false);
             editTextVehicleNumber.setEnabled(false);
@@ -565,16 +580,17 @@ public class PayFragment extends Fragment implements FragmentInterface {
             editTextGrnNumber.setEnabled(false);
             spinner.setEnabled(false);
             realm = Realm.getDefaultInstance();
+
             PurchaseBillListItem purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("id", PayAndBillsActivity.idForBillItem).findFirst();
             if (purchaseBIllDetailsItems != null) {
                 edittextSetNameOfMaterial.setText(purchaseBIllDetailsItems.getMaterialName());
                 edittextSetUnit.setText(purchaseBIllDetailsItems.getMaterialUnit());
                 edittextQuantity.setText(purchaseBIllDetailsItems.getMaterialQuantity());
-                editTextChallanNumber.setText(purchaseBIllDetailsItems.getChallanNumber());
+                /*editTextChallanNumber.setText(purchaseBIllDetailsItems.getChallanNumber());
                 editTextVehicleNumber.setText(purchaseBIllDetailsItems.getVehicleNumber());
                 editTextInTime.setText(purchaseBIllDetailsItems.getInTime());
                 editTextOutTime.setText(purchaseBIllDetailsItems.getOutTime());
-                editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
+                editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());*/
                 editTextGrnNumber.setText(purchaseBIllDetailsItems.getPurchaseBillGrn());
                 buttonAction.setText("Pay");
             }
@@ -588,9 +604,9 @@ public class PayFragment extends Fragment implements FragmentInterface {
             frameLayoutMaterialSpinner.setVisibility(View.VISIBLE);
             frameLayoutUnitSpinner.setVisibility(View.VISIBLE);
             llAddImage.setVisibility(View.VISIBLE);
-            layoutBill_Image.setVisibility(View.VISIBLE);
-            billPayment_ImageLayout.setVisibility(View.GONE);
-            billPayment_ImageLayout.setVisibility(View.GONE);
+            linearLayoutSecondImages.setVisibility(View.GONE);
+            linearLayoutFirstImages.setVisibility(View.VISIBLE);
+            //VIsible
             editTextChallanNumber.setEnabled(true);
             editTextVehicleNumber.setEnabled(true);
             editTextInTime.setEnabled(true);
@@ -627,20 +643,118 @@ public class PayFragment extends Fragment implements FragmentInterface {
         mTimePicker.show();
     }
 
-    private void chooseAction(int type, Class aClass) {
-        Intent intent = new Intent(mContext, aClass);
+    @OnClick({R.id.textView_capture_image, R.id.textView_pick_image, R.id.textView_capture_image1, R.id.textView_pick_image1})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textView_capture_image:
+                isForImage = true;
+                captureImage();
+                break;
+            case R.id.textView_pick_image:
+                isForImage = true;
+                pickImage();
+                break;
+            case R.id.textView_capture_image1:
+                isForImage = false;
+                captureImage();
+                break;
+            case R.id.textView_pick_image1:
+                isForImage = false;
+                pickImage();
+                break;
+        }
+    }
+
+    private void captureImage() {
+        Intent intent = new Intent(mContext, MultiCameraActivity.class);
         Params params = new Params();
-        params.setCaptureLimit(10);
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
         params.setToolbarColor(R.color.colorPrimaryLight);
         params.setActionButtonColor(R.color.colorAccentDark);
         params.setButtonTextColor(R.color.colorWhite);
         intent.putExtra(Constants.KEY_PARAMS, params);
-        startActivityForResult(intent, type);
+        startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
-    private void setImageToLayout(ArrayList<Image> imageArrayList, final int type, final Class aClass, LinearLayout layout) {
-        for (Image currentImage : imageArrayList) {
+    private void pickImage() {
+        Intent intent = new Intent(mContext, GalleryActivity.class);
+        Params params = new Params();
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setToolbarColor(R.color.colorPrimaryLight);
+        params.setActionButtonColor(R.color.colorAccentDark);
+        params.setButtonTextColor(R.color.colorWhite);
+        intent.putExtra(Constants.KEY_PARAMS, params);
+        startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                if (isForImage)
+                    addImages(imagesList, llAddImage);
+                else
+                    addImages(imagesList, llPaymentImageLayout);
+                break;
+            case Constants.TYPE_MULTI_PICKER:
+                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                if (isForImage)
+                    addImages(imagesList2, llAddImage);
+                else
+                    addImages(imagesList2, llPaymentImageLayout);
+                break;
+        }
+    }
+
+    private void uploadImages_addItemToLocal() {
+        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+            File sendImageFile = arrayImageFileList.get(0);
+            Timber.i("sendImageFile: " + sendImageFile);
+            String strToken = AppUtils.getInstance().getCurrentToken();
+            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                    .setPriority(Priority.MEDIUM)
+                    .addMultipartFile("image", sendImageFile)
+                    .addMultipartParameter("image_for", "material-request")
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("uploadImages_addItemToLocal")
+                    .setPercentageThresholdForCancelling(50)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Timber.d(String.valueOf(response));
+                            arrayImageFileList.remove(0);
+                            try {
+                                String fileName = response.getString("filename");
+                                jsonImageNameObject.put("image", fileName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            uploadImages_addItemToLocal();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                        }
+                    });
+        } else {
+            requestForPayment();
+        }
+    }
+
+    private void addImages(ArrayList<Image> imagesList, LinearLayout layout) {
+        layout.removeAllViews();
+        arrayImageFileList = new ArrayList<File>();
+        for (Image currentImage : imagesList) {
             if (currentImage.imagePath != null) {
+                currentImageFile = new File(currentImage.imagePath);
+                arrayImageFileList.add(currentImageFile);
                 Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                 ImageView imageView = new ImageView(mContext);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);

@@ -20,7 +20,15 @@ public class MaterialNamesItem extends RealmObject{
 	@SerializedName("material_component_name")
 	private String materialName;
 
-	@SerializedName("material_request_component_id")
+    public int getMaterialRequestComponentId() {
+        return materialRequestComponentId;
+    }
+
+    public void setMaterialRequestComponentId(int materialRequestComponentId) {
+        this.materialRequestComponentId = materialRequestComponentId;
+    }
+
+    @SerializedName("material_request_component_id")
 	private int materialRequestComponentId;
 
 	public void setMaterialUnits(RealmList<MaterialUnitsItem> materialUnits){

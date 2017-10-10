@@ -27,6 +27,9 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -128,7 +131,15 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     }
 
     private void requestPrListOnline() {
-        AndroidNetworking.get(AppURL.API_PURCHASE_BILL_LIST)
+        JSONObject params=new JSONObject();
+        try {
+            params.put("purchase_order_id",1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_PURCHASE_BILL_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPrListOnline")
                 .build()
