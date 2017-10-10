@@ -35,6 +35,7 @@ import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -44,6 +45,7 @@ import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -340,6 +342,61 @@ public class PayFragment extends Fragment implements FragmentInterface {
                 realm.close();
             }
         }
+
+        requestForPayment();
+    }
+
+    private void requestForPayment() {
+        /*purchase_order_component_id => 4
+        type => upload_bill
+        quantity => 1
+        unit_id => 2
+        bill_number => 1234
+        vehicle_number => MH 12 0923
+        in_time => 2017-10-09 11:09:58
+        out_time => 2017-10-09 19:09:58
+        bill_amount =>500
+        images[0] => 17991814444f81f9a8a1a36eb6d3cc1b9bdcd6419c70ac9d01.jpg*/
+
+        JSONObject params = new JSONObject();
+        try {
+            params.put("material_name",spinner.getSelectedItem().toString());
+            params.put("purchase_order_component_id",1);
+            params.put("type","");
+            params.put("quantity",strQuantity);
+            params.put("unit_id","");
+            params.put("bill_number",strChallanNumber);
+            params.put("vehicle_number",strVehicleNumber);
+            params.put("in_time",strInTime);
+            params.put("out_time",strOutTime);
+            params.put("bill_amount",strOutTime);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_ASSET_REQUEST_MAINTENANCE + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestBillTransaction")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
 
     private void requestForMaterialNames() {
