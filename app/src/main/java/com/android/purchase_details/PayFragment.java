@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,9 @@ import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -339,8 +343,16 @@ public class PayFragment extends Fragment implements FragmentInterface {
     }
 
     private void requestForMaterialNames() {
+        JSONObject params=new JSONObject();
+        try {
+            params.put("purchase_order_id",1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         realm = Realm.getDefaultInstance();
-        AndroidNetworking.post(AppURL.API_PURCHASE_MATERIAL_UNITS_IMAGES_URL)
+        AndroidNetworking.post(AppURL.API_PURCHASE_MATERIAL_UNITS_IMAGES_URL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("requestInventoryData")
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -375,8 +387,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
                     @Override
                     public void onError(ANError anError) {
-//                        AppUtils.getInstance().logRealmExecutionError(anError);
-                        anError.printStackTrace();
+                        AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
     }
@@ -394,13 +405,14 @@ public class PayFragment extends Fragment implements FragmentInterface {
         llIm.removeAllViews();
         materialImagesItemList = realm.copyFromRealm(image);
         for (MaterialImagesItem currentUser : materialImagesItemList) {
-            String strMaterialUnit = currentUser.getImageUrl();
+            String strMaterialImageUrl = currentUser.getImageUrl();
             ImageView imageView = new ImageView(mContext);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
             layoutParams.setMargins(10, 10, 10, 10);
             imageView.setLayoutParams(layoutParams);
             llIm.addView(imageView);
-            Glide.with(mContext).load(strMaterialUnit)
+            Log.i("##Url",strMaterialImageUrl);
+            Glide.with(mContext).load("http://test.mconstruction.co.in" +strMaterialImageUrl)
                     .thumbnail(0.1f)
                     .crossFade()
                     .skipMemoryCache(true)
