@@ -59,6 +59,7 @@ dependencies {
     compile 'com.yarolegovich:discrete-scrollview:1.2.0'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'io.realm:android-adapters:2.1.0'
+//    compile 'com.github.thorbenprimke:realm-recyclerview:0.9.25'
     compile 'com.android.support:support-v4:26.0.0-alpha1'
     compile 'com.theartofdev.edmodo:android-image-cropper:2.3.1'
     compile 'com.jakewharton.timber:timber:4.5.1'

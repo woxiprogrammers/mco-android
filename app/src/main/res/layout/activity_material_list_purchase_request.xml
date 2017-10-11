@@ -85,6 +85,15 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
+        <!--<co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
+            android:id="@+id/rv_material_list_purchase_request"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:rrvHeaderColumnName="componentStatus"
+            app:rrvIsRefreshable="false"
+            app:rrvLayoutType="LinearLayoutWithHeaders"
+            app:rrvSwipeToDelete="false"/>-->
         <Button
             android:id="@+id/button_submit_purchase_request"
             android:layout_width="wrap_content"

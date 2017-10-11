@@ -952,11 +952,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     @SuppressWarnings("WeakerAccess")
-    protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseMaterialRvAdapter.MyViewHolder> {
+    protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem,
+            PurchaseMaterialRvAdapter.MyViewHolder> {
         private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
         private RecyclerViewClickListener recyclerViewClickListener;
 
-        PurchaseMaterialRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
+        PurchaseMaterialRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate,
+                                  boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
             super(data, autoUpdate, updateOnModification);
             hasStableIds();
             arrPurchaseMaterialListItems = data;
@@ -1124,7 +1126,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
     }
 
-    private void approveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems, final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
+    private void approveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
+                                 final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
         final PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
         int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
