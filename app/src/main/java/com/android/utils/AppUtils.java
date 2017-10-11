@@ -6,11 +6,14 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.models.login_acl.LoginResponse;
 import com.androidnetworking.error.ANError;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -275,5 +278,19 @@ public class AppUtils {
             }
         }
         return strLoggedInAt;
+    }
+
+    public String getTime(String currentFormat,String expectedFormat, String currentDateTime) {
+        final SimpleDateFormat df = new SimpleDateFormat(currentFormat);
+        Date dateObj;
+        String newDateStr = null;
+        try {
+            dateObj = df.parse(currentDateTime);
+            SimpleDateFormat fd = new SimpleDateFormat(expectedFormat);
+            newDateStr = fd.format(dateObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newDateStr;
     }
 }

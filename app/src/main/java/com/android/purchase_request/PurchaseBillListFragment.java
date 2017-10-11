@@ -17,7 +17,6 @@ import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_bill.PurchaseBillListItem;
 import com.android.models.purchase_bill.PurchaseBillResponse;
 import com.android.purchase_details.PayAndBillsActivity;
-import com.android.purchase_details.PurchaseBIllDetailsItems;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -52,7 +51,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseBillListItem> purchaseBillListItems;
-    private PurchaseBIllDetailsItems purchaseBIllDetailsItems=new PurchaseBIllDetailsItems();
     private static boolean isFromPurchaseRequestHome;
 
     public PurchaseBillListFragment() {
@@ -193,7 +191,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     @Override
                     public void onItemClick(View view, final int position) {
                         PayAndBillsActivity.isForViewOnly=true;
-                        PayAndBillsActivity.idForBillItem=purchaseBillListItems.get(position).getId();
+                        PayAndBillsActivity.idForBillItem=purchaseBillListItems.get(position).getPurchaseBillGrn();
                         ((PayAndBillsActivity) mContext).moveFragments(false);
                     }
 

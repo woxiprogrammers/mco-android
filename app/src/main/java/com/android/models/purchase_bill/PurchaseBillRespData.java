@@ -6,7 +6,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class PurchaseBillRespData extends RealmObject {
-    @SerializedName("bill_listing")
+    @SerializedName("purchase_order_bill_listing")
     private RealmList<PurchaseBillListItem> purchaseBillList;
 
     public void setPurchaseBillList(RealmList<PurchaseBillListItem> purchaseBillList) {

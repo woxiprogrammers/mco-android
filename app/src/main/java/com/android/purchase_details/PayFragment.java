@@ -1,5 +1,6 @@
 package com.android.purchase_details;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -50,9 +52,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,9 +88,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     @BindView(R.id.editText_InTime)
     EditText editTextInTime;
-
-    @BindView(R.id.editText_OutTime)
-    EditText editTextOutTime;
 
     @BindView(R.id.editText_BillAmount)
     EditText editTextBillAmount;
@@ -158,6 +160,21 @@ public class PayFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.linearLayoutSecondImages)
     LinearLayout linearLayoutSecondImages;
 
+    @BindView(R.id.editText_InDate)
+    EditText editTextInDate;
+
+    @BindView(R.id.editText_OutDate)
+    EditText editTextOutDate;
+
+    @BindView(R.id.editText_OutTime)
+    EditText editTextOutTime;
+    @BindView(R.id.button_edit)
+    Button buttonEdit;
+    @BindView(R.id.spinner_paymentMode)
+    Spinner spinnerPaymentMode;
+    @BindView(R.id.linearLayoutPaymentMode)
+    LinearLayout linearLayoutPaymentMode;
+
     private RadioButton radioPayButton;
     private Unbinder unbinder;
     private Realm realm;
@@ -169,13 +186,15 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private List<MaterialUnitsItem> unitsArray;
     PurchaseBillListItem purchaseBIllDetailsItems = new PurchaseBillListItem();
     private List<MaterialImagesItem> materialImagesItemList;
-    private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str;
+    private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str, strInDate, strOutDate;
     private int purchaseOrderComponentId, unitId;
     private ArrayList<File> arrayImageFileList;
     private File currentImageFile;
     private boolean isForImage;
     private JSONObject jsonImageNameObject = new JSONObject();
     private int materialReqComId;
+    private DatePickerDialog.OnDateSetListener date;
+    private Calendar myCalendar;
 
     public PayFragment() {
         // Required empty public constructor
@@ -208,7 +227,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
         spinnerSelectUnits.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -223,6 +241,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             }
         });
         requestForMaterialNames();
+        myCalendar = Calendar.getInstance();
         return view;
     }
 
@@ -266,7 +285,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             edittextQuantity.setError(null);
             edittextQuantity.requestFocus();
         }
-        //For Challan Number
+        //For Bill Number
         if (TextUtils.isEmpty(strChallanNumber)) {
             editTextChallanNumber.setFocusableInTouchMode(true);
             editTextChallanNumber.requestFocus();
@@ -286,6 +305,18 @@ public class PayFragment extends Fragment implements FragmentInterface {
             editTextVehicleNumber.setError(null);
             editTextVehicleNumber.requestFocus();
         }
+        //For In Date
+        strInDate = editTextInDate.getText().toString();
+        if (TextUtils.isEmpty(strInDate)) {
+            editTextInDate.setFocusableInTouchMode(true);
+            editTextInDate.requestFocus();
+            editTextInDate.setError(getString(R.string.please_enter) + " " + "Date");
+        } else {
+            editTextInDate.setError(null);
+            editTextInDate.clearFocus();
+
+        }
+
         //For In Time
         if (TextUtils.isEmpty(strInTime)) {
             editTextInTime.setFocusableInTouchMode(true);
@@ -295,6 +326,18 @@ public class PayFragment extends Fragment implements FragmentInterface {
         } else {
             editTextInTime.setError(null);
             editTextInTime.requestFocus();
+        }
+
+        //For Out Date
+        strOutDate = editTextOutDate.getText().toString();
+        if (TextUtils.isEmpty(strOutDate)) {
+            editTextOutDate.setFocusableInTouchMode(true);
+            editTextOutDate.requestFocus();
+            editTextOutDate.setError(getString(R.string.please_enter) + " " + " Out Date");
+
+        } else {
+            editTextOutDate.setError(null);
+            editTextOutDate.clearFocus();
         }
         //For Out Time
         if (TextUtils.isEmpty(strOutTime)) {
@@ -314,16 +357,16 @@ public class PayFragment extends Fragment implements FragmentInterface {
             return;
         } else {
             editTextBillAmount.setError(null);
-            editTextBillAmount.requestFocus();
+            editTextBillAmount.clearFocus();
         }
-        purchaseBIllDetailsItems.setId(1);
+        /*purchaseBIllDetailsItems.setId(1);
         purchaseBIllDetailsItems.setMaterialName(name);
         purchaseBIllDetailsItems.setMaterialUnit(strUnit);
         purchaseBIllDetailsItems.setPurchaseOrderId(strQuantity);
-       /* purchaseBIllDetailsItems.setChallanNumber(strChallanNumber);
+       *//* purchaseBIllDetailsItems.setChallanNumber(strChallanNumber);
         purchaseBIllDetailsItems.setVehicleNumber(strVehicleNumber);
         purchaseBIllDetailsItems.setInTime(strInTime);
-        purchaseBIllDetailsItems.setOutTime(strOutTime);*/
+        purchaseBIllDetailsItems.setOutTime(strOutTime);*//*
         purchaseBIllDetailsItems.setMaterialQuantity(strQuantity);
         purchaseBIllDetailsItems.setBillAmount(Integer.parseInt(strBillAmount));
         realm = Realm.getDefaultInstance();
@@ -337,8 +380,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             }, new Realm.Transaction.OnSuccess() {
                 @Override
                 public void onSuccess() {
-                    clearData();
-                    ((PayAndBillsActivity) mContext).moveFragments(true);
+
                 }
             }, new Realm.Transaction.OnError() {
                 @Override
@@ -350,7 +392,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             if (realm != null) {
                 realm.close();
             }
-        }
+        }*/
 
         uploadImages_addItemToLocal();
     }
@@ -381,10 +423,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("unit_id", unitId);
             params.put("bill_number", strChallanNumber);
             params.put("vehicle_number", strVehicleNumber);
-            params.put("in_time", strInTime);
-            params.put("out_time", strOutTime);
-            params.put("bill_amount", strOutTime);
-            params.put("images",jsonImageNameArray);
+            params.put("in_time", strInDate + " " + strInTime);
+            params.put("out_time", strOutDate + " " + strOutTime);
+            params.put("bill_amount", 500);
+            params.put("images", jsonImageNameArray);
             Log.i("##PArams", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -401,7 +443,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-
+                            clearData();
+                            ((PayAndBillsActivity) mContext).moveFragments(true);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -580,18 +623,24 @@ public class PayFragment extends Fragment implements FragmentInterface {
             editTextGrnNumber.setEnabled(false);
             spinner.setEnabled(false);
             realm = Realm.getDefaultInstance();
+            linearLayoutPaymentMode.setVisibility(View.VISIBLE);
 
-            PurchaseBillListItem purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("id", PayAndBillsActivity.idForBillItem).findFirst();
+            PurchaseBillListItem purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("purchaseBillGrn", PayAndBillsActivity.idForBillItem).findFirst();
             if (purchaseBIllDetailsItems != null) {
                 edittextSetNameOfMaterial.setText(purchaseBIllDetailsItems.getMaterialName());
                 edittextSetUnit.setText(purchaseBIllDetailsItems.getMaterialUnit());
                 edittextQuantity.setText(purchaseBIllDetailsItems.getMaterialQuantity());
-                /*editTextChallanNumber.setText(purchaseBIllDetailsItems.getChallanNumber());
+                editTextChallanNumber.setText(purchaseBIllDetailsItems.getBillNumber());
                 editTextVehicleNumber.setText(purchaseBIllDetailsItems.getVehicleNumber());
-                editTextInTime.setText(purchaseBIllDetailsItems.getInTime());
+//                editTextInTime.setText(purchaseBIllDetailsItems.getInTime());
                 editTextOutTime.setText(purchaseBIllDetailsItems.getOutTime());
-                editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());*/
+                editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
                 editTextGrnNumber.setText(purchaseBIllDetailsItems.getPurchaseBillGrn());
+                editTextOutTime.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "HH:mm:ss", purchaseBIllDetailsItems.getOutTime()));
+                editTextOutDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd",purchaseBIllDetailsItems.getOutTime()));
+                editTextInTime.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "HH:mm:ss",purchaseBIllDetailsItems.getInTime()));
+                editTextInDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd",purchaseBIllDetailsItems.getInTime()));
+
                 buttonAction.setText("Pay");
             }
         } else {
@@ -606,7 +655,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             llAddImage.setVisibility(View.VISIBLE);
             linearLayoutSecondImages.setVisibility(View.GONE);
             linearLayoutFirstImages.setVisibility(View.VISIBLE);
-            //VIsible
+            //Visible
             editTextChallanNumber.setEnabled(true);
             editTextVehicleNumber.setEnabled(true);
             editTextInTime.setEnabled(true);
@@ -615,6 +664,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             edittextQuantity.setEnabled(true);
             editTextGrnNumber.setEnabled(false);
             spinner.setEnabled(true);
+            linearLayoutPaymentMode.setVisibility(View.GONE);
         }
     }
 
@@ -629,14 +679,19 @@ public class PayFragment extends Fragment implements FragmentInterface {
     }
 
     private void setInOutTime(final EditText currentEditText) {
-        Calendar mcurrentTime = Calendar.getInstance();
+        final Calendar mcurrentTime = Calendar.getInstance();
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
+        final int minute = mcurrentTime.get(Calendar.MINUTE);
+        final int mileseconds = mcurrentTime.get(Calendar.MILLISECOND);
         TimePickerDialog mTimePicker;
+
         mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                currentEditText.setText(selectedHour + ":" + selectedMinute);
+                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
+                mcurrentTime.set(Calendar.MILLISECOND, mileseconds);
+                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + mileseconds);
             }
         }, hour, minute, true);//Yes 24 hour time
         mTimePicker.setTitle("Select Time");
@@ -770,5 +825,48 @@ public class PayFragment extends Fragment implements FragmentInterface {
                 });
             }
         }
+    }
+
+    @OnClick({R.id.editText_InDate, R.id.editText_OutDate})
+    public void onTimeClicked(View view) {
+        switch (view.getId()) {
+            case R.id.editText_InDate:
+                setInOutDate(editTextInDate);
+                break;
+            case R.id.editText_OutDate:
+                setInOutDate(editTextOutDate);
+                break;
+        }
+    }
+
+    private void setInOutDate(final EditText editext_updateDate) {
+        date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateEditText(editext_updateDate);
+            }
+
+        };
+        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
+
+    }
+
+    private void updateEditText(EditText editTextUpdateDate) {
+        String myFormat = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
+        editTextUpdateDate.setError(null);
+    }
+
+    @OnClick(R.id.button_edit)
+    public void onButtonEditClicked() {
     }
 }

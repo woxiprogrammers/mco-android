@@ -32,7 +32,7 @@ public class PayAndBillsActivity extends BaseActivity {
     BottomNavigationView bottomNavigationPay;
     MenuItem prevMenuItem;
     public static boolean isForViewOnly;
-    public static int idForBillItem;
+    public static String idForBillItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

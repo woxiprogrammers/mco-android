@@ -10,7 +10,7 @@ public class PurchaseBillResponse extends RealmObject {
     private int intIndex = 0;
     @SerializedName("next_url")
     private String nextUrl;
-    @SerializedName("purchaseBillRespData")
+    @SerializedName("data")
     private PurchaseBillRespData purchaseBillRespData;
     @SerializedName("message")
     private String message;
