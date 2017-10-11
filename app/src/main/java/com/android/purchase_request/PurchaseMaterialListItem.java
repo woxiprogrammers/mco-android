@@ -39,63 +39,6 @@ public class PurchaseMaterialListItem extends RealmObject {
     private String materialRequestComponentFormat;
     @SerializedName("material_request_id")
     private int materialRequestId;
-
-    public String getComponentType() {
-        return componentType;
-    }
-
-    public void setComponentType(String componentType) {
-        this.componentType = componentType;
-    }
-
-    public String getMaterialRequestFormat() {
-        return materialRequestFormat;
-    }
-
-    public void setMaterialRequestFormat(String materialRequestFormat) {
-        this.materialRequestFormat = materialRequestFormat;
-    }
-
-    public float getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(float quantity) {
-        this.quantity = quantity;
-    }
-
-    public int getUnit_id() {
-        return unit_id;
-    }
-
-    public void setUnit_id(int unit_id) {
-        this.unit_id = unit_id;
-    }
-
-    public int getComponent_type_id() {
-        return component_type_id;
-    }
-
-    public void setComponent_type_id(int component_type_id) {
-        this.component_type_id = component_type_id;
-    }
-
-    public String getMaterialRequestComponentFormat() {
-        return materialRequestComponentFormat;
-    }
-
-    public void setMaterialRequestComponentFormat(String materialRequestComponentFormat) {
-        this.materialRequestComponentFormat = materialRequestComponentFormat;
-    }
-
-    public int getMaterialRequestId() {
-        return materialRequestId;
-    }
-
-    public void setMaterialRequestId(int materialRequestId) {
-        this.materialRequestId = materialRequestId;
-    }
-
     @SerializedName("created_at")
     private String createdAt;
     /////////////////////////
