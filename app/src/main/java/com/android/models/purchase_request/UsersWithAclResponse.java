@@ -17,20 +17,20 @@ public class UsersWithAclResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setAvailableUsers(RealmList<AvailableUsersItem> availableUsers) {
-        this.availableUsers = availableUsers;
-    }
-
     public RealmList<AvailableUsersItem> getAvailableUsers() {
         return availableUsers;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setAvailableUsers(RealmList<AvailableUsersItem> availableUsers) {
+        this.availableUsers = availableUsers;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public RealmList<PurchaseMaterialListItem> getMaterialList() {

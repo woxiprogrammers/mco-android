@@ -12,27 +12,27 @@ public class UnitQuantityItem extends RealmObject {
     @SerializedName("unit_id")
     private int unitId;
 
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
-
     public String getUnitName() {
         return unitName;
     }
 
-    public void setQuantity(float quantity) {
-        this.quantity = quantity;
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 
     public float getQuantity() {
         return quantity;
     }
 
-    public void setUnitId(int unitId) {
-        this.unitId = unitId;
+    public void setQuantity(float quantity) {
+        this.quantity = quantity;
     }
 
     public int getUnitId() {
         return unitId;
+    }
+
+    public void setUnitId(int unitId) {
+        this.unitId = unitId;
     }
 }

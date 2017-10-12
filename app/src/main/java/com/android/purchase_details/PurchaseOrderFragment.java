@@ -38,7 +38,6 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class PurchaseOrderFragment extends Fragment implements FragmentInterface {
-
     @BindView(R.id.rv_material_list)
     RecyclerView rvOrderList;
     Unbinder unbinder;
@@ -59,6 +58,12 @@ public class PurchaseOrderFragment extends Fragment implements FragmentInterface
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
@@ -69,9 +74,9 @@ public class PurchaseOrderFragment extends Fragment implements FragmentInterface
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
@@ -81,20 +86,37 @@ public class PurchaseOrderFragment extends Fragment implements FragmentInterface
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public void fragmentBecameVisible() {
-
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
     private void initializeViews() {
-        mContext=getActivity();
+        mContext = getActivity();
         functionForGettingData();
+    }
+
+    private void setAdapterForPurchaseorderList() {
+        realm = Realm.getDefaultInstance();
+        itemListItems = realm.where(PurchaseOrderListItem.class).findAllAsync();
+        purchaseOrderAdapter = new PurchaseOrderAdapter(itemListItems, true, true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rvOrderList.setLayoutManager(linearLayoutManager);
+        rvOrderList.setAdapter(purchaseOrderAdapter);
+        rvOrderList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvOrderList, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, final int position) {
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+            }
+        }));
+        if (itemListItems != null) {
+            itemListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderListItem>>() {
+                @Override
+                public void onChange(RealmResults<PurchaseOrderListItem> purchaseRequestListItems) {
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
+        }
     }
 
     private void functionForGettingData() {
@@ -147,36 +169,7 @@ public class PurchaseOrderFragment extends Fragment implements FragmentInterface
                 });
     }
 
-    private void setAdapterForPurchaseorderList() {
-        realm = Realm.getDefaultInstance();
-        itemListItems = realm.where(PurchaseOrderListItem.class).findAllAsync();
-        purchaseOrderAdapter = new PurchaseOrderAdapter(itemListItems, true,true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rvOrderList.setLayoutManager(linearLayoutManager);
-        rvOrderList.setAdapter(purchaseOrderAdapter);
-        rvOrderList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvOrderList, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, final int position) {
-
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-            }
-        }));
-
-        if (itemListItems != null) {
-            itemListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseOrderListItem> purchaseRequestListItems) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
-        }
-
-
+    @Override
+    public void fragmentBecameVisible() {
     }
-
 }

@@ -80,6 +80,12 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLoginPresenter.onDestroy();
+    }
+
+    @Override
     public void showProgress() {
         edUserName.setEnabled(false);
         edPassword.setEnabled(false);
@@ -127,11 +133,5 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void loginFailure(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mLoginPresenter.onDestroy();
     }
 }

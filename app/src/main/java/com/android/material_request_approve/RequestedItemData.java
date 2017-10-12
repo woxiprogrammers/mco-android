@@ -13,11 +13,11 @@ public class RequestedItemData extends RealmObject {
     @SerializedName("material_request_list")
     private RealmList<PurchaseMaterialListItem> materialRequestList;
 
-    public void setMaterialRequestList(RealmList<PurchaseMaterialListItem> materialRequestList) {
-        this.materialRequestList = materialRequestList;
-    }
-
     public RealmList<PurchaseMaterialListItem> getMaterialRequestList() {
         return materialRequestList;
+    }
+
+    public void setMaterialRequestList(RealmList<PurchaseMaterialListItem> materialRequestList) {
+        this.materialRequestList = materialRequestList;
     }
 }

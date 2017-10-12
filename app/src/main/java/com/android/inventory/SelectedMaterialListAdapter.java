@@ -68,7 +68,6 @@ public class SelectedMaterialListAdapter extends RealmRecyclerViewAdapter<Materi
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
         }
     }
 }

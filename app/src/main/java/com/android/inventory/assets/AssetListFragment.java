@@ -35,7 +35,6 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class AssetListFragment extends Fragment implements FragmentInterface {
-
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     private Unbinder unbinder;
@@ -55,24 +54,23 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
-        unbinder = ButterKnife.bind(this, mParentView);
-        mContext=getActivity();
-        setUpAssetListAdapter();
-        functionForGettingData();
-        return mParentView;
-    }
-
-    @Override
     public void fragmentBecameVisible() {
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);//Make sure you have this line of code.
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        unbinder = ButterKnife.bind(this, mParentView);
+        mContext = getActivity();
+        setUpAssetListAdapter();
+        functionForGettingData();
+        return mParentView;
     }
 
     @Override
@@ -89,6 +87,41 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         }
     }
 
+    private void setUpAssetListAdapter() {
+        realm = Realm.getDefaultInstance();
+        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).equalTo("isDiesel", true).findAll();
+        Timber.d(String.valueOf(assetsListItems));
+        AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
+        rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
+        rvMaterialList.setHasFixedSize(true);
+        rvMaterialList.setAdapter(purchaseRequestRvAdapter);
+        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                rvMaterialList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        Intent intent = new Intent(mContext, AssetDetailsActivity.class);
+                        intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
+                        intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
+                        intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+        if (assetsListItems != null) {
+            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsListItem>>() {
+                @Override
+                public void onChange(RealmResults<AssetsListItem> purchaseRequestListItems) {
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
+        }
+    }
+
     private void functionForGettingData() {
         if (AppUtils.getInstance().checkNetworkState()) {
             //Get data from Server
@@ -100,10 +133,10 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     }
 
     private void requestAssetListOnline() {
-        JSONObject params=new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("page",0);
-            params.put("project_site_id",5);
+            params.put("page", 0);
+            params.put("project_site_id", 5);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -148,41 +181,5 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                         AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
                     }
                 });
-    }
-
-    private void setUpAssetListAdapter() {
-        realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).equalTo("isDiesel",true).findAll();
-        Timber.d(String.valueOf(assetsListItems));
-        AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
-        rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
-        rvMaterialList.setHasFixedSize(true);
-        rvMaterialList.setAdapter(purchaseRequestRvAdapter);
-        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                rvMaterialList,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, final int position) {
-                        Intent intent=new Intent(mContext,AssetDetailsActivity.class);
-                        intent.putExtra("assetName",assetsListItems.get(position).getAssetsName());
-                        intent.putExtra("modelNumber",assetsListItems.get(position).getModelNumber());
-                        intent.putExtra("inventory_component_id",assetsListItems.get(position).getId());
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                }));
-
-        if (assetsListItems != null) {
-            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsListItem>>() {
-                @Override
-                public void onChange(RealmResults<AssetsListItem> purchaseRequestListItems) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }
     }
 }

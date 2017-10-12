@@ -24,98 +24,84 @@ public class PurchaseOrderListItem extends RealmObject {
                 "materials": "AGGREGATE 10 MM, RUBBLE(1 CUM Has 25% Voids)",
                 "status": "Disapproved"
         }*/
-
-
     @PrimaryKey
     @SerializedName("purchase_order_id")
     private int id;
-
     @SerializedName("purchase_order_format_id")
     private String purchaseOrderFormatId;
-
-
     @SerializedName("purchase_request_id")
     private String purchaseRequestId;
-
     @SerializedName("purchase_request_format_id")
     private String purchaseRequestFormatId;
-
     @SerializedName("vendor_id")
     private int vendorId;
-
     @SerializedName("vendor_name")
-    private  String vendorName;
-
+    private String vendorName;
     @SerializedName("client_name")
     private String clientName;
-
     @SerializedName("project")
     private String project;
-
     @SerializedName("date")
     private String date;
-
     @SerializedName("materials")
     private String materials;
-
     @SerializedName("status")
     private String status;
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
     public String getDate() {
         return date;
     }
 
-    public void setPurchaseRequestId(String purchaseRequestId) {
-        this.purchaseRequestId = purchaseRequestId;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getPurchaseRequestId() {
         return purchaseRequestId;
     }
 
-    public void setMaterials(String materials) {
-        this.materials = materials;
+    public void setPurchaseRequestId(String purchaseRequestId) {
+        this.purchaseRequestId = purchaseRequestId;
     }
 
     public String getMaterials() {
         return materials;
     }
 
-
-    public void setProject(String project) {
-        this.project = project;
+    public void setMaterials(String materials) {
+        this.materials = materials;
     }
 
     public String getProject() {
         return project;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setProject(String project) {
+        this.project = project;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getClientName() {
         return clientName;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getPurchaseOrderFormatId() {

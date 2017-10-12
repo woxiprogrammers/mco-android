@@ -1,11 +1,8 @@
 package com.android.inventory.assets;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,11 +13,10 @@ import com.android.interfaces.FragmentInterface;
  * A simple {@link Fragment} subclass.
  */
 public class AssetsHistoryFragment extends Fragment implements FragmentInterface {
-
-
     public AssetsHistoryFragment() {
         // Required empty public constructor
     }
+
     public static AssetsHistoryFragment newInstance() {
         Bundle args = new Bundle();
         AssetsHistoryFragment fragment = new AssetsHistoryFragment();
@@ -37,6 +33,5 @@ public class AssetsHistoryFragment extends Fragment implements FragmentInterface
 
     @Override
     public void fragmentBecameVisible() {
-
     }
 }

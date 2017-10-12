@@ -2,21 +2,16 @@ package com.android.models.inventory;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.realm.Realm;
 import io.realm.RealmObject;
 
 /**
  * Created by Sharvari on 21/9/17.
  */
-
 public class Units extends RealmObject {
-
     @SerializedName("unit_id")
     private float unit_id;
-
     @SerializedName("max_quantity")
     private float max_quantity;
-
     @SerializedName("unit_name")
     private String unit_name;
 

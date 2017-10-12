@@ -17,35 +17,35 @@ public class SearchMaterialListItem extends RealmObject implements Serializable 
     @SerializedName("unit_quantity")
     private RealmList<UnitQuantityItem> unitQuantity;
 
-    public void setMaterialRequestComponentTypeSlug(String materialRequestComponentTypeSlug) {
-        this.materialRequestComponentTypeSlug = materialRequestComponentTypeSlug;
-    }
-
     public String getMaterialRequestComponentTypeSlug() {
         return materialRequestComponentTypeSlug;
     }
 
-    public void setMaterialRequestComponentTypeId(int materialRequestComponentTypeId) {
-        this.materialRequestComponentTypeId = materialRequestComponentTypeId;
+    public void setMaterialRequestComponentTypeSlug(String materialRequestComponentTypeSlug) {
+        this.materialRequestComponentTypeSlug = materialRequestComponentTypeSlug;
     }
 
     public int getMaterialRequestComponentTypeId() {
         return materialRequestComponentTypeId;
     }
 
-    public void setMaterialName(String materialName) {
-        this.materialName = materialName;
+    public void setMaterialRequestComponentTypeId(int materialRequestComponentTypeId) {
+        this.materialRequestComponentTypeId = materialRequestComponentTypeId;
     }
 
     public String getMaterialName() {
         return materialName;
     }
 
-    public void setUnitQuantity(RealmList<UnitQuantityItem> unitQuantity) {
-        this.unitQuantity = unitQuantity;
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
     }
 
     public RealmList<UnitQuantityItem> getUnitQuantity() {
         return unitQuantity;
+    }
+
+    public void setUnitQuantity(RealmList<UnitQuantityItem> unitQuantity) {
+        this.unitQuantity = unitQuantity;
     }
 }

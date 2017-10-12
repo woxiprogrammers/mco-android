@@ -76,9 +76,10 @@ import io.realm.Sort;
 import timber.log.Timber;
 
 public class PurchaseMaterialListActivity extends BaseActivity {
+    public static SearchMaterialListItem searchMaterialListItem_fromResult_staticNew = null;
+    public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
     @BindView(R.id.spinner_select_assign_to)
     Spinner mSpinnerSelectAssignTo;
-    private Context mContext;
     @BindView(R.id.textView_purchaseMaterialList_appBarTitle)
     TextView textViewPurchaseMaterialListAppBarTitle;
     @BindView(R.id.textView_purchaseMaterialList_addNew)
@@ -89,6 +90,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     RecyclerView recyclerView_materialList;
     @BindView(R.id.button_submit_purchase_request)
     Button buttonSubmitPurchaseRequest;
+    private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_All;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_inIndent;
@@ -105,8 +107,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private LinearLayout ll_dialog_unit;
     private SearchMaterialListItem searchMaterialListItem_fromResult = null;
     private SearchAssetListItem searchAssetListItem_fromResult = null;
-    public static SearchMaterialListItem searchMaterialListItem_fromResult_staticNew = null;
-    public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
     private ArrayList<File> arrayImageFileList;
     private String strItemName = "", strUnitName = "";
     private float floatItemQuantity = 0;
@@ -131,6 +131,74 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         setUpMaterialListAdapter();
 //        setUpCurrentMaterialListAdapter();
         createAlertDialog();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        recyclerView_materialList.setAdapter(null);
+        purchaseMaterialListRealmResult_All.removeAllChangeListeners();
+        deleteUsedRealmObject();
+        if (realm != null) {
+            realm.close();
+        }
+    }
+
+    private void deleteUsedRealmObject() {
+        if (isMaterial) {
+            realm = Realm.getDefaultInstance();
+            try {
+                realm.executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.delete(MaterialSearchResponse.class);
+                        realm.delete(MaterialSearchResponseData.class);
+                        realm.delete(SearchMaterialListItem.class);
+                        realm.delete(UnitQuantityItem.class);
+                    }
+                }, new Realm.Transaction.OnSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        Timber.d("Realm Execution Successful");
+                    }
+                }, new Realm.Transaction.OnError() {
+                    @Override
+                    public void onError(Throwable error) {
+                        AppUtils.getInstance().logRealmExecutionError(error);
+                    }
+                });
+            } finally {
+                if (realm != null) {
+                    realm.close();
+                }
+            }
+        } else {
+            realm = Realm.getDefaultInstance();
+            try {
+                realm.executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.delete(AssetSearchResponse.class);
+                        realm.delete(AssetSearchResponseData.class);
+                        realm.delete(SearchAssetListItem.class);
+                    }
+                }, new Realm.Transaction.OnSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        Timber.d("Realm Execution Successful");
+                    }
+                }, new Realm.Transaction.OnError() {
+                    @Override
+                    public void onError(Throwable error) {
+                        AppUtils.getInstance().logRealmExecutionError(error);
+                    }
+                });
+            } finally {
+                if (realm != null) {
+                    realm.close();
+                }
+            }
+        }
     }
 
     private void deleteExistingItemEntries() {
@@ -251,6 +319,27 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         } else {
             Toast.makeText(mContext, "Please add some items to the list", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void submitPurchaseRequest(JSONObject params) {
+        String strToken = AppUtils.getInstance().getCurrentToken();
+        AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("submitPurchaseRequest")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
+                    }
+                });
     }
 
     private void createAlertDialog() {
@@ -403,124 +492,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         return alertDialog;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        recyclerView_materialList.setAdapter(null);
-        purchaseMaterialListRealmResult_All.removeAllChangeListeners();
-        deleteUsedRealmObject();
-        if (realm != null) {
-            realm.close();
-        }
-    }
-
-    private void deleteUsedRealmObject() {
-        if (isMaterial) {
-            realm = Realm.getDefaultInstance();
-            try {
-                realm.executeTransactionAsync(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        realm.delete(MaterialSearchResponse.class);
-                        realm.delete(MaterialSearchResponseData.class);
-                        realm.delete(SearchMaterialListItem.class);
-                        realm.delete(UnitQuantityItem.class);
-                    }
-                }, new Realm.Transaction.OnSuccess() {
-                    @Override
-                    public void onSuccess() {
-                        Timber.d("Realm Execution Successful");
-                    }
-                }, new Realm.Transaction.OnError() {
-                    @Override
-                    public void onError(Throwable error) {
-                        AppUtils.getInstance().logRealmExecutionError(error);
-                    }
-                });
-            } finally {
-                if (realm != null) {
-                    realm.close();
-                }
-            }
-        } else {
-            realm = Realm.getDefaultInstance();
-            try {
-                realm.executeTransactionAsync(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        realm.delete(AssetSearchResponse.class);
-                        realm.delete(AssetSearchResponseData.class);
-                        realm.delete(SearchAssetListItem.class);
-                    }
-                }, new Realm.Transaction.OnSuccess() {
-                    @Override
-                    public void onSuccess() {
-                        Timber.d("Realm Execution Successful");
-                    }
-                }, new Realm.Transaction.OnError() {
-                    @Override
-                    public void onError(Throwable error) {
-                        AppUtils.getInstance().logRealmExecutionError(error);
-                    }
-                });
-            } finally {
-                if (realm != null) {
-                    realm.close();
-                }
-            }
-        }
-    }
-
-    private void setUpMaterialListAdapter() {
-        realm = Realm.getDefaultInstance();
-        Timber.d("Adapter setup called");
-        recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
-        recyclerView_materialList.setHasFixedSize(true);
-        RecyclerViewClickListener recyclerViewClickListener = new RecyclerViewClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                if (view.getId() == R.id.imageView_deleteMaterial_createPR) {
-                    ImageView mImageViewDeleteAddedItem = view.findViewById(R.id.imageView_deleteMaterial_createPR);
-                    deleteSelectedItemFromList(position, mImageViewDeleteAddedItem);
-                } else {
-                    Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-        purchaseMaterialListRealmResult_All = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).or().equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAllSortedAsync("componentStatus", Sort.ASCENDING);
-        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResult_All, true, true, recyclerViewClickListener);
-        recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
-        if (purchaseMaterialListRealmResult_All != null) {
-            Timber.d("purchaseMaterialListRealmResult_All change listener added.");
-            purchaseMaterialListRealmResult_All.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems, OrderedCollectionChangeSet changeSet) {
-                    // `null`  means the async query returns the first time.
-                    if (changeSet == null) {
-                        recyclerView_materialList.getAdapter().notifyDataSetChanged();
-                        return;
-                    }
-                    // For deletions, the adapter has to be notified in reverse order.
-                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
-                    for (int i = deletions.length - 1; i >= 0; i--) {
-                        OrderedCollectionChangeSet.Range range = deletions[i];
-                        recyclerView_materialList.getAdapter().notifyItemRangeRemoved(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
-                    for (OrderedCollectionChangeSet.Range range : insertions) {
-                        recyclerView_materialList.getAdapter().notifyItemRangeInserted(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
-                    for (OrderedCollectionChangeSet.Range range : modifications) {
-                        recyclerView_materialList.getAdapter().notifyItemRangeChanged(range.startIndex, range.length);
-                    }
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }
-    }
-
     /*private void setUpCurrentMaterialListAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
@@ -611,6 +582,56 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
         }
     }*/
+
+    private void setUpMaterialListAdapter() {
+        realm = Realm.getDefaultInstance();
+        Timber.d("Adapter setup called");
+        recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView_materialList.setHasFixedSize(true);
+        RecyclerViewClickListener recyclerViewClickListener = new RecyclerViewClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (view.getId() == R.id.imageView_deleteMaterial_createPR) {
+                    ImageView mImageViewDeleteAddedItem = view.findViewById(R.id.imageView_deleteMaterial_createPR);
+                    deleteSelectedItemFromList(position, mImageViewDeleteAddedItem);
+                } else {
+                    Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        purchaseMaterialListRealmResult_All = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).or().equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAllSortedAsync("componentStatus", Sort.ASCENDING);
+        PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResult_All, true, true, recyclerViewClickListener);
+        recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
+        if (purchaseMaterialListRealmResult_All != null) {
+            Timber.d("purchaseMaterialListRealmResult_All change listener added.");
+            purchaseMaterialListRealmResult_All.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
+                @Override
+                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems, OrderedCollectionChangeSet changeSet) {
+                    // `null`  means the async query returns the first time.
+                    if (changeSet == null) {
+                        recyclerView_materialList.getAdapter().notifyDataSetChanged();
+                        return;
+                    }
+                    // For deletions, the adapter has to be notified in reverse order.
+                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
+                    for (int i = deletions.length - 1; i >= 0; i--) {
+                        OrderedCollectionChangeSet.Range range = deletions[i];
+                        recyclerView_materialList.getAdapter().notifyItemRangeRemoved(range.startIndex, range.length);
+                    }
+                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
+                    for (OrderedCollectionChangeSet.Range range : insertions) {
+                        recyclerView_materialList.getAdapter().notifyItemRangeInserted(range.startIndex, range.length);
+                    }
+                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
+                    for (OrderedCollectionChangeSet.Range range : modifications) {
+                        recyclerView_materialList.getAdapter().notifyItemRangeChanged(range.startIndex, range.length);
+                    }
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
+        }
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -732,27 +753,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUnitNames);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerUnits.setAdapter(arrayAdapter);
-    }
-
-    private void submitPurchaseRequest(JSONObject params) {
-        String strToken = AppUtils.getInstance().getCurrentToken();
-        AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
-                .setPriority(Priority.MEDIUM)
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("submitPurchaseRequest")
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        finish();
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
-                    }
-                });
     }
 
     private void uploadImages_addItemToLocal() {

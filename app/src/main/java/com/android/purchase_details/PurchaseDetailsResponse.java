@@ -1,40 +1,38 @@
 package com.android.purchase_details;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class PurchaseDetailsResponse extends RealmObject{
+public class PurchaseDetailsResponse extends RealmObject {
+    @SerializedName("next_url")
+    private String nextUrl;
+    @SerializedName("purchase_details_data")
+    private PurchaseDetailsData purchaseDetailsData;
+    @SerializedName("message")
+    private String message;
 
-	@SerializedName("next_url")
-	private String nextUrl;
+    public String getNextUrl() {
+        return nextUrl;
+    }
 
-	@SerializedName("purchase_details_data")
-	private PurchaseDetailsData purchaseDetailsData;
+    public void setNextUrl(String nextUrl) {
+        this.nextUrl = nextUrl;
+    }
 
-	@SerializedName("message")
-	private String message;
+    public PurchaseDetailsData getPurchaseDetailsData() {
+        return purchaseDetailsData;
+    }
 
-	public void setNextUrl(String nextUrl){
-		this.nextUrl = nextUrl;
-	}
+    public void setPurchaseDetailsData(PurchaseDetailsData purchaseDetailsData) {
+        this.purchaseDetailsData = purchaseDetailsData;
+    }
 
-	public String getNextUrl(){
-		return nextUrl;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setPurchaseDetailsData(PurchaseDetailsData purchaseDetailsData){
-		this.purchaseDetailsData = purchaseDetailsData;
-	}
-
-	public PurchaseDetailsData getPurchaseDetailsData(){
-		return purchaseDetailsData;
-	}
-
-	public void setMessage(String message){
-		this.message = message;
-	}
-
-	public String getMessage(){
-		return message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

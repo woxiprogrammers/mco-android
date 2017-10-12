@@ -13,19 +13,19 @@ public class RequestedItemResponse extends RealmObject {
     @SerializedName("data")
     private RequestedItemData requestedItemData;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getMessage() {
         return message;
     }
 
-    public void setRequestedItemData(RequestedItemData requestedItemData) {
-        this.requestedItemData = requestedItemData;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public RequestedItemData getRequestedItemData() {
         return requestedItemData;
+    }
+
+    public void setRequestedItemData(RequestedItemData requestedItemData) {
+        this.requestedItemData = requestedItemData;
     }
 }

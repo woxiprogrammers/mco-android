@@ -10,19 +10,19 @@ public class MaterialSearchResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setMaterialSearchResponseData(MaterialSearchResponseData materialSearchResponseData) {
-        this.materialSearchResponseData = materialSearchResponseData;
-    }
-
     public MaterialSearchResponseData getMaterialSearchResponseData() {
         return materialSearchResponseData;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMaterialSearchResponseData(MaterialSearchResponseData materialSearchResponseData) {
+        this.materialSearchResponseData = materialSearchResponseData;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

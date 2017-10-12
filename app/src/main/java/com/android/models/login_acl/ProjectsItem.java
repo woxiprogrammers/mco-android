@@ -55,5 +55,4 @@ public class ProjectsItem extends RealmObject {
     public void setClient_company_name(String client_company_name) {
         this.client_company_name = client_company_name;
     }
-
 }

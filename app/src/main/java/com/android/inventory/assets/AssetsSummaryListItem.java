@@ -1,97 +1,90 @@
 package com.android.inventory.assets;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class AssetsSummaryListItem extends RealmObject{
+public class AssetsSummaryListItem extends RealmObject {
+    @SerializedName("start_time")
+    private String startTime;
+    @SerializedName("stop_time")
+    private String stopTime;
+    @SerializedName("work_hour_in_day")
+    private int workHourInDay;
+    @SerializedName("top_up_time")
+    private String topUpTime;
+    @SerializedName("fuel_remaining")
+    private String fuelRemaining;
+    @SerializedName("total_diesel_consume")
+    private int totalDieselConsume;
+    @PrimaryKey
+    @SerializedName("id")
+    private int id;
+    @SerializedName("assets_units")
+    private int assetsUnits;
 
-	@SerializedName("start_time")
-	private String startTime;
+    public String getStartTime() {
+        return startTime;
+    }
 
-	@SerializedName("stop_time")
-	private String stopTime;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
 
-	@SerializedName("work_hour_in_day")
-	private int workHourInDay;
+    public String getStopTime() {
+        return stopTime;
+    }
 
-	@SerializedName("top_up_time")
-	private String topUpTime;
+    public void setStopTime(String stopTime) {
+        this.stopTime = stopTime;
+    }
 
-	@SerializedName("fuel_remaining")
-	private String fuelRemaining;
+    public int getWorkHourInDay() {
+        return workHourInDay;
+    }
 
-	@SerializedName("total_diesel_consume")
-	private int totalDieselConsume;
+    public void setWorkHourInDay(int workHourInDay) {
+        this.workHourInDay = workHourInDay;
+    }
 
-	@PrimaryKey
-	@SerializedName("id")
-	private int id;
+    public String getTopUpTime() {
+        return topUpTime;
+    }
 
-	@SerializedName("assets_units")
-	private int assetsUnits;
+    public void setTopUpTime(String topUpTime) {
+        this.topUpTime = topUpTime;
+    }
 
-	public void setStartTime(String startTime){
-		this.startTime = startTime;
-	}
+    public String getFuelRemaining() {
+        return fuelRemaining;
+    }
 
-	public String getStartTime(){
-		return startTime;
-	}
+    public void setFuelRemaining(String fuelRemaining) {
+        this.fuelRemaining = fuelRemaining;
+    }
 
-	public void setStopTime(String stopTime){
-		this.stopTime = stopTime;
-	}
+    public int getTotalDieselConsume() {
+        return totalDieselConsume;
+    }
 
-	public String getStopTime(){
-		return stopTime;
-	}
+    public void setTotalDieselConsume(int totalDieselConsume) {
+        this.totalDieselConsume = totalDieselConsume;
+    }
 
-	public void setWorkHourInDay(int workHourInDay){
-		this.workHourInDay = workHourInDay;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getWorkHourInDay(){
-		return workHourInDay;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setTopUpTime(String topUpTime){
-		this.topUpTime = topUpTime;
-	}
+    public int getAssetsUnits() {
+        return assetsUnits;
+    }
 
-	public String getTopUpTime(){
-		return topUpTime;
-	}
-
-	public void setFuelRemaining(String fuelRemaining){
-		this.fuelRemaining = fuelRemaining;
-	}
-
-	public String getFuelRemaining(){
-		return fuelRemaining;
-	}
-
-	public void setTotalDieselConsume(int totalDieselConsume){
-		this.totalDieselConsume = totalDieselConsume;
-	}
-
-	public int getTotalDieselConsume(){
-		return totalDieselConsume;
-	}
-
-	public void setId(int id){
-		this.id = id;
-	}
-
-	public int getId(){
-		return id;
-	}
-
-	public void setAssetsUnits(int assetsUnits){
-		this.assetsUnits = assetsUnits;
-	}
-
-	public int getAssetsUnits(){
-		return assetsUnits;
-	}
+    public void setAssetsUnits(int assetsUnits) {
+        this.assetsUnits = assetsUnits;
+    }
 }

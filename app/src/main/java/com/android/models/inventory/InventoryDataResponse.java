@@ -9,6 +9,8 @@ import io.realm.RealmObject;
 public class InventoryDataResponse extends RealmObject {
     @SerializedName("material_list")
     private RealmList<MaterialListItem> materialList;
+    @SerializedName("units")
+    private RealmList<UnitQuantityItem> unitQuantityItems;
 
     public RealmList<MaterialListItem> getMaterialList() {
         return materialList;
@@ -17,9 +19,6 @@ public class InventoryDataResponse extends RealmObject {
     public void setMaterialList(RealmList<MaterialListItem> materialList) {
         this.materialList = materialList;
     }
-
-    @SerializedName("units")
-    private RealmList<UnitQuantityItem> unitQuantityItems;
 
     public RealmList<UnitQuantityItem> getUnitQuantityItems() {
         return unitQuantityItems;

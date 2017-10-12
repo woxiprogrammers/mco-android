@@ -29,7 +29,6 @@ import static android.app.Activity.RESULT_OK;
  * Library github link - "https://github.com/ArthurHub/Android-Image-Cropper"
  * Created by rohitss
  */
-
 public class ImageUtilityHelper {
     private Context mContext;
     private ImageView cropImageView;
@@ -43,6 +42,7 @@ public class ImageUtilityHelper {
 
     /**
      * Used to create image chooser intent
+     *
      * @return chooserIntent
      */
     public Intent getPickImageChooserIntent() {
@@ -50,7 +50,6 @@ public class ImageUtilityHelper {
         Uri outputFileUri = Uri.fromFile(f);
         List<Intent> allIntents = new ArrayList<>();
         PackageManager packageManager = mContext.getPackageManager();
-
         // collect all camera intents
         Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
@@ -63,7 +62,6 @@ public class ImageUtilityHelper {
             }
             allIntents.add(intent);
         }
-
         // collect all gallery intents
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         galleryIntent.setType("image/*");
@@ -74,7 +72,6 @@ public class ImageUtilityHelper {
             intent.setPackage(res.activityInfo.packageName);
             allIntents.add(intent);
         }
-
         // the main intent is the last in the list (fucking android) so pickup the useless one
         Intent mainIntent = allIntents.get(allIntents.size() - 1);
         for (Intent intent : allIntents) {
@@ -84,29 +81,11 @@ public class ImageUtilityHelper {
             }
         }
         allIntents.remove(mainIntent);
-
         // Create a chooser from the main intent
         Intent chooserIntent = Intent.createChooser(mainIntent, "Select source");
-
         // Add all other intents
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
-
         return chooserIntent;
-    }
-
-    /**
-     * Used to set preferences for Android-Image-Cropper UI.
-     *
-     * @param fileUri Uri of image to crop
-     */
-    private void getSetCropImage(Uri fileUri) {
-        CropImage.activity(fileUri)
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .setMinCropWindowSize(100, 100)
-                .setAspectRatio(1, 1)
-                .setFixAspectRatio(true)
-                .setCropShape(CropImageView.CropShape.RECTANGLE)
-                .start((Activity) mContext);
     }
 
     public void onSelectionResult(int requestCode, int resultCode, Intent data) {
@@ -136,7 +115,6 @@ public class ImageUtilityHelper {
                             isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                         }
                     }
-
                     if (isCamera) {
                         //Result From Camera
                         localImageFile = new File(Environment.getExternalStorageDirectory().toString());
@@ -157,6 +135,21 @@ public class ImageUtilityHelper {
                     }
                 }
             }
+    }
+
+    /**
+     * Used to set preferences for Android-Image-Cropper UI.
+     *
+     * @param fileUri Uri of image to crop
+     */
+    private void getSetCropImage(Uri fileUri) {
+        CropImage.activity(fileUri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMinCropWindowSize(100, 100)
+                .setAspectRatio(1, 1)
+                .setFixAspectRatio(true)
+                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                .start((Activity) mContext);
     }
 
     /**

@@ -12,8 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
@@ -25,72 +23,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AssetDetailsActivity extends BaseActivity {
-
     @BindView(R.id.view_pager_assets)
     ViewPager viewPagerAssets;
-
     @BindView(R.id.assets_navigation)
     BottomNavigationView bottom_navigation;
     @BindView(R.id.floating_add_button)
     FloatingActionButton floatingAddButton;
-
     private MenuItem prevMenuItem;
     private Context mContext;
     private String strAssetName, strModelNumber;
     private int inventoryComponentId;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_asset_details);
-        ButterKnife.bind(this);
-        initializeViews();
-
-        setAdapter();
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.assets_navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-    }
-
-    private void initializeViews() {
-        ButterKnife.bind(this);
-        mContext = AssetDetailsActivity.this;
-        Intent extras = getIntent();
-        if (extras != null) {
-            strAssetName = extras.getStringExtra("assetName");
-            strModelNumber = extras.getStringExtra("modelNumber");
-            inventoryComponentId=extras.getIntExtra("inventory_component_id",-1);
-        }
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(strAssetName);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options_menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-
-            case R.id.action_request_maintaianance:
-                startRequestMaintainanceActivity();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
@@ -104,11 +48,35 @@ public class AssetDetailsActivity extends BaseActivity {
             }
             return false;
         }
-
     };
 
-    private void setAdapter() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_asset_details);
+        ButterKnife.bind(this);
+        initializeViews();
+        setAdapter();
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.assets_navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
 
+    private void initializeViews() {
+        ButterKnife.bind(this);
+        mContext = AssetDetailsActivity.this;
+        Intent extras = getIntent();
+        if (extras != null) {
+            strAssetName = extras.getStringExtra("assetName");
+            strModelNumber = extras.getStringExtra("modelNumber");
+            inventoryComponentId = extras.getIntExtra("inventory_component_id", -1);
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(strAssetName);
+        }
+    }
+
+    private void setAdapter() {
         final InventoryViewPagerAdapter inventoryViewPagerAdapter = new InventoryViewPagerAdapter(getSupportFragmentManager());
         viewPagerAssets.setAdapter(inventoryViewPagerAdapter);
         viewPagerAssets.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -127,22 +95,46 @@ public class AssetDetailsActivity extends BaseActivity {
                 } else {
                     bottom_navigation.getMenu().getItem(0).setChecked(false);
                 }
-
                 bottom_navigation.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = bottom_navigation.getMenu().getItem(position);
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.action_request_maintaianance:
+                startRequestMaintainanceActivity();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void startRequestMaintainanceActivity() {
+        Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
+        startIntent.putExtra("key", strAssetName);
+        startIntent.putExtra("key1", strModelNumber);
+        startIntent.putExtra("ComponentId", inventoryComponentId);
+        startActivity(startIntent);
+    }
+
     @OnClick(R.id.floating_add_button)
     public void onViewClicked() {
-        Toast.makeText(mContext,"In Progress",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
         //ToDo Start Reading
         /*Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
         intent.putExtra("asset_name",strAssetName);
@@ -150,7 +142,6 @@ public class AssetDetailsActivity extends BaseActivity {
     }
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
-
         private String[] arrBottomTitle = {"Bottom1"/*, "Bottom2"*/};
 
         public InventoryViewPagerAdapter(FragmentManager fm) {
@@ -173,16 +164,6 @@ public class AssetDetailsActivity extends BaseActivity {
                 default:
                     return null;
             }
-
         }
     }
-
-    private void startRequestMaintainanceActivity() {
-        Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
-        startIntent.putExtra("key", strAssetName);
-        startIntent.putExtra("key1", strModelNumber);
-        startIntent.putExtra("ComponentId",inventoryComponentId);
-        startActivity(startIntent);
-    }
-
 }

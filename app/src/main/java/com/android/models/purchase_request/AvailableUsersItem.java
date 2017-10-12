@@ -12,19 +12,19 @@ public class AvailableUsersItem extends RealmObject {
     @SerializedName("id")
     private int id;
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getUserName() {
         return userName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

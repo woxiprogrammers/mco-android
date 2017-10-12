@@ -12,27 +12,27 @@ public class LoggedInAt extends RealmObject {
     @SerializedName("timezone_type")
     private int timezoneType;
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getDate() {
         return date;
     }
 
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getTimezone() {
         return timezone;
     }
 
-    public void setTimezoneType(int timezoneType) {
-        this.timezoneType = timezoneType;
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
     }
 
     public int getTimezoneType() {
         return timezoneType;
+    }
+
+    public void setTimezoneType(int timezoneType) {
+        this.timezoneType = timezoneType;
     }
 }

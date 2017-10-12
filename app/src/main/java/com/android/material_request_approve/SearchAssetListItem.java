@@ -20,44 +20,44 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
     @SerializedName("material_request_component_type_id")
     private int materialRequestComponentTypeId;
 
-    public void setAssetUnit(String assetUnit) {
-        this.assetUnit = assetUnit;
-    }
-
     public String getAssetUnit() {
         return assetUnit;
     }
 
-    public void setAssetName(String assetName) {
-        this.assetName = assetName;
+    public void setAssetUnit(String assetUnit) {
+        this.assetUnit = assetUnit;
     }
 
     public String getAssetName() {
         return assetName;
     }
 
-    public void setMaterialRequestComponentTypeSlug(String materialRequestComponentTypeSlug) {
-        this.materialRequestComponentTypeSlug = materialRequestComponentTypeSlug;
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
     }
 
     public String getMaterialRequestComponentTypeSlug() {
         return materialRequestComponentTypeSlug;
     }
 
-    public void setAssetId(int assetId) {
-        this.assetId = assetId;
+    public void setMaterialRequestComponentTypeSlug(String materialRequestComponentTypeSlug) {
+        this.materialRequestComponentTypeSlug = materialRequestComponentTypeSlug;
     }
 
     public int getAssetId() {
         return assetId;
     }
 
-    public void setMaterialRequestComponentTypeId(int materialRequestComponentTypeId) {
-        this.materialRequestComponentTypeId = materialRequestComponentTypeId;
+    public void setAssetId(int assetId) {
+        this.assetId = assetId;
     }
 
     public int getMaterialRequestComponentTypeId() {
         return materialRequestComponentTypeId;
+    }
+
+    public void setMaterialRequestComponentTypeId(int materialRequestComponentTypeId) {
+        this.materialRequestComponentTypeId = materialRequestComponentTypeId;
     }
 
     public int getAssetUnitId() {

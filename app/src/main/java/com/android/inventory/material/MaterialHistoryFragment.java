@@ -13,15 +13,15 @@ import com.android.interfaces.FragmentInterface;
  * A simple {@link Fragment} subclass.
  */
 public class MaterialHistoryFragment extends Fragment implements FragmentInterface {
+    public MaterialHistoryFragment() {
+        // Required empty public constructor
+    }
 
     public static MaterialHistoryFragment newInstance() {
         Bundle args = new Bundle();
         MaterialHistoryFragment fragment = new MaterialHistoryFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-    public MaterialHistoryFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -32,6 +32,5 @@ public class MaterialHistoryFragment extends Fragment implements FragmentInterfa
 
     @Override
     public void fragmentBecameVisible() {
-
     }
 }

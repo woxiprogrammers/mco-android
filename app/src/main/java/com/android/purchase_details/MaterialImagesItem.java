@@ -1,29 +1,28 @@
 package com.android.purchase_details;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class MaterialImagesItem extends RealmObject{
+public class MaterialImagesItem extends RealmObject {
+    @SerializedName("image_url")
+    private String imageUrl;
+    @SerializedName("image_id")
+    private int imageId;
 
-	@SerializedName("image_url")
-	private String imageUrl;
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-	@SerializedName("image_id")
-	private int imageId;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
-	public void setImageUrl(String imageUrl){
-		this.imageUrl = imageUrl;
-	}
+    public int getImageId() {
+        return imageId;
+    }
 
-	public String getImageUrl(){
-		return imageUrl;
-	}
-
-	public void setImageId(int imageId){
-		this.imageId = imageId;
-	}
-
-	public int getImageId(){
-		return imageId;
-	}
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
+    }
 }

@@ -77,7 +77,6 @@
         <item>Sub-contracter</item>
         <item>Supplier</item>
     </string-array>
-
     <string-array name="destination_array_move_in">
         <item>Client</item>
         <item>By Hand</item>
@@ -91,6 +90,15 @@
     <string-array name="site_array">
         <item>SiteA</item>
         <item>SIteB</item>
+    </string-array>
+    <string-array name="payment_mode_array">
+        <item>Cash</item>
+        <item>Individual-Cash</item>
+        <item>Peticash</item>
+        <item>Cheque</item>
+        <item>NEFT</item>
+        <item>RTGS</item>
+        <item>Internet-Banking</item>
     </string-array>
     <string name="title_activity_asset_details">AssetDetailsActivity</string>
     <string name="assets_readings">Readings</string>
@@ -121,4 +129,6 @@
     <string name="shop_name">Shop Name</string>
     <string name="bill_amount">Bill Amount</string>
     <string name="approve_purchase_request">approve-purchase-request</string>
+    <string name="aprove_purchase_request">approve-purchase-request</string>
+    <string name="create_purchase_request">create-purchase-request</string>
 </resources>

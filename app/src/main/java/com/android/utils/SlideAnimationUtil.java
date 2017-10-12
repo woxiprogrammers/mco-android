@@ -24,6 +24,19 @@ public class SlideAnimationUtil {
     }
 
     /**
+     * Runs a simple animation on a View with no extra parameters.
+     *
+     * @param context
+     * @param view
+     * @param animationId
+     */
+    private static void runSimpleAnimation(Context context, View view, int animationId) {
+        view.startAnimation(AnimationUtils.loadAnimation(
+                context, animationId
+        ));
+    }
+
+    /**
      * Animates a view so that it slides from its current position, out of view to the left.
      *
      * @param context
@@ -71,18 +84,5 @@ public class SlideAnimationUtil {
      */
     public static void slideOutToBottom(Context context, View view) {
         runSimpleAnimation(context, view, R.anim.slide_to_bottom);
-    }
-
-    /**
-     * Runs a simple animation on a View with no extra parameters.
-     *
-     * @param context
-     * @param view
-     * @param animationId
-     */
-    private static void runSimpleAnimation(Context context, View view, int animationId) {
-        view.startAnimation(AnimationUtils.loadAnimation(
-                context, animationId
-        ));
     }
 }

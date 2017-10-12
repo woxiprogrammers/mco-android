@@ -6,15 +6,14 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class AssetResponseData extends RealmObject {
+    @SerializedName("assets_list")
+    private RealmList<AssetsListItem> assetsList;
 
-	@SerializedName("assets_list")
-	private RealmList<AssetsListItem> assetsList;
+    public RealmList<AssetsListItem> getAssetsList() {
+        return assetsList;
+    }
 
-	public void setAssetsList(RealmList<AssetsListItem> assetsList){
-		this.assetsList = assetsList;
-	}
-
-	public RealmList<AssetsListItem> getAssetsList(){
-		return assetsList;
-	}
+    public void setAssetsList(RealmList<AssetsListItem> assetsList) {
+        this.assetsList = assetsList;
+    }
 }

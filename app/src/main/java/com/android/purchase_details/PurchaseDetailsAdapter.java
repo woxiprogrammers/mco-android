@@ -2,7 +2,6 @@ package com.android.purchase_details;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +18,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
-import timber.log.Timber;
 
 /**
  * Created by Sharvari on 13/9/17.
  */
-
 public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListItem, PurchaseDetailsAdapter.MyViewHolder> {
     private OrderedRealmCollection<ItemListItem> arrItemList;
-
     private RequestManager glideRequestManager;
 
     public PurchaseDetailsAdapter(@Nullable OrderedRealmCollection<ItemListItem> data, boolean autoUpdate, boolean updateOnModification, RequestManager glideRequestManager) {
@@ -55,7 +51,6 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 holder.llImage.addView(imageView);
-
                 glideRequestManager.load(itemListItem.getListOfImages().get(index).getImageUrl())
                         .thumbnail(0.1f)
                         .crossFade()
@@ -64,7 +59,6 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
                         .into(imageView);
             }
         }
-
     }
 
     @Override
@@ -78,15 +72,13 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-
-        private Context context;
-
         @BindView(R.id.textview_item_name)
         TextView textviewItemName;
         @BindView(R.id.textview_item_quantity)
         TextView textviewItemQuantity;
         @BindView(R.id.ll_image)
         LinearLayout llImage;
+        private Context context;
 
         public MyViewHolder(View itemView) {
             super(itemView);

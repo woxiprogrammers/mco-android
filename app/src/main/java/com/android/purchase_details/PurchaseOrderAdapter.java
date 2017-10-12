@@ -19,14 +19,12 @@ import io.realm.RealmRecyclerViewAdapter;
 /**
  * Created by Sharvari on 14/9/17.
  */
-
 public class PurchaseOrderAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderAdapter.MyViewHolder> {
-
-
     OrderedRealmCollection<PurchaseOrderListItem> orderListItems;
+
     public PurchaseOrderAdapter(@Nullable OrderedRealmCollection<PurchaseOrderListItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, autoUpdate, updateOnModification);
-        orderListItems=data;
+        orderListItems = data;
     }
 
     @Override
@@ -37,14 +35,12 @@ public class PurchaseOrderAdapter extends RealmRecyclerViewAdapter<PurchaseOrder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        PurchaseOrderListItem orderListItem=orderListItems.get(position);
+        PurchaseOrderListItem orderListItem = orderListItems.get(position);
         holder.textviewPoNumber.setText(orderListItem.getId());
         holder.textviewVendorsDetails.setText(orderListItem.getClientName() + " " + orderListItem.getProject());
         holder.textviewDate.setText(orderListItem.getDate());
         holder.textviewMaterialSummary.setText(orderListItem.getMaterials());
-
     }
-
 
     @Override
     public long getItemId(int index) {
@@ -55,9 +51,8 @@ public class PurchaseOrderAdapter extends RealmRecyclerViewAdapter<PurchaseOrder
     public int getItemCount() {
         return orderListItems == null ? 0 : orderListItems.size();
     }
-    class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private Context context;
+    class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.textview_po_number)
         TextView textviewPoNumber;
         @BindView(R.id.textview_vendors_details)
@@ -66,10 +61,12 @@ public class PurchaseOrderAdapter extends RealmRecyclerViewAdapter<PurchaseOrder
         TextView textviewDate;
         @BindView(R.id.textview_material_summary)
         TextView textviewMaterialSummary;
+        private Context context;
+
         public MyViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
-            context=itemView.getContext();
+            ButterKnife.bind(this, itemView);
+            context = itemView.getContext();
         }
     }
 }

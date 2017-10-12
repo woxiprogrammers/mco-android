@@ -1,32 +1,23 @@
 package com.android.inventory;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.material.InventoryDetailsMoveFragment;
 import com.android.inventory.material.MaterialHistoryFragment;
-import com.android.constro360.BaseActivity;
 import com.android.utils.ImageUtilityHelper;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 
@@ -35,16 +26,15 @@ import butterknife.ButterKnife;
 
 public class InventoryDetails extends BaseActivity {
     public static final int IMAGE_CHOOSER_CODE = 2612;
+    public static final int WRITE_PERMISSION_CODE = 5;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottom_navigation;
-
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     private MenuItem prevMenuItem;
     private ArrayList<Integer> arrayList = new ArrayList<Integer>();
     private ImageUtilityHelper imageUtilityHelper;
     private Context mContext;
-    public static final int WRITE_PERMISSION_CODE = 5;
     private InventoryDetailsMoveFragment inventoryDetailsMoveFragment;
     private String materialName;
 
@@ -54,24 +44,22 @@ public class InventoryDetails extends BaseActivity {
         setContentView(R.layout.activity_bottom_view);
         initializeViews();
         callFragment();
-
     }
 
     private void initializeViews() {
         ButterKnife.bind(this);
         mContext = InventoryDetails.this;
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Details");
         }
         Intent intent = getIntent();
         if (intent != null) {
-            materialName=intent.getStringExtra("ClickedMaterialName");
+            materialName = intent.getStringExtra("ClickedMaterialName");
         }
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -83,16 +71,13 @@ public class InventoryDetails extends BaseActivity {
                 }
                 bottom_navigation.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = bottom_navigation.getMenu().getItem(position);
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
         bottom_navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -103,26 +88,10 @@ public class InventoryDetails extends BaseActivity {
                     /*case R.id.action_history:
                         viewPagerInventory.setCurrentItem(1);
                         break;*/
-
                 }
                 return false;
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                onBackPressed();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void callFragment() {
@@ -145,7 +114,21 @@ public class InventoryDetails extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class InventoryDetailsViewPagerAdapter extends FragmentPagerAdapter {
@@ -172,8 +155,4 @@ public class InventoryDetails extends BaseActivity {
             return arrBottomTitle.length;
         }
     }
-
-
-
-
 }

@@ -18,10 +18,7 @@ import timber.log.Timber;
 /**
  * Created by Sharvari on 31/8/17.
  */
-
 public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, AssetsListAdapter.MyViewHolder> {
-
-
     private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
     private AssetsListItem assetsListItem;
 
@@ -39,17 +36,12 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-                assetsListItem = assetsListItemCollection.get(position);
-                holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
-                holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
-                holder.assetModelNumber.setText(assetsListItem.getModelNumber());
-                holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
-                holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume() + " "));
-    }
-
-    @Override
-    public int getItemCount() {
-        return assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+        assetsListItem = assetsListItemCollection.get(position);
+        holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
+        holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
+        holder.assetModelNumber.setText(assetsListItem.getModelNumber());
+        holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
+        holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume() + " "));
     }
 
     @Override
@@ -57,19 +49,20 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         return assetsListItemCollection.get(index).getId();
     }
 
+    @Override
+    public int getItemCount() {
+        return assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_view_asset_list_name)
         TextView textViewAssetListName;
-
         @BindView(R.id.text_view_asset_units)
         TextView textViewAssetUnits;
-
         @BindView(R.id.asset_model_number)
         TextView assetModelNumber;
-
         @BindView(R.id.textview_work_hour)
         TextView textviewWorkHour;
-
         @BindView(R.id.textview_diesel_consume)
         TextView textviewDieselConsume;
 

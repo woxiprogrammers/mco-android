@@ -9,11 +9,11 @@ public class MaterialSearchResponseData extends RealmObject {
     @SerializedName("material_list")
     private RealmList<SearchMaterialListItem> materialList;
 
-    public void setMaterialList(RealmList<SearchMaterialListItem> materialList) {
-        this.materialList = materialList;
-    }
-
     public RealmList<SearchMaterialListItem> getMaterialList() {
         return materialList;
+    }
+
+    public void setMaterialList(RealmList<SearchMaterialListItem> materialList) {
+        this.materialList = materialList;
     }
 }

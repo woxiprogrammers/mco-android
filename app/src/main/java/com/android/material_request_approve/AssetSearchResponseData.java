@@ -9,11 +9,11 @@ public class AssetSearchResponseData extends RealmObject {
     @SerializedName("asset_list")
     private RealmList<SearchAssetListItem> assetList;
 
-    public void setAssetList(RealmList<SearchAssetListItem> assetList) {
-        this.assetList = assetList;
-    }
-
     public RealmList<SearchAssetListItem> getAssetList() {
         return assetList;
+    }
+
+    public void setAssetList(RealmList<SearchAssetListItem> assetList) {
+        this.assetList = assetList;
     }
 }

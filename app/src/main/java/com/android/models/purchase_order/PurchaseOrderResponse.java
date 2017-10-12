@@ -13,20 +13,19 @@ public class PurchaseOrderResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setPurchaseOrderRespData(PurchaseOrderRespData purchaseOrderRespData) {
-        this.purchaseOrderRespData = purchaseOrderRespData;
-    }
-
     public PurchaseOrderRespData getPurchaseOrderRespData() {
         return purchaseOrderRespData;
     }
 
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setPurchaseOrderRespData(PurchaseOrderRespData purchaseOrderRespData) {
+        this.purchaseOrderRespData = purchaseOrderRespData;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

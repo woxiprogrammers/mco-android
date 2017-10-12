@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -75,14 +74,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private List<ProjectsItem> projectsItemList;
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (realm != null) {
-            realm.close();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
@@ -102,36 +93,14 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         initializeViews();
         getSiteName();
         setSpinnerListener();
-        Log.i("@@Token", AppUtils.getInstance().getCurrentToken());
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
         }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.actionLogout:
-                logoutAndClearAllData();
-                break;
-            case R.id.actionSetting:
-            case R.id.actionAbout:
-            case R.id.actionProfile:
-                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     /**
@@ -193,6 +162,32 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         });
     }
 
+    private void getSiteName() {
+        realm = Realm.getDefaultInstance();
+        ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("project_id", 2).findFirst();
+        if (projectsItem != null) {
+            projectSiteName.setText(projectsItem.getClient_company_name());
+        }
+    }
+
+    private void setSpinnerListener() {
+        realm = Realm.getDefaultInstance();
+        projectsItemRealmResults = realm.where(ProjectsItem.class).findAll();
+        setUpSpinnerAdapter(projectsItemRealmResults);
+        if (projectsItemRealmResults != null) {
+            Timber.d("availableUsersRealmResults change listener added.");
+            projectsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<ProjectsItem>>() {
+                @Override
+                public void onChange(RealmResults<ProjectsItem> availableUsersItems) {
+                    Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
+                    setUpSpinnerAdapter(projectsItemRealmResults);
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
+        }
+    }
+
     private void startCorrespondingAclActivity(SubModulesItem subModulesItem) {
         HashMap<String, String> aclKeyValuePair = retrieveAclKeyValueFromLocal();
         Intent intent = new Intent();
@@ -224,6 +219,58 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }*/
 
+    private void setUpSpinnerAdapter(RealmResults<ProjectsItem> availableUsersItems) {
+        projectsItemList = realm.copyFromRealm(availableUsersItems);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (ProjectsItem currentUser : projectsItemList) {
+            String strMaterialName = currentUser.getProjectName();
+            arrayOfUsers.add(strMaterialName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        if (arrayAdapter != null) {
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            projectSpinner.setAdapter(arrayAdapter);
+        }
+        userName.setText("Test User");
+    }
+
+    private HashMap<String, String> retrieveAclKeyValueFromLocal() {
+        Gson gson = new Gson();
+        String hashMapString = AppUtils.getInstance().getString("aclKeyValuePair", "");
+        Type type = new TypeToken<HashMap<String, String>>() {
+        }.getType();
+        return gson.fromJson(hashMapString, type);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.actionLogout:
+                logoutAndClearAllData();
+                break;
+            case R.id.actionSetting:
+            case R.id.actionAbout:
+            case R.id.actionProfile:
+                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     private void logoutAndClearAllData() {
         realm = Realm.getDefaultInstance();
         try {
@@ -244,54 +291,5 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
-    }
-
-    private HashMap<String, String> retrieveAclKeyValueFromLocal() {
-        Gson gson = new Gson();
-        String hashMapString = AppUtils.getInstance().getString("aclKeyValuePair", "");
-        Type type = new TypeToken<HashMap<String, String>>() {
-        }.getType();
-        return gson.fromJson(hashMapString, type);
-    }
-
-    private void getSiteName() {
-        realm = Realm.getDefaultInstance();
-        ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("project_id", 2).findFirst();
-        if (projectsItem != null) {
-            projectSiteName.setText(projectsItem.getClient_company_name());
-        }
-    }
-
-    private void setSpinnerListener() {
-        realm = Realm.getDefaultInstance();
-        projectsItemRealmResults = realm.where(ProjectsItem.class).findAll();
-        setUpSpinnerAdapter(projectsItemRealmResults);
-        if (projectsItemRealmResults != null) {
-            Timber.d("availableUsersRealmResults change listener added.");
-            projectsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<ProjectsItem>>() {
-                @Override
-                public void onChange(RealmResults<ProjectsItem> availableUsersItems) {
-                    Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
-                    setUpSpinnerAdapter(projectsItemRealmResults);
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }
-    }
-
-    private void setUpSpinnerAdapter(RealmResults<ProjectsItem> availableUsersItems) {
-        projectsItemList = realm.copyFromRealm(availableUsersItems);
-        ArrayList<String> arrayOfUsers = new ArrayList<String>();
-        for (ProjectsItem currentUser : projectsItemList) {
-            String strMaterialName = currentUser.getProjectName();
-            arrayOfUsers.add(strMaterialName);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        if (arrayAdapter != null) {
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            projectSpinner.setAdapter(arrayAdapter);
-        }
-        userName.setText("Test User");
     }
 }

@@ -32,14 +32,6 @@ public class SplashActivity extends BaseActivity {
     private Realm realm;
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (realm != null) {
-            realm.close();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -60,6 +52,34 @@ public class SplashActivity extends BaseActivity {
                 }
             }
         }, 500);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+        }
+    }
+
+    private void storeAclKeyValueToLocal() {
+        HashMap<String, String> aclKeyValuePair = new HashMap<String, String>();
+        aclKeyValuePair.put("purchase-request", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("material-request", MaterialRequest_ApproveActivity.class.getName());
+        aclKeyValuePair.put("vendor-assignment", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("manage-amendment", PurchaseHomeActivity.class.getName());
+        //
+        aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-maintainance", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("inventory-history", InventoryHomeActivity.class.getName());
+        Gson gson = new Gson();
+        String hashMapString = gson.toJson(aclKeyValuePair);
+        AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
+        AppUtils.getInstance().put(AppConstants.IS_APP_FIRST_TIME, true);
     }
 
     private void requestLatestAcl() {
@@ -103,25 +123,5 @@ public class SplashActivity extends BaseActivity {
                         AppUtils.getInstance().logApiError(anError, "requestLatestAcl");
                     }
                 });
-    }
-
-    private void storeAclKeyValueToLocal() {
-        HashMap<String, String> aclKeyValuePair = new HashMap<String, String>();
-        aclKeyValuePair.put("purchase-request", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("material-request", MaterialRequest_ApproveActivity.class.getName());
-        aclKeyValuePair.put("vendor-assignment", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("manage-amendment", PurchaseHomeActivity.class.getName());
-        //
-        aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-maintainance", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("inventory-history", InventoryHomeActivity.class.getName());
-        Gson gson = new Gson();
-        String hashMapString = gson.toJson(aclKeyValuePair);
-        AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
-        AppUtils.getInstance().put(AppConstants.IS_APP_FIRST_TIME, true);
     }
 }

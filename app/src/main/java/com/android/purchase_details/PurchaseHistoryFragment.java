@@ -17,7 +17,6 @@ import com.android.interfaces.FragmentInterface;
  * A simple {@link Fragment} subclass.
  */
 public class PurchaseHistoryFragment extends Fragment implements FragmentInterface {
-
     public PurchaseHistoryFragment() {
         // Required empty public constructor
     }
@@ -28,16 +27,17 @@ public class PurchaseHistoryFragment extends Fragment implements FragmentInterfa
         fragment.setArguments(args);
         return fragment;
     }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_purchase_history, container, false);
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_purchase_history, container, false);
     }
 
     @Override
@@ -49,6 +49,5 @@ public class PurchaseHistoryFragment extends Fragment implements FragmentInterfa
 
     @Override
     public void fragmentBecameVisible() {
-
     }
 }

@@ -7,14 +7,13 @@ import io.realm.RealmObject;
 /**
  * Created by woxi-007 on 13/9/17.
  */
-
 public class ImageItem extends RealmObject {
-
-    public ImageItem(){
-
-    }
     @SerializedName("image_url")
     private String imageUrl;
+
+    public ImageItem() {
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }

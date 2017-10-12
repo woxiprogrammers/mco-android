@@ -1,51 +1,48 @@
 package com.android.inventory.assets;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class AssetSummaryListResponse extends RealmObject{
+public class AssetSummaryListResponse extends RealmObject {
+    @SerializedName("data")
+    private AssetsSummaryData summaryData;
+    @SerializedName("asset_name")
+    private String assetName;
+    @SerializedName("next_url")
+    private String nextUrl;
+    @SerializedName("message")
+    private String message;
 
-	@SerializedName("data")
-	private AssetsSummaryData summaryData;
+    public AssetsSummaryData getDummyData() {
+        return summaryData;
+    }
 
-	@SerializedName("asset_name")
-	private String assetName;
+    public void setDummyData(AssetsSummaryData assetsSummaryData) {
+        this.summaryData = summaryData;
+    }
 
-	@SerializedName("next_url")
-	private String nextUrl;
+    public String getAssetName() {
+        return assetName;
+    }
 
-	@SerializedName("message")
-	private String message;
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
 
-	public void setDummyData(AssetsSummaryData assetsSummaryData){
-		this.summaryData = summaryData;
-	}
+    public String getNextUrl() {
+        return nextUrl;
+    }
 
-	public AssetsSummaryData getDummyData(){
-		return summaryData;
-	}
+    public void setNextUrl(String nextUrl) {
+        this.nextUrl = nextUrl;
+    }
 
-	public void setAssetName(String assetName){
-		this.assetName = assetName;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public String getAssetName(){
-		return assetName;
-	}
-
-	public void setNextUrl(String nextUrl){
-		this.nextUrl = nextUrl;
-	}
-
-	public String getNextUrl(){
-		return nextUrl;
-	}
-
-	public void setMessage(String message){
-		this.message = message;
-	}
-
-	public String getMessage(){
-		return message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

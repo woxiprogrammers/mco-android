@@ -9,11 +9,11 @@ public class PurchaseOrderRespData extends RealmObject {
     @SerializedName("purchase_order_list")
     private RealmList<PurchaseOrderListItem> purchaseOrderList;
 
-    public void setPurchaseOrderList(RealmList<PurchaseOrderListItem> purchaseOrderList) {
-        this.purchaseOrderList = purchaseOrderList;
-    }
-
     public RealmList<PurchaseOrderListItem> getPurchaseOrderList() {
         return purchaseOrderList;
+    }
+
+    public void setPurchaseOrderList(RealmList<PurchaseOrderListItem> purchaseOrderList) {
+        this.purchaseOrderList = purchaseOrderList;
     }
 }

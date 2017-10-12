@@ -2,18 +2,14 @@ package com.android.inventory.material;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
@@ -46,7 +42,6 @@ import timber.log.Timber;
 public class MaterialListFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
-
     private ArrayList<Integer> strMaterialName = new ArrayList<Integer>();
     private MaterialListAdapter materialListAdapter;
     private View mParentView;
@@ -64,6 +59,14 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         fragment.setArguments(args);
         return fragment;
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = getActivity();
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,13 +74,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         ButterKnife.bind(this, mParentView);
         setAdapterForMaterialList();
         return mParentView;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mContext = getActivity();
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -89,13 +85,9 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     }
 
     @Override
-    public void fragmentBecameVisible() {
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(realm !=null) {
+        if (realm != null) {
             realm.close();
         }
     }
@@ -111,14 +103,13 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     }
 
     private void requestInventoryResponse() {
-        JSONObject params=new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("page_id",0);
-            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
+            params.put("page_id", 0);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         realm = Realm.getDefaultInstance();
         Timber.d(AppURL.API_MATERIAL_LISTING_URL + AppUtils.getInstance().getCurrentToken());
         AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL + AppUtils.getInstance().getCurrentToken())
@@ -183,7 +174,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         strMaterialName.add(1523);
         realm = Realm.getDefaultInstance();
         materialListItems = realm.where(MaterialListItem.class).findAllAsync();
-        materialListAdapter = new MaterialListAdapter(materialListItems, true,true);
+        materialListAdapter = new MaterialListAdapter(materialListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv_material_list.setLayoutManager(linearLayoutManager);
@@ -192,13 +183,18 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             @Override
             public void onItemClick(View view, final int position) {
                 Intent intent = new Intent(mContext, InventoryDetails.class);
-                intent.putExtra("ClickedMaterialName",materialListItems.get(position).getMaterialName());
+                intent.putExtra("ClickedMaterialName", materialListItems.get(position).getMaterialName());
 //                intent.putExtra("Array", strMaterialName);
-                startActivity(intent); }
+                startActivity(intent);
+            }
 
             @Override
             public void onLongItemClick(View view, int position) {
             }
         }));
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
     }
 }

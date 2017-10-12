@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.purchase_order.PurchaseOrderListItem;
 import com.android.purchase_request.PurchaseBillListFragment;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -23,16 +24,19 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class PayAndBillsActivity extends BaseActivity {
+    public static boolean isForViewOnly;
+    public static String idForBillItem;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.bottom_navigationPay)
     BottomNavigationView bottomNavigationPay;
     MenuItem prevMenuItem;
-    public static boolean isForViewOnly;
-    public static int idForBillItem;
+    private Realm realm;
+    private int primaryKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,30 +46,19 @@ public class PayAndBillsActivity extends BaseActivity {
         initializeViews();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void initializeViews() {
         Intent intent = getIntent();
-        String titlePoName = null;
+        primaryKey = 0;
+        String title = "";
         if (intent != null) {
-            titlePoName = intent.getStringExtra("PONumber");
+            primaryKey = intent.getIntExtra("PONumber", -1);
+            realm = Realm.getDefaultInstance();
+            PurchaseOrderListItem purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", primaryKey).findFirst();
+            title = purchaseOrderListItem.getPurchaseOrderFormatId();
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(titlePoName);
+            getSupportActionBar().setTitle(title);
         }
         callMaterialFragment();
         bottomNavigationPay.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -114,29 +107,19 @@ public class PayAndBillsActivity extends BaseActivity {
         });
     }
 
-    private class PurchaseViewPagerAdapter extends FragmentPagerAdapter {
-        private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
 
-        public PurchaseViewPagerAdapter(FragmentManager fm) {
-            super(fm);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
         }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return PayFragment.newInstance();
-                case 1:
-                    return PurchaseBillListFragment.newInstance();
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return arrBottomTitle.length;
-        }
+        return super.onOptionsItemSelected(item);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -163,6 +146,31 @@ public class PayAndBillsActivity extends BaseActivity {
             viewPager.setCurrentItem(1);
         } else {
             viewPager.setCurrentItem(0);
+        }
+    }
+
+    private class PurchaseViewPagerAdapter extends FragmentPagerAdapter {
+        private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
+
+        public PurchaseViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return PayFragment.newInstance();
+                case 1:
+                    return PurchaseBillListFragment.newInstance(false, primaryKey);
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return arrBottomTitle.length;
         }
     }
 }

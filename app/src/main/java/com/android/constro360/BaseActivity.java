@@ -3,8 +3,6 @@ package com.android.constro360;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
-import com.android.constro360.R;
-
 /**
  * <b></b>
  * <p>This class is used to </p>
@@ -12,22 +10,15 @@ import com.android.constro360.R;
  */
 public class BaseActivity extends AppCompatActivity {
     @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransitionExit();
-    }
-
-    @Override
     public void startActivity(Intent intent) {
         super.startActivity(intent);
         overridePendingTransitionEnter();
     }
 
-    /**
-     * Overrides the pending Activity transition by performing the "Enter" animation.
-     */
-    protected void overridePendingTransitionEnter() {
-        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransitionExit();
     }
 
     /**
@@ -35,6 +26,13 @@ public class BaseActivity extends AppCompatActivity {
      */
     protected void overridePendingTransitionExit() {
         overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+    }
+
+    /**
+     * Overrides the pending Activity transition by performing the "Enter" animation.
+     */
+    protected void overridePendingTransitionEnter() {
+        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
     }
 
     @Override

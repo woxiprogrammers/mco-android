@@ -8,15 +8,12 @@ import io.realm.annotations.PrimaryKey;
 public class InventoryResponse extends RealmObject {
     @PrimaryKey
     private int intIndex = 0;
-
     @SerializedName("data")
     private InventoryDataResponse inventoryDataResponse;
-
     @SerializedName("next_url")
     private String nextUrl;
     @SerializedName("message")
     private String message;
-
     @SerializedName("page_id")
     private String pageid;
 

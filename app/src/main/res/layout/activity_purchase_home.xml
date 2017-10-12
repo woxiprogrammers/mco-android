@@ -22,7 +22,8 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:id="@+id/relative_layout_selectDate"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
                 <TextView

@@ -10,32 +10,32 @@ public class PurchaseBillResponse extends RealmObject {
     private int intIndex = 0;
     @SerializedName("next_url")
     private String nextUrl;
-    @SerializedName("purchaseBillRespData")
+    @SerializedName("data")
     private PurchaseBillRespData purchaseBillRespData;
     @SerializedName("message")
     private String message;
-
-    public void setNextUrl(String nextUrl) {
-        this.nextUrl = nextUrl;
-    }
 
     public String getNextUrl() {
         return nextUrl;
     }
 
-    public void setPurchaseBillRespData(PurchaseBillRespData purchaseBillRespData) {
-        this.purchaseBillRespData = purchaseBillRespData;
+    public void setNextUrl(String nextUrl) {
+        this.nextUrl = nextUrl;
     }
 
     public PurchaseBillRespData getPurchaseBillRespData() {
         return purchaseBillRespData;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setPurchaseBillRespData(PurchaseBillRespData purchaseBillRespData) {
+        this.purchaseBillRespData = purchaseBillRespData;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

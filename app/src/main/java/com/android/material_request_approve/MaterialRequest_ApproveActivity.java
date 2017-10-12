@@ -12,7 +12,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,13 +74,14 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class MaterialRequest_ApproveActivity extends BaseActivity {
+    public static SearchMaterialListItem searchMaterialListItem_fromResult_staticNew = null;
+    public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
     @BindView(R.id.spinner_select_assign_to)
     Spinner mSpinnerSelectAssignTo;
     @BindView(R.id.rv_existing_material_list_material_request_approve)
     RecyclerView mRvExistingMaterialListMaterialRequestApprove;
     @BindView(R.id.linerLayoutItemForMaterialRequest)
     LinearLayout linerLayoutItemForMaterialRequest;
-    private Context mContext;
     @BindView(R.id.textView_purchaseMaterialList_appBarTitle)
     TextView textViewPurchaseMaterialListAppBarTitle;
     @BindView(R.id.textView_purchaseMaterialList_addNew)
@@ -92,6 +92,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     RecyclerView mRvMaterialListMaterialRequestApprove;
     @BindView(R.id.button_submit_purchase_request)
     Button buttonSubmitPurchaseRequest;
+    private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
     private List<AvailableUsersItem> availableUserArray;
@@ -112,8 +113,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private LinearLayout ll_dialog_unit;
     private SearchMaterialListItem searchMaterialListItem_fromResult = null;
     private SearchAssetListItem searchAssetListItem_fromResult = null;
-    public static SearchMaterialListItem searchMaterialListItem_fromResult_staticNew = null;
-    public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
     private boolean isForApproval;
     private String strToken;
     private ArrayList<File> arrayImageFileList;
@@ -153,7 +152,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
                     setUpUsersSpinnerValueChangeListener();
                     getRequestedItemList();
-                    textViewPurchaseMaterialListAddNew.setVisibility(View.VISIBLE);
                 } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
                     textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
                     isForApproval = true;
@@ -161,7 +159,73 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                     setUpApprovedStatusAdapter();
                     requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
-                    textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRvMaterialListMaterialRequestApprove.setAdapter(null);
+        deleteUsedRealmObject();
+        if (realm != null) {
+            realm.close();
+        }
+    }
+
+    private void deleteUsedRealmObject() {
+        if (isMaterial) {
+            realm = Realm.getDefaultInstance();
+            try {
+                realm.executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.delete(MaterialSearchResponse.class);
+                        realm.delete(MaterialSearchResponseData.class);
+                        realm.delete(SearchMaterialListItem.class);
+                        realm.delete(UnitQuantityItem.class);
+                    }
+                }, new Realm.Transaction.OnSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        Timber.d("Realm Execution Successful");
+                    }
+                }, new Realm.Transaction.OnError() {
+                    @Override
+                    public void onError(Throwable error) {
+                        AppUtils.getInstance().logRealmExecutionError(error);
+                    }
+                });
+            } finally {
+                if (realm != null) {
+                    realm.close();
+                }
+            }
+        } else {
+            realm = Realm.getDefaultInstance();
+            try {
+                realm.executeTransactionAsync(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        realm.delete(AssetSearchResponse.class);
+                        realm.delete(AssetSearchResponseData.class);
+                        realm.delete(SearchAssetListItem.class);
+                    }
+                }, new Realm.Transaction.OnSuccess() {
+                    @Override
+                    public void onSuccess() {
+                        Timber.d("Realm Execution Successful");
+                    }
+                }, new Realm.Transaction.OnError() {
+                    @Override
+                    public void onError(Throwable error) {
+                        AppUtils.getInstance().logRealmExecutionError(error);
+                    }
+                });
+            } finally {
+                if (realm != null) {
+                    realm.close();
                 }
             }
         }
@@ -279,6 +343,90 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         } else {
             Toast.makeText(mContext, "Please add some items to the list", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void submitPurchaseRequest(JSONObject params) {
+        AndroidNetworking.post(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("submitPurchaseRequest")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                        mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+                        getRequestedItemList();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
+                    }
+                });
+    }
+
+    private void getRequestedItemList() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("user_id", 2);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_REQUESTED_MATERIAL_LIST + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getRequestedItemList")
+                .build()
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Timber.i(String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getRequestedItemList");
+                    }
+                });*/
+                .getAsObject(RequestedItemResponse.class, new ParsedRequestListener<RequestedItemResponse>() {
+                    @Override
+                    public void onResponse(final RequestedItemResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+//                                    materialListRealmResults_New.deleteAllFromRealm();
+                                    realm.delete(PurchaseMaterialListItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Timber.d("Realm Execution Successful");
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getRequestedItemList");
+                    }
+                });
     }
 
     private void createAlertDialog() {
@@ -429,73 +577,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         mTextViewTitleMaterialAsset.setText(strDialogTitle);
         mTextViewLabelMaterialAsset.setText(strItemNameLabel);
         return alertDialog;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mRvMaterialListMaterialRequestApprove.setAdapter(null);
-        deleteUsedRealmObject();
-        if (realm != null) {
-            realm.close();
-        }
-    }
-
-    private void deleteUsedRealmObject() {
-        if (isMaterial) {
-            realm = Realm.getDefaultInstance();
-            try {
-                realm.executeTransactionAsync(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        realm.delete(MaterialSearchResponse.class);
-                        realm.delete(MaterialSearchResponseData.class);
-                        realm.delete(SearchMaterialListItem.class);
-                        realm.delete(UnitQuantityItem.class);
-                    }
-                }, new Realm.Transaction.OnSuccess() {
-                    @Override
-                    public void onSuccess() {
-                        Timber.d("Realm Execution Successful");
-                    }
-                }, new Realm.Transaction.OnError() {
-                    @Override
-                    public void onError(Throwable error) {
-                        AppUtils.getInstance().logRealmExecutionError(error);
-                    }
-                });
-            } finally {
-                if (realm != null) {
-                    realm.close();
-                }
-            }
-        } else {
-            realm = Realm.getDefaultInstance();
-            try {
-                realm.executeTransactionAsync(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        realm.delete(AssetSearchResponse.class);
-                        realm.delete(AssetSearchResponseData.class);
-                        realm.delete(SearchAssetListItem.class);
-                    }
-                }, new Realm.Transaction.OnSuccess() {
-                    @Override
-                    public void onSuccess() {
-                        Timber.d("Realm Execution Successful");
-                    }
-                }, new Realm.Transaction.OnError() {
-                    @Override
-                    public void onError(Throwable error) {
-                        AppUtils.getInstance().logRealmExecutionError(error);
-                    }
-                });
-            } finally {
-                if (realm != null) {
-                    realm.close();
-                }
-            }
-        }
     }
 
     private void setUpCurrentMaterialListAdapter() {
@@ -741,28 +822,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         mSpinnerUnits.setAdapter(arrayAdapter);
     }
 
-    private void submitPurchaseRequest(JSONObject params) {
-        AndroidNetworking.post(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
-                .setPriority(Priority.MEDIUM)
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("submitPurchaseRequest")
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
-                        mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
-                        getRequestedItemList();
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
-                    }
-                });
-    }
-
     private void uploadImages_addItemToLocal() {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
@@ -889,243 +948,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         uploadImages_addItemToLocal();
     }
 
-    private void getRequestedItemList() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("user_id", 2);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_REQUESTED_MATERIAL_LIST + AppUtils.getInstance().getCurrentToken())
-                .setPriority(Priority.MEDIUM)
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("getRequestedItemList")
-                .build()
-                /*.getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.i(String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getRequestedItemList");
-                    }
-                });*/
-                .getAsObject(RequestedItemResponse.class, new ParsedRequestListener<RequestedItemResponse>() {
-                    @Override
-                    public void onResponse(final RequestedItemResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-//                                    materialListRealmResults_New.deleteAllFromRealm();
-                                    realm.delete(PurchaseMaterialListItem.class);
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    Timber.d("Realm Execution Successful");
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getRequestedItemList");
-                    }
-                });
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem,
-            PurchaseMaterialRvAdapter.MyViewHolder> {
-        private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
-        private RecyclerViewClickListener recyclerViewClickListener;
-
-        PurchaseMaterialRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate,
-                                  boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
-            super(data, autoUpdate, updateOnModification);
-            hasStableIds();
-            arrPurchaseMaterialListItems = data;
-            this.recyclerViewClickListener = recyclerViewClickListener;
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_material_request_current_list, parent, false);
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
-            holder.mTextViewAddedItemName.setText(purchaseMaterialListItem.getItem_name());
-        }
-
-        @Override
-        public long getItemId(int index) {
-            return arrPurchaseMaterialListItems.get(index).getPrimaryKey();
-        }
-
-        @Override
-        public int getItemCount() {
-            return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
-        }
-
-        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            @BindView(R.id.textView_added_item_name)
-            TextView mTextViewAddedItemName;
-            @BindView(R.id.imageView_delete_added_item)
-            ImageView mImageViewDeleteAddedItem;
-
-            MyViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
-                mImageViewDeleteAddedItem.setOnClickListener(this);
-                itemView.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View view) {
-                recyclerViewClickListener.onItemClick(view, getAdapterPosition());
-            }
-        }
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    protected class PurchaseStatsRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseStatsRvAdapter.MyViewHolder> {
-        private boolean isApproval;
-        private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
-
-        public PurchaseStatsRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification, boolean isForApproval) {
-            super(data, autoUpdate, updateOnModification);
-            arrPurchaseMaterialListItems = data;
-            isApproval = isForApproval;
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_request_material, parent, false);
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
-            holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
-            setTime(purchaseMaterialListItem.getCreatedAt(), holder.textViewDate);
-            holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
-            holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
-            String strStatus = purchaseMaterialListItem.getComponentStatus();
-            if (isApproval) {
-                if (strStatus.equalsIgnoreCase("pending")) {
-                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-                    holder.buttonMoveToIndent.setVisibility(View.GONE);
-                } else if (strStatus.equalsIgnoreCase("manager-approved")) {
-                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-                    holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
-                } else if (strStatus.equalsIgnoreCase("manager-disapproved")) {
-                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-                    holder.buttonMoveToIndent.setVisibility(View.GONE);
-                } else if (strStatus.equalsIgnoreCase("in-indent")) {
-                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-                    holder.buttonMoveToIndent.setVisibility(View.GONE);
-                }
-            } else {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-            }
-        }
-
-        @Override
-        public long getItemId(int index) {
-            return arrPurchaseMaterialListItems.get(index).getPrimaryKey();
-        }
-
-        @Override
-        public int getItemCount() {
-            return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
-        }
-
-        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            @BindView(R.id.textviewItemName)
-            TextView textViewItemName;
-            @BindView(R.id.textviewItemUnits)
-            TextView textViewItemUnits;
-            @BindView(R.id.textviewItemStatus)
-            TextView textViewItemStatus;
-            @BindView(R.id.iv_approve)
-            ImageView imageViewApproveMaterial;
-            @BindView(R.id.iv_disapprove)
-            ImageView imageViewDisapproveMaterial;
-            @BindView(R.id.linearLayoutApproveDisapprove)
-            LinearLayout linearLayoutApproveDisapprove;
-            @BindView(R.id.button_move_to_indent)
-            Button buttonMoveToIndent;
-            @BindView(R.id.textview_Date)
-            TextView textViewDate;
-
-            public MyViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
-                if (isApproval) {
-                    imageViewApproveMaterial.setOnClickListener(this);
-                    imageViewDisapproveMaterial.setOnClickListener(this);
-                    buttonMoveToIndent.setOnClickListener(this);
-                    linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-                } else {
-                    linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.iv_approve:
-                        isApprove = true;
-                        approveMaterial(3, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
-                        break;
-                    case R.id.iv_disapprove:
-                        isApprove = false;
-                        approveMaterial(4, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
-                        break;
-                    case R.id.button_move_to_indent:
-                        isMoveIndent = true;
-                        approveMaterial(7, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
-                        break;
-                }
-            }
-        }
-
-        private void setTime(String strParse, TextView textView) {
-            final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            Date dateObj;
-            String newDateStr = null;
-            try {
-                dateObj = df.parse(strParse);
-                SimpleDateFormat fd = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-                newDateStr = fd.format(dateObj);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            textView.setText(newDateStr);
-        }
-    }
-
     private void approveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
                                  final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
@@ -1136,7 +958,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             params.put("material_request_component_id", materialRequestComponentId);
             params.put("change_component_status_id_to", statusId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            Log.i("@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1210,6 +1031,181 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
                     }
                 });
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem,
+            PurchaseMaterialRvAdapter.MyViewHolder> {
+        private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
+        private RecyclerViewClickListener recyclerViewClickListener;
+
+        PurchaseMaterialRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate,
+                                  boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
+            super(data, autoUpdate, updateOnModification);
+            hasStableIds();
+            arrPurchaseMaterialListItems = data;
+            this.recyclerViewClickListener = recyclerViewClickListener;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_material_request_current_list, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return arrPurchaseMaterialListItems.get(index).getPrimaryKey();
+        }        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            holder.mTextViewAddedItemName.setText(purchaseMaterialListItem.getItem_name());
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            @BindView(R.id.textView_added_item_name)
+            TextView mTextViewAddedItemName;
+            @BindView(R.id.imageView_delete_added_item)
+            ImageView mImageViewDeleteAddedItem;
+
+            MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+                mImageViewDeleteAddedItem.setOnClickListener(this);
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View view) {
+                recyclerViewClickListener.onItemClick(view, getAdapterPosition());
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
+        }
+
+
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    protected class PurchaseStatsRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem, PurchaseStatsRvAdapter.MyViewHolder> {
+        private boolean isApproval;
+        private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
+
+        public PurchaseStatsRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification, boolean isForApproval) {
+            super(data, autoUpdate, updateOnModification);
+            arrPurchaseMaterialListItems = data;
+            isApproval = isForApproval;
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            @BindView(R.id.textviewItemName)
+            TextView textViewItemName;
+            @BindView(R.id.textviewItemUnits)
+            TextView textViewItemUnits;
+            @BindView(R.id.textviewItemStatus)
+            TextView textViewItemStatus;
+            @BindView(R.id.iv_approve)
+            ImageView imageViewApproveMaterial;
+            @BindView(R.id.iv_disapprove)
+            ImageView imageViewDisapproveMaterial;
+            @BindView(R.id.linearLayoutApproveDisapprove)
+            LinearLayout linearLayoutApproveDisapprove;
+            @BindView(R.id.button_move_to_indent)
+            Button buttonMoveToIndent;
+            @BindView(R.id.textview_Date)
+            TextView textViewDate;
+
+            public MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+                if (isApproval) {
+                    imageViewApproveMaterial.setOnClickListener(this);
+                    imageViewDisapproveMaterial.setOnClickListener(this);
+                    buttonMoveToIndent.setOnClickListener(this);
+                    linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                } else {
+                    linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.iv_approve:
+                        isApprove = true;
+                        approveMaterial(3, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        break;
+                    case R.id.iv_disapprove:
+                        isApprove = false;
+                        approveMaterial(4, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        break;
+                    case R.id.button_move_to_indent:
+                        isMoveIndent = true;
+                        approveMaterial(7, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        break;
+                }
+            }
+        }        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_request_material, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
+            setTime(purchaseMaterialListItem.getCreatedAt(), holder.textViewDate);
+            holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
+            holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
+            String strStatus = purchaseMaterialListItem.getComponentStatus();
+            if (isApproval) {
+                if (strStatus.equalsIgnoreCase("pending")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                    holder.buttonMoveToIndent.setVisibility(View.GONE);
+                } else if (strStatus.equalsIgnoreCase("manager-approved")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                    holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
+                } else if (strStatus.equalsIgnoreCase("manager-disapproved")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                    holder.buttonMoveToIndent.setVisibility(View.GONE);
+                } else if (strStatus.equalsIgnoreCase("in-indent")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                    holder.buttonMoveToIndent.setVisibility(View.GONE);
+                }
+            } else {
+                holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return arrPurchaseMaterialListItems.get(index).getPrimaryKey();
+        }
+
+        @Override
+        public int getItemCount() {
+            return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
+        }
+
+
+
+        private void setTime(String strParse, TextView textView) {
+            final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            Date dateObj;
+            String newDateStr = null;
+            try {
+                dateObj = df.parse(strParse);
+                SimpleDateFormat fd = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                newDateStr = fd.format(dateObj);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            textView.setText(newDateStr);
+        }
     }
 }
 

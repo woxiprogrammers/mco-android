@@ -30,12 +30,12 @@ public class LoginResponse extends RealmObject {
         this.message = message;
     }
 
-    public void setLoggedInAt(LoggedInAt loggedInAt) {
-        this.loggedInAt = loggedInAt;
-    }
-
     public LoggedInAt getLoggedInAt() {
         return loggedInAt;
+    }
+
+    public void setLoggedInAt(LoggedInAt loggedInAt) {
+        this.loggedInAt = loggedInAt;
     }
 
     public String getToken() {

@@ -10,14 +10,12 @@ import com.android.inventory.material.MaterialListFragment;
 /**
  * Created by Sharvari on 23/8/17.
  */
-
 public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
+    private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
 
-    private String[] arrBottomTitle={"Bottom1","Bottom2"};
     public InventoryViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
-
 
     @Override
     public int getCount() {
@@ -25,8 +23,7 @@ public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int position)
-    {
+    public Fragment getItem(int position) {
         switch (position) {
             case 0:
                 return MaterialListFragment.newInstance();
@@ -35,6 +32,5 @@ public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
             default:
                 return null;
         }
-
     }
 }

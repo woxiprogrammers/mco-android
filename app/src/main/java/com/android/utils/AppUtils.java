@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.android.models.login_acl.LoginResponse;
 import com.androidnetworking.error.ANError;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,8 +29,6 @@ import timber.log.Timber;
 public class AppUtils {
     public static AppUtils instance;
     public static Context mContext;
-    private String strToken;
-    private String strLoggedInAt;
     private static SharedPreferences preference;
     private static SharedPreferences.Editor editor;
     private final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
@@ -40,6 +40,8 @@ public class AppUtils {
                     "[a-zA-Z0-9][a-zA-Z0-9-]{0,25}" +
                     ")+"
     );
+    private String strToken;
+    private String strLoggedInAt;
 
     /**
      * initialize utils plus library
@@ -275,5 +277,19 @@ public class AppUtils {
             }
         }
         return strLoggedInAt;
+    }
+
+    public String getTime(String currentFormat, String expectedFormat, String currentDateTime) {
+        final SimpleDateFormat df = new SimpleDateFormat(currentFormat);
+        Date dateObj;
+        String newDateStr = null;
+        try {
+            dateObj = df.parse(currentDateTime);
+            SimpleDateFormat fd = new SimpleDateFormat(expectedFormat);
+            newDateStr = fd.format(dateObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newDateStr;
     }
 }

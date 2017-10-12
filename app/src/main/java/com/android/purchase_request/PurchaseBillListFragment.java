@@ -17,7 +17,6 @@ import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_bill.PurchaseBillListItem;
 import com.android.models.purchase_bill.PurchaseBillResponse;
 import com.android.purchase_details.PayAndBillsActivity;
-import com.android.purchase_details.PurchaseBIllDetailsItems;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -26,6 +25,9 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,85 +44,51 @@ import timber.log.Timber;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class PurchaseBillListFragment extends Fragment implements FragmentInterface,AppConstants {
+public class PurchaseBillListFragment extends Fragment implements FragmentInterface, AppConstants {
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseBillListItem> purchaseBillListItems;
-    private PurchaseBIllDetailsItems purchaseBIllDetailsItems=new PurchaseBIllDetailsItems();
+    private boolean isFromPurchaseRequestHome;
+    private int intPrimaryKey;
 
     public PurchaseBillListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseBillListFragment newInstance() {
+    public static PurchaseBillListFragment newInstance(boolean isFromPurchaseHome, int primaryKey) {
         Bundle args = new Bundle();
         PurchaseBillListFragment fragment = new PurchaseBillListFragment();
+        args.putInt("primaryKey", primaryKey);
+        args.putBoolean("isFromPurchaseHome", isFromPurchaseHome);
         fragment.setArguments(args);
+//        isFromPurchaseRequestHome=isFromPurchaseHome;
+//        intPrimaryKey=primaryKey;
         return fragment;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint()) {
-            ActionBar actionBar = ((PurchaseHomeActivity) mContext).getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setTitle(getString(R.string.app_name));
+    public void fragmentBecameVisible() {
+        requestPrListOnline();
+        if (isFromPurchaseRequestHome) {
+            if (getUserVisibleHint()) {
+                ((PurchaseHomeActivity) mContext).hideDateLayout(false);
             }
         }
     }
 
-    @Override
-    public void fragmentBecameVisible() {
-        Timber.d("fragmentBecameVisible");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
-        unbinder = ButterKnife.bind(this, mParentView);
-        //Initialize Views
-        initializeViews();
-        setUpPrAdapter();
-        return mParentView;
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        recyclerView_commonListingView.setAdapter(null);
-        if (realm != null) {
-            realm.close();
-        }
-        unbinder.unbind();
-    }
-
-    /**
-     * <b>private void initializeViews()</b>
-     * <p>This function is used to initialize required views.</p>
-     * Created by - Rohit
-     */
-    private void initializeViews() {
-        mContext = getActivity();
-        functionForGettingData();
-    }
-
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestPrListOnline();
-        } else {
-            //Get data from local DB
-            setUpPrAdapter();
-        }
-    }
-
     private void requestPrListOnline() {
-        AndroidNetworking.get(AppURL.API_PURCHASE_BILL_LIST)
+        JSONObject params = new JSONObject();
+        try {
+            params.put("purchase_order_id", intPrimaryKey);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_PURCHASE_BILL_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPrListOnline")
                 .build()
@@ -160,6 +128,52 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                 });
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        unbinder = ButterKnife.bind(this, mParentView);
+        //Initialize Views
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            intPrimaryKey = bundle.getInt("primaryKey");
+            isFromPurchaseRequestHome = bundle.getBoolean("isFromPurchaseHome");
+        }
+        initializeViews();
+        setUpPrAdapter();
+        return mParentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            ActionBar actionBar = ((PurchaseHomeActivity) mContext).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setTitle(getString(R.string.app_name));
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        recyclerView_commonListingView.setAdapter(null);
+        if (realm != null) {
+            realm.close();
+        }
+        unbinder.unbind();
+    }
+
+    /**
+     * <b>private void initializeViews()</b>
+     * <p>This function is used to initialize required views.</p>
+     * Created by - Rohit
+     */
+    private void initializeViews() {
+        mContext = getActivity();
+        functionForGettingData();
+    }
+
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
@@ -173,8 +187,8 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        PayAndBillsActivity.isForViewOnly=true;
-                        PayAndBillsActivity.idForBillItem=purchaseBillListItems.get(position).getId();
+                        PayAndBillsActivity.isForViewOnly = true;
+                        PayAndBillsActivity.idForBillItem = purchaseBillListItems.get(position).getPurchaseBillGrn();
                         ((PayAndBillsActivity) mContext).moveFragments(false);
                     }
 
@@ -190,6 +204,16 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
+        }
+    }
+
+    private void functionForGettingData() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            //Get data from Server
+            requestPrListOnline();
+        } else {
+            //Get data from local DB
+            setUpPrAdapter();
         }
     }
 

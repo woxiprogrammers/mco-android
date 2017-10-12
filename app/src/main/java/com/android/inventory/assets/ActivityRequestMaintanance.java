@@ -48,31 +48,22 @@ import butterknife.OnClick;
 import timber.log.Timber;
 
 public class ActivityRequestMaintanance extends BaseActivity {
-
     @BindView(R.id.edit_text_asset_name)
     EditText editTextAssetName;
-
     @BindView(R.id.edit_text_modelName)
     EditText editTextModelName;
-
     @BindView(R.id.edit_text_maintainance_hours)
     EditText editTextMaintainanceHours;
-
     @BindView(R.id.edit_text_remark)
     EditText editTextRemark;
-
     @BindView(R.id.button_request)
     Button buttonRequest;
-
     @BindView(R.id.textView_capture)
     TextView textViewCapture;
-
     @BindView(R.id.textView_pick)
     TextView textViewPick;
-
     @BindView(R.id.ll_addImage)
     LinearLayout llAddImage;
-
     private Context mContext;
     private String strExpiryDate, strRemark;
     private Calendar myCalendar;
@@ -99,7 +90,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.asset_maintainance);
         }
-
         Intent extras = getIntent();
         if (extras != null) {
             strAssetName = extras.getStringExtra("key");
@@ -110,7 +100,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
         editTextAssetName.setEnabled(false);
         editTextModelName.setText(strModelNumber);
         editTextModelName.setEnabled(false);
-
         date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -120,7 +109,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateEditText();
             }
-
         };
     }
 
@@ -161,7 +149,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
             editTextMaintainanceHours.requestFocus();
             editTextMaintainanceHours.setError(null);
         }
-
         //For Remark
         if (TextUtils.isEmpty(strRemark)) {
             editTextRemark.setFocusableInTouchMode(true);
@@ -276,12 +263,10 @@ public class ActivityRequestMaintanance extends BaseActivity {
             }
             params.put("remark", editTextRemark.getText().toString());
             params.put("next_maintenance_hour", editTextMaintainanceHours.getText().toString());
-            params.put("images",jsonImageNameArray);
-
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         AndroidNetworking.post(AppURL.API_ASSET_REQUEST_MAINTENANCE + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestAssetMaintenance")
                 .addJSONObjectBody(params)

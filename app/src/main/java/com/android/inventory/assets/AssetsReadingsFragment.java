@@ -41,10 +41,8 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class AssetsReadingsFragment extends Fragment implements FragmentInterface {
-
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
-
     private Context mContext;
     private Unbinder unbinder;
     private Realm realm;
@@ -72,11 +70,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     }
 
     @Override
-    public void fragmentBecameVisible() {
-
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -87,6 +80,35 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         mContext = getActivity();
     }
 
+    private void setUpAssetListAdapter() {
+        realm = Realm.getDefaultInstance();
+        final RealmResults<AssetsSummaryListItem> assetsListItems = realm.where(AssetsSummaryListItem.class).findAllAsync();
+        AssetRedingAdapter assetRadingAdapter = new AssetRedingAdapter(assetsListItems, true, true);
+        rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
+        rvMaterialList.setHasFixedSize(true);
+        rvMaterialList.setAdapter(assetRadingAdapter);
+        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                rvMaterialList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+        if (assetsListItems != null) {
+            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsSummaryListItem>>() {
+                @Override
+                public void onChange(RealmResults<AssetsSummaryListItem> assetsSummaryListItems) {
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
+        }
+    }
+
     private void functionForGettingData() {
         if (AppUtils.getInstance().checkNetworkState()) {
             //Get data from Server
@@ -95,7 +117,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     }
 
     private void requestAssetSummaryList() {
-
         JSONObject params = new JSONObject();
         try {
             params.put("inventory_component_id", 3);
@@ -145,37 +166,9 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
                 });
     }
 
-    private void setUpAssetListAdapter() {
-        realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsSummaryListItem> assetsListItems = realm.where(AssetsSummaryListItem.class).findAllAsync();
-        AssetRedingAdapter assetRadingAdapter = new AssetRedingAdapter(assetsListItems, true, true);
-        rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
-        rvMaterialList.setHasFixedSize(true);
-        rvMaterialList.setAdapter(assetRadingAdapter);
-        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                rvMaterialList,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, final int position) {
-
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                }));
-
-        if (assetsListItems != null) {
-            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsSummaryListItem>>() {
-                @Override
-                public void onChange(RealmResults<AssetsSummaryListItem> assetsSummaryListItems) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }
+    @Override
+    public void fragmentBecameVisible() {
     }
-
 }
 
 class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem, AssetRedingAdapter.MyViewHolder> {
@@ -209,7 +202,20 @@ class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
         } else {
             holder.textviewFuelRemaining.setVisibility(View.GONE);
         }
+    }
 
+    private void setTime(String strParse, TextView textView) {
+        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dateObj;
+        String newDateStr = null;
+        try {
+            dateObj = df.parse(strParse);
+            SimpleDateFormat fd = new SimpleDateFormat("HH:mm");
+            newDateStr = fd.format(dateObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        textView.setText(newDateStr);
     }
 
     @Override
@@ -242,20 +248,6 @@ class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-    }
-
-    private void setTime(String strParse, TextView textView) {
-        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date dateObj;
-        String newDateStr = null;
-        try {
-            dateObj = df.parse(strParse);
-            SimpleDateFormat fd = new SimpleDateFormat("HH:mm");
-            newDateStr = fd.format(dateObj);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        textView.setText(newDateStr);
     }
 }
 

@@ -1,170 +1,156 @@
 package com.android.purchase_details;
+
 import com.google.gson.annotations.SerializedName;
 
-public class PurchaseBillListItem{
+public class PurchaseBillListItem {
+    @SerializedName("date")
+    private String date;
+    @SerializedName("out_time")
+    private String outTime;
+    @SerializedName("challan_number")
+    private String challanNumber;
+    @SerializedName("bill_amount")
+    private String billAmount;
+    @SerializedName("purchase_order_id")
+    private String purchaseOrderId;
+    @SerializedName("purchase_bill_grn")
+    private String purchaseBillGrn;
+    @SerializedName("material_quantity")
+    private String materialQuantity;
+    @SerializedName("purchase_request_id")
+    private String purchaseRequestId;
+    @SerializedName("in_time")
+    private String inTime;
+    @SerializedName("vendor")
+    private String vendor;
+    @SerializedName("vehicle_number")
+    private String vehicleNumber;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("material_name")
+    private String materialName;
+    @SerializedName("material_unit")
+    private String materialUnit;
+    @SerializedName("status")
+    private String status;
 
-	@SerializedName("date")
-	private String date;
+    public String getDate() {
+        return date;
+    }
 
-	@SerializedName("out_time")
-	private String outTime;
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-	@SerializedName("challan_number")
-	private String challanNumber;
+    public String getOutTime() {
+        return outTime;
+    }
 
-	@SerializedName("bill_amount")
-	private String billAmount;
+    public void setOutTime(String outTime) {
+        this.outTime = outTime;
+    }
 
-	@SerializedName("purchase_order_id")
-	private String purchaseOrderId;
+    public String getChallanNumber() {
+        return challanNumber;
+    }
 
-	@SerializedName("purchase_bill_grn")
-	private String purchaseBillGrn;
+    public void setChallanNumber(String challanNumber) {
+        this.challanNumber = challanNumber;
+    }
 
-	@SerializedName("material_quantity")
-	private String materialQuantity;
+    public String getBillAmount() {
+        return billAmount;
+    }
 
-	@SerializedName("purchase_request_id")
-	private String purchaseRequestId;
+    public void setBillAmount(String billAmount) {
+        this.billAmount = billAmount;
+    }
 
-	@SerializedName("in_time")
-	private String inTime;
+    public String getPurchaseOrderId() {
+        return purchaseOrderId;
+    }
 
-	@SerializedName("vendor")
-	private String vendor;
+    public void setPurchaseOrderId(String purchaseOrderId) {
+        this.purchaseOrderId = purchaseOrderId;
+    }
 
-	@SerializedName("vehicle_number")
-	private String vehicleNumber;
+    public String getPurchaseBillGrn() {
+        return purchaseBillGrn;
+    }
 
-	@SerializedName("id")
-	private int id;
+    public void setPurchaseBillGrn(String purchaseBillGrn) {
+        this.purchaseBillGrn = purchaseBillGrn;
+    }
 
-	@SerializedName("material_name")
-	private String materialName;
+    public String getMaterialQuantity() {
+        return materialQuantity;
+    }
 
-	@SerializedName("material_unit")
-	private String materialUnit;
+    public void setMaterialQuantity(String materialQuantity) {
+        this.materialQuantity = materialQuantity;
+    }
 
-	@SerializedName("status")
-	private String status;
+    public String getPurchaseRequestId() {
+        return purchaseRequestId;
+    }
 
-	public void setDate(String date){
-		this.date = date;
-	}
+    public void setPurchaseRequestId(String purchaseRequestId) {
+        this.purchaseRequestId = purchaseRequestId;
+    }
 
-	public String getDate(){
-		return date;
-	}
+    public String getInTime() {
+        return inTime;
+    }
 
-	public void setOutTime(String outTime){
-		this.outTime = outTime;
-	}
+    public void setInTime(String inTime) {
+        this.inTime = inTime;
+    }
 
-	public String getOutTime(){
-		return outTime;
-	}
+    public String getVendor() {
+        return vendor;
+    }
 
-	public void setChallanNumber(String challanNumber){
-		this.challanNumber = challanNumber;
-	}
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
+    }
 
-	public String getChallanNumber(){
-		return challanNumber;
-	}
+    public String getVehicleNumber() {
+        return vehicleNumber;
+    }
 
-	public void setBillAmount(String billAmount){
-		this.billAmount = billAmount;
-	}
+    public void setVehicleNumber(String vehicleNumber) {
+        this.vehicleNumber = vehicleNumber;
+    }
 
-	public String getBillAmount(){
-		return billAmount;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setPurchaseOrderId(String purchaseOrderId){
-		this.purchaseOrderId = purchaseOrderId;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getPurchaseOrderId(){
-		return purchaseOrderId;
-	}
+    public String getMaterialName() {
+        return materialName;
+    }
 
-	public void setPurchaseBillGrn(String purchaseBillGrn){
-		this.purchaseBillGrn = purchaseBillGrn;
-	}
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
+    }
 
-	public String getPurchaseBillGrn(){
-		return purchaseBillGrn;
-	}
+    public String getMaterialUnit() {
+        return materialUnit;
+    }
 
-	public void setMaterialQuantity(String materialQuantity){
-		this.materialQuantity = materialQuantity;
-	}
+    public void setMaterialUnit(String materialUnit) {
+        this.materialUnit = materialUnit;
+    }
 
-	public String getMaterialQuantity(){
-		return materialQuantity;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setPurchaseRequestId(String purchaseRequestId){
-		this.purchaseRequestId = purchaseRequestId;
-	}
-
-	public String getPurchaseRequestId(){
-		return purchaseRequestId;
-	}
-
-	public void setInTime(String inTime){
-		this.inTime = inTime;
-	}
-
-	public String getInTime(){
-		return inTime;
-	}
-
-	public void setVendor(String vendor){
-		this.vendor = vendor;
-	}
-
-	public String getVendor(){
-		return vendor;
-	}
-
-	public void setVehicleNumber(String vehicleNumber){
-		this.vehicleNumber = vehicleNumber;
-	}
-
-	public String getVehicleNumber(){
-		return vehicleNumber;
-	}
-
-	public void setId(int id){
-		this.id = id;
-	}
-
-	public int getId(){
-		return id;
-	}
-
-	public void setMaterialName(String materialName){
-		this.materialName = materialName;
-	}
-
-	public String getMaterialName(){
-		return materialName;
-	}
-
-	public void setMaterialUnit(String materialUnit){
-		this.materialUnit = materialUnit;
-	}
-
-	public String getMaterialUnit(){
-		return materialUnit;
-	}
-
-	public void setStatus(String status){
-		this.status = status;
-	}
-
-	public String getStatus(){
-		return status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

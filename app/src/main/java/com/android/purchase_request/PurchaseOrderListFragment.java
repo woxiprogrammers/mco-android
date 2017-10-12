@@ -7,8 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -45,29 +47,41 @@ import timber.log.Timber;
  * Created by Rohit.
  */
 public class PurchaseOrderListFragment extends Fragment implements FragmentInterface {
+    private static int purchaseRequestId;
+    private static boolean isFromPurchaseRequest;
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
-    private static int purchaseRequestId;
 
     public PurchaseOrderListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId) {
+    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId, boolean isFrom) {
         Bundle args = new Bundle();
         PurchaseOrderListFragment fragment = new PurchaseOrderListFragment();
         fragment.setArguments(args);
         purchaseRequestId = mPurchaseRequestId;
+        isFromPurchaseRequest = isFrom;
         return fragment;
     }
 
     @Override
     public void fragmentBecameVisible() {
-        Timber.d("fragmentBecameVisible");
+        if (!isFromPurchaseRequest) {
+            if (getUserVisibleHint()) {
+                ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+            }
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -90,6 +104,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         unbinder.unbind();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_approve);
+        item.setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
@@ -98,66 +120,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private void initializeViews() {
         mContext = getActivity();
         functionForGettingData();
-    }
-
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestPrListOnline();
-        } else {
-            //Get data from local DB
-            setUpPrAdapter();
-        }
-    }
-
-    private void requestPrListOnline() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("purchase_request_id", purchaseRequestId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestPrListOnline")
-                .build()
-                .getAsObject(PurchaseOrderResponse.class, new ParsedRequestListener<PurchaseOrderResponse>() {
-                    @Override
-                    public void onResponse(final PurchaseOrderResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    Log.i("@@POREsp", String.valueOf(response));
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    Timber.d("Realm execution successful");
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
-                    }
-                });
     }
 
     private void setUpPrAdapter() {
@@ -192,6 +154,65 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
         }
+    }
+
+    private void functionForGettingData() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            //Get data from Server
+            requestPrListOnline();
+        } else {
+            //Get data from local DB
+            setUpPrAdapter();
+        }
+    }
+
+    private void requestPrListOnline() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("purchase_request_id", purchaseRequestId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("requestPrListOnline")
+                .build()
+                .getAsObject(PurchaseOrderResponse.class, new ParsedRequestListener<PurchaseOrderResponse>() {
+                    @Override
+                    public void onResponse(final PurchaseOrderResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Timber.d("Realm execution successful");
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                    }
+                });
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -238,7 +259,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             TextView textViewPurchaseRequestDate;
             @BindView(R.id.textView_purchase_request_materials)
             TextView textViewPurchaseRequestMaterials;
-
             @BindView(R.id.textview_client_name)
             TextView textviewClientName;
 
