@@ -527,6 +527,11 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("out_time", strOutDate + " " + strOutTime);
             params.put("bill_amount", strBillAmount);
             params.put("images", jsonImageNameArray);
+            if(TextUtils.isEmpty(editext_tapToAddNote.getText().toString())){
+                params.put("remark","");
+            }else {
+                params.put("remark", editext_tapToAddNote.getText().toString());
+            }
             Log.i("##PArams", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -872,6 +877,12 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("payment_slug", spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
             params.put("reference_number", strRefNumber);
             params.put("images", jsonImageNameArray);
+            params.put("remark",editext_tapToAddNote.getText().toString());
+            if(TextUtils.isEmpty(editext_tapToAddNote.getText().toString())){
+                params.put("remark","");
+            }else {
+                params.put("remark", editext_tapToAddNote.getText().toString());
+            }
             Log.i("@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();

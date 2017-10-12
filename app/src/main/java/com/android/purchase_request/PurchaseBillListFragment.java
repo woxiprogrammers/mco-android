@@ -83,6 +83,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_id", intPrimaryKey);
+            params.put("page",0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
