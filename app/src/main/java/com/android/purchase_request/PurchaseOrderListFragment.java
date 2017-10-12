@@ -171,6 +171,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("purchase_request_id", purchaseRequestId);
+            params.put("page",0);
         } catch (JSONException e) {
             e.printStackTrace();
         }

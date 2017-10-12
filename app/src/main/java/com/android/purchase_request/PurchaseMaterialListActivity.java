@@ -281,7 +281,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).findAll();
         List<PurchaseMaterialListItem> purchaseMaterialListItems_Approved = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
-        List<PurchaseMaterialListItem> purchaseMaterialListItems_Current = realm.copyFromRealm(purchaseMaterialListRealmResult_All);
+        List<PurchaseMaterialListItem> purchaseMaterialListItems_All = realm.copyFromRealm(purchaseMaterialListRealmResult_All);
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId = availableUserArray.get(index).getId();
@@ -291,7 +291,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Approved) {
             jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentId());
         }
-        for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Current) {
+        for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_All) {
             currentJonObject = new JSONObject();
             try {
                 currentJonObject.put("name", purchaseMaterialListItem.getItem_name());
@@ -332,6 +332,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        deleteExistingItemEntries();
                         finish();
                     }
 

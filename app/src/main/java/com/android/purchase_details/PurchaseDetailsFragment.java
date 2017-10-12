@@ -17,7 +17,6 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -39,15 +38,13 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class PurchaseDetailsFragment extends Fragment implements FragmentInterface {
-    private static int purchaseRequestId;
-    private static boolean isApproval;
+    private int purchaseRequestId;
+    private boolean isApproval;
     @BindView(R.id.rv_material_list)
     RecyclerView rvItemList;
     Unbinder unbinder;
     private Realm realm;
     private Context mContext;
-    private PurchaseDetailsAdapter purchaseDetailsAdapter;
-    private RealmResults<ItemListItem> itemListItems;
 
     public PurchaseDetailsFragment() {
     }
@@ -55,9 +52,9 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
     public static PurchaseDetailsFragment newInstance(int requestId, boolean isForApproval) {
         Bundle args = new Bundle();
         PurchaseDetailsFragment fragment = new PurchaseDetailsFragment();
+        args.putInt("requestId", requestId);
+        args.putBoolean("isForApproval", isForApproval);
         fragment.setArguments(args);
-        purchaseRequestId = requestId;
-        isApproval = isForApproval;
         return fragment;
     }
 
@@ -72,6 +69,11 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, view);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            purchaseRequestId = bundle.getInt("requestId");
+            isApproval = bundle.getBoolean("isForApproval");
+        }
         initializeViews();
         setAdapterForPurchaseList();
         return view;
@@ -84,13 +86,13 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
 
     private void setAdapterForPurchaseList() {
         realm = Realm.getDefaultInstance();
-        itemListItems = realm.where(ItemListItem.class).findAllAsync();
-        purchaseDetailsAdapter = new PurchaseDetailsAdapter(itemListItems, true, true, Glide.with(mContext));
+        RealmResults<ItemListItem> itemListItems = realm.where(ItemListItem.class).equalTo("id", purchaseRequestId).findAllAsync();
+        PurchaseDetailsAdapter purchaseDetailsAdapter = new PurchaseDetailsAdapter(itemListItems, true, true, Glide.with(mContext));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvItemList.setLayoutManager(linearLayoutManager);
         rvItemList.setAdapter(purchaseDetailsAdapter);
-        rvItemList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvItemList, new RecyclerItemClickListener.OnItemClickListener() {
+        /*rvItemList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvItemList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
             }
@@ -98,7 +100,7 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
             @Override
             public void onLongItemClick(View view, int position) {
             }
-        }));
+        }));*/
         if (itemListItems != null) {
             itemListItems.addChangeListener(new RealmChangeListener<RealmResults<ItemListItem>>() {
                 @Override
@@ -106,7 +108,7 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                 }
             });
         } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseDetailsListFragment");
+            AppUtils.getInstance().showOfflineMessage("PurchaseDetailsFragment");
         }
     }
 
