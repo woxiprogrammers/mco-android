@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -1013,6 +1014,24 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            PurchaseMaterialListItem itemPrInIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).findFirst();
+            if (itemPrInIndent != null) {
+                int primaryKeyInIndent = itemPrInIndent.getPrimaryKey();
+                if (primaryKeyInIndent == purchaseMaterialListItem.getPrimaryKey()) {
+                    holder.mTextViewMaterialNameCreatePR.setTextColor(Color.RED);
+                } else {
+                    holder.mTextViewMaterialNameCreatePR.setTextColor(Color.BLACK);
+                }
+            }
+            PurchaseMaterialListItem itemPrAssigned = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findFirst();
+            if (itemPrAssigned != null) {
+                int primaryKeyPrAssigned = itemPrAssigned.getPrimaryKey();
+                if (primaryKeyPrAssigned == purchaseMaterialListItem.getPrimaryKey()) {
+                    holder.mTextViewMaterialNameCreatePR.setTextColor(Color.GREEN);
+                } else {
+                    holder.mTextViewMaterialNameCreatePR.setTextColor(Color.BLACK);
+                }
+            }
             holder.mTextViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
             holder.mTextViewMaterialQuantityCreatePR.setText(String.valueOf(purchaseMaterialListItem.getItem_quantity()));
             holder.mTextViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit_name());
