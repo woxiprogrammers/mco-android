@@ -42,7 +42,6 @@ import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerViewClickListener;
-import com.android.utils.SectionedRecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -65,9 +64,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
-import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
 import io.realm.OrderedRealmCollectionChangeListener;
@@ -76,6 +73,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import timber.log.Timber;
 
 public class PurchaseMaterialListActivity extends BaseActivity {
@@ -415,6 +413,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         recyclerView_materialList.setAdapter(null);
+        purchaseMaterialListRealmResult_inIndent.removeAllChangeListeners();
         deleteUsedRealmObject();
         if (realm != null) {
             realm.close();
@@ -486,16 +485,15 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         RecyclerViewClickListener recyclerViewClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if (view.getId() == R.id.imageView_delete_added_item) {
+                if (view.getId() == R.id.imageView_deleteMaterial_createPR) {
                     ImageView mImageViewDeleteAddedItem = view.findViewById(R.id.imageView_deleteMaterial_createPR);
-                    int primaryKey = 0;
-                    deleteSelectedItemFromList(primaryKey, mImageViewDeleteAddedItem);
+                    deleteSelectedItemFromList(position, mImageViewDeleteAddedItem);
                 } else {
                     Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
                 }
             }
         };
-        purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class)/*.equalTo("componentStatus", getString(R.string.tag_in_indent))*/.findAll();
+        purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).or().equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAllSortedAsync("componentStatus", Sort.ASCENDING);
         PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResult_inIndent, true, true, recyclerViewClickListener);
         recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
         if (purchaseMaterialListRealmResult_inIndent != null) {
@@ -805,6 +803,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
                     @Override
                     public void onResponse(final UsersWithAclResponse response) {
+                        Timber.i(String.valueOf(response));
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -887,9 +886,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         uploadImages_addItemToLocal();
     }
 
-    private void deleteSelectedItemFromList(final int primaryKey, final ImageView mImageViewDeleteAddedItem) {
+    private void deleteSelectedItemFromList(int position, final ImageView mImageViewDeleteAddedItem) {
         mImageViewDeleteAddedItem.setEnabled(false);
         Toast.makeText(mContext, "Wait, deleting Item.", Toast.LENGTH_SHORT).show();
+        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResult_inIndent.get(position);
+        final int primaryKey = purchaseMaterialListItem.getPrimaryKey();
         realm = Realm.getDefaultInstance();
         try {
             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -916,7 +917,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             }
         }
     }
-
+/*
     @SuppressWarnings("WeakerAccess")
     protected class SectionedPurchaseMaterialRvAdapter extends StatelessSection {
         private String title;
@@ -971,7 +972,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             }
         }
 
-        protected class ItemViewHolder extends RecyclerView.ViewHolder /*implements View.OnClickListener*/ {
+        protected class ItemViewHolder extends RecyclerView.ViewHolder *//*implements View.OnClickListener*//* {
             @BindView(R.id.textView_MaterialName_createPR)
             TextView textViewMaterialNameCreatePR;
             @BindView(R.id.textView_MaterialQuantity_createPR)
@@ -987,7 +988,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 //                imageViewDeleteMaterialCreatePR.setOnClickListener(this);
             }
         }
-    }
+    }*/
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem,
