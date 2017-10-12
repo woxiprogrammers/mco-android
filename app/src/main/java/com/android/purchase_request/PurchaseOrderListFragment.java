@@ -198,7 +198,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     public void onItemClick(View view, final int position) {
                         Timber.d(String.valueOf(purchaseOrderListItems));
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
-                        intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
+                        intent.putExtra("PONumber", purchaseOrderListItems.get(position).getPurchaseOrderFormatId());
                         startActivity(intent);
                     }
 

@@ -50,12 +50,12 @@ import com.vlk.multimager.utils.Params;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -147,16 +147,22 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     @BindView(R.id.radioButtonCreateAmmetment)
     RadioButton radioButton_CreateAmmetment;
+
     @BindView(R.id.textView_capture_image)
     TextView textViewCaptureImage;
+
     @BindView(R.id.textView_pick_image)
     TextView textViewPickImage;
+
     @BindView(R.id.textView_capture_image1)
     TextView textViewCaptureImage1;
+
     @BindView(R.id.textView_pick_image1)
     TextView textViewPickImage1;
+
     @BindView(R.id.linearLayoutFirstImages)
     LinearLayout linearLayoutFirstImages;
+
     @BindView(R.id.linearLayoutSecondImages)
     LinearLayout linearLayoutSecondImages;
 
@@ -168,12 +174,21 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     @BindView(R.id.editText_OutTime)
     EditText editTextOutTime;
+
     @BindView(R.id.button_edit)
     Button buttonEdit;
+
     @BindView(R.id.spinner_paymentMode)
     Spinner spinnerPaymentMode;
+
     @BindView(R.id.linearLayoutPaymentMode)
     LinearLayout linearLayoutPaymentMode;
+
+    @BindView(R.id.editText_refNumber)
+    EditText editTextRefNumber;
+
+    @BindView(R.id.linearLayoutRefNumber)
+    LinearLayout linearLayoutRefNumber;
 
     private RadioButton radioPayButton;
     private Unbinder unbinder;
@@ -184,14 +199,17 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private RealmList<MaterialImagesItem> materialImagesItemRealmList;
     private List<MaterialNamesItem> availableMaterialArray;
     private List<MaterialUnitsItem> unitsArray;
-    PurchaseBillListItem purchaseBIllDetailsItems = new PurchaseBillListItem();
     private List<MaterialImagesItem> materialImagesItemList;
     private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str, strInDate, strOutDate;
+    private String strPayableAmount, strRefNumber;
+    private int submitCondition;
+    private PurchaseBillListItem purchaseBIllDetailsItems;
     private int purchaseOrderComponentId, unitId;
     private ArrayList<File> arrayImageFileList;
     private File currentImageFile;
     private boolean isForImage;
-    private JSONObject jsonImageNameObject = new JSONObject();
+//    private JSONObject jsonImageNameObject = new JSONObject();
+    JSONArray jsonImageNameArray = new JSONArray();
     private int materialReqComId;
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
@@ -260,11 +278,79 @@ public class PayFragment extends Fragment implements FragmentInterface {
         unbinder.unbind();
     }
 
+
     @OnClick(R.id.buttonAction)
     void onClickButtonAction(View view) {
         if (view.getId() == R.id.buttonAction) {
-            validateEntries();
+            if(buttonAction.getText().toString().equalsIgnoreCase("Submit")) {
+                submitCondition=1;
+                validateEntries();
+
+            }else if(buttonAction.getText().toString().equalsIgnoreCase("Pay")){
+                submitCondition=2;
+                validateionForBillPayment();
+
+            }else if(buttonAction.getText().toString().equalsIgnoreCase("Update")){
+                submitCondition=3;
+            }
         }
+    }
+
+    @OnClick(R.id.editText_InTime)
+    public void onViewClicked() {
+        setInOutTime(editTextInTime);
+    }
+
+    @OnClick(R.id.editText_OutTime)
+    public void onViewClickedOutTime() {
+        setInOutTime(editTextOutTime);
+    }
+
+    @OnClick({R.id.textView_capture_image, R.id.textView_pick_image, R.id.textView_capture_image1, R.id.textView_pick_image1})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textView_capture_image:
+                isForImage = true;
+                captureImage();
+                break;
+            case R.id.textView_pick_image:
+                isForImage = true;
+                pickImage();
+                break;
+            case R.id.textView_capture_image1:
+                isForImage = false;
+                captureImage();
+                break;
+            case R.id.textView_pick_image1:
+                isForImage = false;
+                pickImage();
+                break;
+        }
+    }
+
+    @OnClick({R.id.editText_InDate, R.id.editText_OutDate})
+    public void onTimeClicked(View view) {
+        switch (view.getId()) {
+            case R.id.editText_InDate:
+                setInOutDate(editTextInDate);
+                break;
+            case R.id.editText_OutDate:
+                setInOutDate(editTextOutDate);
+                break;
+        }
+    }
+
+    @OnClick(R.id.button_edit)
+    public void onButtonEditClicked() {
+        editTextChallanNumber.setEnabled(true);
+        editTextVehicleNumber.setEnabled(true);
+        editTextInTime.setEnabled(true);
+        editTextOutTime.setEnabled(true);
+        editTextBillAmount.setEnabled(true);
+        edittextQuantity.setEnabled(true);
+        editTextGrnNumber.setEnabled(false);
+        buttonAction.setText("Update");
+
     }
 
     private void validateEntries() {
@@ -359,42 +445,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
             editTextBillAmount.setError(null);
             editTextBillAmount.clearFocus();
         }
-        /*purchaseBIllDetailsItems.setId(1);
-        purchaseBIllDetailsItems.setMaterialName(name);
-        purchaseBIllDetailsItems.setMaterialUnit(strUnit);
-        purchaseBIllDetailsItems.setPurchaseOrderId(strQuantity);
-       *//* purchaseBIllDetailsItems.setChallanNumber(strChallanNumber);
-        purchaseBIllDetailsItems.setVehicleNumber(strVehicleNumber);
-        purchaseBIllDetailsItems.setInTime(strInTime);
-        purchaseBIllDetailsItems.setOutTime(strOutTime);*//*
-        purchaseBIllDetailsItems.setMaterialQuantity(strQuantity);
-        purchaseBIllDetailsItems.setBillAmount(Integer.parseInt(strBillAmount));
-        realm = Realm.getDefaultInstance();
-        try {
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    Timber.d("Execute");
-                    realm.insertOrUpdate(purchaseBIllDetailsItems);
-                }
-            }, new Realm.Transaction.OnSuccess() {
-                @Override
-                public void onSuccess() {
 
-                }
-            }, new Realm.Transaction.OnError() {
-                @Override
-                public void onError(Throwable error) {
-                    AppUtils.getInstance().logRealmExecutionError(error);
-                }
-            });
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }*/
-
-        uploadImages_addItemToLocal();
+        uploadImages_addItemToLocal(submitCondition);
     }
 
     private void requestForPayment() {
@@ -409,8 +461,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
         bill_amount =>500
         images[0] => 17991814444f81f9a8a1a36eb6d3cc1b9bdcd6419c70ac9d01.jpg*/
 
-        JSONArray jsonImageNameArray = new JSONArray();
-        jsonImageNameArray.put(jsonImageNameObject);
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_component_id", purchaseOrderComponentId);
@@ -425,7 +475,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("vehicle_number", strVehicleNumber);
             params.put("in_time", strInDate + " " + strInTime);
             params.put("out_time", strOutDate + " " + strOutTime);
-            params.put("bill_amount", 500);
+            params.put("bill_amount", strBillAmount);
             params.put("images", jsonImageNameArray);
             Log.i("##PArams", String.valueOf(params));
         } catch (JSONException e) {
@@ -599,6 +649,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
         editTextInTime.setText("");
         editTextOutTime.setText("");
         editTextBillAmount.setText("");
+        editTextInDate.setText("");
+        editTextOutDate.setText("");
     }
 
     private void setData(boolean isFromClick) {
@@ -613,6 +665,9 @@ public class PayFragment extends Fragment implements FragmentInterface {
             llAddImage.setVisibility(View.GONE);
             linearLayoutFirstImages.setVisibility(View.GONE);
             linearLayoutSecondImages.setVisibility(View.VISIBLE);
+            buttonEdit.setVisibility(View.VISIBLE);
+            linearLayoutRefNumber.setVisibility(View.VISIBLE);
+
             //Non Editable Fields
             editTextChallanNumber.setEnabled(false);
             editTextVehicleNumber.setEnabled(false);
@@ -624,22 +679,20 @@ public class PayFragment extends Fragment implements FragmentInterface {
             spinner.setEnabled(false);
             realm = Realm.getDefaultInstance();
             linearLayoutPaymentMode.setVisibility(View.VISIBLE);
-
-            PurchaseBillListItem purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("purchaseBillGrn", PayAndBillsActivity.idForBillItem).findFirst();
+             purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("purchaseBillGrn", PayAndBillsActivity.idForBillItem).findFirst();
             if (purchaseBIllDetailsItems != null) {
                 edittextSetNameOfMaterial.setText(purchaseBIllDetailsItems.getMaterialName());
                 edittextSetUnit.setText(purchaseBIllDetailsItems.getMaterialUnit());
                 edittextQuantity.setText(purchaseBIllDetailsItems.getMaterialQuantity());
                 editTextChallanNumber.setText(purchaseBIllDetailsItems.getBillNumber());
                 editTextVehicleNumber.setText(purchaseBIllDetailsItems.getVehicleNumber());
-//                editTextInTime.setText(purchaseBIllDetailsItems.getInTime());
                 editTextOutTime.setText(purchaseBIllDetailsItems.getOutTime());
                 editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
                 editTextGrnNumber.setText(purchaseBIllDetailsItems.getPurchaseBillGrn());
                 editTextOutTime.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "HH:mm:ss", purchaseBIllDetailsItems.getOutTime()));
-                editTextOutDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd",purchaseBIllDetailsItems.getOutTime()));
-                editTextInTime.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "HH:mm:ss",purchaseBIllDetailsItems.getInTime()));
-                editTextInDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd",purchaseBIllDetailsItems.getInTime()));
+                editTextOutDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBIllDetailsItems.getOutTime()));
+                editTextInTime.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "HH:mm:ss", purchaseBIllDetailsItems.getInTime()));
+                editTextInDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBIllDetailsItems.getInTime()));
 
                 buttonAction.setText("Pay");
             }
@@ -655,6 +708,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             llAddImage.setVisibility(View.VISIBLE);
             linearLayoutSecondImages.setVisibility(View.GONE);
             linearLayoutFirstImages.setVisibility(View.VISIBLE);
+            linearLayoutRefNumber.setVisibility(View.VISIBLE);
             //Visible
             editTextChallanNumber.setEnabled(true);
             editTextVehicleNumber.setEnabled(true);
@@ -665,58 +719,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             editTextGrnNumber.setEnabled(false);
             spinner.setEnabled(true);
             linearLayoutPaymentMode.setVisibility(View.GONE);
-        }
-    }
-
-    @OnClick(R.id.editText_InTime)
-    public void onViewClicked() {
-        setInOutTime(editTextInTime);
-    }
-
-    @OnClick(R.id.editText_OutTime)
-    public void onViewClickedOutTime() {
-        setInOutTime(editTextOutTime);
-    }
-
-    private void setInOutTime(final EditText currentEditText) {
-        final Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = mcurrentTime.get(Calendar.MINUTE);
-        final int mileseconds = mcurrentTime.get(Calendar.MILLISECOND);
-        TimePickerDialog mTimePicker;
-
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.MILLISECOND, mileseconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + mileseconds);
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
-
-    @OnClick({R.id.textView_capture_image, R.id.textView_pick_image, R.id.textView_capture_image1, R.id.textView_pick_image1})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textView_capture_image:
-                isForImage = true;
-                captureImage();
-                break;
-            case R.id.textView_pick_image:
-                isForImage = true;
-                pickImage();
-                break;
-            case R.id.textView_capture_image1:
-                isForImage = false;
-                captureImage();
-                break;
-            case R.id.textView_pick_image1:
-                isForImage = false;
-                pickImage();
-                break;
         }
     }
 
@@ -766,7 +768,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
         }
     }
 
-    private void uploadImages_addItemToLocal() {
+    private void uploadImages_addItemToLocal(int checkCondition) {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
             Timber.i("sendImageFile: " + sendImageFile);
@@ -786,11 +788,11 @@ public class PayFragment extends Fragment implements FragmentInterface {
                             arrayImageFileList.remove(0);
                             try {
                                 String fileName = response.getString("filename");
-                                jsonImageNameObject.put("image", fileName);
+                                jsonImageNameArray.put(fileName);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            uploadImages_addItemToLocal();
+                            uploadImages_addItemToLocal(submitCondition);
                         }
 
                         @Override
@@ -799,7 +801,16 @@ public class PayFragment extends Fragment implements FragmentInterface {
                         }
                     });
         } else {
-            requestForPayment();
+            switch (checkCondition){
+                case 1:
+                    requestForPayment();
+                    break;
+                case 2:
+                    requestBillPayment();
+                    break;
+                case 3:
+                    break;
+            }
         }
     }
 
@@ -824,18 +835,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
                     }
                 });
             }
-        }
-    }
-
-    @OnClick({R.id.editText_InDate, R.id.editText_OutDate})
-    public void onTimeClicked(View view) {
-        switch (view.getId()) {
-            case R.id.editText_InDate:
-                setInOutDate(editTextInDate);
-                break;
-            case R.id.editText_OutDate:
-                setInOutDate(editTextOutDate);
-                break;
         }
     }
 
@@ -866,7 +865,132 @@ public class PayFragment extends Fragment implements FragmentInterface {
         editTextUpdateDate.setError(null);
     }
 
-    @OnClick(R.id.button_edit)
-    public void onButtonEditClicked() {
+    private void setInOutTime(final EditText currentEditText) {
+        final Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        final int minute = mcurrentTime.get(Calendar.MINUTE);
+        final int seconds = mcurrentTime.get(Calendar.SECOND);
+        TimePickerDialog mTimePicker;
+
+        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
+                mcurrentTime.set(Calendar.SECOND, seconds);
+                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
+            }
+        }, hour, minute, true);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();
+    }
+
+    private void validateionForBillPayment() {
+
+        //For Payable Amount
+        strPayableAmount=editTextPayableAmount.getText().toString();
+        strRefNumber=editTextRefNumber.getText().toString();
+        if(TextUtils.isEmpty(strPayableAmount)){
+            editTextPayableAmount.setFocusableInTouchMode(true);
+            editTextPayableAmount.requestFocus();
+            editTextPayableAmount.setError(getString(R.string.please_enter) + " " + "Payable Amount");
+            return;
+
+        }else {
+            editTextPayableAmount.setError(null);
+            editTextPayableAmount.clearFocus();
+        }
+
+        //For Ref Number
+        if(TextUtils.isEmpty(strPayableAmount)){
+            editTextRefNumber.setFocusableInTouchMode(true);
+            editTextRefNumber.requestFocus();
+            editTextRefNumber.setError(getString(R.string.please_enter) + " " + "Reference Number");
+            return;
+
+        }else {
+            editTextRefNumber.setError(null);
+            editTextRefNumber.clearFocus();
+        }
+
+        uploadImages_addItemToLocal(submitCondition);
+
+
+    }
+
+    private void requestBillPayment() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("purchase_order_bill_id", purchaseBIllDetailsItems.getPurchaseOrderBillId());
+            params.put("amount", strPayableAmount);
+            params.put("payment_slug", spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
+            params.put("reference_number", strRefNumber);
+            params.put("images", jsonImageNameArray);
+            Log.i("@@Params", String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_PURCHAE_ORDER_BILL_PAYMENT + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestBillTransaction")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            clearData();
+//                            ((PayAndBillsActivity) mContext).moveFragments(true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    private void requestEditBill(){
+        JSONObject params = new JSONObject();
+        try {
+            params.put("purchase_order_bill_id", purchaseBIllDetailsItems.getPurchaseOrderBillId());
+            params.put("amount", strPayableAmount);
+            params.put("payment_slug", spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
+            params.put("reference_number", strRefNumber);
+            params.put("images", jsonImageNameArray);
+            Log.i("@@Params", String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_BILL_EDIT + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestBillTransaction")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            clearData();
+//                            ((PayAndBillsActivity) mContext).moveFragments(true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
 }

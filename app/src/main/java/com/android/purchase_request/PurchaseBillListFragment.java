@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
+            Log.i("Onresume","onresume");
             ActionBar actionBar = ((PurchaseHomeActivity) mContext).getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setTitle(getString(R.string.app_name));
@@ -78,12 +80,15 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
     @Override
     public void fragmentBecameVisible() {
+        requestPrListOnline();
         if(isFromPurchaseRequestHome) {
             if (getUserVisibleHint()) {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(false);
             }
         }
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

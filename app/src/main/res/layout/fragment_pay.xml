@@ -107,7 +107,6 @@
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:digits="0123456789"
-                    android:textColor="@color/black"
                     android:inputType="number"/>
             </LinearLayout>
 
@@ -185,7 +184,6 @@
                 android:id="@+id/editText_Challan_Number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 
@@ -255,7 +253,6 @@
                 android:id="@+id/editText_VehicleNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 
@@ -282,7 +279,6 @@
                     android:id="@+id/editText_InDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:background="@android:drawable/editbox_background_normal"
                     android:focusable="false"/>
             </LinearLayout>
@@ -304,7 +300,6 @@
                     android:id="@+id/editText_InTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:background="@android:drawable/editbox_background_normal"
                     android:focusable="false"/>
 
@@ -336,7 +331,6 @@
                     android:id="@+id/editText_OutDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:background="@android:drawable/editbox_background_normal"
                     android:focusable="false"/>
             </LinearLayout>
@@ -358,7 +352,6 @@
                     android:id="@+id/editText_OutTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:background="@android:drawable/editbox_background_normal"
                     android:focusable="false"/>
 
@@ -408,7 +401,6 @@
                 android:id="@+id/editText_BillAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 
@@ -431,33 +423,8 @@
                 android:id="@+id/editText_grnNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_PayableAmount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_3dp"
-                android:text="Payable Amount:"
-                android:textColor="@color/colorTextLight"/>
-
-            <EditText
-                android:id="@+id/editText_PayableAmount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:background="@android:drawable/editbox_background_normal"/>
-        </LinearLayout>
-
         <LinearLayout
             android:id="@+id/linearLayoutPaymentMode"
             android:layout_width="match_parent"
@@ -485,6 +452,51 @@
                     android:entries="@array/payment_mode_array"/>
             </FrameLayout>
 
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_PayableAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Payable Amount:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_PayableAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:background="@android:drawable/editbox_background_normal"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutRefNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Reference Number:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_refNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 
         <LinearLayout
@@ -534,7 +546,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
             </LinearLayout>
 
         </HorizontalScrollView>
@@ -562,6 +574,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginBottom="@dimen/dimen_5dp"
-            android:text="Pay"/>
+            android:text="Submit"
+            android:visibility="visible"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
