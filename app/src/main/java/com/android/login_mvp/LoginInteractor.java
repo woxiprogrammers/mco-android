@@ -25,11 +25,11 @@ class LoginInteractor implements LoginInteractorInterface {
     public void login(String username, String password, final onLoginFinishedListener listener) {
         if (TextUtils.isEmpty(username))
             listener.onUserNameEmptyError("Mobile Number is Empty");
-        else if (username.length() < 10 && !BuildConfig.DEBUG)
+        else if (username.length() < 10 /*&& !BuildConfig.DEBUG*/)
             listener.onUserNameValidationError("Invalid Mobile Number");
         else if (TextUtils.isEmpty(password))
             listener.onPasswordEmptyError("Password Empty");
-        else if (password.length() < 6 && !BuildConfig.DEBUG)
+        else if (password.length() < 6 /*&& !BuildConfig.DEBUG*/)
             listener.onPasswordValidationError("Password should range between 6–20 chars");
         else requestLoginAPI(listener, username, password);
     }
