@@ -17,7 +17,6 @@ public class PurchaseBillListItem extends RealmObject{
 
 
 	@SerializedName("purchase_order_id")
-
 	private String purchaseOrderId;
 
 	@SerializedName("purchase_order_format_id")

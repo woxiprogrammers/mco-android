@@ -38,5 +38,5 @@ public class AppURL {
 
     public static final String API_PURCHASE_ORDER_BILL_TRANSACTION=BASE_URL + "purchase/purchase-order/bill-transaction?token=";
     public static final String API_PURCHAE_ORDER_BILL_PAYMENT=BASE_URL + "purchase/purchase-order/bill-payment?token=";
-    public static final String API_PURCHASE_ORDER_BILL_EDIT="purchase/purchase-order/edit-bill-transaction?token=";
+    public static final String API_PURCHASE_ORDER_BILL_EDIT=BASE_URL + "purchase/purchase-order/edit-bill-transaction?token=";
 }

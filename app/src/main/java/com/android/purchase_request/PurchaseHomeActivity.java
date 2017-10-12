@@ -26,7 +26,6 @@ import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class PurchaseHomeActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
     @BindView(R.id.tavLayout)
@@ -168,7 +167,7 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
                 case 1:
                     return PurchaseOrderListFragment.newInstance(0,false);
                 case 2:
-                    return PurchaseBillListFragment.newInstance(true);
+                    return PurchaseBillListFragment.newInstance(true, 1);
                 default:
                     return null;
             }

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.purchase_order.PurchaseOrderListItem;
 import com.android.purchase_request.PurchaseBillListFragment;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class PayAndBillsActivity extends BaseActivity {
@@ -33,6 +35,8 @@ public class PayAndBillsActivity extends BaseActivity {
     MenuItem prevMenuItem;
     public static boolean isForViewOnly;
     public static String idForBillItem;
+    private Realm realm;
+    private int primaryKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +63,17 @@ public class PayAndBillsActivity extends BaseActivity {
 
     private void initializeViews() {
         Intent intent = getIntent();
-        String titlePoName = null;
+        primaryKey=0;
+        String title="";
         if (intent != null) {
-            titlePoName = intent.getStringExtra("PONumber");
+            primaryKey = intent.getIntExtra("PONumber",-1);
+            realm=Realm.getDefaultInstance();
+            PurchaseOrderListItem purchaseOrderListItem=   realm.where(PurchaseOrderListItem.class).equalTo("id",primaryKey).findFirst();
+            title=purchaseOrderListItem.getPurchaseOrderFormatId();
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(titlePoName);
+            getSupportActionBar().setTitle(title);
         }
         callMaterialFragment();
         bottomNavigationPay.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -127,7 +135,7 @@ public class PayAndBillsActivity extends BaseActivity {
                 case 0:
                     return PayFragment.newInstance();
                 case 1:
-                    return PurchaseBillListFragment.newInstance(false);
+                    return PurchaseBillListFragment.newInstance(false,primaryKey);
                 default:
                     return null;
             }

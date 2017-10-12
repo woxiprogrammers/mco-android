@@ -52,17 +52,21 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseBillListItem> purchaseBillListItems;
-    private static boolean isFromPurchaseRequestHome;
+    private  boolean isFromPurchaseRequestHome;
+    private int intPrimaryKey;
 
     public PurchaseBillListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseBillListFragment newInstance(boolean isFromPurchaseHome) {
+    public static PurchaseBillListFragment newInstance(boolean isFromPurchaseHome, int primaryKey) {
         Bundle args = new Bundle();
         PurchaseBillListFragment fragment = new PurchaseBillListFragment();
+        args.putInt("primaryKey",primaryKey);
+        args.putBoolean("isFromPurchaseHome",isFromPurchaseHome);
         fragment.setArguments(args);
-        isFromPurchaseRequestHome=isFromPurchaseHome;
+//        isFromPurchaseRequestHome=isFromPurchaseHome;
+//        intPrimaryKey=primaryKey;
         return fragment;
     }
 
@@ -70,7 +74,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
-            Log.i("Onresume","onresume");
             ActionBar actionBar = ((PurchaseHomeActivity) mContext).getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setTitle(getString(R.string.app_name));
@@ -95,6 +98,11 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         //Initialize Views
+        Bundle bundle=getArguments();
+        if(bundle != null) {
+            intPrimaryKey = bundle.getInt("primaryKey");
+            isFromPurchaseRequestHome=bundle.getBoolean("isFromPurchaseHome");
+        }
         initializeViews();
         setUpPrAdapter();
         return mParentView;
@@ -121,6 +129,8 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         functionForGettingData();
 
 
+
+
     }
 
     private void functionForGettingData() {
@@ -136,7 +146,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private void requestPrListOnline() {
         JSONObject params=new JSONObject();
         try {
-            params.put("purchase_order_id",1);
+            params.put("purchase_order_id",intPrimaryKey);
         } catch (JSONException e) {
             e.printStackTrace();
         }

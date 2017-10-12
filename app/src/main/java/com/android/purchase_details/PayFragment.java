@@ -292,6 +292,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
             }else if(buttonAction.getText().toString().equalsIgnoreCase("Update")){
                 submitCondition=3;
+                validateEntries();
             }
         }
     }
@@ -349,8 +350,13 @@ public class PayFragment extends Fragment implements FragmentInterface {
         editTextBillAmount.setEnabled(true);
         edittextQuantity.setEnabled(true);
         editTextGrnNumber.setEnabled(false);
+        editTextInDate.setEnabled(true);
+        editTextOutDate.setEnabled(true);
         buttonAction.setText("Update");
-
+        linearLayoutPaymentMode.setVisibility(View.GONE);
+        llPayableAmount.setVisibility(View.GONE);
+        linearLayoutRefNumber.setVisibility(View.GONE);
+        linearLayoutSecondImages.setVisibility(View.GONE);
     }
 
     private void validateEntries() {
@@ -677,6 +683,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
             edittextQuantity.setEnabled(false);
             editTextGrnNumber.setEnabled(false);
             spinner.setEnabled(false);
+            editTextInDate.setEnabled(false);
+            editTextOutDate.setEnabled(false);
             realm = Realm.getDefaultInstance();
             linearLayoutPaymentMode.setVisibility(View.VISIBLE);
              purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("purchaseBillGrn", PayAndBillsActivity.idForBillItem).findFirst();
@@ -809,6 +817,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
                     requestBillPayment();
                     break;
                 case 3:
+                    requestEditBill();
                     break;
             }
         }
@@ -943,7 +952,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             clearData();
-//                            ((PayAndBillsActivity) mContext).moveFragments(true);
+                            ((PayAndBillsActivity) mContext).moveFragments(true);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -960,10 +969,14 @@ public class PayFragment extends Fragment implements FragmentInterface {
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_bill_id", purchaseBIllDetailsItems.getPurchaseOrderBillId());
-            params.put("amount", strPayableAmount);
-            params.put("payment_slug", spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
-            params.put("reference_number", strRefNumber);
-            params.put("images", jsonImageNameArray);
+            params.put("quantity", edittextQuantity.getText().toString());
+            params.put("unit_id", unitId);
+            params.put("bill_number", editTextChallanNumber.getText().toString());
+            params.put("vehicle_number", editTextVehicleNumber.getText().toString());
+            params.put("in_time",editTextInDate.getText().toString() + " " + editTextInTime.getText().toString());
+            params.put("out_time",editTextOutDate.getText().toString() + " " + editTextOutTime.getText().toString());
+            params.put("bill_amount",editTextBillAmount.getText().toString());
+//            params.put("images","");
             Log.i("@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -981,7 +994,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             clearData();
-//                            ((PayAndBillsActivity) mContext).moveFragments(true);
+                            ((PayAndBillsActivity) mContext).moveFragments(true);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
