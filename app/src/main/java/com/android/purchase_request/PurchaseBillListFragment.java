@@ -196,8 +196,8 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                         if(!isFromPurchaseRequestHome) {
                             ((PayAndBillsActivity) mContext).moveFragments(false);
                         }
-                        Intent intent=new Intent(mContext,PayAndBillsActivity.class);
-                        startActivity(intent);
+                        /*Intent intent=new Intent(mContext,PayAndBillsActivity.class);
+                        startActivity(intent);*/
                     }
 
                     @Override
