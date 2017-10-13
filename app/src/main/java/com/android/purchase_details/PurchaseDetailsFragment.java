@@ -86,7 +86,7 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
 
     private void setAdapterForPurchaseList() {
         realm = Realm.getDefaultInstance();
-        RealmResults<ItemListItem> itemListItems = realm.where(ItemListItem.class).equalTo("id", purchaseRequestId).findAllAsync();
+        RealmResults<ItemListItem> itemListItems = realm.where(ItemListItem.class).equalTo("purchaseRequestId", purchaseRequestId).findAllAsync();
         PurchaseDetailsAdapter purchaseDetailsAdapter = new PurchaseDetailsAdapter(itemListItems, true, true, Glide.with(mContext));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

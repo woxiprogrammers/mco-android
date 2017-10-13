@@ -7,22 +7,19 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class ItemListItem extends RealmObject {
-
-
-
-	/*"material_request_component_id": 42,
+    /*"material_request_component_id": 42,
             "material_request_component_format_id": "MRM21710071",
-			"material_request_id": 23,
-			"material_request_format": "MR21710071",
-			"name": "AGGREGATE 10 MM",
-			"quantity": "1",
-			"unit_id": 2,
-			"unit_name": "BRASS(AGGREGATE)",
+            "material_request_id": 23,
+            "material_request_format": "MR21710071",
+            "name": "AGGREGATE 10 MM",
+            "quantity": "1",
+            "unit_id": 2,
+            "unit_name": "BRASS(AGGREGATE)",
 
-			"list_of_images": [
-	{
-		"image_url": null
-	}*/
+            "list_of_images": [
+    {
+        "image_url": null
+    }*/
     @SerializedName("material_request_component_format_id")
     private String materialRequestComponentFormatId;
     @SerializedName("material_request_id")
@@ -42,13 +39,15 @@ public class ItemListItem extends RealmObject {
     private int id;
     @SerializedName("quantity")
     private float itemQuantity;
+    @SerializedName("purchase_request_id")
+    private int purchaseRequestId;
 
     public int getPurchaseRequestId() {
-        return unitId;
+        return purchaseRequestId;
     }
 
     public void setPurchaseRequestId(int purchaseRequestId) {
-        this.unitId = purchaseRequestId;
+        this.purchaseRequestId = purchaseRequestId;
     }
 
     public String getItemUnit() {

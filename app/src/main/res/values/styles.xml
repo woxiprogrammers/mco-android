@@ -7,10 +7,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textViewStyle">@style/MyTextViewStyle</item>
         <item name="android:editTextStyle">@style/MyEditTextStyle</item>
-        <!--<item name="android:buttonStyle">@style/MyButtonStyle</item>-->
-<!--
-        <item name="android:alertDialogStyle">@style/MyAlertButtonStyle</item>
--->
+        <item name="android:buttonStyle">@style/MyButtonStyle</item>
+        <!--<item name="alertDialogTheme">@style/MyDialogTheme</item>-->
+        <!--<item name="dialogTheme">@style/AppDialogTheme</item>-->
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
@@ -52,6 +51,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+
     <style name="MyAlertButtonStyle" parent="AlertDialog.AppCompat">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/colorAccentDark</item>
@@ -95,6 +95,36 @@
         <item name="android:shadowRadius">25</item>
         <item name="android:shadowColor">@android:color/black</item>
     </style>
+
+    <!--<style name="AppDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        &lt;!&ndash; Define color properties as desired &ndash;&gt;
+        <item name="colorPrimary">@color/dark_blue</item>
+        <item name="colorPrimaryDark">#000</item>
+        <item name="android:textColorHighlight">@color/light_blue</item>
+        <item name="colorAccent">@color/dark_blue</item>
+        <item name="colorControlNormal">@color/dark_blue</item>
+        &lt;!&ndash; Define window properties as desired &ndash;&gt;
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@color/medium_green</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+    &lt;!&ndash; Define your custom alert theme here extending from base &ndash;&gt;
+    <style name="AppAlertTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/dark_blue</item>
+        <item name="colorAccent">@color/dark_blue</item>
+        <item name="colorPrimaryDark">#000</item>
+        <item name="colorControlNormal">@color/dark_blue</item>
+        <item name="android:textColorHighlight">@color/light_blue</item>
+    </style>-->
+
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@drawable/selectable_button_background_red</item>
+        <item name="colorAccent">@android:color/white</item>
+        <item name="android:textColor">@color/colorTextDark_Black</item>
+    </style>
+
     /////////////////////////////////////////////////
 
     <style name="style_edit_text">
