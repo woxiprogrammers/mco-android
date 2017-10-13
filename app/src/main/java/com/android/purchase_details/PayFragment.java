@@ -923,6 +923,11 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("in_time", editTextInDate.getText().toString() + " " + editTextInTime.getText().toString());
             params.put("out_time", editTextOutDate.getText().toString() + " " + editTextOutTime.getText().toString());
             params.put("bill_amount", editTextBillAmount.getText().toString());
+            if(editext_tapToAddNote.getText().toString() != null) {
+                params.put("remark", editext_tapToAddNote.getText().toString());
+            }else {
+                params.put("remark","");
+            }
 //            params.put("images","");
             Log.i("@@Params", String.valueOf(params));
         } catch (JSONException e) {
