@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:gravity="center_horizontal"
-            android:text="Dialog Title"
+            android:text="Approve Item"
             android:textSize="@dimen/text_20sp"/>
 
         <Button
@@ -26,6 +26,7 @@
             android:layout_gravity="right"
             android:layout_marginBottom="8dp"
             android:text="Edit"
+            android:visibility="gone"
             android:textSize="@dimen/text_16sp"/>
 
         <LinearLayout
