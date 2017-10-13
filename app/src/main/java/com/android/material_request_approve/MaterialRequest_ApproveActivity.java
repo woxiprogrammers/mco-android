@@ -122,11 +122,12 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isApprove, isMoveIndent, isNewItem;
-    EditText editText_name_material_asset,editText_quantity_material_asset,edittext_unit;
-    private Button button_for_edit,button_approve,button_dismiss;
+    EditText editText_name_material_asset, editText_quantity_material_asset, edittext_unit;
+    private Button button_for_edit, button_approve, button_dismiss;
     private Spinner spinner_select_units;
     private float allowedQuantity;
     private PurchaseMaterialListItem purchaseMaterialListItem;
+    private AlertDialog alert_Dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -813,14 +814,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     private ArrayAdapter<String> setSpinnerUnits(RealmList<UnitQuantityItem> unitQuantityItems) {
         List<UnitQuantityItem> arrUnitQuantityItems = null;
-        if(unitQuantityItems != null){
-            try {
-                arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
-            } catch (Exception e) {
-                arrUnitQuantityItems = unitQuantityItems;
-            }
-        }else {
-//            arrUnitQuantityItems;
+        try {
+            arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
+        } catch (Exception e) {
+            arrUnitQuantityItems = unitQuantityItems;
         }
 
         ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
@@ -1067,7 +1064,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         @Override
         public long getItemId(int index) {
             return arrPurchaseMaterialListItems.get(index).getPrimaryKey();
-        }        @Override
+        }
+
+        @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.mTextViewAddedItemName.setText(purchaseMaterialListItem.getItem_name());
@@ -1096,7 +1095,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         public int getItemCount() {
             return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
         }
-
 
     }
 
@@ -1147,8 +1145,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 switch (view.getId()) {
                     case R.id.iv_approve:
                         isApprove = true;
-                        openDialog();
-//                        approveMaterial(3, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.iv_disapprove:
                         isApprove = false;
@@ -1161,6 +1158,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
             }
         }
+
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_request_material, parent, false);
@@ -1169,7 +1167,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-             purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
             setTime(purchaseMaterialListItem.getCreatedAt(), holder.textViewDate);
             holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
@@ -1204,8 +1202,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
         }
 
-
-
         private void setTime(String strParse, TextView textView) {
             final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             Date dateObj;
@@ -1220,20 +1216,20 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             textView.setText(newDateStr);
         }
 
-
     }
 
-    private void openDialog(){
+    private void openDialog(final int position, final OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
+                            final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_material_approve_status, null);
         alertDialogBuilder.setView(dialogView);
-        editText_name_material_asset=dialogView.findViewById(R.id.editText_name_material_asset);
-        editText_quantity_material_asset=dialogView.findViewById(R.id.editText_quantity_material_asset);
-        edittext_unit=dialogView.findViewById(R.id.edittext_unit);
-        spinner_select_units=dialogView.findViewById(R.id.spinner_select_units);
-        button_approve=dialogView.findViewById(R.id.button_approve);
-        button_dismiss=dialogView.findViewById(R.id.button_dismiss);
-        button_for_edit=dialogView.findViewById(R.id.button_for_edit);
+        editText_name_material_asset = dialogView.findViewById(R.id.editText_name_material_asset);
+        editText_quantity_material_asset = dialogView.findViewById(R.id.editText_quantity_material_asset);
+        edittext_unit = dialogView.findViewById(R.id.edittext_unit);
+        spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
+        button_approve = dialogView.findViewById(R.id.button_approve);
+        button_dismiss = dialogView.findViewById(R.id.button_dismiss);
+        button_for_edit = dialogView.findViewById(R.id.button_for_edit);
         editText_name_material_asset.setText(purchaseMaterialListItem.getItem_name());
         editText_name_material_asset.setEnabled(false);
         editText_quantity_material_asset.setText("" + purchaseMaterialListItem.getItem_quantity());
@@ -1241,16 +1237,23 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         edittext_unit.setText(purchaseMaterialListItem.getItem_unit_name());
         edittext_unit.setEnabled(false);
 
+        alert_Dialog = alertDialogBuilder.create();
         button_approve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                approveMaterial(3, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                if (alert_Dialog != null) {
+                    alert_Dialog.dismiss();
+                }
 
             }
         });
         button_dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (alert_Dialog != null) {
+                    alert_Dialog.dismiss();
+                }
             }
         });
         button_for_edit.setOnClickListener(new View.OnClickListener() {
@@ -1262,15 +1265,15 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 //                checkAvailabiltiy();
             }
         });
-        alertDialogBuilder.show();
-
+        alert_Dialog.show();
 
     }
-    private void checkAvailabiltiy(){
-        JSONObject params=new JSONObject();
+
+    private void checkAvailabiltiy() {
+        JSONObject params = new JSONObject();
         try {
-            params.put("material_request_component_id",purchaseMaterialListItem.getMaterialRequestComponentId());
-            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
+            params.put("material_request_component_id", purchaseMaterialListItem.getMaterialRequestComponentId());
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1285,8 +1288,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            allowedQuantity= (float) response.get("allowed_quantity");
-                            Log.i("@@Q", String.valueOf(allowedQuantity));
+                            allowedQuantity = (float) response.get("allowed_quantity");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
