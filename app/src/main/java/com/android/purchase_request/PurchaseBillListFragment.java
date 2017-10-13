@@ -1,12 +1,14 @@
 package com.android.purchase_request;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +81,22 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         }
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        unbinder = ButterKnife.bind(this, mParentView);
+        //Initialize Views
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            intPrimaryKey = bundle.getInt("primaryKey");
+            isFromPurchaseRequestHome = bundle.getBoolean("isFromPurchaseHome");
+        }
+        initializeViews();
+        setUpPrAdapter();
+        Log.i("@@", String.valueOf(isFromPurchaseRequestHome));
+        return mParentView;
+    }
+
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
@@ -130,21 +148,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
-        unbinder = ButterKnife.bind(this, mParentView);
-        //Initialize Views
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            intPrimaryKey = bundle.getInt("primaryKey");
-            isFromPurchaseRequestHome = bundle.getBoolean("isFromPurchaseHome");
-        }
-        initializeViews();
-        setUpPrAdapter();
-        return mParentView;
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
@@ -190,7 +193,11 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     public void onItemClick(View view, final int position) {
                         PayAndBillsActivity.isForViewOnly = true;
                         PayAndBillsActivity.idForBillItem = purchaseBillListItems.get(position).getPurchaseBillGrn();
-                        ((PayAndBillsActivity) mContext).moveFragments(false);
+                        if(!isFromPurchaseRequestHome) {
+                            ((PayAndBillsActivity) mContext).moveFragments(false);
+                        }
+                        Intent intent=new Intent(mContext,PayAndBillsActivity.class);
+                        startActivity(intent);
                     }
 
                     @Override

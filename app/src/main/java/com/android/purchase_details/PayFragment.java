@@ -527,9 +527,9 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("out_time", strOutDate + " " + strOutTime);
             params.put("bill_amount", strBillAmount);
             params.put("images", jsonImageNameArray);
-            if(TextUtils.isEmpty(editext_tapToAddNote.getText().toString())){
-                params.put("remark","");
-            }else {
+            if (TextUtils.isEmpty(editext_tapToAddNote.getText().toString())) {
+                params.put("remark", "");
+            } else {
                 params.put("remark", editext_tapToAddNote.getText().toString());
             }
             Log.i("##PArams", String.valueOf(params));
@@ -877,9 +877,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("payment_slug", spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
             params.put("reference_number", strRefNumber);
             params.put("images", jsonImageNameArray);
-            if(TextUtils.isEmpty(editext_tapToAddNote.getText().toString())){
-                params.put("remark","");
-            }else {
+            params.put("remark", editext_tapToAddNote.getText().toString());
+            if (TextUtils.isEmpty(editext_tapToAddNote.getText().toString())) {
+                params.put("remark", "");
+            } else {
                 params.put("remark", editext_tapToAddNote.getText().toString());
             }
             Log.i("@@Params", String.valueOf(params));
@@ -912,7 +913,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
     }
 
     private void requestEditBill() {
-
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_bill_id", purchaseBIllDetailsItems.getPurchaseOrderBillId());
@@ -923,12 +923,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("in_time", editTextInDate.getText().toString() + " " + editTextInTime.getText().toString());
             params.put("out_time", editTextOutDate.getText().toString() + " " + editTextOutTime.getText().toString());
             params.put("bill_amount", editTextBillAmount.getText().toString());
-            /*if(TextUtils.isEmpty(editext_tapToAddNote.getText().toString())){
-                params.put("remark","");
-            }else {
-                params.put("remark", editext_tapToAddNote.getText().toString());
-            }*/
-//            params.put("images","");
+            params.put("remark", editext_tapToAddNote.getText().toString() + "");
+            //            params.put("images","");
             Log.i("@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
