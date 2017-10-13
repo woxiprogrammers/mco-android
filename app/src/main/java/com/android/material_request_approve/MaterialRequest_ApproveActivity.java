@@ -12,7 +12,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -819,7 +818,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         } catch (Exception e) {
             arrUnitQuantityItems = unitQuantityItems;
         }
-
         ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
         for (UnitQuantityItem quantityItem : arrUnitQuantityItems) {
             String unitName = quantityItem.getUnitName();
@@ -925,7 +923,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             mEditTextQuantityMaterialAsset.setError(null);
             mEditTextQuantityMaterialAsset.clearFocus();
         }
-        floatItemQuantity = Long.parseLong(strQuantity);
+        floatItemQuantity = Float.parseFloat(strQuantity);
         strUnitName = "";
         unitId = 0;
         if (isMaterial && !isNewItem) {
@@ -1095,7 +1093,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         public int getItemCount() {
             return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
         }
-
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -1215,7 +1212,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             }
             textView.setText(newDateStr);
         }
-
     }
 
     private void openDialog(final int position, final OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
@@ -1236,7 +1232,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         editText_quantity_material_asset.setEnabled(false);
         edittext_unit.setText(purchaseMaterialListItem.getItem_unit_name());
         edittext_unit.setEnabled(false);
-
         alert_Dialog = alertDialogBuilder.create();
         button_approve.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1245,7 +1240,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 if (alert_Dialog != null) {
                     alert_Dialog.dismiss();
                 }
-
             }
         });
         button_dismiss.setOnClickListener(new View.OnClickListener() {
@@ -1266,7 +1260,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             }
         });
         alert_Dialog.show();
-
     }
 
     private void checkAvailabiltiy() {
@@ -1274,7 +1267,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         try {
             params.put("material_request_component_id", purchaseMaterialListItem.getMaterialRequestComponentId());
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
