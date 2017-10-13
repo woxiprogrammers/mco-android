@@ -107,6 +107,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
         MenuItem item = menu.findItem(R.id.action_approve);
         item.setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
@@ -125,7 +126,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).findAllAsync();
+        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).findAllAsync();
         PurchaseOrderRvAdapter purchaseOrderRvAdapter = new PurchaseOrderRvAdapter(purchaseOrderListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);

@@ -6,8 +6,6 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class PurchaseOrderListItem extends RealmObject {
-
-
     /*
         "data": {
         "purchase_order_list": [
@@ -30,7 +28,7 @@ public class PurchaseOrderListItem extends RealmObject {
     @SerializedName("purchase_order_format_id")
     private String purchaseOrderFormatId;
     @SerializedName("purchase_request_id")
-    private String purchaseRequestId;
+    private int purchaseRequestId;
     @SerializedName("purchase_request_format_id")
     private String purchaseRequestFormatId;
     @SerializedName("vendor_id")
@@ -56,11 +54,11 @@ public class PurchaseOrderListItem extends RealmObject {
         this.date = date;
     }
 
-    public String getPurchaseRequestId() {
+    public int getPurchaseRequestId() {
         return purchaseRequestId;
     }
 
-    public void setPurchaseRequestId(String purchaseRequestId) {
+    public void setPurchaseRequestId(int purchaseRequestId) {
         this.purchaseRequestId = purchaseRequestId;
     }
 

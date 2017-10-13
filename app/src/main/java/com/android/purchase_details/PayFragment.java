@@ -197,6 +197,15 @@ public class PayFragment extends Fragment implements FragmentInterface {
 
     private void setData(boolean isFromClick) {
         if (isFromClick) {
+            realm = Realm.getDefaultInstance();
+            PurchaseBillListItem purchaseBillListItem = realm.where(PurchaseBillListItem.class).equalTo("purchaseBillGrn", PayAndBillsActivity.idForBillItem).findFirst();
+            if (purchaseBillListItem.getStatus().equalsIgnoreCase("bill paid")) {
+                buttonEdit.setVisibility(View.GONE);
+                buttonAction.setVisibility(View.GONE);
+            } else {
+                buttonAction.setVisibility(View.VISIBLE);
+                buttonEdit.setVisibility(View.VISIBLE);
+            }
             llgrnNumber.setVisibility(View.VISIBLE);
             llPayableAmount.setVisibility(View.VISIBLE);
             llMaterialName.setVisibility(View.VISIBLE);
@@ -207,7 +216,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             llAddImage.setVisibility(View.GONE);
             linearLayoutFirstImages.setVisibility(View.GONE);
             linearLayoutSecondImages.setVisibility(View.VISIBLE);
-            buttonEdit.setVisibility(View.VISIBLE);
             linearLayoutRefNumber.setVisibility(View.VISIBLE);
             //Non Editable Fields
             editTextChallanNumber.setEnabled(false);
@@ -223,6 +231,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             realm = Realm.getDefaultInstance();
             linearLayoutPaymentMode.setVisibility(View.VISIBLE);
             purchaseBIllDetailsItems = realm.where(PurchaseBillListItem.class).equalTo("purchaseBillGrn", PayAndBillsActivity.idForBillItem).findFirst();
+            editTextPayableAmount.setText(purchaseBIllDetailsItems.getBillAmount());
             if (purchaseBIllDetailsItems != null) {
                 edittextSetNameOfMaterial.setText(purchaseBIllDetailsItems.getMaterialName());
                 edittextSetUnit.setText(purchaseBIllDetailsItems.getMaterialUnit());
@@ -250,7 +259,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
             llAddImage.setVisibility(View.VISIBLE);
             linearLayoutSecondImages.setVisibility(View.GONE);
             linearLayoutFirstImages.setVisibility(View.VISIBLE);
-            linearLayoutRefNumber.setVisibility(View.VISIBLE);
+            linearLayoutRefNumber.setVisibility(View.GONE);
             //Visible
             editTextChallanNumber.setEnabled(true);
             editTextVehicleNumber.setEnabled(true);

@@ -850,7 +850,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             mEditTextQuantityMaterialAsset.setError(null);
             mEditTextQuantityMaterialAsset.clearFocus();
         }
-        floatItemQuantity = Long.parseLong(strQuantity);
+        floatItemQuantity = Float.parseFloat(strQuantity);
         strUnitName = "";
         unitId = 0;
         if (isMaterial && !isNewItem) {
