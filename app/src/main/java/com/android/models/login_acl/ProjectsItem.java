@@ -8,7 +8,7 @@ public class ProjectsItem extends RealmObject {
     @SerializedName("project_site_id")
     private int id;
     @SerializedName("project_site_name")
-    private String projectName;
+    private String projectSiteName;
     @SerializedName("project_id")
     private int project_id;
     @SerializedName("project_name")
@@ -24,20 +24,12 @@ public class ProjectsItem extends RealmObject {
         this.id = id;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getProjectSiteName() {
+        return projectSiteName;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public int getProject_id() {
-        return project_id;
-    }
-
-    public void setProject_id(int project_id) {
-        this.project_id = project_id;
+    public void setProjectSiteName(String projectSiteName) {
+        this.projectSiteName = projectSiteName;
     }
 
     public String getProject_name() {
@@ -46,6 +38,14 @@ public class ProjectsItem extends RealmObject {
 
     public void setProject_name(String project_name) {
         this.project_name = project_name;
+    }
+
+    public int getProject_id() {
+        return project_id;
+    }
+
+    public void setProject_id(int project_id) {
+        this.project_id = project_id;
     }
 
     public String getClient_company_name() {

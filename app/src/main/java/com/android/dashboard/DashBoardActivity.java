@@ -50,8 +50,8 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class DashBoardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
-    @BindView(R.id.builderName)
-    TextView projectSiteName;
+    @BindView(R.id.clientName)
+    TextView mTextViewClientName;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.collapsing_toolbar)
@@ -64,14 +64,15 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     NavigationView navView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.projectName)
+    TextView mProjectName;
     private Context mContext;
-    private RecyclerView mRvTaskSelection;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     private Realm realm;
     private Spinner projectSpinner;
     private TextView userName;
+    private String strProjectName = "";
     private RealmResults<ProjectsItem> projectsItemRealmResults;
-    private List<ProjectsItem> projectsItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,16 +84,13 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             RealmBrowser.showRealmFilesNotification(getApplicationContext());
         }
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setTitle("");
-//        setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navView.setNavigationItemSelectedListener(this);
         //Calling function to initialize required views.
         initializeViews();
-        getSiteName();
-        setSpinnerListener();
+        setUpDrawerData();
     }
 
     @Override
@@ -110,7 +108,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
      */
     private void initializeViews() {
         mContext = DashBoardActivity.this;
-        mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
+        RecyclerView mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
         View headerLayout = navView.inflateHeaderView(R.layout.nav_header_dash_board);
         projectSpinner = headerLayout.findViewById(R.id.project_spinner);
         userName = headerLayout.findViewById(R.id.userName);
@@ -125,21 +123,37 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             public void onItemClick(View itemView, int modulePosition) {
                 int subModuleIndex = itemView.getId();
                 SubModulesItem subModulesItem = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules().get(subModuleIndex);
-                /*if (BuildConfig.DEBUG) {
-                    String strSubModuleTag = subModulesItem.getSubModuleTag();
-                    Toast.makeText(mContext, "Hi: " + strSubModuleTag + " : " + modulePosition + " - " + subModuleIndex, Toast.LENGTH_SHORT).show();
-                }*/
                 startCorrespondingAclActivity(subModulesItem);
             }
         });
+    }
+
+    private void setUpDrawerData() {
+        realm = Realm.getDefaultInstance();
+        LoginResponseData loginResponseData = realm.where(LoginResponseData.class).findFirst();
+        userName.setText(loginResponseData.getFirstName() + " " + loginResponseData.getLastName());
+        projectsItemRealmResults = realm.where(ProjectsItem.class).findAll();
+        setUpProjectsSpinnerAdapter(projectsItemRealmResults);
+        if (projectsItemRealmResults != null) {
+            projectsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<ProjectsItem>>() {
+                @Override
+                public void onChange(RealmResults<ProjectsItem> projectsItems) {
+                    setUpProjectsSpinnerAdapter(projectsItems);
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("DashBoardActivity");
+        }
         projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(mContext,"Only  " + projectSpinner.getSelectedItem().toString()  + "can be selected",Toast.LENGTH_SHORT).show();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
+                setUpStaticValues(selectedId);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+                int selectedId = projectSpinner.getSelectedItemPosition();
+                setUpStaticValues(selectedId);
             }
         });
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -152,7 +166,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    toolbar.setTitle("Kunal Aspiree, Balewadi");
+                    toolbar.setTitle(strProjectName);
                     isShow = true;
                 } else if (isShow) {
                     toolbar.setTitle("");
@@ -162,40 +176,23 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         });
     }
 
-    private void getSiteName() {
-        realm = Realm.getDefaultInstance();
-        ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("project_id", 2).findFirst();
+    private void setUpStaticValues(int selectedId) {
+        ProjectsItem projectsItem = projectsItemRealmResults.get(selectedId);
         if (projectsItem != null) {
-            projectSiteName.setText(projectsItem.getClient_company_name());
-        }
-    }
-
-    private void setSpinnerListener() {
-        realm = Realm.getDefaultInstance();
-        projectsItemRealmResults = realm.where(ProjectsItem.class).findAll();
-        setUpSpinnerAdapter(projectsItemRealmResults);
-        if (projectsItemRealmResults != null) {
-            Timber.d("availableUsersRealmResults change listener added.");
-            projectsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<ProjectsItem>>() {
-                @Override
-                public void onChange(RealmResults<ProjectsItem> availableUsersItems) {
-                    Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
-                    setUpSpinnerAdapter(projectsItemRealmResults);
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
+            mTextViewClientName.setText(projectsItem.getClient_company_name());
+            int projectId = projectsItem.getProject_id();
+            AppUtils.getInstance().put("projectId", projectId);
+            Timber.i("Current Site ID: " + AppUtils.getInstance().getInt("projectId", -1));
+            strProjectName = projectsItem.getProject_name();
+            String strClientCompanyName = projectsItem.getClient_company_name();
+            mProjectName.setText(strProjectName);
+            mTextViewClientName.setText(strClientCompanyName);
         }
     }
 
     private void startCorrespondingAclActivity(SubModulesItem subModulesItem) {
         HashMap<String, String> aclKeyValuePair = retrieveAclKeyValueFromLocal();
         Intent intent = new Intent();
-//        Gson gson = new Gson();
-//        String strPermissions = gson.toJson(subModulesItem.getPermissions().toArray());
-//        Bundle bundleExtras = new Bundle();
-//        bundleExtras.putSerializable("strPermissions", strPermissions);
-//        intent.putExtras(bundleExtras);
         String strClassName = aclKeyValuePair.get(subModulesItem.getSubModuleTag());
         Timber.d("Activity Started: " + strClassName);
         Realm realm = Realm.getDefaultInstance();
@@ -206,32 +203,16 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         startActivity(intent);
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.options_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }*/
-
-    private void setUpSpinnerAdapter(RealmResults<ProjectsItem> availableUsersItems) {
-        projectsItemList = realm.copyFromRealm(availableUsersItems);
+    private void setUpProjectsSpinnerAdapter(RealmResults<ProjectsItem> projectsItems) {
+        List<ProjectsItem> projectsItemList = realm.copyFromRealm(projectsItems);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (ProjectsItem currentUser : projectsItemList) {
-            String strMaterialName = currentUser.getProjectName();
+            String strMaterialName = currentUser.getProjectSiteName();
             arrayOfUsers.add(strMaterialName);
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        if (arrayAdapter != null) {
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            projectSpinner.setAdapter(arrayAdapter);
-        }
-        userName.setText("Test User");
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        projectSpinner.setAdapter(arrayAdapter);
     }
 
     private HashMap<String, String> retrieveAclKeyValueFromLocal() {

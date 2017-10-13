@@ -37,15 +37,14 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/projectSiteName"
+                android:id="@+id/projectName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kunal Aspiree, Balewadi"
                 android:textSize="@dimen/dimen_30dp"
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/builderName"
+                android:id="@+id/clientName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/dimen_20dp"
