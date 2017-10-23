@@ -1,5 +1,6 @@
 package com.android.inventory.assets;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -23,6 +24,7 @@ public class AssetsSummaryListItem extends RealmObject {
     private int id;
     @SerializedName("assets_units")
     private int assetsUnits;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getStartTime() {
         return startTime;

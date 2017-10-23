@@ -1,5 +1,6 @@
 package com.android.models.purchase_bill;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -43,6 +44,7 @@ public class PurchaseBillListItem extends RealmObject {
     private String vendor;
     @SerializedName("status")
     private String status;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getDate() {
         return date;

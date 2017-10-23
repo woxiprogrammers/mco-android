@@ -1,5 +1,6 @@
 package com.android.models.login_acl;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;

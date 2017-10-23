@@ -1,5 +1,6 @@
 package com.android.models.inventory;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -16,6 +17,7 @@ public class InventoryResponse extends RealmObject {
     private String message;
     @SerializedName("page_id")
     private String pageid;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getPageid() {
         return pageid;

@@ -1,5 +1,6 @@
 package com.android.inventory.assets;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -13,6 +14,7 @@ public class AssetSummaryListResponse extends RealmObject {
     private String nextUrl;
     @SerializedName("message")
     private String message;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public AssetsSummaryData getDummyData() {
         return summaryData;

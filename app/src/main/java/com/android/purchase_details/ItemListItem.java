@@ -1,5 +1,6 @@
 package com.android.purchase_details;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -20,6 +21,8 @@ public class ItemListItem extends RealmObject {
     {
         "image_url": null
     }*/
+
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("material_request_component_format_id")
     private String materialRequestComponentFormatId;
     @SerializedName("material_request_id")

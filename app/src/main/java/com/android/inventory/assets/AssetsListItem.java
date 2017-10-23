@@ -1,5 +1,6 @@
 package com.android.inventory.assets;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -21,6 +22,7 @@ public class AssetsListItem extends RealmObject {
     private String assetsUnits;
     @SerializedName("assets_name")
     private String assetsName;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getTotalDieselConsume() {
         return totalDieselConsume;

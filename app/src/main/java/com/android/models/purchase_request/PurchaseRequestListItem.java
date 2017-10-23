@@ -1,5 +1,6 @@
 package com.android.models.purchase_request;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -17,6 +18,7 @@ public class PurchaseRequestListItem extends RealmObject {
     private String materials;
     @SerializedName("component_status_name")
     private String status;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public int getId() {
         return id;

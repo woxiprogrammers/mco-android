@@ -181,8 +181,8 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         if (projectsItem != null) {
             mTextViewClientName.setText(projectsItem.getClient_company_name());
             int projectId = projectsItem.getProject_id();
-            AppUtils.getInstance().put("projectId", projectId);
-            Timber.i("Current Site ID: " + AppUtils.getInstance().getInt("projectId", -1));
+            AppUtils.getInstance().put(getString(R.string.key_project_id), projectId);
+            Timber.i("Current Site ID: " + AppUtils.getInstance().getInt(getString(R.string.key_project_id), -1));
             strProjectName = projectsItem.getProject_name();
             String strClientCompanyName = projectsItem.getClient_company_name();
             mProjectName.setText(strProjectName);

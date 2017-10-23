@@ -1,5 +1,6 @@
 package com.android.models.inventory;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -21,6 +22,7 @@ public class MaterialListItem extends RealmObject {
     @SerializedName("units")
     private RealmList<Units> unitsRealmList;
     private boolean isSelected;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public boolean isSelected() {
         return isSelected;

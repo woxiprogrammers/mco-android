@@ -1,5 +1,6 @@
 package com.android.purchase_request;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Random;
@@ -46,6 +47,7 @@ public class PurchaseMaterialListItem extends RealmObject {
     private String materialRequestComponentTypeSlug;
     private boolean is_diesel;
     private RealmList<MaterialImageItem> list_of_images;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public PurchaseMaterialListItem() {
     }

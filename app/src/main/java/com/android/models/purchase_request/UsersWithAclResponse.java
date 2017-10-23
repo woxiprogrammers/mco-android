@@ -1,6 +1,7 @@
 package com.android.models.purchase_request;
 
 import com.android.purchase_request.PurchaseMaterialListItem;
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -16,6 +17,7 @@ public class UsersWithAclResponse extends RealmObject {
     private RealmList<PurchaseMaterialListItem> materialList;
     @SerializedName("message")
     private String message;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public RealmList<AvailableUsersItem> getAvailableUsers() {
         return availableUsers;

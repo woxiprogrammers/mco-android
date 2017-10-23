@@ -1,5 +1,6 @@
 package com.android.purchase_details;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -18,6 +19,7 @@ public class MaterialNamesItem extends RealmObject {
     private String materialName;
     @SerializedName("material_request_component_id")
     private int materialRequestComponentId;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public int getMaterialRequestComponentId() {
         return materialRequestComponentId;

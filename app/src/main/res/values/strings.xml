@@ -131,4 +131,5 @@
     <string name="approve_purchase_request">approve-purchase-request</string>
     <string name="aprove_purchase_request">approve-purchase-request</string>
     <string name="create_purchase_request">create-purchase-request</string>
+    <string name="key_project_id">projectId</string>
 </resources>

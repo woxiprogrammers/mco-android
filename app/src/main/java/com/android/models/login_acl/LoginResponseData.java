@@ -1,5 +1,6 @@
 package com.android.models.login_acl;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -26,6 +27,7 @@ public class LoginResponseData extends RealmObject {
     private String email;
     @SerializedName("modules")
     private RealmList<ModulesItem> modules;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public RealmList<ProjectsItem> getProjects() {
         return projects;

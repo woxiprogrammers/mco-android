@@ -1,5 +1,6 @@
 package com.android.material_request_approve;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class SearchMaterialListItem extends RealmObject implements Serializable 
     private String materialName;
     @SerializedName("unit_quantity")
     private RealmList<UnitQuantityItem> unitQuantity;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getMaterialRequestComponentTypeSlug() {
         return materialRequestComponentTypeSlug;

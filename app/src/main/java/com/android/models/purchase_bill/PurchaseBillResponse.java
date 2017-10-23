@@ -1,5 +1,6 @@
 package com.android.models.purchase_bill;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
@@ -14,6 +15,7 @@ public class PurchaseBillResponse extends RealmObject {
     private PurchaseBillRespData purchaseBillRespData;
     @SerializedName("message")
     private String message;
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getNextUrl() {
         return nextUrl;
