@@ -1,4 +1,4 @@
-package com.android.models.purchase_request;
+package com.android.purchase_request.models_purchase_request;
 
 import com.android.purchase_request.PurchaseMaterialListItem;
 import com.android.utils.AppUtils;

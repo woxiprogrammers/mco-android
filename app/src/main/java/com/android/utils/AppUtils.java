@@ -256,7 +256,7 @@ public class AppUtils {
     }
 
     public int getCurrentSiteId() {
-        return 2;
+        return AppUtils.getInstance().getInt("projectId", -1);
     }
 
     public String getLoggedInAt() {
