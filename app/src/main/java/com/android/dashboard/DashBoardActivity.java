@@ -207,12 +207,19 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         List<ProjectsItem> projectsItemList = realm.copyFromRealm(projectsItems);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (ProjectsItem currentUser : projectsItemList) {
-            String strMaterialName = currentUser.getProjectSiteName();
-            arrayOfUsers.add(strMaterialName);
+            String strProjectSiteName = currentUser.getProjectSiteName();
+            arrayOfUsers.add(strProjectSiteName);
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         projectSpinner.setAdapter(arrayAdapter);
+        if (AppUtils.getInstance().getCurrentSiteId() != -1) {
+            int currentSiteId = AppUtils.getInstance().getCurrentSiteId();
+            ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("project_id", currentSiteId).findFirst();
+            String projectSiteName = projectsItem.getProjectSiteName();
+            int selectedIndex = arrayOfUsers.indexOf(projectSiteName);
+            projectSpinner.setSelection(selectedIndex);
+        }
     }
 
     private HashMap<String, String> retrieveAclKeyValueFromLocal() {

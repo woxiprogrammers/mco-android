@@ -19,9 +19,9 @@ import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
 import com.android.interfaces.InterfacePurchaseRequest;
 import com.android.models.login_acl.PermissionsItem;
+import com.android.purchase_details.PurchaseRequestDetailsHomeActivity;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestResponse;
-import com.android.purchase_details.PurchaseRequestDetailsHomeActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.EndlessRecyclerViewScrollListener;
@@ -203,7 +203,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class).findAllAsync();
+        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
