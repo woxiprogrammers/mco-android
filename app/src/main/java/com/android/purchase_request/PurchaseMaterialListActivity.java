@@ -113,6 +113,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isNewItem;
+    private boolean isQuoatationMaterial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -710,6 +711,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                    isQuoatationMaterial=searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
                 }
             } else {
                 if (isNewItem) {
@@ -853,7 +855,28 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         floatItemQuantity = Float.parseFloat(strQuantity);
         strUnitName = "";
         unitId = 0;
-        if (isMaterial && !isNewItem) {
+        if(isMaterial){
+            int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+            float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
+            unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
+            strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
+            Timber.i("Material Old: unitId: " + unitId + " strUnitName " + strUnitName);
+            int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
+            if(isQuoatationMaterial) {
+                if (floatComparison > 0) {
+                    Toast.makeText(mContext, "Quantity is greater than allowed max quantity", Toast.LENGTH_SHORT).show();
+                    mEditTextQuantityMaterialAsset.setError("Decrease quantity");
+                    mEditTextQuantityMaterialAsset.requestFocus();
+                    return;
+                } else {
+                    mEditTextQuantityMaterialAsset.setError(null);
+                    mEditTextQuantityMaterialAsset.clearFocus();
+                }
+            }
+        }
+
+        ////////////////////////For Existing material
+        /*if (isMaterial && !isNewItem) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
@@ -874,7 +897,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
             Timber.i("Material New: unitId: " + unitId + " strUnitName " + strUnitName);
-        }
+        }*/
+        //////////////////////////////////Asset
         if (!isMaterial) {
             unitId = searchAssetListItem_fromResult.getAssetUnitId();
         }
