@@ -106,6 +106,14 @@
             </LinearLayout>
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/textview_error_for_exceed_quantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quantity is greater than allowed max quantity"
+            android:textColor="@color/colorAccent"
+            android:visibility="gone"/>
         <include
             android:id="@+id/layoutCamera"
             layout="@layout/layout_multi_capture_select"/>

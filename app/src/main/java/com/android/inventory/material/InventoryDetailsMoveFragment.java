@@ -28,7 +28,6 @@ import com.android.inventory.SelectedMaterialListAdapter;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.ImageUtilityHelper;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -114,7 +113,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private View mParentView;
     private String strSourceName, strDate, strVehicleNumber, strInTime, strOutTime, strBillNumber, strQuantity, strUnit, strBillAmount;
     private boolean isChecked;
-    private ImageUtilityHelper imageUtilityHelper;
     private String str;
     private Context mContext;
     private SelectedMaterialListAdapter selectedMaterialListAdapter;

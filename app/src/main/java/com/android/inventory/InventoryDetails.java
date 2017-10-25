@@ -17,7 +17,6 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.material.InventoryDetailsMoveFragment;
 import com.android.inventory.material.MaterialHistoryFragment;
-import com.android.utils.ImageUtilityHelper;
 
 import java.util.ArrayList;
 
@@ -33,7 +32,6 @@ public class InventoryDetails extends BaseActivity {
     ViewPager viewPagerInventory;
     private MenuItem prevMenuItem;
     private ArrayList<Integer> arrayList = new ArrayList<Integer>();
-    private ImageUtilityHelper imageUtilityHelper;
     private Context mContext;
     private InventoryDetailsMoveFragment inventoryDetailsMoveFragment;
     private String materialName;
