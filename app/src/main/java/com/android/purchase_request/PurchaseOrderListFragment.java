@@ -126,7 +126,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).findAllAsync();
+        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
         PurchaseOrderRvAdapter purchaseOrderRvAdapter = new PurchaseOrderRvAdapter(purchaseOrderListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);

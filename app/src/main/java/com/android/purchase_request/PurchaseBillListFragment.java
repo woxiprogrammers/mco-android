@@ -181,7 +181,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseBillListItems = realm.where(PurchaseBillListItem.class).findAllAsync();
+        purchaseBillListItems = realm.where(PurchaseBillListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
         PurchaseBillRvAdapter purchaseBillRvAdapter = new PurchaseBillRvAdapter(purchaseBillListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
