@@ -42,7 +42,6 @@ import timber.log.Timber;
 public class MaterialListFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
-    private ArrayList<Integer> strMaterialName = new ArrayList<Integer>();
     private MaterialListAdapter materialListAdapter;
     private View mParentView;
     private Context mContext;
@@ -164,14 +163,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     }
 
     private void setAdapterForMaterialList() {
-        strMaterialName.add(1516);
-        strMaterialName.add(1517);
-        strMaterialName.add(1518);
-        strMaterialName.add(1519);
-        strMaterialName.add(1520);
-        strMaterialName.add(1521);
-        strMaterialName.add(1522);
-        strMaterialName.add(1523);
         realm = Realm.getDefaultInstance();
         materialListItems = realm.where(MaterialListItem.class).findAllAsync();
         materialListAdapter = new MaterialListAdapter(materialListItems, true, true);

@@ -16,6 +16,17 @@ public class PurchaseRequestResponse extends RealmObject {
     @SerializedName("data")
     private PurchaseRequestRespData purchaseRequestRespData;private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
+    @SerializedName("page_id")
+    private String page_id;
+
+    public String getPage_id() {
+        return page_id;
+    }
+
+    public void setPage_id(String page_id) {
+        this.page_id = page_id;
+    }
+
     public String getNextUrl() {
         return nextUrl;
     }

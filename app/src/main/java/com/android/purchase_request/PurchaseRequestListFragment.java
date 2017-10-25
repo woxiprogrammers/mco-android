@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
+    private int pageNumber=0;
+    private int oldPgaeNumber;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
@@ -92,7 +95,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         InterfacePurchaseRequest interfacePurchaseRequest = new InterfacePurchaseRequest() {
             @Override
             public void requestForPurchaseRequestList() {
-                requestPrListOnline();
+                requestPrListOnline(pageNumber);
             }
         };
         MonthYearPickerDialog.setDateListenerInterface(interfacePurchaseRequest);
@@ -141,20 +144,21 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private void functionForGettingData() {
         if (AppUtils.getInstance().checkNetworkState()) {
             //Get data from Server
-            requestPrListOnline();
+            requestPrListOnline(pageNumber);
         } else {
             //Get data from local DB
             setUpPrAdapter();
         }
     }
 
-    private void requestPrListOnline() {
+    private void requestPrListOnline(int pageId) {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("month", PurchaseHomeActivity.passMonth);
             params.put("year", PurchaseHomeActivity.passYear);
-            params.put("page", 0);
+            params.put("page", pageId);
+            Log.i("@@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -167,6 +171,11 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
                     @Override
                     public void onResponse(final PurchaseRequestResponse response) {
+                        if(!response.getPage_id().equalsIgnoreCase("")) {
+                            pageNumber = Integer.parseInt(response.getPage_id());
+                        }
+                        Log.i("@@@RespNum", String.valueOf(pageNumber));
+
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -233,7 +242,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         recyclerView_commonListingView.addOnScrollListener(new EndlessRecyclerViewScrollListener(new LinearLayoutManager(mContext)) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                requestPrListOnline();
+                if(oldPgaeNumber != pageNumber) {
+                    oldPgaeNumber=pageNumber;
+                    requestPrListOnline(page);
+                }
             }
         });
         if (purchaseRequestListItems != null) {
