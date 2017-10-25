@@ -19,11 +19,10 @@
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
-             <intent-filter>
-                 <action android:name="android.intent.action.MAIN"/>
-
-                 <category android:name="android.intent.category.LAUNCHER"/>
-             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity
             android:name="com.android.login_mvp.LoginActivity"
@@ -48,10 +47,6 @@
             </intent-filter>-->
         </activity>
         <activity android:name="com.android.inventory.InventoryHomeActivity"/>
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Base.Theme.AppCompat"/>
         <activity android:name="com.android.inventory.assets.ActivityRequestMaintanance">
         </activity>
         <activity
@@ -74,20 +69,10 @@
             android:name="com.android.material_request_approve.MaterialRequest_ApproveActivity"
             android:label="@string/title_activity_material_request"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            -->
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name="com.android.material_request_approve.AutoSuggestActivity">
         </activity>
         <activity android:name="com.android.peticash.PeticashFormActivity">
         </activity>
     </application>
-
 </manifest>

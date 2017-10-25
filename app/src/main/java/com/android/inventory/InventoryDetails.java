@@ -17,7 +17,6 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.material.InventoryDetailsMoveFragment;
 import com.android.inventory.material.MaterialHistoryFragment;
-import com.android.utils.ImageUtilityHelper;
 
 import java.util.ArrayList;
 
@@ -25,17 +24,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class InventoryDetails extends BaseActivity {
-    public static final int IMAGE_CHOOSER_CODE = 2612;
-    public static final int WRITE_PERMISSION_CODE = 5;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottom_navigation;
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     private MenuItem prevMenuItem;
-    private ArrayList<Integer> arrayList = new ArrayList<Integer>();
-    private ImageUtilityHelper imageUtilityHelper;
     private Context mContext;
-    private InventoryDetailsMoveFragment inventoryDetailsMoveFragment;
     private String materialName;
 
     @Override
