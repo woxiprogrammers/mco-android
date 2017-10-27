@@ -37,7 +37,6 @@
     <string name="text_assets">Assets</string>
     <string name="text_move">Move</string>
     <string name="text_history">History</string>
-    <string name="destination_prompt">Choose a country</string>
     <string name="move_in">Move In</string>
     <string name="move_out">Move Out</string>
     <string name="project_name">Select Project Name</string>
@@ -83,6 +82,10 @@
         <item>Office</item>
         <item>Supplier</item>
     </string-array>
+    <string-array name="selectType">
+        <item>Material</item>
+        <item>Asset</item>
+    </string-array>
     <string-array name="project_array">
         <item>ProjABC</item>
         <item>ProjXYZ</item>
@@ -99,6 +102,11 @@
         <item>NEFT</item>
         <item>RTGS</item>
         <item>Internet-Banking</item>
+    </string-array>
+    <string-array name="category_array">
+        <item>Purchase</item>
+        <item>Salary</item>
+        <item>Advance</item>
     </string-array>
     <string name="title_activity_asset_details">AssetDetailsActivity</string>
     <string name="assets_readings">Readings</string>
@@ -132,4 +140,8 @@
     <string name="aprove_purchase_request">approve-purchase-request</string>
     <string name="create_purchase_request">create-purchase-request</string>
     <string name="key_project_id">projectId</string>
+    <string name="generate_grn">Generate GRN</string>
+    <string name="grn_number">GRN Number</string>
+    <string name="payableAmount">Payable Amount</string>
+    <string name="paywithpeticash">Pay With Peticash</string>
 </resources>
