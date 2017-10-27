@@ -93,11 +93,11 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                     case R.id.action_purchase_details:
                         viewPagerPurchaseDetails.setCurrentItem(0);
                         break;
-                    case R.id.action_purchase_details_history:
+                    /*case R.id.action_purchase_details_history:
                         viewPagerPurchaseDetails.setCurrentItem(1);
-                        break;
+                        break;*/
                     case R.id.action_purchase_order:
-                        viewPagerPurchaseDetails.setCurrentItem(2);
+                        viewPagerPurchaseDetails.setCurrentItem(1);
                         break;
                 }
                 return false;
@@ -214,9 +214,9 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     }
 
     private class PurchaseDetailsAdapter extends FragmentPagerAdapter {
-        private String[] arrBottomTitle = {"Bottom1", "Bottom2", "Bottom3"};
+        private String[] arrBottomTitle = {"Bottom1"/*, "Bottom2"*/, "Bottom3"};
 
-        public PurchaseDetailsAdapter(FragmentManager fm) {
+        PurchaseDetailsAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -225,9 +225,9 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
             switch (position) {
                 case 0:
                     return PurchaseDetailsFragment.newInstance(mPurchaseRequestId, isForApproval);
+                /*case 1:
+                    return PurchaseHistoryFragment.newInstance();*/
                 case 1:
-                    return PurchaseHistoryFragment.newInstance();
-                case 2:
                     return PurchaseOrderListFragment.newInstance(mPurchaseRequestId, true);
                 default:
                     return null;

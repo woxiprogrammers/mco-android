@@ -62,7 +62,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
-    private int pageNumber=0;
+    private int pageNumber = 0;
     private int oldPgaeNumber;
 
     public PurchaseRequestListFragment() {
@@ -171,11 +171,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
                     @Override
                     public void onResponse(final PurchaseRequestResponse response) {
-                        if(!response.getPage_id().equalsIgnoreCase("")) {
+                        if (!response.getPage_id().equalsIgnoreCase("")) {
                             pageNumber = Integer.parseInt(response.getPage_id());
                         }
                         Log.i("@@@RespNum", String.valueOf(pageNumber));
-
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -242,8 +241,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         recyclerView_commonListingView.addOnScrollListener(new EndlessRecyclerViewScrollListener(new LinearLayoutManager(mContext)) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                if(oldPgaeNumber != pageNumber) {
-                    oldPgaeNumber=pageNumber;
+                if (oldPgaeNumber != pageNumber) {
+                    oldPgaeNumber = pageNumber;
                     requestPrListOnline(page);
                 }
             }
@@ -261,7 +260,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     @OnClick(R.id.floating_create_purchase_request)
     public void onViewClicked() {
-        startActivityForResult(new Intent(mContext, PurchaseMaterialListActivity.class),123);
+        startActivityForResult(new Intent(mContext, PurchaseMaterialListActivity.class), 123);
     }
 
     @SuppressWarnings("WeakerAccess")

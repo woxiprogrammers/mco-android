@@ -29,10 +29,10 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.models.login_acl.PermissionsItem;
-import com.android.purchase_request.models_purchase_request.AvailableUsersItem;
-import com.android.purchase_request.models_purchase_request.UsersWithAclResponse;
 import com.android.purchase_request.MaterialImageItem;
 import com.android.purchase_request.PurchaseMaterialListItem;
+import com.android.purchase_request.models_purchase_request.AvailableUsersItem;
+import com.android.purchase_request.models_purchase_request.UsersWithAclResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -104,11 +104,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private EditText mEditTextNameMaterialAsset;
     private EditText mEditTextQuantityMaterialAsset;
     private LinearLayout mLlUploadImage;
-    private TextView mTextViewCaptureImages;
-    private TextView mTextViewPickImages;
-    private Button mButtonDismissMaterialAsset;
-    private Button mButtonAddMaterialAsset;
-    private File currentImageFile;
     private Spinner mSpinnerUnits;
     private LinearLayout ll_dialog_unit;
     private SearchMaterialListItem searchMaterialListItem_fromResult = null;
@@ -121,9 +116,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isApprove, isMoveIndent, isNewItem;
-    EditText editText_name_material_asset, editText_quantity_material_asset, edittext_unit;
-    private Button button_for_edit, button_approve, button_dismiss;
-    private Spinner spinner_select_units;
+    private EditText editText_name_material_asset, editText_quantity_material_asset, edittext_unit;
+    //    private Spinner spinner_select_units;
     private float allowedQuantity;
     private PurchaseMaterialListItem purchaseMaterialListItem;
     private AlertDialog alert_Dialog;
@@ -444,13 +438,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         mEditTextNameMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_name_material_asset);
         mEditTextQuantityMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_quantity_material_asset);
         mLlUploadImage = (LinearLayout) dialogView.findViewById(R.id.ll_uploadImage);
-        mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
-        mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
+        Button mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
+        Button mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
         mSpinnerUnits = dialogView.findViewById(R.id.spinner_select_units);
         ll_dialog_unit = dialogView.findViewById(R.id.ll_dialog_unit);
         View view = dialogView.findViewById(R.id.layoutCamera);
-        mTextViewCaptureImages = (TextView) view.findViewById(R.id.textView_capture);
-        mTextViewPickImages = (TextView) view.findViewById(R.id.textView_pick);
+        TextView mTextViewCaptureImages = (TextView) view.findViewById(R.id.textView_capture);
+        TextView mTextViewPickImages = (TextView) view.findViewById(R.id.textView_pick);
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -718,6 +712,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 Timber.d(String.valueOf(imagesList));
                 mLlUploadImage.removeAllViews();
                 arrayImageFileList = new ArrayList<File>();
+                File currentImageFile;
                 for (Image currentImage : imagesList) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
@@ -1222,10 +1217,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         editText_name_material_asset = dialogView.findViewById(R.id.editText_name_material_asset);
         editText_quantity_material_asset = dialogView.findViewById(R.id.editText_quantity_material_asset);
         edittext_unit = dialogView.findViewById(R.id.edittext_unit);
-        spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
-        button_approve = dialogView.findViewById(R.id.button_approve);
-        button_dismiss = dialogView.findViewById(R.id.button_dismiss);
-        button_for_edit = dialogView.findViewById(R.id.button_for_edit);
+//        spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
+        Button button_approve = dialogView.findViewById(R.id.button_approve);
+        Button button_dismiss = dialogView.findViewById(R.id.button_dismiss);
+        Button button_for_edit = dialogView.findViewById(R.id.button_for_edit);
         editText_name_material_asset.setText(purchaseMaterialListItem.getItem_name());
         editText_name_material_asset.setEnabled(false);
         editText_quantity_material_asset.setText("" + purchaseMaterialListItem.getItem_quantity());

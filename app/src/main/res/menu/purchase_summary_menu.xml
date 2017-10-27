@@ -6,10 +6,10 @@
         android:id="@+id/action_purchase_details"
         android:title="Details"
         app:showAsAction="never"/>
-    <item
+    <!--<item
         android:id="@+id/action_purchase_details_history"
         android:title="History"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/>-->
     <item
         android:id="@+id/action_purchase_order"
         android:title="PO"

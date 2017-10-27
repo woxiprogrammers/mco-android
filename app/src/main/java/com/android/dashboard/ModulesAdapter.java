@@ -105,7 +105,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView moduleName, moduleDescription;
+        private TextView moduleName/*, moduleDescription*/;
         private Context context;
         private LinearLayout ll_sub_modules;
         private FrameLayout fl_mainModuleFrame;
@@ -114,7 +114,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             super(view);
             context = view.getContext();
             moduleName = (TextView) view.findViewById(R.id.tv_moduleName);
-            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
+//            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
             fl_mainModuleFrame = (FrameLayout) view.findViewById(R.id.fl_mainModuleFrame);
             ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_sub_modules);
             int intMaxSize = 0;

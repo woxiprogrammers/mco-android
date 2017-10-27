@@ -40,7 +40,6 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     @BindView(R.id.relative_layout_selectDate)
     RelativeLayout relativeLayoutSelectDate;
     String strSubModuleTag, permissionsItemList;
-    private Context mContext;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
 
     @Override
@@ -63,7 +62,6 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
      * Created by - Rohit
      */
     private void initializeViews() {
-        mContext = PurchaseHomeActivity.this;
         setUpAppBarDatePicker();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -87,7 +85,6 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
                 if (fragment != null) {
                     fragment.fragmentBecameVisible();
                 }
-//                mViewPager_purchaseHome.setCurrentItem(position, true);
             }
 
             @Override
