@@ -333,6 +333,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         deleteExistingItemEntries();
+                        setResult(RESULT_OK);
                         finish();
                     }
 
@@ -492,97 +493,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         mTextViewLabelMaterialAsset.setText(strItemNameLabel);
         return alertDialog;
     }
-
-    /*private void setUpCurrentMaterialListAdapter() {
-        realm = Realm.getDefaultInstance();
-        Timber.d("Adapter setup called");
-        sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
-        recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
-        recyclerView_materialList.setHasFixedSize(true);
-        SectionedRecyclerViewClickListener sectionedRecyclerViewClickListener = new SectionedRecyclerViewClickListener() {
-            @Override
-            public void onSectionItemClick(View view, int position, int primaryKey) {
-                if (view.getId() == R.id.imageView_delete_added_item) {
-                    ImageView mImageViewDeleteAddedItem = view.findViewById(R.id.imageView_deleteMaterial_createPR);
-                    deleteSelectedItemFromList(primaryKey, mImageViewDeleteAddedItem);
-                } else {
-                    Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-        ///////////
-        purchaseMaterialListRealmResult_All = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).findAll();
-        purchaseMaterialList_inIndent = realm.copyFromRealm(purchaseMaterialListRealmResult_All);
-//        if (purchaseMaterialList_inIndent.size() > 0) {
-        Section sectionIndent = new SectionedPurchaseMaterialRvAdapter("Approved Items", purchaseMaterialList_inIndent, sectionedRecyclerViewClickListener);
-        sectionedRecyclerViewAdapter.addSection("indent_items_section", sectionIndent);
-//        }
-        ///////////
-        purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAll();
-        purchaseMaterialList_Current = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
-        Section sectionCurrent = new SectionedPurchaseMaterialRvAdapter("Current Items", purchaseMaterialList_Current, sectionedRecyclerViewClickListener);
-        sectionedRecyclerViewAdapter.addSection("current_items_section", sectionCurrent);
-        //////////
-        recyclerView_materialList.setAdapter(sectionedRecyclerViewAdapter);
-        if (purchaseMaterialListRealmResult_All != null) {
-            Timber.d("purchaseMaterialListRealmResult_All change listener added.");
-            purchaseMaterialListRealmResult_All.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems, OrderedCollectionChangeSet changeSet) {
-                    // `null`  means the async query returns the first time.
-                    if (changeSet == null) {
-                        recyclerView_materialList.getAdapter().notifyDataSetChanged();
-                        return;
-                    }
-                    // For deletions, the adapter has to be notified in reverse order.
-                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
-                    for (int i = deletions.length - 1; i >= 0; i--) {
-                        OrderedCollectionChangeSet.Range range = deletions[i];
-                        recyclerView_materialList.getAdapter().notifyItemRangeRemoved(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
-                    for (OrderedCollectionChangeSet.Range range : insertions) {
-                        recyclerView_materialList.getAdapter().notifyItemRangeInserted(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
-                    for (OrderedCollectionChangeSet.Range range : modifications) {
-                        recyclerView_materialList.getAdapter().notifyItemRangeChanged(range.startIndex, range.length);
-                    }
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }
-        if (purchaseMaterialListRealmResult_inIndent != null) {
-            Timber.d("purchaseMaterialListRealmResult_inIndent change listener added.");
-            purchaseMaterialListRealmResult_inIndent.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems, OrderedCollectionChangeSet changeSet) {
-                    // `null`  means the async query returns the first time.
-                    if (changeSet == null) {
-                        recyclerView_materialList.getAdapter().notifyDataSetChanged();
-                        return;
-                    }
-                    // For deletions, the adapter has to be notified in reverse order.
-                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
-                    for (int i = deletions.length - 1; i >= 0; i--) {
-                        OrderedCollectionChangeSet.Range range = deletions[i];
-                        recyclerView_materialList.getAdapter().notifyItemRangeRemoved(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
-                    for (OrderedCollectionChangeSet.Range range : insertions) {
-                        recyclerView_materialList.getAdapter().notifyItemRangeInserted(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
-                    for (OrderedCollectionChangeSet.Range range : modifications) {
-                        recyclerView_materialList.getAdapter().notifyItemRangeChanged(range.startIndex, range.length);
-                    }
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }
-    }*/
 
     private void setUpMaterialListAdapter() {
         realm = Realm.getDefaultInstance();
@@ -912,78 +822,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             }
         }
     }
-/*
-    @SuppressWarnings("WeakerAccess")
-    protected class SectionedPurchaseMaterialRvAdapter extends StatelessSection {
-        private String title;
-        private List<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
-        private SectionedRecyclerViewClickListener sectionedRecyclerViewClickListener;
-
-        SectionedPurchaseMaterialRvAdapter(String title, List<PurchaseMaterialListItem> list, SectionedRecyclerViewClickListener sectionedRecyclerViewClickListener) {
-            super(new SectionParameters.Builder(R.layout.item_purchase_material_list)
-                    .headerResourceId(R.layout.section_ex1_header)
-                    .build());
-            this.title = title;
-            this.arrPurchaseMaterialListItems = list;
-            this.sectionedRecyclerViewClickListener = sectionedRecyclerViewClickListener;
-        }
-
-        @Override
-        public int getContentItemsTotal() {
-            return arrPurchaseMaterialListItems.size();
-        }
-
-        @Override
-        public RecyclerView.ViewHolder getItemViewHolder(View view) {
-            return new ItemViewHolder(view);
-        }
-
-        @Override
-        public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
-            final ItemViewHolder itemHolder = (ItemViewHolder) holder;
-            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
-            itemHolder.textViewMaterialNameCreatePR.setText(purchaseMaterialListItem.getItem_name());
-            itemHolder.textViewMaterialQuantityCreatePR.setText(String.valueOf(purchaseMaterialListItem.getItem_quantity()));
-            itemHolder.textViewMaterialUnitCreatePR.setText(purchaseMaterialListItem.getItem_unit_name());
-        }
-
-        @Override
-        public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
-            return new HeaderViewHolder(view);
-        }
-
-        @Override
-        public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
-            HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
-            headerHolder.tvTitle.setText(title);
-        }
-
-        private class HeaderViewHolder extends RecyclerView.ViewHolder {
-            private final TextView tvTitle;
-
-            HeaderViewHolder(View view) {
-                super(view);
-                tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-            }
-        }
-
-        protected class ItemViewHolder extends RecyclerView.ViewHolder *//*implements View.OnClickListener*//* {
-            @BindView(R.id.textView_MaterialName_createPR)
-            TextView textViewMaterialNameCreatePR;
-            @BindView(R.id.textView_MaterialQuantity_createPR)
-            TextView textViewMaterialQuantityCreatePR;
-            @BindView(R.id.textView_MaterialUnit_createPR)
-            TextView textViewMaterialUnitCreatePR;
-            @BindView(R.id.imageView_deleteMaterial_createPR)
-            ImageView imageViewDeleteMaterialCreatePR;
-
-            ItemViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
-//                imageViewDeleteMaterialCreatePR.setOnClickListener(this);
-            }
-        }
-    }*/
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseMaterialRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem,

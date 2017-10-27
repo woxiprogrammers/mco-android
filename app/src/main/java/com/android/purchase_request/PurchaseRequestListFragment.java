@@ -261,7 +261,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     @OnClick(R.id.floating_create_purchase_request)
     public void onViewClicked() {
-        startActivity(new Intent(mContext, PurchaseMaterialListActivity.class));
+        startActivityForResult(new Intent(mContext, PurchaseMaterialListActivity.class),123);
     }
 
     @SuppressWarnings("WeakerAccess")
