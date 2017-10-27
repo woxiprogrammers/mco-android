@@ -42,6 +42,18 @@ public class PurchaseMaterialListItem extends RealmObject {
     private int materialRequestId;
     @SerializedName("created_at")
     private String createdAt;
+
+    @SerializedName("have_access")
+    private String have_access;
+
+    public String getHave_access() {
+        return have_access;
+    }
+
+    public void setHave_access(String have_access) {
+        this.have_access = have_access;
+    }
+
     /////////////////////////
 //    private String item_category;
     private String materialRequestComponentTypeSlug;

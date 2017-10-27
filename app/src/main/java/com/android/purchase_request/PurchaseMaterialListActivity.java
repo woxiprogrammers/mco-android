@@ -11,7 +11,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -98,6 +101,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private AlertDialog alertDialog;
     private boolean isMaterial;
     private TextView mTextViewTitleMaterialAsset;
+    private TextView mTextViewExceedQuantity;
     private CheckBox mCheckboxIsDiesel;
     private TextView mTextViewLabelMaterialAsset;
     private EditText mEditTextNameMaterialAsset;
@@ -113,6 +117,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isNewItem;
+    private boolean isQuoatationMaterial;
+    int indexItemUnit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +137,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         setUpMaterialListAdapter();
 //        setUpCurrentMaterialListAdapter();
         createAlertDialog();
+
+        indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+
     }
 
     @Override
@@ -348,6 +357,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_add_material_asset_form, null);
         mTextViewTitleMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_title_material_asset);
+        mTextViewExceedQuantity = dialogView.findViewById(R.id.textview_error_for_exceed_quantity);
         mCheckboxIsDiesel = (CheckBox) dialogView.findViewById(R.id.checkbox_is_diesel);
         mTextViewLabelMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_label_material_asset);
         mEditTextNameMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_name_material_asset);
@@ -393,6 +403,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
             }
         });
+
         mButtonAddMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -475,6 +486,33 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             ll_dialog_unit.setVisibility(View.VISIBLE);
             mEditTextQuantityMaterialAsset.setText("");
             mEditTextQuantityMaterialAsset.setFocusableInTouchMode(true);
+            mEditTextQuantityMaterialAsset.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (!TextUtils.isEmpty(charSequence.toString()) && isQuoatationMaterial) {
+                        floatItemQuantity = Float.parseFloat(charSequence.toString());
+                        indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+                        float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
+                        final int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
+                        if (floatComparison > 0) {
+                            mTextViewExceedQuantity.setVisibility(View.VISIBLE);
+                        } else {
+                            mTextViewExceedQuantity.setVisibility(View.GONE);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
         } else {
             strItemNameLabel = getString(R.string.dialog_label_add_asset);
             strDialogTitle = getString(R.string.dialog_title_add_asset);
@@ -602,6 +640,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 }
                 break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
+                    mEditTextQuantityMaterialAsset.setText("");
+                mTextViewExceedQuantity.setVisibility(View.GONE);
                 functionForProcessingSearchResult(intent);
                 break;
         }
@@ -618,8 +658,12 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             if (isMaterial) {
                 if (isNewItem) {
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
+                    Log.i("@@If", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                    isQuoatationMaterial = searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
+                    Log.i("@@Else", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
+
                 }
             } else {
                 if (isNewItem) {
@@ -743,7 +787,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 
     private void validateEntries_addToLocal() {
         strItemName = mEditTextNameMaterialAsset.getText().toString().trim();
-        String strQuantity = mEditTextQuantityMaterialAsset.getText().toString().trim();
+        final String strQuantity = mEditTextQuantityMaterialAsset.getText().toString().trim();
         if (TextUtils.isEmpty(strItemName)) {
             mEditTextNameMaterialAsset.setError("Please enter name");
             mEditTextNameMaterialAsset.requestFocus();
@@ -760,10 +804,17 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             mEditTextQuantityMaterialAsset.setError(null);
             mEditTextQuantityMaterialAsset.clearFocus();
         }
-        floatItemQuantity = Float.parseFloat(strQuantity);
         strUnitName = "";
         unitId = 0;
-        if (isMaterial && !isNewItem) {
+        if (isMaterial) {
+            unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
+            strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
+            Timber.i("Material Old: unitId: " + unitId + " strUnitName " + strUnitName);
+
+        }
+
+        ////////////////////////For Existing material
+        /*if (isMaterial && !isNewItem) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
@@ -784,7 +835,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
             Timber.i("Material New: unitId: " + unitId + " strUnitName " + strUnitName);
-        }
+        }*/
+        //////////////////////////////////Asset
         if (!isMaterial) {
             unitId = searchAssetListItem_fromResult.getAssetUnitId();
         }

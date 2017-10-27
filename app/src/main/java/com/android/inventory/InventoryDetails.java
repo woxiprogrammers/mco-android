@@ -29,6 +29,7 @@ public class InventoryDetails extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     private MenuItem prevMenuItem;
+    private ArrayList<Integer> arrayList = new ArrayList<Integer>();
     private Context mContext;
     private String materialName;
 
