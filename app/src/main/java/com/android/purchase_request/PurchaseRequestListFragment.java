@@ -36,6 +36,9 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -187,6 +190,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                                 public void onSuccess() {
 //                                    setUpPrAdapter();
                                     Timber.d("Success");
+                                    setUpPrAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -211,7 +215,11 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        String strMonth = Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .contains("date", String.valueOf(PurchaseHomeActivity.passYear))
+                .contains("date", strMonth).findAllAsync();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
