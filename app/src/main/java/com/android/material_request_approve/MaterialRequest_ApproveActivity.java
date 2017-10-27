@@ -146,17 +146,22 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             String permissionsItemList = bundle.getString("permissionsItemList");
             PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
 
-            createAlertDialog();
-            requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
-            setUpUsersSpinnerValueChangeListener();
-
-            /*for (PermissionsItem permissionsItem : permissionsItems) {
+            mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
+            getRequestedItemList();
+            setUpApprovedStatusAdapter();
+            for (PermissionsItem permissionsItem : permissionsItems) {
                 String accessPermission = permissionsItem.getCanAccess();
                 if (accessPermission.equalsIgnoreCase(getString(R.string.create_material_request))) {
                     textViewPurchaseMaterialListAddNew.setVisibility(View.VISIBLE);
-                    isForApproval = false;
+
+                }
+            }
+            /*for (PermissionsItem permissionsItem : permissionsItems) {
+                String accessPermission = permissionsItem.getCanAccess();
+                if (accessPermission.equalsIgnoreCase(getString(R.string.create_material_request))) {
                     mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
+                    isForApproval = false;
                     createAlertDialog();
                     setUpCurrentMaterialListAdapter();
                     setUpApprovedStatusAdapter();
@@ -169,7 +174,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                     linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                     setUpApprovedStatusAdapter();
-                    requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
+                    requestUsersWithApproveAcl(
+                    getString(R.string.approve_material_request), getString(R.string.tag_pending));
                 }
             }*/
         }
@@ -255,6 +261,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
     public void onAddClicked() {
+        createAlertDialog();
+        setUpUsersSpinnerValueChangeListener();
+        requestUsersWithApproveAcl(getString(R.string.approve_material_request));
+        setUpCurrentMaterialListAdapter();
         linerLayoutItemForMaterialRequest.setVisibility(View.VISIBLE);
         mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.GONE);
         PopupMenu popup = new PopupMenu(mContext, textViewPurchaseMaterialListAddNew);
@@ -326,6 +336,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
     }
 
+    //Submit Click API
     private void submitPurchaseRequest(JSONObject params) {
         AndroidNetworking.post(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
@@ -351,7 +362,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void getRequestedItemList() {
         JSONObject params = new JSONObject();
         try {
-            params.put("user_id", 2);
+//            params.put("user_id", 2);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -852,13 +863,12 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+                imageViewApproveMaterial.setOnClickListener(this);
+                imageViewDisapproveMaterial.setOnClickListener(this);
+                buttonMoveToIndent.setOnClickListener(this);
                 if (isApproval) {
-                    imageViewApproveMaterial.setOnClickListener(this);
-                    imageViewDisapproveMaterial.setOnClickListener(this);
-                    buttonMoveToIndent.setOnClickListener(this);
-                    linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+
                 } else {
-                    linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -895,7 +905,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
-            if (isApproval) {
+
+            if(purchaseMaterialListItem.getHave_access().contains("approve") ){
+                holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+            }else {
+                holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+
+            }
                 if (strStatus.equalsIgnoreCase("pending")) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                     holder.buttonMoveToIndent.setVisibility(View.GONE);
@@ -909,9 +925,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                     holder.buttonMoveToIndent.setVisibility(View.GONE);
                 }
-            } else {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-            }
+
         }
 
         @Override
@@ -1051,6 +1065,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
             }
         };
+        //Materials to be requested after click on ADD button.
         PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(materialListRealmResults_New, true, true, recyclerViewClickListener);
         mRvMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvMaterialListMaterialRequestApprove.setHasFixedSize(true);
@@ -1089,7 +1104,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void setUpApprovedStatusAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_pending)).or().equalTo("componentStatus", getString(R.string.tag_manager_approved)).findAll();
+        RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class)./*equalTo("componentStatus", getString(R.string.tag_pending)).or().equalTo("componentStatus", getString(R.string.tag_manager_approved)).*/findAll();
         PurchaseStatsRvAdapter purchaseMaterialRvAdapter = new PurchaseStatsRvAdapter(materialListRealmResults_Pending, true, true, isForApproval);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
@@ -1125,11 +1140,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
     }
 
-    private void requestUsersWithApproveAcl(String canAccess, String statusSlug) {
+    private void requestUsersWithApproveAcl(String canAccess) {
         AndroidNetworking.post(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addBodyParameter("can_access", canAccess)
-                .addBodyParameter("component_status_slug", statusSlug)
+//                .addBodyParameter("component_status_slug", statusSlug)
 //                .addBodyParameter("can_access", getString(R.string.approve_material_request))
 //                .addBodyParameter("component_status_slug", "in-indent")
                 .setTag("requestUsersWithApproveAcl")

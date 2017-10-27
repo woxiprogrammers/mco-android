@@ -43,7 +43,8 @@
                     android:paddingRight="@dimen/dimen_16dp"
                     android:text="Add +"
                     android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_20sp"/>
+                    android:textSize="@dimen/text_20sp"
+                    android:visibility="gone"/>
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -59,7 +60,8 @@
             android:id="@+id/linerLayoutItemForMaterialRequest"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -99,6 +99,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         if (realm != null) {
             realm.close();
         }
+        projectsItemRealmResults.removeAllChangeListeners();
     }
 
     /**
@@ -262,22 +263,20 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private void logoutAndClearAllData() {
         realm = Realm.getDefaultInstance();
         try {
-            realm.executeTransactionAsync(new Realm.Transaction() {
+            realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     realm.deleteAll();
-                }
-            }, new Realm.Transaction.OnSuccess() {
-                @Override
-                public void onSuccess() {
                     AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
-                    Intent intentLogin = new Intent(mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    finish();
+                    Intent intentLogin = new Intent(mContext, LoginActivity.class);
                     startActivity(intentLogin);
+                    finish();
                 }
             });
         } catch (Exception e) {
             Timber.d(e.getMessage());
         }
     }
+
+
 }
