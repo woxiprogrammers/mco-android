@@ -217,9 +217,11 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         if (AppUtils.getInstance().getCurrentSiteId() != -1) {
             int currentSiteId = AppUtils.getInstance().getCurrentSiteId();
             ProjectsItem projectsItem = realm.where(ProjectsItem.class).equalTo("project_id", currentSiteId).findFirst();
-            String projectSiteName = projectsItem.getProjectSiteName();
-            int selectedIndex = arrayOfUsers.indexOf(projectSiteName);
-            projectSpinner.setSelection(selectedIndex);
+            if (projectsItem != null) {
+                String projectSiteName = projectsItem.getProjectSiteName();
+                int selectedIndex = arrayOfUsers.indexOf(projectSiteName);
+                projectSpinner.setSelection(selectedIndex);
+            }
         }
     }
 

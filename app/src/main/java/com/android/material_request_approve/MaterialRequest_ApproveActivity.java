@@ -769,7 +769,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     private void openDialog(final int position, final OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
                             final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_material_approve_status, null);
         alertDialogBuilder.setView(dialogView);
         editText_name_material_asset = dialogView.findViewById(R.id.editText_name_material_asset);
@@ -779,11 +779,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         Button button_approve = dialogView.findViewById(R.id.button_approve);
         Button button_dismiss = dialogView.findViewById(R.id.button_dismiss);
         Button button_for_edit = dialogView.findViewById(R.id.button_for_edit);
-        editText_name_material_asset.setText(purchaseMaterialListItem.getItem_name());
+        editText_name_material_asset.setText(arrPurchaseMaterialListItems.get(position).getItem_name());
         editText_name_material_asset.setEnabled(false);
-        editText_quantity_material_asset.setText("" + purchaseMaterialListItem.getItem_quantity());
+        editText_quantity_material_asset.setText("" + arrPurchaseMaterialListItems.get(position).getItem_quantity());
         editText_quantity_material_asset.setEnabled(false);
-        edittext_unit.setText(purchaseMaterialListItem.getItem_unit_name());
+        edittext_unit.setText(arrPurchaseMaterialListItems.get(position).getItem_unit_name());
         edittext_unit.setEnabled(false);
         alert_Dialog = alertDialogBuilder.create();
         button_approve.setOnClickListener(new View.OnClickListener() {
