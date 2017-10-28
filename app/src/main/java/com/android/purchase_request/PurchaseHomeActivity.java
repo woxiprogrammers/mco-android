@@ -47,6 +47,9 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_home);
         ButterKnife.bind(this);
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passYear = calendar.get(Calendar.YEAR);
         toolbarPurchaseHome.setTitle("");
         setSupportActionBar(toolbarPurchaseHome);
         if (getSupportActionBar() != null) {
@@ -68,9 +71,6 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
             strSubModuleTag = bundle.getString("subModuleTag");
             permissionsItemList = bundle.getString("permissionsItemList");
         }
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        passMonth = calendar.get(Calendar.MONTH) + 1;
-        passYear = calendar.get(Calendar.YEAR);
         viewPagerAdapter = new PurchaseHomeViewPagerAdapter(getSupportFragmentManager());
         mViewPager_purchaseHome.setAdapter(viewPagerAdapter);
         mTabLayout_purchaseHome.setupWithViewPager(mViewPager_purchaseHome);

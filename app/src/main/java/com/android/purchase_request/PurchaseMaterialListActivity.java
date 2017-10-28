@@ -118,7 +118,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isNewItem;
     private boolean isQuoatationMaterial;
-    int indexItemUnit;
+    private int indexItemUnit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,9 +137,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         setUpMaterialListAdapter();
 //        setUpCurrentMaterialListAdapter();
         createAlertDialog();
-
         indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
-
     }
 
     @Override
@@ -403,7 +401,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
             }
         });
-
         mButtonAddMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -489,7 +486,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             mEditTextQuantityMaterialAsset.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                 }
 
                 @Override
@@ -505,12 +501,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                             mTextViewExceedQuantity.setVisibility(View.GONE);
                         }
                     }
-
                 }
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-
                 }
             });
         } else {
@@ -640,7 +634,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 }
                 break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
-                    mEditTextQuantityMaterialAsset.setText("");
+                mEditTextQuantityMaterialAsset.setText("");
                 mTextViewExceedQuantity.setVisibility(View.GONE);
                 functionForProcessingSearchResult(intent);
                 break;
@@ -663,7 +657,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
                     isQuoatationMaterial = searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
                     Log.i("@@Else", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
-
                 }
             } else {
                 if (isNewItem) {
@@ -807,12 +800,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         strUnitName = "";
         unitId = 0;
         if (isMaterial) {
+            indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
             Timber.i("Material Old: unitId: " + unitId + " strUnitName " + strUnitName);
-
         }
-
         ////////////////////////For Existing material
         /*if (isMaterial && !isNewItem) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();

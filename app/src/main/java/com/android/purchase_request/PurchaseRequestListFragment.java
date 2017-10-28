@@ -36,8 +36,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Calendar;
-import java.util.Locale;
+import java.text.DateFormatSymbols;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -215,7 +214,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        String strMonth = Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        String strMonth = new DateFormatSymbols().getMonths()[PurchaseHomeActivity.passMonth - 1];
         purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(PurchaseHomeActivity.passYear))

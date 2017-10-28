@@ -26,6 +26,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     private EditText edPassword;
     private ProgressBar pbLoad;
     private LoginPresenter mLoginPresenter;
+    private Button btnSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,11 @@ public class LoginActivity extends BaseActivity implements LoginView {
         edPassword = (EditText) findViewById(R.id.password);
         pbLoad = (ProgressBar) findViewById(R.id.login_progress);
         mLoginPresenter = new LoginPresenter(this);
-        Button btnSignIn = (Button) findViewById(R.id.btnSignIn);
+        btnSignIn = (Button) findViewById(R.id.btnSignIn);
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnSignIn.setEnabled(false);
                 mLoginPresenter.validateCred(edUserName.getText().toString().trim(), edPassword.getText().toString().trim());
             }
         });
@@ -64,6 +66,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 return false;*/
                 ////////////////
                 // If triggered by an enter key, this is the event; otherwise, this is null.
+                btnSignIn.setEnabled(false);
                 if (keyEvent != null) {
                     // if shift key is down, then we want to insert the '\n' char in the TextView;
                     // otherwise, the default action is to send the message.
@@ -132,6 +135,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void loginFailure(String message) {
+        btnSignIn.setEnabled(true);
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
