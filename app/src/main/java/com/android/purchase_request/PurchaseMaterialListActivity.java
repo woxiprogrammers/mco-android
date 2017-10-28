@@ -636,12 +636,14 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
                 mEditTextQuantityMaterialAsset.setText("");
                 mTextViewExceedQuantity.setVisibility(View.GONE);
+
                 functionForProcessingSearchResult(intent);
                 break;
         }
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
+        isQuoatationMaterial=false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             mEditTextNameMaterialAsset.clearFocus();
@@ -652,11 +654,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             if (isMaterial) {
                 if (isNewItem) {
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
-                    Log.i("@@If", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
                     isQuoatationMaterial = searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
-                    Log.i("@@Else", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
                 }
             } else {
                 if (isNewItem) {

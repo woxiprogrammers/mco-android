@@ -11,7 +11,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -28,6 +31,7 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.dummy.UnitsResponse;
 import com.android.models.login_acl.PermissionsItem;
 import com.android.purchase_request.MaterialImageItem;
 import com.android.purchase_request.PurchaseMaterialListItem;
@@ -96,6 +100,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
     private List<AvailableUsersItem> availableUserArray;
+    private List<UnitQuantityItem> unitQuantityItems;
     private AlertDialog alertDialog;
     private boolean isMaterial;
     private TextView mTextViewTitleMaterialAsset;
@@ -107,6 +112,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private Spinner mSpinnerUnits;
     private LinearLayout ll_dialog_unit;
     private SearchMaterialListItem searchMaterialListItem_fromResult = null;
+    private UnitQuantityItem unitQuantityItem=null;
     private SearchAssetListItem searchAssetListItem_fromResult = null;
     private boolean isForApproval;
     private String strToken;
@@ -117,10 +123,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isApprove, isMoveIndent, isNewItem;
     private EditText editText_name_material_asset, editText_quantity_material_asset, edittext_unit;
-    //    private Spinner spinner_select_units;
+        private Spinner spinner_select_units;
     private float allowedQuantity;
     private PurchaseMaterialListItem purchaseMaterialListItem;
     private AlertDialog alert_Dialog;
+    private FrameLayout frameLayoutSpinnerUnitDialog;
+    private int indexItemUnit;
+    private TextView mTextViewExceedQuantity;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -775,7 +785,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         editText_name_material_asset = dialogView.findViewById(R.id.editText_name_material_asset);
         editText_quantity_material_asset = dialogView.findViewById(R.id.editText_quantity_material_asset);
         edittext_unit = dialogView.findViewById(R.id.edittext_unit);
-//        spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
+        spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
+        mTextViewExceedQuantity=dialogView.findViewById(R.id.TextViewExceedQuantity);
         Button button_approve = dialogView.findViewById(R.id.button_approve);
         Button button_dismiss = dialogView.findViewById(R.id.button_dismiss);
         Button button_for_edit = dialogView.findViewById(R.id.button_for_edit);
@@ -784,11 +795,45 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         editText_quantity_material_asset.setText("" + arrPurchaseMaterialListItems.get(position).getItem_quantity());
         editText_quantity_material_asset.setEnabled(false);
         edittext_unit.setText(arrPurchaseMaterialListItems.get(position).getItem_unit_name());
+        frameLayoutSpinnerUnitDialog=dialogView.findViewById(R.id.frameLayoutSpinnerUnitDialog);
         edittext_unit.setEnabled(false);
         alert_Dialog = alertDialogBuilder.create();
+
+        editText_quantity_material_asset.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!TextUtils.isEmpty(charSequence.toString())) {
+                    floatItemQuantity = Float.parseFloat(charSequence.toString());
+                    indexItemUnit = spinner_select_units.getSelectedItemPosition();
+                    float floatItemMaxQuantity = realm.where(UnitQuantityItem.class).findAll().get(indexItemUnit).getQuantity();
+                    final int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
+                    if (floatComparison > 0) {
+                        mTextViewExceedQuantity.setVisibility(View.VISIBLE);
+                    } else {
+                        mTextViewExceedQuantity.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
         button_approve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(TextUtils.isEmpty(editText_quantity_material_asset.getText().toString())){
+                    editText_quantity_material_asset.setError("Please Enter Quantity");
+                    editText_quantity_material_asset.requestFocus();
+                    return;
+                }else {
+                    editText_quantity_material_asset.setError(null);
+                    editText_quantity_material_asset.clearFocus();
+                }
                 approveMaterial(3, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                 if (alert_Dialog != null) {
                     alert_Dialog.dismiss();
@@ -809,7 +854,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 editText_name_material_asset.setEnabled(true);
                 edittext_unit.setEnabled(true);
                 editText_quantity_material_asset.setEnabled(true);
-//                checkAvailabiltiy();
+                checkAvailabiltiy();
             }
         });
         alert_Dialog.show();
@@ -818,8 +863,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void checkAvailabiltiy() {
         JSONObject params = new JSONObject();
         try {
-            params.put("material_request_component_id", purchaseMaterialListItem.getMaterialRequestComponentId());
+            params.put("material_request_component_id", 4);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -829,23 +875,74 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("checkAvailability")
                 .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
+                .getAsObject(UnitsResponse.class, new ParsedRequestListener<UnitsResponse>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(final UnitsResponse response) {
+                        realm = Realm.getDefaultInstance();
                         try {
-                            allowedQuantity = (float) response.get("allowed_quantity");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(UnitQuantityItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Timber.d("Realm Execution Successful");
+                                    frameLayoutSpinnerUnitDialog.setVisibility(View.VISIBLE);
+                                    edittext_unit.setVisibility(View.GONE);
+                                    setUpUsersSpinnerValueChangeListene();
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
                         }
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "checkAvailability");
+                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
                     }
                 });
     }
 
+    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults){
+        unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (UnitQuantityItem currentUser : unitQuantityItems) {
+            String strUserName = currentUser.getUnitName();
+            arrayOfUsers.add(strUserName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_select_units.setAdapter(arrayAdapter);
+
+    }
+    private void setUpUsersSpinnerValueChangeListene() {
+        realm = Realm.getDefaultInstance();
+        RealmResults<UnitQuantityItem> availableUsersRealmResults = realm.where(UnitQuantityItem.class).findAll();
+        setUpSpinnerUnitAdapterForDialogUnit(availableUsersRealmResults);
+        /*if (availableUsersRealmResults != null) {
+            Timber.d("availableUsersRealmResults change listener added.");
+            availableUsersRealmResults.addChangeListener(new RealmChangeListener<RealmResults<AvailableUsersItem>>() {
+                @Override
+                public void onChange(RealmResults<AvailableUsersItem> availableUsersItems) {
+                    Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
+                    setUpSpinnerAdapter(availableUsersItems);
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
+        }*/
+    }
     private void setUpUsersSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         RealmResults<AvailableUsersItem> availableUsersRealmResults = realm.where(AvailableUsersItem.class).findAll();
@@ -1008,6 +1105,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             params.put("material_request_component_id", materialRequestComponentId);
             params.put("change_component_status_id_to", statusId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("quantity",editText_quantity_material_asset.getText().toString());
+            params.put("unit_id",spinner_select_units.getSelectedItem());
+            params.put("remark","");
         } catch (JSONException e) {
             e.printStackTrace();
         }

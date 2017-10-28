@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Emplouee Info :"
+                android:text="Employee Info :"
                 android:textColor="@color/colorTextLight"/>
 
             <android.support.v7.widget.CardView
@@ -87,7 +87,7 @@
                             android:id="@+id/textViewBalance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Employee Name"/>
+                            android:text="Bank Balance"/>
                     </LinearLayout>
 
                     <ImageView
@@ -136,7 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_3dp"
-                        android:text="Weighes:"
+                        android:text="Wedges:"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText

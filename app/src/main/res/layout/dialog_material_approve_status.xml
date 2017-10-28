@@ -26,8 +26,8 @@
             android:layout_gravity="right"
             android:layout_marginBottom="8dp"
             android:text="Edit"
-            android:visibility="visible"
-            android:textSize="@dimen/text_16sp"/>
+            android:textSize="@dimen/text_16sp"
+            android:visibility="visible"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,6 +79,7 @@
                     android:inputType="number"/>
             </LinearLayout>
 
+
             <LinearLayout
                 android:id="@+id/ll_dialog_unit"
                 android:layout_width="0dp"
@@ -101,6 +102,7 @@
                     android:visibility="visible"/>
 
                 <FrameLayout
+                    android:id="@+id/frameLayoutSpinnerUnitDialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background"
@@ -114,6 +116,33 @@
                 </FrameLayout>
             </LinearLayout>
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/TextViewExceedQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_8dp"
+            android:text="Quantity is greater than allowed max quantity"
+            android:textColor="@color/colorAccent"
+            android:visibility="gone"/>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <EditText
+                android:id="@+id/editext_remark_for_disapproval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFD740"
+                android:hint="@string/tap_too_add_remark"
+                android:onClick="addNote"
+                android:padding="@dimen/dimen_16dp"
+                android:textColor="@color/colorText"
+                android:textSize="@dimen/dimen_16dp"/>
+        </android.support.v7.widget.CardView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -140,9 +169,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:background="@drawable/selectable_button_background_red"
-                android:text="Approve"
-                android:textColor="@color/colorWhite"/>
+                android:text="Approve"/>
         </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
