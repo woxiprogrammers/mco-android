@@ -46,7 +46,7 @@
     <string name="labour_name">Labour Name</string>
     <string name="sub_contracter_name">Sub Contracter Name</string>
     <string name="supplier_name">Supplier Name</string>
-    <string name="please_enter">Please enter</string>
+    <string name="please_enter">Please Enter</string>
     <string name="out_time">Out Time</string>
     <string name="in_time">In Time</string>
     <string name="vehicle_number">Vehicle Number</string>
@@ -144,4 +144,6 @@
     <string name="grn_number">GRN Number</string>
     <string name="payableAmount">Payable Amount</string>
     <string name="paywithpeticash">Pay With Peticash</string>
+    <string name="amount">Amount</string>
+    <string name="submit">Submit</string>
 </resources>

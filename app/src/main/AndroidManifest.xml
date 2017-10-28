@@ -68,6 +68,10 @@
         <activity android:name="com.android.material_request_approve.AutoSuggestActivity">
         </activity>
         <activity android:name="com.android.peticash.PeticashFormActivity">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>-->
         </activity>
     </application>
 </manifest>

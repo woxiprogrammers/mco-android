@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
 
     <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -56,48 +56,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Material Source:"
-                        android:textColor="@color/colorTextLight"/>
-
-                    <Spinner
-                        android:id="@+id/spinner_peticash_source"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/destination_array_move_in"
-                        android:padding="@dimen/dimen_5dp"
-                        />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linerLayoutSelectedNames"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/text_view_selected_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Client"
-                        android:textColor="@color/colorTextLight"/>
-
-                    <EditText
-                        android:id="@+id/edit_text_selected_source_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:drawable/editbox_background_normal"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="Select Type:"
                         android:textColor="@color/colorTextLight"/>
 
@@ -117,6 +75,50 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Material Source:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <Spinner
+                        android:id="@+id/spinner_peticash_source"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/destination_array_move_in"
+                        android:padding="@dimen/dimen_5dp"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linerLayoutSelectedNames_PC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_view_selected_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Client"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edit_text_selected_source_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textViewItemName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Material Name"
@@ -213,7 +215,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:orientation="horizontal"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -295,6 +297,8 @@
                         android:id="@+id/edit_text_billamount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:digits="0123456789"
                         android:background="@android:drawable/editbox_background_normal"/>
                 </LinearLayout>
 
@@ -304,7 +308,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -356,38 +360,46 @@
                         android:textSize="@dimen/dimen_16dp"/>
                 </android.support.v7.widget.CardView>
 
-                <LinearLayout
-                    android:id="@+id/linearLayoutGRN"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="vertical"
-                    android:visibility="gone">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/grn_number"
-                        android:textColor="@color/colorTextLight"/>
+            </LinearLayout>
 
-                    <EditText
-                        android:id="@+id/editText_grnNumber"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:drawable/editbox_background_normal"/>
-                </LinearLayout>
+            <include
+                android:id="@+id/layoutEmployeeInformation"
+                layout="@layout/employee_information"
+                android:visibility="gone"/>
 
-                <Button
-                    android:id="@+id/button_generate_grn"
+            <Button
+                android:id="@+id/button_generate_grn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="@dimen/dimen_8dp"
+                android:background="@drawable/background_button_pressed"
+                android:backgroundTint="@color/colorAccent"
+                android:padding="@dimen/dimen_8dp"
+                android:text="@string/generate_grn"
+                android:textColor="@color/colorWhite"/>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutGRN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="@dimen/dimen_8dp"
-                    android:background="@drawable/background_button_pressed"
-                    android:backgroundTint="@color/colorAccent"
-                    android:padding="@dimen/dimen_8dp"
-                    android:text="@string/generate_grn"
-                    android:textColor="@color/colorWhite"/>
+                    android:text="@string/grn_number"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_grnNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
             <LinearLayout
@@ -396,7 +408,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -411,7 +423,31 @@
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/linearLayoutRefNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reference Number"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_ReferencrNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"/>
+            </LinearLayout>
+
+            <include
+                layout="@layout/layout_multi_capture_select"
+                android:id="@+id/layout_capture"
+                android:visibility="gone"/>
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -427,10 +463,9 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-
             <Button
                 android:id="@+id/button_pay_with_peticash"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="@dimen/dimen_8dp"
@@ -438,8 +473,9 @@
                 android:backgroundTint="@color/colorAccent"
                 android:padding="@dimen/dimen_8dp"
                 android:text="@string/paywithpeticash"
-                android:textColor="@color/colorWhite"/>
+                android:textColor="@color/colorWhite"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
-</LinearLayout>
+</RelativeLayout>
