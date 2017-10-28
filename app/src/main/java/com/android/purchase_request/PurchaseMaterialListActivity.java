@@ -96,7 +96,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_All;
-    private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_inIndent;
     private List<AvailableUsersItem> availableUserArray;
     private AlertDialog alertDialog;
     private boolean isMaterial;
@@ -286,9 +285,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     @OnClick(R.id.button_submit_purchase_request)
     public void onSubmitClicked() {
         realm = Realm.getDefaultInstance();
-        purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).findAll();
+        RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_inIndent = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).findAll();
         List<PurchaseMaterialListItem> purchaseMaterialListItems_Approved = realm.copyFromRealm(purchaseMaterialListRealmResult_inIndent);
-        List<PurchaseMaterialListItem> purchaseMaterialListItems_All = realm.copyFromRealm(purchaseMaterialListRealmResult_All);
+        RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_prAssigned = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAll();
+        List<PurchaseMaterialListItem> purchaseMaterialListItems_prAssigned = realm.copyFromRealm(purchaseMaterialListRealmResult_prAssigned);
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId = availableUserArray.get(index).getId();
@@ -298,7 +298,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Approved) {
             jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentId());
         }
-        for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_All) {
+        for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_prAssigned) {
             currentJonObject = new JSONObject();
             try {
                 currentJonObject.put("name", purchaseMaterialListItem.getItem_name());

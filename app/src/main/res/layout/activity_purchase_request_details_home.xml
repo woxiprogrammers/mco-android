@@ -22,8 +22,8 @@
         android:id="@+id/purchase_details_bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingBottom="@dimen/margin_20"
         android:layout_gravity="start"
+        android:paddingBottom="@dimen/margin_10"
         app:itemBackground="?attr/selectableItemBackground"
         app:itemTextColor="@drawable/nav_item_color_state"
         app:menu="@menu/purchase_summary_menu"/>

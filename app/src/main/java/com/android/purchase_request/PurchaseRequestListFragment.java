@@ -65,7 +65,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private Realm realm;
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
     private int pageNumber = 0;
-    private int oldPgaeNumber;
+    private int oldPageNumber;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
@@ -248,8 +248,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         recyclerView_commonListingView.addOnScrollListener(new EndlessRecyclerViewScrollListener(new LinearLayoutManager(mContext)) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                if (oldPgaeNumber != pageNumber) {
-                    oldPgaeNumber = pageNumber;
+                if (oldPageNumber != pageNumber) {
+                    oldPageNumber = pageNumber;
                     requestPrListOnline(page);
                 }
             }

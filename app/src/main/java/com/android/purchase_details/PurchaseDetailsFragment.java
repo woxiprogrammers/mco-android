@@ -75,8 +75,21 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
             isApproval = bundle.getBoolean("isForApproval");
         }
         initializeViews();
+        deleteExistingItemEntries();
         setAdapterForPurchaseList();
         return view;
+    }
+
+    private void deleteExistingItemEntries() {
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<ItemListItem> purchaseMaterialListRealmResult_All;
+                purchaseMaterialListRealmResult_All = realm.where(ItemListItem.class).equalTo("purchaseRequestId", purchaseRequestId).findAll();
+                purchaseMaterialListRealmResult_All.deleteAllFromRealm();
+            }
+        });
     }
 
     private void initializeViews() {

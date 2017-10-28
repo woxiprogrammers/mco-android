@@ -1,7 +1,6 @@
 package com.android.purchase_request;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -20,8 +19,8 @@ import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
 
+import java.text.DateFormatSymbols;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -94,10 +93,8 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     }
 
     private void setUpAppBarDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        String strMonth = calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
-        int intYear = calendar.get(Calendar.YEAR);
-        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + intYear);
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + passYear);
         relativeLayoutSelectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,6 +123,8 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
         passYear = year;
         passMonth = month;
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + passYear);
     }
 
     public void hideDateLayout(boolean isPurchaseRequest) {
