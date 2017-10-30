@@ -1,6 +1,7 @@
 package com.android.purchase_request;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
+import com.android.utils.AppConstants;
 
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
@@ -134,6 +136,16 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         } else {
             relativeLayoutSelectDate.setVisibility(View.GONE);
             toolbarPurchaseHome.setTitle("Purchase");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                PurchaseRequestListFragment purchaseRequestListFragment = (PurchaseRequestListFragment) mViewPager_purchaseHome.getAdapter().instantiateItem(mViewPager_purchaseHome, 1);
+                purchaseRequestListFragment.onActivityResultActions();
+            }
         }
     }
 

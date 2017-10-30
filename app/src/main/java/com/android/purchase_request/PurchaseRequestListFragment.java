@@ -23,6 +23,7 @@ import com.android.models.login_acl.PermissionsItem;
 import com.android.purchase_details.PurchaseRequestDetailsHomeActivity;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestResponse;
+import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.EndlessRecyclerViewScrollListener;
@@ -286,9 +287,20 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         }
     }
 
+    public void onActivityResultActions() {
+        setUpPrAdapter();
+        InterfacePurchaseRequest interfacePurchaseRequest = new InterfacePurchaseRequest() {
+            @Override
+            public void requestForPurchaseRequestList() {
+                requestPrListOnline(pageNumber);
+            }
+        };
+        MonthYearPickerDialog.setDateListenerInterface(interfacePurchaseRequest);
+    }
+
     @OnClick(R.id.floating_create_purchase_request)
     public void onViewClicked() {
-        startActivityForResult(new Intent(mContext, PurchaseMaterialListActivity.class), 123);
+        startActivityForResult(new Intent(mContext, PurchaseMaterialListActivity.class), AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST);
     }
 
     @SuppressWarnings("WeakerAccess")

@@ -67,9 +67,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
-import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
@@ -116,8 +114,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isNewItem;
-    private boolean isQuoatationMaterial;
+    private boolean isQuotationMaterial;
     private int indexItemUnit;
+    private RecyclerViewClickListener recyclerViewClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -490,7 +489,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if (!TextUtils.isEmpty(charSequence.toString()) && isQuoatationMaterial) {
+                    if (!TextUtils.isEmpty(charSequence.toString()) && isQuotationMaterial) {
                         floatItemQuantity = Float.parseFloat(charSequence.toString());
                         indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
                         float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
@@ -531,7 +530,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         Timber.d("Adapter setup called");
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
-        RecyclerViewClickListener recyclerViewClickListener = new RecyclerViewClickListener() {
+        recyclerViewClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 if (view.getId() == R.id.imageView_deleteMaterial_createPR) {
@@ -547,30 +546,15 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
         if (purchaseMaterialListRealmResult_All != null) {
             Timber.d("purchaseMaterialListRealmResult_All change listener added.");
-            purchaseMaterialListRealmResult_All.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems, OrderedCollectionChangeSet changeSet) {
-                    // `null`  means the async query returns the first time.
-                    if (changeSet == null) {
-                        recyclerView_materialList.getAdapter().notifyDataSetChanged();
-                        return;
+            purchaseMaterialListRealmResult_All.addChangeListener(
+                    new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
+                        @Override
+                        public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems) {
+                            PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResult_All, true, true, recyclerViewClickListener);
+                            recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
+                        }
                     }
-                    // For deletions, the adapter has to be notified in reverse order.
-                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
-                    for (int i = deletions.length - 1; i >= 0; i--) {
-                        OrderedCollectionChangeSet.Range range = deletions[i];
-                        recyclerView_materialList.getAdapter().notifyItemRangeRemoved(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
-                    for (OrderedCollectionChangeSet.Range range : insertions) {
-                        recyclerView_materialList.getAdapter().notifyItemRangeInserted(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
-                    for (OrderedCollectionChangeSet.Range range : modifications) {
-                        recyclerView_materialList.getAdapter().notifyItemRangeChanged(range.startIndex, range.length);
-                    }
-                }
-            });
+            );
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
         }
@@ -655,7 +639,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     Log.i("@@If", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
-                    isQuoatationMaterial = searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
+                    isQuotationMaterial = searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
                     Log.i("@@Else", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
                 }
             } else {
