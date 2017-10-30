@@ -42,6 +42,7 @@ public class AppUtils {
     );
     private String strToken;
     private String strLoggedInAt;
+    private String strUserRole;
 
     /**
      * initialize utils plus library
@@ -278,6 +279,27 @@ public class AppUtils {
         }
         return strLoggedInAt;
     }
+
+    public String getUserRole(){
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
+                    strUserRole = loginResponse.getLoginResponseData().getUser_role();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return strUserRole;
+    }
+
 
     public String getTime(String currentFormat, String expectedFormat, String currentDateTime) {
         final SimpleDateFormat df = new SimpleDateFormat(currentFormat);

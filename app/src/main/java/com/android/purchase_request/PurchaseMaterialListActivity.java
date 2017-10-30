@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -626,6 +625,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
+        isQuotationMaterial = false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             mEditTextNameMaterialAsset.clearFocus();
@@ -636,11 +636,9 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             if (isMaterial) {
                 if (isNewItem) {
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
-                    Log.i("@@If", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
                     isQuotationMaterial = searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
-                    Log.i("@@Else", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug());
                 }
             } else {
                 if (isNewItem) {

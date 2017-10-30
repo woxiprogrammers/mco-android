@@ -27,6 +27,10 @@ public class LoginResponseData extends RealmObject {
     private String email;
     @SerializedName("modules")
     private RealmList<ModulesItem> modules;
+
+    @SerializedName("user_role")
+    private String user_role;
+
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public RealmList<ProjectsItem> getProjects() {
@@ -107,5 +111,13 @@ public class LoginResponseData extends RealmObject {
 
     public void setModules(RealmList<ModulesItem> modules) {
         this.modules = modules;
+    }
+
+    public String getUser_role() {
+        return user_role;
+    }
+
+    public void setUser_role(String user_role) {
+        this.user_role = user_role;
     }
 }
