@@ -11,6 +11,7 @@ import com.android.inventory.InventoryHomeActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.material_request_approve.MaterialRequest_ApproveActivity;
 import com.android.models.login_acl.LoginResponse;
+import com.android.peticash.PetiCashListActivity;
 import com.android.peticash.PeticashFormActivity;
 import com.android.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppConstants;
@@ -74,7 +75,7 @@ public class SplashActivity extends BaseActivity {
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-maintainance", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-maintainance", PetiCashListActivity.class.getName());
         aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("inventory-history", PeticashFormActivity.class.getName());
         Gson gson = new Gson();

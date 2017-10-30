@@ -151,6 +151,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
     EditText editTextRefNumber;
     @BindView(R.id.linearLayoutRefNumber)
     LinearLayout linearLayoutRefNumber;
+    @BindView(R.id.vendorName)
+    TextView vendorName;
+    @BindView(R.id.linearLayoutVendorName)
+    LinearLayout linearLayoutVendorName;
     //    private JSONObject jsonImageNameObject = new JSONObject();
     JSONArray jsonImageNameArray = new JSONArray();
     private RadioButton radioPayButton;
@@ -174,15 +178,17 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private int materialReqComId;
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
+    private static String strVendorName;
 
     public PayFragment() {
         // Required empty public constructor
     }
 
-    public static PayFragment newInstance() {
+    public static PayFragment newInstance(String vendorName) {
         Bundle args = new Bundle();
         PayFragment fragment = new PayFragment();
         fragment.setArguments(args);
+        strVendorName = vendorName;
         return fragment;
     }
 
@@ -637,6 +643,12 @@ public class PayFragment extends Fragment implements FragmentInterface {
         });
         requestForMaterialNames();
         myCalendar = Calendar.getInstance();
+        if (vendorName != null) {
+            vendorName.setText(strVendorName);
+            linearLayoutVendorName.setVisibility(View.VISIBLE);
+        } else {
+            linearLayoutVendorName.setVisibility(View.GONE);
+        }
         return view;
     }
 

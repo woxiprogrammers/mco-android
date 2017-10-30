@@ -11,6 +11,29 @@
         android:layout_margin="@dimen/dimen_8dp"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dimen_16dp">
+        <LinearLayout
+            android:id="@+id/linearLayoutVendorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Vendor Name:-"
+                android:textColor="@color/colorTextLight"/>
+
+            <TextView
+                android:id="@+id/vendorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:textColor="@color/colorTextLight"/>
+
+        </LinearLayout>
+
 
         <Button
             android:id="@+id/button_edit"
