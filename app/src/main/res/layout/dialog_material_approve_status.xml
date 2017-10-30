@@ -156,7 +156,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:background="@drawable/selectable_button_background_gray"
-                android:text="DISMISS"
+                android:text="Dismiss"
                 android:textColor="@color/colorWhite"/>
 
             <View
