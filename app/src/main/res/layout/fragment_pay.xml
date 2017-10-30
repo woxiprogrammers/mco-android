@@ -101,7 +101,7 @@
                 android:id="@+id/radioButtonCreateAmmetment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create Ammetment"/>
+                android:text="Create Amendment"/>
 
         </RadioGroup>
 

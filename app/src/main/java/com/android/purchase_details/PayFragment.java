@@ -179,16 +179,18 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
     private static String strVendorName;
+    private static int orderId;
 
     public PayFragment() {
         // Required empty public constructor
     }
 
-    public static PayFragment newInstance(String vendorName) {
+    public static PayFragment newInstance(String vendorName,int purchaseOrderId) {
         Bundle args = new Bundle();
         PayFragment fragment = new PayFragment();
         fragment.setArguments(args);
         strVendorName = vendorName;
+        orderId=purchaseOrderId;
         return fragment;
     }
 
@@ -680,7 +682,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private void requestForMaterialNames() {
         JSONObject params = new JSONObject();
         try {
-            params.put("purchase_order_id", 1);
+            params.put("purchase_order_id", orderId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -699,11 +701,14 @@ public class PayFragment extends Fragment implements FragmentInterface {
                                 @Override
                                 public void execute(Realm realm) {
                                     Timber.d("Execute");
+                                    //ToDo Check after multiple items in Purchase Order
+                                    realm.delete(MaterialNamesItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+
                                     Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                                     setUpSpinnerValueChangeListener();
                                 }
