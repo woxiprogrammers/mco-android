@@ -42,9 +42,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
+import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -56,7 +57,7 @@ import timber.log.Timber;
  */
 public class PurchaseRequestListFragment extends Fragment implements FragmentInterface {
     private static String subModuleTag, permissionList;
-    @BindView(R.id.rv_material_list)
+    @BindView(R.id.rv_material_purchase_request_list)
     RecyclerView recyclerView_commonListingView;
     @BindView(R.id.floating_create_purchase_request)
     FloatingActionButton floatingCreatePurchaseRequest;
@@ -66,6 +67,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
     private int pageNumber = 0;
     private int oldPageNumber;
+    private PurchaseRequestRvAdapter purchaseRequestRvAdapter;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
@@ -219,7 +221,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(PurchaseHomeActivity.passYear))
                 .contains("date", strMonth).findAllAsync();
-        PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
+        purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
         recyclerView_commonListingView.setAdapter(purchaseRequestRvAdapter);
@@ -255,9 +257,28 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             }
         });
         if (purchaseRequestListItems != null) {
-            purchaseRequestListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseRequestListItem>>() {
+            purchaseRequestListItems.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseRequestListItem>>() {
                 @Override
-                public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems) {
+                public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
+                    // `null`  means the async query returns the first time.
+                    if (changeSet == null) {
+                        purchaseRequestRvAdapter.notifyDataSetChanged();
+                        return;
+                    }
+                    // For deletions, the adapter has to be notified in reverse order.
+                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
+                    for (int i = deletions.length - 1; i >= 0; i--) {
+                        OrderedCollectionChangeSet.Range range = deletions[i];
+                        purchaseRequestRvAdapter.notifyItemRangeRemoved(range.startIndex, range.length);
+                    }
+                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
+                    for (OrderedCollectionChangeSet.Range range : insertions) {
+                        purchaseRequestRvAdapter.notifyItemRangeInserted(range.startIndex, range.length);
+                    }
+                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
+                    for (OrderedCollectionChangeSet.Range range : modifications) {
+                        purchaseRequestRvAdapter.notifyItemRangeChanged(range.startIndex, range.length);
+                    }
                 }
             });
         } else {

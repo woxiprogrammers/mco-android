@@ -96,8 +96,8 @@
     </string-array>
     <string-array name="payment_mode_array">
         <item>Cash</item>
-        <item>Individual-Cash</item>
-        <item>Peticash</item>
+        <!--<item>Individual-Cash</item>
+        <item>Peticash</item>-->
         <item>Cheque</item>
         <item>NEFT</item>
         <item>RTGS</item>

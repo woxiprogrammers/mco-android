@@ -146,7 +146,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (purchaseOrderListItems != null) {
+        /*if (purchaseOrderListItems != null) {
             purchaseOrderListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseOrderListItem> purchaseOrderListItems) {
@@ -154,7 +154,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
-        }
+        }*/
     }
 
     private void functionForGettingData() {

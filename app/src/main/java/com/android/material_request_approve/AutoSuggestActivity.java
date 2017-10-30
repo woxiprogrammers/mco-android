@@ -282,7 +282,7 @@ public class AutoSuggestActivity extends BaseActivity {
                         public void onLongItemClick(View view, int position) {
                         }
                     }));
-            if (searchMaterialListItemRealmResults != null) {
+            /*if (searchMaterialListItemRealmResults != null) {
                 searchMaterialListItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<SearchMaterialListItem>>() {
                     @Override
                     public void onChange(RealmResults<SearchMaterialListItem> searchMaterialListItems) {
@@ -290,7 +290,7 @@ public class AutoSuggestActivity extends BaseActivity {
                 });
             } else {
                 AppUtils.getInstance().showOfflineMessage("AutoSuggestActivity");
-            }
+            }*/
         } else {
             searchAssetListItemRealmResults = realm.where(SearchAssetListItem.class).findAllAsync();
             AssetAutoSuggestAdapter assetAutoSuggestAdapter = new AssetAutoSuggestAdapter(searchAssetListItemRealmResults, true, true);
@@ -310,7 +310,7 @@ public class AutoSuggestActivity extends BaseActivity {
                         public void onLongItemClick(View view, int position) {
                         }
                     }));
-            if (searchAssetListItemRealmResults != null) {
+            /*if (searchAssetListItemRealmResults != null) {
                 searchAssetListItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<SearchAssetListItem>>() {
                     @Override
                     public void onChange(RealmResults<SearchAssetListItem> searchAssetListItems) {
@@ -318,7 +318,7 @@ public class AutoSuggestActivity extends BaseActivity {
                 });
             } else {
                 AppUtils.getInstance().showOfflineMessage("AutoSuggestActivity");
-            }
+            }*/
         }
     }
 
