@@ -9,7 +9,6 @@
                                     app:cardElevation="@dimen/dimen_4dp">
 
     <LinearLayout
-        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selector_is_material_selected"

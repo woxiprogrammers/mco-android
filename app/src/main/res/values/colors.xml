@@ -7,9 +7,7 @@
     <color name="colorAccentDark">#93000D</color>
     <color name="colorAccentLight">#FF5C5D</color>
     <color name="colorText">#212121</color>
-    <color name="colorTextDark_Black">#000000</color>
     <color name="colorTextLight">#757575</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorDivider">#BDBDBD</color>
-    <color name="colorSubModuleBackground">#ddd</color>
 </resources>

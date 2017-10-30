@@ -1,31 +1,10 @@
 <resources>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
     <string name="activity_title_peticash">Peticash</string>
-    <string name="button_1">Jan</string>
-    <string name="button_2">Feb</string>
-    <string name="button_3">Mar</string>
-    <string name="button_4">Apr</string>
-    <string name="button_5">May</string>
-    <string name="button_6">Jun</string>
-    <string name="button_7">July</string>
-    <string name="button_8">Aug</string>
-    <string name="button_9">Sept</string>
-    <string name="button_10">Oct</string>
-    <string name="button_11">Nov</string>
-    <string name="button_12">Dec</string>
-    <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="prompt_mobile_number">Mobile Number</string>
     <string name="realm_database_name">RealmLocalDatabase.realm</string>
     <string name="edittext_hint_quantity">Enter Quantity</string>
@@ -36,10 +15,8 @@
     <string name="text_material">Material</string>
     <string name="text_assets">Assets</string>
     <string name="text_move">Move</string>
-    <string name="text_history">History</string>
     <string name="move_in">Move In</string>
     <string name="move_out">Move Out</string>
-    <string name="project_name">Select Project Name</string>
     <string name="tap_too_add_note">TAP TO ADD NOTE</string>
     <string name="client_name">Client Name</string>
     <string name="site_name">Site Name</string>
@@ -52,22 +29,15 @@
     <string name="vehicle_number">Vehicle Number</string>
     <string name="bill_number">Bill Number</string>
     <string name="date">Date</string>
-    <string name="add_your_note">Add your note</string>
-    <string name="diesel_powered">Diesel Powered</string>
     <string name="asset_name">Asset Name</string>
     <string name="model_number">Model Number</string>
-    <string name="expiry_date">Expiry Date</string>
     <string name="remark">Remark</string>
     <string name="button_request">REQUEST</string>
     <string name="asset_maintainance">Asset Maintainance</string>
     <string name="please_enter_expiry_eate">Please Enter Expiry Date</string>
     <string name="please_enter_remark">Please Enter Remark</string>
-    <string name="select_month">Select Month</string>
-    <string name="choose_month">Choose month</string>
     <string name="select">Select</string>
     <string name="dismiss">Dismiss</string>
-    <string name="add_material">Add Material</string>
-    <string name="dialog_option_add">Add</string>
     <string name="dialog_title_add_material">Add Material</string>
     <string name="super_admin">Super Admin</string>
     <string name="admin">Admin</string>
@@ -92,10 +62,6 @@
         <item>ProjABC</item>
         <item>ProjXYZ</item>
     </string-array>
-    <string-array name="site_array">
-        <item>SiteA</item>
-        <item>SIteB</item>
-    </string-array>
     <string-array name="payment_mode_array">
         <item>Cash</item>
         <!--<item>Individual-Cash</item>
@@ -113,7 +79,6 @@
     <string name="title_activity_asset_details">AssetDetailsActivity</string>
     <string name="assets_readings">Readings</string>
     <string name="action_start_point">Starting Point</string>
-    <string name="action_top_up">Top Up Time</string>
     <string name="action_stop_point">Stopping Point</string>
     <string name="dialog_title_add_asset">Add Asset</string>
     <string name="dialog_label_add_material">Material Name</string>
@@ -122,20 +87,14 @@
     <string name="tag_asset">asset</string>
     <string name="tag_p_r_assigned">p-r-assigned</string>
     <string name="title_activity_pay_and_bills">PayAndBillsActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
     <string name="text_pay">Pay</string>
     <string name="text_bills">Bills</string>
     <string name="title_activity_material_request">Material Request</string>
     <string name="tag_in_indent">in-indent</string>
-    <string name="tag_pending">pending</string>
     <string name="add_as_new_item">Add %s as new item</string>
     <string name="tag_new">new</string>
     <string name="create_material_request">create-material-request</string>
     <string name="approve_material_request">approve-material-request</string>
-    <string name="tag_manager_approved">manager-approved</string>
-    <string name="tag_capital_p_pending">Pending</string>
     <string name="shop_name">Shop Name</string>
     <string name="bill_amount">Bill Amount</string>
     <string name="approve_purchase_request">approve-purchase-request</string>
@@ -147,6 +106,5 @@
     <string name="payableAmount">Payable Amount</string>
     <string name="paywithpeticash">Pay With Peticash</string>
     <string name="amount">Amount</string>
-    <string name="submit">Submit</string>
     <string name="tap_too_add_remark">Tap To Add Remark</string>
 </resources>

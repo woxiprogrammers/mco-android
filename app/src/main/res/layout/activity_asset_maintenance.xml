@@ -100,7 +100,6 @@
             </LinearLayout>
 
             <include
-                android:id="@+id/layoutBillImage"
                 layout="@layout/layout_multi_capture_select"/>
 
             <HorizontalScrollView
