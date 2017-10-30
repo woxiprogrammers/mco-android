@@ -160,7 +160,7 @@ public class PayAndBillsActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PayFragment.newInstance();
+                    return PayFragment.newInstance(primaryKey);
                 case 1:
                     return PurchaseBillListFragment.newInstance(false, primaryKey);
                 default:
