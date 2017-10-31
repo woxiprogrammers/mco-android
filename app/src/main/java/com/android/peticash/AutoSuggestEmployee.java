@@ -233,7 +233,8 @@ public class AutoSuggestEmployee extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             EmployeesearchdataItem employeesearchdataItem = employeesearchdataItemOrderedRealmCollection.get(position);
-            holder.mTextViewResultItem.setText(employeesearchdataItem.getEmployeeName());
+            holder.mTextViewResultItem.setText(employeesearchdataItem.getEmployeeName() +
+            " (" + employeesearchdataItem.getFormatEmployeeId() + ")");
         }
 
         @Override

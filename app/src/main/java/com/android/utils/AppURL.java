@@ -38,5 +38,8 @@ public class AppURL {
     public static final String API_PURCHAE_ORDER_BILL_PAYMENT = BASE_URL + "purchase/purchase-order/bill-payment?token=";
     public static final String API_PURCHASE_ORDER_BILL_EDIT = BASE_URL + "purchase/purchase-order/edit-bill-transaction?token=";
     public static final String API_MATERIAL_REQUEST_AVAILABLE_QUANTITY=BASE_URL + "purchase/material-request/check-available-quantity?token=";
+
+    ////////Peticash
     public static final String API_AUTO_SUGGEST_FOR_PETICASH_EMPLOYEE=BASE_URL + "peticash/employee-salary/auto-suggest";
+    public static final String API_CREATE_SALARY_FOR_EMPLOYEE=BASE_URL + "peticash/employee-salary/create?token=";
 }

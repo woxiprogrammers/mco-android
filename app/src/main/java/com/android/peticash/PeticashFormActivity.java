@@ -1,13 +1,19 @@
 package com.android.peticash;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,14 +26,36 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.peticashautosearchemployee.EmployeesearchdataItem;
 import com.android.utils.AppConstants;
+import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.vlk.multimager.activities.GalleryActivity;
+import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
+import com.vlk.multimager.utils.Image;
+import com.vlk.multimager.utils.Params;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import id.zelory.compressor.Compressor;
 import io.realm.Realm;
+import timber.log.Timber;
 
 public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.spinner_category_array)
@@ -42,6 +70,8 @@ public class PeticashFormActivity extends BaseActivity {
     TextView textViewEmployeeName;
     @BindView(R.id.textViewBalance)
     TextView textViewBalance;
+    @BindView(R.id.textViewExtraAmount)
+    TextView textviewExtraAmount;
     @BindView(R.id.edittextWeihges)
     EditText edittextWeihges;
     @BindView(R.id.linearLayoutForSalary)
@@ -94,7 +124,7 @@ public class PeticashFormActivity extends BaseActivity {
     TextView textViewCapture;
     @BindView(R.id.textView_pick)
     TextView textViewPick;
-    @BindView(R.id.linearLayoutUploadImage)
+    @BindView(R.id.linearLayoutUploadImageSalary)
     LinearLayout linearLayoutUploadImage;
     @BindView(R.id.editText_addNote)
     EditText editTextAddNote;
@@ -124,13 +154,28 @@ public class PeticashFormActivity extends BaseActivity {
     TextView textViewItemName;
     @BindView(R.id.linearLayoutRefNumber)
     LinearLayout linearLayoutRefNumber;
+    @BindView(R.id.textView_captureSalaryImage)
+    TextView textViewCaptureSalaryImage;
+    @BindView(R.id.textView_pickSalaryImage)
+    TextView textViewPickSalaryImage;
     private View layoutEmployeeInfo;
     private View layoutCapture;
+    private int primaryKey;
+    private JSONObject jsonImageNameObject = new JSONObject();
+
+
+    @BindView(R.id.linearLayoutEmployeInfo)
+    LinearLayout linearLayoutEmployeInfo;
     private String strSelectedSource, strItemName, strItemQuantity, strBillNumber, strBillAmount, strDate;
     private String strSalaryDate, strEmployeeIDOrName, strSalaryAmount, strTotalDays;
     private String str;
     private Context mContext;
     private Realm realm;
+    private int getPerWeges;
+    private DatePickerDialog.OnDateSetListener date;
+    private Calendar myCalendar;
+    private ArrayList<File> arrayImageFileList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,12 +192,92 @@ public class PeticashFormActivity extends BaseActivity {
         initializeviews();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //Purchase
+    @OnClick({R.id.button_generate_grn, R.id.button_pay_with_peticash})
+    public void onViewImageClicked(View view) {
+        switch (view.getId()) {
+            case R.id.button_generate_grn:
+                valideateEntries();
+                break;
+            case R.id.button_pay_with_peticash:
+                break;
+        }
+    }
+
+    //Salary
+    @OnClick(R.id.button_salary_submit)
+    public void onViewClicked() {
+        validationForSalaryAdvance();
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode != RESULT_OK) {
             return;
         }
         switch (requestCode) {
+
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList));
+                linearLayoutUploadImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
+                File currentImageFile;
+                for (Image currentImage : imagesList) {
+                    if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                        ImageView imageView = new ImageView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                        layoutParams.setMargins(10, 10, 10, 10);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setImageBitmap(myBitmap);
+                        linearLayoutUploadImage.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                break;
+            case Constants.TYPE_MULTI_PICKER:
+                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList2));
+                linearLayoutUploadImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
+                for (Image currentImage : imagesList2) {
+                    if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                        ImageView imageView = new ImageView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                        layoutParams.setMargins(10, 10, 10, 10);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setImageBitmap(myBitmap);
+                        linearLayoutUploadImage.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
                 functionToSetEmployeeInfo(intent);
                 break;
@@ -161,31 +286,34 @@ public class PeticashFormActivity extends BaseActivity {
 
     }
 
-    private void functionToSetEmployeeInfo(Intent intent) {
-        Bundle bundleExtras = intent.getExtras();
-        if (bundleExtras != null) {
-            realm=Realm.getDefaultInstance();
-            int primaryKey=bundleExtras.getInt("employeeId");
-            EmployeesearchdataItem employeesearchdataItem=realm.where(EmployeesearchdataItem.class).equalTo("employeeId",primaryKey).findFirst();
-            textViewEployeeId.setText("ID :-" + employeesearchdataItem.getFormatEmployeeId()+ "");
-            textViewEmployeeName.setText("Name:- " + employeesearchdataItem.getEmployeeName());
-            textViewBalance.setText("Total Amount Paid:- " + employeesearchdataItem.getTotalAmountPaid()+ "");
-            Glide.with(mContext).load("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture())
-                    .thumbnail(0.1f)
-                    .crossFade()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(imageViewProfilePicture);
-        }
-    }
-
     @OnClick(R.id.edit_text_emp_id_name)
     public void clickedSearch() {
         Intent intent = new Intent(PeticashFormActivity.this, AutoSuggestEmployee.class);
         startActivityForResult(intent, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE);
     }
 
+    @OnClick(R.id.editText_salary_date)
+    public void selectSalaryDate() {
+        date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateEditText(editTextSalaryDate);
+            }
+        };
+        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
+
     private void initializeviews() {
+        myCalendar = Calendar.getInstance();
+
         spinnerCategoryArray.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
@@ -272,32 +400,56 @@ public class PeticashFormActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+        edittextDay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
+                    float floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
+                    editTextSalaryAmount.setText(String.valueOf(floatAmount));
+                } else editTextSalaryAmount.setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
+    private void functionToSetEmployeeInfo(Intent intent) {
+        linearLayoutEmployeInfo.setVisibility(View.VISIBLE);
+        editTextEmpIdName.clearFocus();
+        editTextEmpIdName.setError(null);
+        Bundle bundleExtras = intent.getExtras();
+        if (bundleExtras != null) {
+            realm = Realm.getDefaultInstance();
+            primaryKey = bundleExtras.getInt("employeeId");
+            EmployeesearchdataItem employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
+            textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
+            textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
+            textViewBalance.setText("Total Amount Paid - " + employeesearchdataItem.getTotalAmountPaid() + "");
+            textviewExtraAmount.setText("Extra Amount Paid - " + employeesearchdataItem.getExtraAmountPaid());
+            editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
+            getPerWeges = employeesearchdataItem.getPerDayWages();
+            edittextWeihges.setText("" + getPerWeges);
+            Glide.with(mContext).load("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture())
+                    .thumbnail(0.1f)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(imageViewProfilePicture);
         }
-        return super.onOptionsItemSelected(item);
     }
 
-    @OnClick({R.id.button_generate_grn, R.id.button_pay_with_peticash})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.button_generate_grn:
-                valideateEntries();
-                break;
-            case R.id.button_pay_with_peticash:
-                break;
-        }
-    }
-
-    @OnClick(R.id.button_salary_submit)
-    public void onViewClicked() {
-        validationForSalaryAdvance();
+    private void updateEditText(EditText editTextUpdateDate) {
+        String myFormat = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
+        editTextUpdateDate.setError(null);
     }
 
     private void valideateEntries() {
@@ -415,6 +567,114 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSalaryAmount.setError(null);
             editTextSalaryAmount.clearFocus();
         }
-        Toast.makeText(mContext, "Payment Success", Toast.LENGTH_SHORT).show();
+        uploadImages_addItemToLocal();
+    }
+
+    private void requestForSalaryOrAdvance() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("employee_id", primaryKey);
+            params.put("type", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
+            params.put("date", editTextSalaryDate.getText().toString());
+            params.put("days", edittextDay.getText().toString());
+            params.put("amount", editTextSalaryAmount.getText().toString());
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            if (!TextUtils.isEmpty(editTextAddNote.getText().toString()))
+                params.put("remark", editTextAddNote.getText().toString());
+            else
+                params.put("remark", "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CREATE_SALARY_FOR_EMPLOYEE + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_CREATE_SALARY_FOR_EMPLOYEE")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+
+    }
+
+    @OnClick({R.id.textView_captureSalaryImage, R.id.textView_pickSalaryImage})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textView_captureSalaryImage:
+                Intent intent = new Intent(mContext, MultiCameraActivity.class);
+                Params params = new Params();
+                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params.setToolbarColor(R.color.colorPrimaryLight);
+                params.setActionButtonColor(R.color.colorAccentDark);
+                params.setButtonTextColor(R.color.colorWhite);
+                intent.putExtra(Constants.KEY_PARAMS, params);
+                startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
+                break;
+            case R.id.textView_pickSalaryImage:
+                Intent intent1 = new Intent(mContext, GalleryActivity.class);
+                Params params1 = new Params();
+                params1.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params1.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params1.setToolbarColor(R.color.colorPrimaryLight);
+                params1.setActionButtonColor(R.color.colorAccentDark);
+                params1.setButtonTextColor(R.color.colorWhite);
+                intent1.putExtra(Constants.KEY_PARAMS, params1);
+                startActivityForResult(intent1, Constants.TYPE_MULTI_PICKER);
+                break;
+        }
+    }
+
+    private void uploadImages_addItemToLocal() {
+        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+            File sendImageFile = arrayImageFileList.get(0);
+            File compressedImageFile = sendImageFile;
+            try {
+                compressedImageFile = new Compressor(this).compressToFile(sendImageFile);
+            } catch (IOException e) {
+                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+            }
+            String strToken = AppUtils.getInstance().getCurrentToken();
+            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                    .setPriority(Priority.MEDIUM)
+                    .addMultipartFile("image", compressedImageFile)
+                    .addMultipartParameter("image_for", "material-request")
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("uploadImages_addItemToLocal")
+                    .setPercentageThresholdForCancelling(50)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                String fileName = response.getString("filename");
+                                jsonImageNameObject.put("image", fileName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            arrayImageFileList.remove(0);
+                            uploadImages_addItemToLocal();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                        }
+                    });
+        } else {
+            requestForSalaryOrAdvance();
+        }
     }
 }
