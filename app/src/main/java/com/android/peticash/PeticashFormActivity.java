@@ -1,6 +1,7 @@
 package com.android.peticash;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -17,10 +18,16 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.peticashautosearchemployee.EmployeesearchdataItem;
+import com.android.utils.AppConstants;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.vlk.multimager.utils.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.spinner_category_array)
@@ -123,6 +130,7 @@ public class PeticashFormActivity extends BaseActivity {
     private String strSalaryDate, strEmployeeIDOrName, strSalaryAmount, strTotalDays;
     private String str;
     private Context mContext;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +145,44 @@ public class PeticashFormActivity extends BaseActivity {
             getSupportActionBar().setTitle("Peticash Form");
         }
         initializeviews();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
+                functionToSetEmployeeInfo(intent);
+                break;
+
+        }
+
+    }
+
+    private void functionToSetEmployeeInfo(Intent intent) {
+        Bundle bundleExtras = intent.getExtras();
+        if (bundleExtras != null) {
+            realm=Realm.getDefaultInstance();
+            int primaryKey=bundleExtras.getInt("employeeId");
+            EmployeesearchdataItem employeesearchdataItem=realm.where(EmployeesearchdataItem.class).equalTo("employeeId",primaryKey).findFirst();
+            textViewEployeeId.setText("ID :-" + employeesearchdataItem.getFormatEmployeeId()+ "");
+            textViewEmployeeName.setText("Name:- " + employeesearchdataItem.getEmployeeName());
+            textViewBalance.setText("Total Amount Paid:- " + employeesearchdataItem.getTotalAmountPaid()+ "");
+            Glide.with(mContext).load("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture())
+                    .thumbnail(0.1f)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(imageViewProfilePicture);
+        }
+    }
+
+    @OnClick(R.id.edit_text_emp_id_name)
+    public void clickedSearch() {
+        Intent intent = new Intent(PeticashFormActivity.this, AutoSuggestEmployee.class);
+        startActivityForResult(intent, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE);
     }
 
     private void initializeviews() {
