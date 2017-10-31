@@ -102,7 +102,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
     private List<AvailableUsersItem> availableUserArray;
-    private List<UnitQuantityItem> unitQuantityItems;
     private AlertDialog alertDialog;
     private boolean isMaterial;
     private TextView mTextViewTitleMaterialAsset;
@@ -114,7 +113,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private Spinner mSpinnerUnits;
     private LinearLayout ll_dialog_unit;
     private SearchMaterialListItem searchMaterialListItem_fromResult = null;
-    private UnitQuantityItem unitQuantityItem = null;
     private SearchAssetListItem searchAssetListItem_fromResult = null;
     private String strToken;
     private ArrayList<File> arrayImageFileList;
@@ -125,8 +123,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private boolean isApprove, isMoveIndent, isNewItem;
     private EditText editText_name_material_asset, editText_quantity_material_asset, edittext_unit, editextDialogRemark;
     private Spinner spinner_select_units;
-    private float allowedQuantity;
-    private PurchaseMaterialListItem purchaseMaterialListItem;
     private AlertDialog alert_Dialog;
     private FrameLayout frameLayoutSpinnerUnitDialog;
     private int indexItemUnit;
@@ -1363,7 +1359,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
             setTime(purchaseMaterialListItem.getCreatedAt(), holder.textViewDate);
             holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
@@ -1417,7 +1413,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
-        unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
+        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (UnitQuantityItem currentUser : unitQuantityItems) {
             String strUserName = currentUser.getUnitName();
