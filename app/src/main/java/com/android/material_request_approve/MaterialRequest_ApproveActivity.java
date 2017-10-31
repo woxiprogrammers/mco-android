@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -129,7 +130,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private FrameLayout frameLayoutSpinnerUnitDialog;
     private int indexItemUnit;
     private TextView mTextViewExceedQuantity;
+    private TextView textViewExceedQuantityForQuotation;
     private boolean isQuotationMaterial;
+    private boolean validationForQuotation;
+  private   CurrentMaterialRvAdapter purchaseMaterialRvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -365,6 +369,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsObject(RequestedItemResponse.class, new ParsedRequestListener<RequestedItemResponse>() {
                     @Override
                     public void onResponse(final RequestedItemResponse response) {
+                        Log.i("@@",response.toString());
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -449,6 +454,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+
+                        Log.i("@@",response.toString());
                         linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                         mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                         getRequestedItemList();
@@ -466,6 +473,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_add_material_asset_form, null);
         mTextViewTitleMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_title_material_asset);
         mCheckboxIsDiesel = (CheckBox) dialogView.findViewById(R.id.checkbox_is_diesel);
+        textViewExceedQuantityForQuotation = dialogView.findViewById(R.id.textview_error_for_exceed_quantity);
         mTextViewLabelMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_label_material_asset);
         mEditTextNameMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_name_material_asset);
         mEditTextQuantityMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_quantity_material_asset);
@@ -592,6 +600,31 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             ll_dialog_unit.setVisibility(View.VISIBLE);
             mEditTextQuantityMaterialAsset.setText("");
             mEditTextQuantityMaterialAsset.setFocusableInTouchMode(true);
+            mEditTextQuantityMaterialAsset.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if (!TextUtils.isEmpty(charSequence.toString()) && validationForQuotation) {
+                        floatItemQuantity = Float.parseFloat(charSequence.toString().trim());
+                        indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+                        float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
+                        final int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
+                        if (floatComparison > 0) {
+                            textViewExceedQuantityForQuotation.setVisibility(View.VISIBLE);
+                        } else {
+                            textViewExceedQuantityForQuotation.setVisibility(View.GONE);
+                        }
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+
         } else {
             strItemNameLabel = getString(R.string.dialog_label_add_asset);
             strDialogTitle = getString(R.string.dialog_title_add_asset);
@@ -669,12 +702,15 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
                 break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
+                mEditTextQuantityMaterialAsset.setText("");
+                textViewExceedQuantityForQuotation.setVisibility(View.GONE);
                 functionForProcessingSearchResult(intent);
                 break;
         }
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
+        validationForQuotation=false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             mEditTextNameMaterialAsset.clearFocus();
@@ -687,6 +723,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                    validationForQuotation = searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
+
                 }
             } else {
                 if (isNewItem) {
@@ -784,10 +822,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             mEditTextQuantityMaterialAsset.setError(null);
             mEditTextQuantityMaterialAsset.clearFocus();
         }
-        floatItemQuantity = Float.parseFloat(strQuantity);
         strUnitName = "";
         unitId = 0;
-        if (isMaterial && !isNewItem) {
+        floatItemQuantity=Float.parseFloat(strQuantity.trim());
+        /*if (isMaterial && !isNewItem) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
@@ -803,7 +841,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 mEditTextQuantityMaterialAsset.setError(null);
                 mEditTextQuantityMaterialAsset.clearFocus();
             }
-        } else if (isMaterial) {
+        } else */if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
@@ -1049,7 +1087,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             }
         };
         //Materials to be requested after click on ADD button.
-        CurrentMaterialRvAdapter purchaseMaterialRvAdapter = new CurrentMaterialRvAdapter(materialListRealmResults_New, true, true, recyclerViewClickListener);
+        purchaseMaterialRvAdapter = new CurrentMaterialRvAdapter(materialListRealmResults_New, true, true, recyclerViewClickListener);
         mRvMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
@@ -1060,22 +1098,22 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems, OrderedCollectionChangeSet changeSet) {
                     // `null`  means the async query returns the first time.
                     if (changeSet == null) {
-                        mRvMaterialListMaterialRequestApprove.getAdapter().notifyDataSetChanged();
+                        purchaseMaterialRvAdapter.notifyDataSetChanged();
                         return;
                     }
                     // For deletions, the adapter has to be notified in reverse order.
                     OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
                     for (int i = deletions.length - 1; i >= 0; i--) {
                         OrderedCollectionChangeSet.Range range = deletions[i];
-                        mRvMaterialListMaterialRequestApprove.getAdapter().notifyItemRangeRemoved(range.startIndex, range.length);
+                        purchaseMaterialRvAdapter.notifyItemRangeRemoved(range.startIndex, range.length);
                     }
                     OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
                     for (OrderedCollectionChangeSet.Range range : insertions) {
-                        mRvMaterialListMaterialRequestApprove.getAdapter().notifyItemRangeInserted(range.startIndex, range.length);
+                        purchaseMaterialRvAdapter.notifyItemRangeInserted(range.startIndex, range.length);
                     }
                     OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
                     for (OrderedCollectionChangeSet.Range range : modifications) {
-                        mRvMaterialListMaterialRequestApprove.getAdapter().notifyItemRangeChanged(range.startIndex, range.length);
+                        purchaseMaterialRvAdapter.notifyItemRangeChanged(range.startIndex, range.length);
                     }
                 }
             });
@@ -1096,6 +1134,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
                     @Override
                     public void onResponse(final UsersWithAclResponse response) {
+                        Log.i("@@",response.toString());
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -1358,11 +1397,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
 
-          /*  if (purchaseMaterialListItem.getHave_access().contains("approve")) {
+            if (purchaseMaterialListItem.getHave_access().contains("approve")) {
                 holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
             } else {
                 holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-            }*/
+            }
             if (strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) {
 //                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                 holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
