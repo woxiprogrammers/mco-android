@@ -681,12 +681,16 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             String searchedItemName = bundleExtras.getString("searchedItemName");
             realm = Realm.getDefaultInstance();
             if (isMaterial) {
+                mEditTextQuantityMaterialAsset.setText("");
+                mEditTextQuantityMaterialAsset.setFocusableInTouchMode(true);
                 if (isNewItem) {
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
                 }
             } else {
+                mEditTextQuantityMaterialAsset.setText("1");
+                mEditTextQuantityMaterialAsset.setFocusable(false);
                 if (isNewItem) {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                 } else {

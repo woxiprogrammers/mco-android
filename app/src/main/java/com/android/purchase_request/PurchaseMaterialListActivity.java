@@ -618,7 +618,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 }
                 break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
-                mEditTextQuantityMaterialAsset.setText("");
                 mTextViewExceedQuantity.setVisibility(View.GONE);
                 functionForProcessingSearchResult(intent);
                 break;
@@ -635,6 +634,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             String searchedItemName = bundleExtras.getString("searchedItemName");
             realm = Realm.getDefaultInstance();
             if (isMaterial) {
+                mEditTextQuantityMaterialAsset.setText("");
+                mEditTextQuantityMaterialAsset.setFocusableInTouchMode(true);
                 if (isNewItem) {
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
                 } else {
@@ -642,6 +643,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     isQuotationMaterial = searchMaterialListItem_fromResult.getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
                 }
             } else {
+                mEditTextQuantityMaterialAsset.setText("1");
+                mEditTextQuantityMaterialAsset.setFocusable(false);
                 if (isNewItem) {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                 } else {
