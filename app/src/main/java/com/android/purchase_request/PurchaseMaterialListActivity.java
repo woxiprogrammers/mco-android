@@ -60,12 +60,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import id.zelory.compressor.Compressor;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -112,7 +114,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private float floatItemQuantity = 0;
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
-    private boolean isNewItem;
     private boolean isQuotationMaterial;
     private int indexItemUnit;
     private RecyclerViewClickListener recyclerViewClickListener;
@@ -629,7 +630,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             mEditTextNameMaterialAsset.clearFocus();
-            isNewItem = bundleExtras.getBoolean("isNewItem");
+            boolean isNewItem = bundleExtras.getBoolean("isNewItem");
             isMaterial = bundleExtras.getBoolean("isMaterial");
             String searchedItemName = bundleExtras.getString("searchedItemName");
             realm = Realm.getDefaultInstance();
@@ -688,11 +689,16 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private void uploadImages_addItemToLocal() {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
-            Timber.i("sendImageFile: " + sendImageFile);
+            File compressedImageFile = sendImageFile;
+            try {
+                compressedImageFile = new Compressor(this).compressToFile(sendImageFile);
+            } catch (IOException e) {
+                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+            }
             String strToken = AppUtils.getInstance().getCurrentToken();
             AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                     .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", sendImageFile)
+                    .addMultipartFile("image", compressedImageFile)
                     .addMultipartParameter("image_for", "material-request")
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")
@@ -701,7 +707,12 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Timber.d(String.valueOf(response));
+                            try {
+                                String fileName = response.getString("filename");
+                                jsonImageNameObject.put("image", fileName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                             arrayImageFileList.remove(0);
                             uploadImages_addItemToLocal();
                         }

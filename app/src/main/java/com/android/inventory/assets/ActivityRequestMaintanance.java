@@ -37,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +46,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import id.zelory.compressor.Compressor;
 import timber.log.Timber;
 
 public class ActivityRequestMaintanance extends BaseActivity {
@@ -294,11 +296,16 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private void uploadImages_addItemToLocal() {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
-            Timber.i("sendImageFile: " + sendImageFile);
+            File compressedImageFile = sendImageFile;
+            try {
+                compressedImageFile = new Compressor(this).compressToFile(sendImageFile);
+            } catch (IOException e) {
+                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+            }
             String strToken = AppUtils.getInstance().getCurrentToken();
             AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                     .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", sendImageFile)
+                    .addMultipartFile("image", compressedImageFile)
                     .addMultipartParameter("image_for", "request-maintenance")
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")

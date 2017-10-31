@@ -42,12 +42,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import id.zelory.compressor.Compressor;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -533,11 +535,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void uploadImages_addItemToLocal() {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
-            Timber.i("sendImageFile: " + sendImageFile);
+            File compressedImageFile = sendImageFile;
+            try {
+                compressedImageFile = new Compressor(getActivity()).compressToFile(sendImageFile);
+            } catch (IOException e) {
+                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+            }
             String strToken = AppUtils.getInstance().getCurrentToken();
             AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                     .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", sendImageFile)
+                    .addMultipartFile("image", compressedImageFile)
                     .addMultipartParameter("image_for", "request-maintenance")
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")

@@ -52,6 +52,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,6 +63,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import id.zelory.compressor.Compressor;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -156,8 +158,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.linearLayoutVendorName)
     LinearLayout linearLayoutVendorName;
     //    private JSONObject jsonImageNameObject = new JSONObject();
-    JSONArray jsonImageNameArray = new JSONArray();
-    private RadioButton radioPayButton;
+    private JSONArray jsonImageNameArray = new JSONArray();
     private Unbinder unbinder;
     private Realm realm;
     private Context mContext;
@@ -167,7 +168,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private List<MaterialNamesItem> availableMaterialArray;
     private List<MaterialUnitsItem> unitsArray;
     private List<MaterialImagesItem> materialImagesItemList;
-    private String strQuantity, strUnit, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, str_add_note, str, strInDate, strOutDate;
+    private String strQuantity, strChallanNumber, strVehicleNumber, strInTime, strOutTime, strBillAmount, strInDate, strOutDate;
     private String strPayableAmount, strRefNumber;
     private int submitCondition;
     private PurchaseBillListItem purchaseBIllDetailsItems;
@@ -185,12 +186,12 @@ public class PayFragment extends Fragment implements FragmentInterface {
         // Required empty public constructor
     }
 
-    public static PayFragment newInstance(String vendorName,int purchaseOrderId) {
+    public static PayFragment newInstance(String vendorName, int purchaseOrderId) {
         Bundle args = new Bundle();
         PayFragment fragment = new PayFragment();
         fragment.setArguments(args);
         strVendorName = vendorName;
-        orderId=purchaseOrderId;
+        orderId = purchaseOrderId;
         return fragment;
     }
 
@@ -664,9 +665,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
         realm = Realm.getDefaultInstance();
         MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", selectedId).findFirst();
         materialReqComId = materialNamesItem.getMaterialRequestComponentId();
-        if (materialNamesItem != null) {
-            unitsRealmResults = materialNamesItem.getMaterialUnits();
-        }
+        unitsRealmResults = materialNamesItem.getMaterialUnits();
         setUpSpinnerAdapterForUnits(unitsRealmResults);
     }
 
@@ -708,7 +707,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-
                                     Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                                     setUpSpinnerValueChangeListener();
                                 }
@@ -740,10 +738,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
             arrayOfUsers.add(strMaterialUnit);
         }
         ArrayAdapter<String> arrayAdapterUnits = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        if (arrayAdapterUnits != null) {
-            arrayAdapterUnits.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerSelectUnits.setAdapter(arrayAdapterUnits);
-        }
+        arrayAdapterUnits.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSelectUnits.setAdapter(arrayAdapterUnits);
     }
 
     private void setImage(RealmList<MaterialImagesItem> image) {
@@ -792,10 +788,8 @@ public class PayFragment extends Fragment implements FragmentInterface {
             arrayOfUsers.add(strMaterialName);
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        if (arrayAdapter != null) {
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(arrayAdapter);
-        }
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
     }
 
     private void addImages(ArrayList<Image> imagesList, LinearLayout layout) {
@@ -825,11 +819,16 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private void uploadImages_addItemToLocal(int checkCondition) {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
-            Timber.i("sendImageFile: " + sendImageFile);
+            File compressedImageFile = sendImageFile;
+            try {
+                compressedImageFile = new Compressor(getActivity()).compressToFile(sendImageFile);
+            } catch (IOException e) {
+                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+            }
             String strToken = AppUtils.getInstance().getCurrentToken();
             AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                     .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", sendImageFile)
+                    .addMultipartFile("image", compressedImageFile)
                     .addMultipartParameter("image_for", "material-request")
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")
