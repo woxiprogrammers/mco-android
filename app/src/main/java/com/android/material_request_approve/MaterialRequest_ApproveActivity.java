@@ -133,7 +133,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private TextView textViewExceedQuantityForQuotation;
     private boolean isQuotationMaterial;
     private boolean validationForQuotation;
-  private   CurrentMaterialRvAdapter purchaseMaterialRvAdapter;
+    private CurrentMaterialRvAdapter purchaseMaterialRvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -369,7 +369,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsObject(RequestedItemResponse.class, new ParsedRequestListener<RequestedItemResponse>() {
                     @Override
                     public void onResponse(final RequestedItemResponse response) {
-                        Log.i("@@",response.toString());
+                        Log.i("@@", response.toString());
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -455,7 +455,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        Log.i("@@",response.toString());
+                        Log.i("@@", response.toString());
                         linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                         mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                         getRequestedItemList();
@@ -710,7 +710,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
-        validationForQuotation=false;
+        validationForQuotation = false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             mEditTextNameMaterialAsset.clearFocus();
@@ -824,7 +824,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
         strUnitName = "";
         unitId = 0;
-        floatItemQuantity=Float.parseFloat(strQuantity.trim());
+        floatItemQuantity = Float.parseFloat(strQuantity.trim());
         /*if (isMaterial && !isNewItem) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
@@ -841,7 +841,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 mEditTextQuantityMaterialAsset.setError(null);
                 mEditTextQuantityMaterialAsset.clearFocus();
             }
-        } else */if (isMaterial) {
+        } else */
+        if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
@@ -967,17 +968,27 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         final PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
         int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
         JSONObject params = new JSONObject();
+
         try {
-            params.put("material_request_component_id", materialRequestComponentId);
-            params.put("change_component_status_id_to", statusId);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("quantity", editText_quantity_material_asset.getText().toString());
-            params.put("unit_id", spinner_select_units.getSelectedItem());
-            if (editextDialogRemark.getText().toString() != null) {
-                params.put("remark", editextDialogRemark.getText().toString());
-            } else {
+            if(!isMoveIndent){
+                params.put("material_request_component_id", materialRequestComponentId);
+                params.put("change_component_status_id_to", statusId);
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("unit_id", spinner_select_units.getSelectedItem());
+                if (editText_quantity_material_asset.getText().toString() != null) {
+                    params.put("quantity", editText_quantity_material_asset.getText().toString());
+                }
+                if (editextDialogRemark.getText().toString() != null) {
+                    params.put("remark", editextDialogRemark.getText().toString());
+                } else {
+                    params.put("remark", "");
+                }
+            }else {
+                params.put("material_request_component_id", materialRequestComponentId);
+                params.put("change_component_status_id_to", statusId);
                 params.put("remark", "");
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1134,7 +1145,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
                     @Override
                     public void onResponse(final UsersWithAclResponse response) {
-                        Log.i("@@",response.toString());
+                        Log.i("@@", response.toString());
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -1397,7 +1408,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
 
-            if (purchaseMaterialListItem.getHave_access().contains("approve")) {
+            if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) {
                 holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
             } else {
                 holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
@@ -1409,13 +1420,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 //                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                 holder.buttonMoveToIndent.setVisibility(View.GONE);
             }
-            if (strStatus.equalsIgnoreCase("pending")) {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-//                holder.buttonMoveToIndent.setVisibility(View.GONE);
-            } else {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-//                holder.buttonMoveToIndent.setVisibility(View.GONE);
-            }
+
         }
 
         @Override
