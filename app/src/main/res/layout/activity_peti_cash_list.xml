@@ -6,440 +6,263 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.android.peticash.PetiCashListActivity">
-    <!--Collapsing AppBar-->
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_200dp"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!--Collapsing AppBar-->
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/dimen_200dp"
             android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="16dp"
-            app:expandedTitleMarginStart="16dp"
-            app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded.Shadow"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleMarginEnd="16dp"
+                app:expandedTitleMarginStart="16dp"
+                app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded.Shadow"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/dimen_16dp"
+                    android:fitsSystemWindows="true"
+                    android:gravity="center_horizontal|bottom"
+                    android:orientation="horizontal"
+                    app:layout_collapseMode="parallax">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dimen_10dp"
+                        android:background="@drawable/background_circular_120"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="July"
+                            android:textColor="@color/colorTextLight"
+                            android:textSize="25sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/dimen_2dp"
+                            android:layout_marginTop="@dimen/dimen_2dp"
+                            android:text="₹2546"
+                            android:textColor="@color/colorText"
+                            android:textSize="20dp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="₹216"
+                            android:textColor="@color/colorTextLight"
+                            android:textSize="15dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:background="@drawable/background_circular_120"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Balance"
+                            android:textColor="@color/colorTextLight"
+                            android:textSize="25sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/dimen_2dp"
+                            android:layout_marginTop="@dimen/dimen_2dp"
+                            android:text="₹2546"
+                            android:textColor="@color/colorText"
+                            android:textSize="20dp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="₹216"
+                            android:textColor="@color/colorTextLight"
+                            android:textSize="15dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbarPeticash"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:title="@string/activity_title_peticash"/>
+            </android.support.design.widget.CollapsingToolbarLayout>
+        </android.support.design.widget.AppBarLayout>
+        <!--Main Layout-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_8dp"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:text="Latest transactions as on: 03 Oct 2017"/>
+        <!--<android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            app:cardElevation="@dimen/dimen_4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/dimen_16dp"
-                android:fitsSystemWindows="true"
-                android:gravity="center_horizontal|bottom"
-                android:orientation="horizontal"
-                app:layout_collapseMode="parallax">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tuesday 4 July"/>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_8dp"
-                    android:layout_marginRight="@dimen/dimen_8dp"
-                    android:background="@drawable/background_circular_100"
-                    android:backgroundTint="#ffffff"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_4dp"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Personal"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="16dp"/>
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:text="₹246"
-                        android:textColor="@color/colorText"
-                        android:textSize="20dp"
-                        android:textStyle="bold"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Steel 2 Ton: ₹4355"
+                            android:textColor="@color/colorText"
+                            android:textSize="@dimen/dimen_16dp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Steel 2 Ton: ₹4355"
+                            android:textColor="@color/colorTextLight"
+                            android:textSize="@dimen/dimen_14dp"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/img_in"/>
+                </LinearLayout>
+
+                <View
+                    style="@style/style_horizontal_line"
+                    android:layout_marginBottom="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_2dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_4dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="₹466"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="15dp"
-                        android:visibility="invisible"/>
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Steel 2 Ton: ₹4355"
+                            android:textColor="@color/colorText"
+                            android:textSize="@dimen/dimen_16dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Steel 2 Ton: ₹4355"
+                            android:textColor="@color/colorTextLight"
+                            android:textSize="@dimen/dimen_14dp"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/img_in"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_1dp"
-                    android:layout_marginRight="@dimen/dimen_1dp"
-                    android:background="@drawable/background_circular_120"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_4dp"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="July"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="25dp"/>
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:text="₹2546"
-                        android:textColor="@color/colorText"
-                        android:textSize="20dp"
-                        android:textStyle="bold"/>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Steel 2 Ton: ₹4355"
+                            android:textColor="@color/colorText"
+                            android:textSize="@dimen/dimen_16dp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="₹216"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="15dp"/>
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Steel 2 Ton: ₹4355"
+                            android:textColor="@color/colorTextLight"
+                            android:textSize="@dimen/dimen_14dp"/>
+                    </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_8dp"
-                    android:layout_marginRight="@dimen/dimen_8dp"
-                    android:background="@drawable/background_circular_100"
-                    android:backgroundTint="#ffffff"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Balance"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="16dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"
-                        android:text="₹5646"
-                        android:textColor="@color/colorText"
-                        android:textSize="20dp"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="₹466"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="15dp"/>
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/img_out"/>
                 </LinearLayout>
             </LinearLayout>
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbarPeticash"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="@string/activity_title_peticash"/>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
-    <!--Main Layout-->
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
+        </android.support.v7.widget.CardView>-->
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_8dp"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:text="Latest transactions as on: 03 Oct 2017"/>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_8dp"
-                app:cardElevation="@dimen/dimen_4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dimen_8dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Tuesday 4 July"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_4dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorText"
-                                android:textSize="@dimen/dimen_16dp"/>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="@dimen/dimen_14dp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/img_in"/>
-                    </LinearLayout>
-
-                    <View
-                        style="@style/style_horizontal_line"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_4dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorText"
-                                android:textSize="@dimen/dimen_16dp"/>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="@dimen/dimen_14dp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/img_in"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_4dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorText"
-                                android:textSize="@dimen/dimen_16dp"/>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="@dimen/dimen_14dp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/img_out"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_8dp"
-                app:cardElevation="@dimen/dimen_4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dimen_8dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Tuesday 3 July"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_4dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorText"
-                                android:textSize="@dimen/dimen_16dp"/>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="@dimen/dimen_14dp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/img_in"/>
-                    </LinearLayout>
-
-                    <View
-                        style="@style/style_horizontal_line"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_2dp"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_4dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorText"
-                                android:textSize="@dimen/dimen_16dp"/>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="@dimen/dimen_14dp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/img_in"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dimen_2dp"
-                        android:layout_marginTop="@dimen/dimen_4dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorText"
-                                android:textSize="@dimen/dimen_16dp"/>
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Steel 2 Ton: ₹4355"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="@dimen/dimen_14dp"/>
-                        </LinearLayout>
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/img_out"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_add_button_peticash"
@@ -448,6 +271,6 @@
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="@dimen/dimen_16dp"
         android:layout_marginRight="@dimen/dimen_16dp"
-        app:srcCompat="@drawable/ic_add"
-        app:fabSize="normal"/>
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_add"/>
 </android.support.design.widget.CoordinatorLayout>
