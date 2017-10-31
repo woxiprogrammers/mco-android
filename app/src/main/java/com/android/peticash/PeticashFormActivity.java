@@ -147,6 +147,7 @@ public class PeticashFormActivity extends BaseActivity {
                     case 0:
                         layoutEmployeeInfo.setVisibility(View.GONE);
                         linearLayoutForCategoryPurchase.setVisibility(View.VISIBLE);
+                        buttonGenerateGrn.setVisibility(View.VISIBLE);
                         break;
                     case 1:
                         linearLayoutForSalary.setVisibility(View.VISIBLE);

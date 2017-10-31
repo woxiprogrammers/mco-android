@@ -424,6 +424,7 @@
                 android:id="@+id/editText_BillAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
 

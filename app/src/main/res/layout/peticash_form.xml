@@ -59,13 +59,19 @@
                         android:text="Select Type:"
                         android:textColor="@color/colorTextLight"/>
 
-                    <Spinner
-                        android:id="@+id/spinner_material_or_asset"
+
+                    <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:entries="@array/selectType"
-                        android:padding="@dimen/dimen_5dp"
-                        />
+                        android:background="@android:drawable/editbox_background">
+
+                        <Spinner
+                            android:id="@+id/spinner_material_or_asset"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/selectType"
+                            />
+                    </FrameLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -80,13 +86,19 @@
                         android:text="Material Source:"
                         android:textColor="@color/colorTextLight"/>
 
-                    <Spinner
-                        android:id="@+id/spinner_peticash_source"
+
+                    <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:entries="@array/destination_array_move_in"
-                        android:padding="@dimen/dimen_5dp"
-                        />
+                        android:background="@android:drawable/editbox_background">
+
+                        <Spinner
+                            android:id="@+id/spinner_peticash_source"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/destination_array_move_in"
+                            />
+                    </FrameLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -297,9 +309,9 @@
                         android:id="@+id/edit_text_billamount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
+                        android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:inputType="number"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -398,8 +410,8 @@
                     android:id="@+id/editText_grnNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:enabled="false"/>
             </LinearLayout>
 
             <LinearLayout
@@ -444,9 +456,10 @@
             </LinearLayout>
 
             <include
-                layout="@layout/layout_multi_capture_select"
                 android:id="@+id/layout_capture"
+                layout="@layout/layout_multi_capture_select"
                 android:visibility="gone"/>
+
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
