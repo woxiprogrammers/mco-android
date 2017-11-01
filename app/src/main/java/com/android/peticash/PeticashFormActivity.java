@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.peticashautosearchemployee.EmployeesearchdataItem;
+import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -61,112 +63,181 @@ import timber.log.Timber;
 public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.spinner_category_array)
     Spinner spinnerCategoryArray;
+
     @BindView(R.id.edit_text_emp_id_name)
     EditText editTextEmpIdName;
+
     @BindView(R.id.imageViewProfilePicture)
     ImageView imageViewProfilePicture;
+
     @BindView(R.id.textViewEployeeId)
     TextView textViewEployeeId;
+
     @BindView(R.id.textViewEmployeeName)
     TextView textViewEmployeeName;
+
     @BindView(R.id.textViewBalance)
     TextView textViewBalance;
+
     @BindView(R.id.textViewExtraAmount)
     TextView textviewExtraAmount;
+
     @BindView(R.id.edittextWeihges)
     EditText edittextWeihges;
+
     @BindView(R.id.linearLayoutForSalary)
     LinearLayout linearLayoutForSalary;
+
     @BindView(R.id.edittextDay)
     EditText edittextDay;
+
     @BindView(R.id.edit_text_salary_amount)
     EditText editTextSalaryAmount;
+
     @BindView(R.id.linearAmount)
     LinearLayout linearAmount;
+
     @BindView(R.id.spinner_peticash_source)
     Spinner spinnerPeticashSource;
+
     @BindView(R.id.text_view_selected_name)
     TextView textViewSelectedName;
+
     @BindView(R.id.edit_text_selected_source_name)
     EditText editTextSelectedSourceName;
+
     @BindView(R.id.linerLayoutSelectedNames_PC)
     LinearLayout linerLayoutSelectedNames_PC;
+
     @BindView(R.id.spinner_material_or_asset)
     Spinner spinnerMaterialOrAsset;
+
     @BindView(R.id.edit_text_item_name)
     EditText editTextItemName;
+
     @BindView(R.id.edittextQuantity)
     EditText edittextQuantity;
+
     @BindView(R.id.spinner_select_units)
     Spinner spinnerSelectUnits;
+
     @BindView(R.id.frameLayout_UnitSpinner)
     FrameLayout frameLayoutUnitSpinner;
+
     @BindView(R.id.editText_Date)
     EditText editTextDate;
+
     @BindView(R.id.edit_text_inTime)
     EditText editTextInTime;
+
     @BindView(R.id.edit_text_outTime)
     EditText editTextOutTime;
+
     @BindView(R.id.ll_forSupplierInOutTime)
     LinearLayout llForSupplierInOutTime;
+
     @BindView(R.id.edit_text_BillNumber)
     EditText editTextBillNumber;
+
     @BindView(R.id.lineraLayoutBillNumber)
     LinearLayout lineraLayoutBillNumber;
+
     @BindView(R.id.edit_text_billamount)
     EditText editTextBillamount;
+
     @BindView(R.id.linearBillAmount)
     LinearLayout linearBillAmount;
+
     @BindView(R.id.edit_text_vehicleNumber)
     EditText editTextVehicleNumber;
+
     @BindView(R.id.ll_forSupplierVehicle)
     LinearLayout llForSupplierVehicle;
-    @BindView(R.id.textView_capture)
-    TextView textViewCapture;
-    @BindView(R.id.textView_pick)
-    TextView textViewPick;
-    @BindView(R.id.linearLayoutUploadImageSalary)
-    LinearLayout linearLayoutUploadImage;
+
     @BindView(R.id.editText_addNote)
     EditText editTextAddNote;
+
     @BindView(R.id.editText_grnNumber)
     EditText editTextGrnNumber;
+
     @BindView(R.id.linearLayoutGRN)
     LinearLayout linearLayoutGRN;
+
     @BindView(R.id.button_generate_grn)
     Button buttonGenerateGrn;
+
     @BindView(R.id.linearLayoutForCategoryPurchase)
     LinearLayout linearLayoutForCategoryPurchase;
+
     @BindView(R.id.editText_PayableAmount)
     EditText editTextPayableAmount;
+
     @BindView(R.id.linearLayoutPayableAmount)
     LinearLayout linearLayoutPayableAmount;
+
     @BindView(R.id.linearLayoutUploadBillImage)
     LinearLayout linearLayoutUploadBillImage;
+
     @BindView(R.id.button_pay_with_peticash)
     Button buttonPayWithPeticash;
+
     @BindView(R.id.editText_salary_date)
     EditText editTextSalaryDate;
+
     @BindView(R.id.editText_addtonoteforsalary)
     EditText editTextAddtonoteforsalary;
+
     @BindView(R.id.button_salary_submit)
     Button buttonSalarySubmit;
+
     @BindView(R.id.textViewItemName)
     TextView textViewItemName;
+
     @BindView(R.id.linearLayoutRefNumber)
     LinearLayout linearLayoutRefNumber;
+
     @BindView(R.id.textView_captureSalaryImage)
     TextView textViewCaptureSalaryImage;
+
     @BindView(R.id.textView_pickSalaryImage)
     TextView textViewPickSalaryImage;
 
     @BindView(R.id.imageviewEmpTransactions)
     ImageView imageviewEmpTransactions;
-    private View layoutEmployeeInfo;
-    private View layoutCapture;
-    private int primaryKey;
-    private JSONArray jsonImageNameArray=new JSONArray();
 
+    @BindView(R.id.textViewCapturFirst)
+    TextView textViewCapturFirst;
+
+    @BindView(R.id.textViewPickFirst)
+    TextView textViewPickFirst;
+
+    @BindView(R.id.layout_capture)
+    LinearLayout layoutCapture;
+
+    @BindView(R.id.edittextPayableAmount)
+    EditText edittextPayableAmount;
+
+    @BindView(R.id.linearPayableAmount)
+    LinearLayout linearPayableAmount;
+
+    @BindView(R.id.textViewCapturSecond)
+    TextView textViewCapturSecond;
+
+    @BindView(R.id.textViewPickSecond)
+    TextView textViewPickSecond;
+
+    @BindView(R.id.linearLayoutUploadImage)
+    LinearLayout linearLayoutUploadImage;
+
+    @BindView(R.id.linerLayoutSelectedNames)
+    LinearLayout linerLayoutSelectedNames;
+
+    @BindView(R.id.linearLayoutUploadImageSalary)
+    LinearLayout linearLayoutUploadImageSalary;
+
+    private View layoutEmployeeInfo;
+    private int primaryKey;
+    private JSONArray jsonImageNameArray = new JSONArray();
 
     @BindView(R.id.linearLayoutEmployeInfo)
     LinearLayout linearLayoutEmployeInfo;
@@ -179,8 +250,8 @@ public class PeticashFormActivity extends BaseActivity {
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
     private ArrayList<File> arrayImageFileList;
-    File currentImageFile;
-
+    private File currentImageFile;
+    private String flagForLayout = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +260,6 @@ public class PeticashFormActivity extends BaseActivity {
         ButterKnife.bind(this);
         mContext = PeticashFormActivity.this;
         layoutEmployeeInfo = findViewById(R.id.layoutEmployeeInformation);
-        layoutCapture = findViewById(R.id.layout_capture);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Peticash Form");
@@ -251,12 +321,12 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     @OnClick(R.id.imageviewEmpTransactions)
-    public void transactionClicked(){
-        EmployeeTransactionFragment employeeTransactionFragment=new EmployeeTransactionFragment();
+    public void transactionClicked() {
+        EmployeeTransactionFragment employeeTransactionFragment = new EmployeeTransactionFragment();
         Bundle bundleArgs = new Bundle();
         bundleArgs.putInt("empId", primaryKey);
         employeeTransactionFragment.setArguments(bundleArgs);
-        employeeTransactionFragment.show(getSupportFragmentManager(),"Transactions");
+        employeeTransactionFragment.show(getSupportFragmentManager(), "Transactions");
     }
 
     private void initializeviews() {
@@ -366,9 +436,9 @@ public class PeticashFormActivity extends BaseActivity {
             }
         });
 
-        if(spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Salary")){
+        if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Salary")) {
             editTextSalaryAmount.setEnabled(false);
-        }else if(spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Advance")){
+        } else if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Advance")) {
             editTextSalaryAmount.setEnabled(true);
 
         }
@@ -479,6 +549,7 @@ public class PeticashFormActivity extends BaseActivity {
         buttonPayWithPeticash.setVisibility(View.VISIBLE);
         layoutCapture.setVisibility(View.VISIBLE);
         Toast.makeText(mContext, "GRN Generated", Toast.LENGTH_SHORT).show();
+//        uploadImages_addItemToLocal("requestToGrnGeneration");
     }
 
     private void validationForSalaryAdvance() {
@@ -535,8 +606,8 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("days", edittextDay.getText().toString());
             params.put("amount", editTextSalaryAmount.getText().toString());
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            if(jsonImageNameArray != null){
-                params.put("images",jsonImageNameArray);
+            if (jsonImageNameArray != null) {
+                params.put("images", jsonImageNameArray);
 
             }
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString()))
@@ -570,28 +641,152 @@ public class PeticashFormActivity extends BaseActivity {
 
     }
 
-    private void requestToGenerateGRN(){
-        JSONObject params=new JSONObject();
+    private void requestToGenerateGRN() {
+        JSONObject params = new JSONObject();
+        //ToDO Add Keys for params
         try {
-            params.put("",spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
-            params.put("",spinnerMaterialOrAsset.getSelectedItem().toString().toLowerCase());
-            params.put("",spinnerPeticashSource.getSelectedItem().toString().toLowerCase());
-            params.put("",editTextSelectedSourceName.getText().toString());
-            params.put("",editTextItemName.getText().toString().toLowerCase());
-            params.put("",edittextQuantity.getText().toString());
-            params.put("",editTextDate.getText().toString());
-            params.put("",editTextBillNumber.getText().toString());
-            params.put("",editTextBillamount.getText().toString());
-            params.put("images","");
+            params.put("", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
+            params.put("", spinnerMaterialOrAsset.getSelectedItem().toString().toLowerCase());
+            params.put("", spinnerPeticashSource.getSelectedItem().toString().toLowerCase());
+            params.put("", editTextSelectedSourceName.getText().toString());
+            params.put("", editTextItemName.getText().toString().toLowerCase());
+            params.put("", edittextQuantity.getText().toString());
+            params.put("", editTextDate.getText().toString());
+            params.put("", editTextBillNumber.getText().toString());
+            params.put("", editTextBillamount.getText().toString());
+            params.put("",editTextAddNote.getText().toString());
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        //ToDo Change API
+        AndroidNetworking.post(AppURL.API_GENERATE_GRN_PETICASH + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_GENERATE_GRN_PETICASH")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
 
+    private void requestForPurchasePayment(){
+        JSONObject params = new JSONObject();
+        //ToDO Add Keys for params
+        try {
+            params.put("", editTextDate.getText().toString());
+            params.put("", editTextBillNumber.getText().toString());
+            params.put("", editTextBillamount.getText().toString());
+            params.put("",editTextAddNote.getText().toString());
+            params.put("images",jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_GENERATE_GRN_PETICASH + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_GENERATE_GRN_PETICASH")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
 
     /////////////////////////Images Part/////////////////////////////
 
+    @OnClick({R.id.textViewCapturFirst, R.id.textViewPickFirst})
+    public void onFirstCapClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textViewCapturFirst:
+                flagForLayout = "firstcapture";
+                captureImage();
+                break;
+            case R.id.textViewPickFirst:
+                flagForLayout = "firstcapture";
+                pickImage();
+                break;
+        }
+    }
 
+    @OnClick({R.id.textViewCapturSecond, R.id.textViewPickSecond})
+    public void onSecondCaptureClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textViewCapturSecond:
+                flagForLayout = "secondcapture";
+                captureImage();
+                break;
+            case R.id.textViewPickSecond:
+                flagForLayout = "secondcapture";
+                pickImage();
+                break;
+        }
+    }
+
+    @OnClick({R.id.textView_captureSalaryImage, R.id.textView_pickSalaryImage})
+    public void onViewClicked(View view) {
+
+        switch (view.getId()) {
+            case R.id.textView_captureSalaryImage:
+                flagForLayout = "salarycapture";
+                captureImage();
+                break;
+            case R.id.textView_pickSalaryImage:
+                flagForLayout = "salarycapture";
+                pickImage();
+                break;
+        }
+    }
+
+    private void captureImage() {
+        Intent intent = new Intent(mContext, MultiCameraActivity.class);
+        Params params = new Params();
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setToolbarColor(R.color.colorPrimaryLight);
+        params.setActionButtonColor(R.color.colorAccentDark);
+        params.setButtonTextColor(R.color.colorWhite);
+        intent.putExtra(Constants.KEY_PARAMS, params);
+        startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
+    }
+
+    private void pickImage() {
+        Intent intent1 = new Intent(mContext, GalleryActivity.class);
+        Params params1 = new Params();
+        params1.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params1.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params1.setToolbarColor(R.color.colorPrimaryLight);
+        params1.setActionButtonColor(R.color.colorAccentDark);
+        params1.setButtonTextColor(R.color.colorWhite);
+        intent1.putExtra(Constants.KEY_PARAMS, params1);
+        startActivityForResult(intent1, Constants.TYPE_MULTI_PICKER);
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -602,32 +797,28 @@ public class PeticashFormActivity extends BaseActivity {
 
             case Constants.TYPE_MULTI_CAPTURE:
                 ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                onActivityResultForImage(linearLayoutUploadImage,imagesList);
-                Bundle bundle=intent.getExtras();
-                String str=bundle.getString("abc");
+                if (flagForLayout.equalsIgnoreCase("firstcapture")) {
+                    onActivityResultForImage(linearLayoutUploadImage, imagesList);
+
+                } else if (flagForLayout.equalsIgnoreCase("secondcapture")) {
+                    onActivityResultForImage(linearLayoutUploadBillImage, imagesList);
+
+                } else if (flagForLayout.equalsIgnoreCase("salarycapture")) {
+                    onActivityResultForImage(linearLayoutUploadImageSalary, imagesList);
+
+                }
                 break;
             case Constants.TYPE_MULTI_PICKER:
                 ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                linearLayoutUploadImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                for (Image currentImage : imagesList2) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        linearLayoutUploadImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+                if (flagForLayout.equalsIgnoreCase("firstcapture")) {
+                    onActivityResultForImage(linearLayoutUploadImage, imagesList2);
+
+                } else if (flagForLayout.equalsIgnoreCase("")) {
+                    onActivityResultForImage(linearLayoutUploadBillImage, imagesList2);
+
+                } else if (flagForLayout.equalsIgnoreCase("salarycapture")) {
+                    onActivityResultForImage(linearLayoutUploadImageSalary, imagesList2);
+
                 }
                 break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
@@ -638,7 +829,7 @@ public class PeticashFormActivity extends BaseActivity {
 
     }
 
-    private void onActivityResultForImage(LinearLayout layoutCapture,ArrayList<Image> imagesList){
+    private void onActivityResultForImage(LinearLayout layoutCapture, ArrayList<Image> imagesList) {
         layoutCapture.removeAllViews();
         arrayImageFileList = new ArrayList<File>();
         for (Image currentImage : imagesList) {
@@ -659,34 +850,6 @@ public class PeticashFormActivity extends BaseActivity {
                     }
                 });
             }
-        }
-    }
-
-    @OnClick({R.id.textView_captureSalaryImage, R.id.textView_pickSalaryImage})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textView_captureSalaryImage:
-                Intent intent = new Intent(mContext, MultiCameraActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra("abc","abc");
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
-                break;
-            case R.id.textView_pickSalaryImage:
-                Intent intent1 = new Intent(mContext, GalleryActivity.class);
-                Params params1 = new Params();
-                params1.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params1.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params1.setToolbarColor(R.color.colorPrimaryLight);
-                params1.setActionButtonColor(R.color.colorAccentDark);
-                params1.setButtonTextColor(R.color.colorWhite);
-                intent1.putExtra(Constants.KEY_PARAMS, params1);
-                startActivityForResult(intent1, Constants.TYPE_MULTI_PICKER);
-                break;
         }
     }
 
@@ -727,7 +890,11 @@ public class PeticashFormActivity extends BaseActivity {
                         }
                     });
         } else {
-            requestForSalaryOrAdvance();
+            if (strTag.equalsIgnoreCase("Salary"))
+                requestForSalaryOrAdvance();
+            else if (strTag.equalsIgnoreCase("requestToGrnGeneration")) {
+                requestToGenerateGRN();
+            }
         }
     }
 }
