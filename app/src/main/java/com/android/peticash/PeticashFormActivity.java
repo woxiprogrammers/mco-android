@@ -158,6 +158,9 @@ public class PeticashFormActivity extends BaseActivity {
     TextView textViewCaptureSalaryImage;
     @BindView(R.id.textView_pickSalaryImage)
     TextView textViewPickSalaryImage;
+
+    @BindView(R.id.imageviewEmpTransactions)
+    ImageView imageviewEmpTransactions;
     private View layoutEmployeeInfo;
     private View layoutCapture;
     private int primaryKey;
@@ -309,6 +312,12 @@ public class PeticashFormActivity extends BaseActivity {
                 myCalendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
+    }
+
+    @OnClick(R.id.imageviewEmpTransactions)
+    public void transactionClicked(){
+        EmployeeTransactionFragment employeeTransactionFragment=new EmployeeTransactionFragment();
+        employeeTransactionFragment.show(getSupportFragmentManager(),"Transactions");
     }
 
     private void initializeviews() {
