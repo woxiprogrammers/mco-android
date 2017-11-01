@@ -63,8 +63,8 @@ public class MonthYearPickerDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 listener.onDateSet(null, yearPicker.getValue(), monthPicker.getValue(), 0);
-                MonthYearPickerDialog.this.getDialog().dismiss();
                 interfacePurchaseRequest.requestForPurchaseRequestList();
+                MonthYearPickerDialog.this.getDialog().dismiss();
             }
         });
         buttonDismiss.setOnClickListener(new View.OnClickListener() {
