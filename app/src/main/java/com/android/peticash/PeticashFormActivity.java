@@ -597,6 +597,8 @@ public class PeticashFormActivity extends BaseActivity {
         uploadImages_addItemToLocal("Salary");
     }
 
+    /////API Calls//////////////////////////////////////////////////
+
     private void requestForSalaryOrAdvance() {
         JSONObject params = new JSONObject();
         try {
@@ -719,6 +721,8 @@ public class PeticashFormActivity extends BaseActivity {
                     }
                 });
     }
+
+    ////////////////////////////////////////////////////////////////
 
     /////////////////////////Images Part/////////////////////////////
 
