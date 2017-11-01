@@ -2,8 +2,14 @@ package com.android.peticashautosearchemployee;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class EmployeeTransactionsItem extends RealmObject{
+
+
+	@PrimaryKey
+	@SerializedName("peticash_salary_transaction_id")
+	private int id;
 
 	@SerializedName("date")
 	private String date;
@@ -25,6 +31,14 @@ public class EmployeeTransactionsItem extends RealmObject{
 
 	@SerializedName("type")
 	private String type;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public void setDate(String date){
 		this.date = date;

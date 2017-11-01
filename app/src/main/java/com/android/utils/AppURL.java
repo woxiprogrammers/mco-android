@@ -42,4 +42,5 @@ public class AppURL {
     ////////Peticash
     public static final String API_AUTO_SUGGEST_FOR_PETICASH_EMPLOYEE=BASE_URL + "peticash/employee-salary/auto-suggest";
     public static final String API_CREATE_SALARY_FOR_EMPLOYEE=BASE_URL + "peticash/employee-salary/create?token=";
+    public static final String API_EMP_TRANSATIONS=BASE_URL + "peticash/employee-salary/employee-detail?token=";
 }

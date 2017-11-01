@@ -317,6 +317,9 @@ public class PeticashFormActivity extends BaseActivity {
     @OnClick(R.id.imageviewEmpTransactions)
     public void transactionClicked(){
         EmployeeTransactionFragment employeeTransactionFragment=new EmployeeTransactionFragment();
+        Bundle bundleArgs = new Bundle();
+        bundleArgs.putInt("empId", primaryKey);
+        employeeTransactionFragment.setArguments(bundleArgs);
         employeeTransactionFragment.show(getSupportFragmentManager(),"Transactions");
     }
 
