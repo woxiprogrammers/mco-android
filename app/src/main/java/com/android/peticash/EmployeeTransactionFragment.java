@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -54,6 +55,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
     private RecyclerView recyclerviewTransaction;
     private int employeeId;
     private Button buttonOk;
+    private ProgressBar progressBar;
 
     @NonNull
     @Override
@@ -69,6 +71,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
         }
         recyclerviewTransaction=dialog.findViewById(R.id.recyclerviewTransaction);
         buttonOk=dialog.findViewById(R.id.btnOk);
+        progressBar=dialog.findViewById(R.id.progressBarTrans);
         requestForEmpTransactions();
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +122,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    progressBar.setVisibility(View.GONE);
                                     Timber.d(String.valueOf(response));
                                     setUpAdapter();
                                     Timber.d("hello");

@@ -40,6 +40,7 @@ import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -164,7 +165,7 @@ public class PeticashFormActivity extends BaseActivity {
     private View layoutEmployeeInfo;
     private View layoutCapture;
     private int primaryKey;
-    private JSONObject jsonImageNameObject = new JSONObject();
+    private JSONArray jsonImageNameArray=new JSONArray();
 
 
     @BindView(R.id.linearLayoutEmployeInfo)
@@ -178,6 +179,7 @@ public class PeticashFormActivity extends BaseActivity {
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
     private ArrayList<File> arrayImageFileList;
+    File currentImageFile;
 
 
     @Override
@@ -221,72 +223,6 @@ public class PeticashFormActivity extends BaseActivity {
     @OnClick(R.id.button_salary_submit)
     public void onViewClicked() {
         validationForSalaryAdvance();
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        switch (requestCode) {
-
-            case Constants.TYPE_MULTI_CAPTURE:
-                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList));
-                linearLayoutUploadImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                File currentImageFile;
-                for (Image currentImage : imagesList) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        linearLayoutUploadImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                linearLayoutUploadImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                for (Image currentImage : imagesList2) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        linearLayoutUploadImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
-                functionToSetEmployeeInfo(intent);
-                break;
-
-        }
-
     }
 
     @OnClick(R.id.edit_text_emp_id_name)
@@ -430,6 +366,13 @@ public class PeticashFormActivity extends BaseActivity {
             }
         });
 
+        if(spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Salary")){
+            editTextSalaryAmount.setEnabled(false);
+        }else if(spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Advance")){
+            editTextSalaryAmount.setEnabled(true);
+
+        }
+
     }
 
     private void functionToSetEmployeeInfo(Intent intent) {
@@ -447,6 +390,7 @@ public class PeticashFormActivity extends BaseActivity {
             textviewExtraAmount.setText("Extra Amount Paid - " + employeesearchdataItem.getExtraAmountPaid());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
+
             edittextWeihges.setText("" + getPerWeges);
             Glide.with(mContext).load("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture())
                     .thumbnail(0.1f)
@@ -579,7 +523,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSalaryAmount.setError(null);
             editTextSalaryAmount.clearFocus();
         }
-        uploadImages_addItemToLocal();
+        uploadImages_addItemToLocal("Salary");
     }
 
     private void requestForSalaryOrAdvance() {
@@ -591,6 +535,10 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("days", edittextDay.getText().toString());
             params.put("amount", editTextSalaryAmount.getText().toString());
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            if(jsonImageNameArray != null){
+                params.put("images",jsonImageNameArray);
+
+            }
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString()))
                 params.put("remark", editTextAddNote.getText().toString());
             else
@@ -622,6 +570,98 @@ public class PeticashFormActivity extends BaseActivity {
 
     }
 
+    private void requestToGenerateGRN(){
+        JSONObject params=new JSONObject();
+        try {
+            params.put("",spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
+            params.put("",spinnerMaterialOrAsset.getSelectedItem().toString().toLowerCase());
+            params.put("",spinnerPeticashSource.getSelectedItem().toString().toLowerCase());
+            params.put("",editTextSelectedSourceName.getText().toString());
+            params.put("",editTextItemName.getText().toString().toLowerCase());
+            params.put("",edittextQuantity.getText().toString());
+            params.put("",editTextDate.getText().toString());
+            params.put("",editTextBillNumber.getText().toString());
+            params.put("",editTextBillamount.getText().toString());
+            params.put("images","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /////////////////////////Images Part/////////////////////////////
+
+
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                onActivityResultForImage(linearLayoutUploadImage,imagesList);
+                Bundle bundle=intent.getExtras();
+                String str=bundle.getString("abc");
+                break;
+            case Constants.TYPE_MULTI_PICKER:
+                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                linearLayoutUploadImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
+                for (Image currentImage : imagesList2) {
+                    if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                        ImageView imageView = new ImageView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                        layoutParams.setMargins(10, 10, 10, 10);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setImageBitmap(myBitmap);
+                        linearLayoutUploadImage.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                break;
+            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
+                functionToSetEmployeeInfo(intent);
+                break;
+
+        }
+
+    }
+
+    private void onActivityResultForImage(LinearLayout layoutCapture,ArrayList<Image> imagesList){
+        layoutCapture.removeAllViews();
+        arrayImageFileList = new ArrayList<File>();
+        for (Image currentImage : imagesList) {
+            if (currentImage.imagePath != null) {
+                currentImageFile = new File(currentImage.imagePath);
+                arrayImageFileList.add(currentImageFile);
+                Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                ImageView imageView = new ImageView(mContext);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                imageView.setImageBitmap(myBitmap);
+                layoutCapture.addView(imageView);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+
     @OnClick({R.id.textView_captureSalaryImage, R.id.textView_pickSalaryImage})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -632,6 +672,7 @@ public class PeticashFormActivity extends BaseActivity {
                 params.setToolbarColor(R.color.colorPrimaryLight);
                 params.setActionButtonColor(R.color.colorAccentDark);
                 params.setButtonTextColor(R.color.colorWhite);
+                intent.putExtra("abc","abc");
                 intent.putExtra(Constants.KEY_PARAMS, params);
                 startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
                 break;
@@ -649,7 +690,7 @@ public class PeticashFormActivity extends BaseActivity {
         }
     }
 
-    private void uploadImages_addItemToLocal() {
+    private void uploadImages_addItemToLocal(String strTag) {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
             File compressedImageFile = sendImageFile;
@@ -672,12 +713,12 @@ public class PeticashFormActivity extends BaseActivity {
                         public void onResponse(JSONObject response) {
                             try {
                                 String fileName = response.getString("filename");
-                                jsonImageNameObject.put("image", fileName);
+                                jsonImageNameArray.put(fileName);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                             arrayImageFileList.remove(0);
-                            uploadImages_addItemToLocal();
+                            uploadImages_addItemToLocal("");
                         }
 
                         @Override
