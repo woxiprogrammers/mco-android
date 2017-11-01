@@ -1,6 +1,5 @@
 package com.android.purchase_request;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,46 +10,47 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
 import com.android.utils.AppConstants;
 
 import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class PurchaseHomeActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
-    public static int passYear, passMonth;
+public class PurchaseHomeActivity extends BaseActivity {
+    //    public static int passYear, passMonth;
     @BindView(R.id.tavLayout)
     TabLayout mTabLayout_purchaseHome;
     @BindView(R.id.homeViewPager)
     ViewPager mViewPager_purchaseHome;
-    @BindView(R.id.textView_purchaseHome_appBarTitle)
-    TextView textViewPurchaseHomeAppBarTitle;
+    @BindView(R.id.relative_layout_datePicker_purchaseRequest)
+    RelativeLayout relativeLayoutDatePickerPurchaseRequest;
     @BindView(R.id.toolbarPurchaseHome)
     Toolbar toolbarPurchaseHome;
-    @BindView(R.id.relative_layout_selectDate)
-    RelativeLayout relativeLayoutSelectDate;
-    String strSubModuleTag, permissionsItemList;
+    @BindView(R.id.textView_purchaseHome_appBarTitle)
+    TextView textViewPurchaseHomeAppBarTitle;
+    //    @BindView(R.id.relative_layout_datePicker_purchaseRequest)
+//    RelativeLayout mRelativeLayoutDatePickerPurchaseRequest;
+    private String strSubModuleTag, permissionsItemList;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
+
+    public void setDateInAppBar(int passMonth, int passYear) {
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + passYear);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchase_home);
         ButterKnife.bind(this);
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        passMonth = calendar.get(Calendar.MONTH) + 1;
-        passYear = calendar.get(Calendar.YEAR);
         toolbarPurchaseHome.setTitle("");
         setSupportActionBar(toolbarPurchaseHome);
         if (getSupportActionBar() != null) {
@@ -66,7 +66,6 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
      * Created by - Rohit
      */
     private void initializeViews() {
-        setUpAppBarDatePicker();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             strSubModuleTag = bundle.getString("subModuleTag");
@@ -94,23 +93,6 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         });
     }
 
-    private void setUpAppBarDatePicker() {
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + passYear);
-        relativeLayoutSelectDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
-                Bundle bundleArgs = new Bundle();
-                bundleArgs.putInt("maxYear", 2019);
-                bundleArgs.putInt("minYear", 2016);
-                monthYearPickerDialog.setArguments(bundleArgs);
-                monthYearPickerDialog.setListener(PurchaseHomeActivity.this);
-                monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
-            }
-        });
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -121,21 +103,27 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+    /*@Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
         passYear = year;
         passMonth = month;
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
         textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + passYear);
+    }*/
+
+    @OnClick(R.id.relative_layout_datePicker_purchaseRequest)
+    public void onDatePickerPurchaseRequestClicked() {
+        PurchaseRequestListFragment purchaseRequestListFragment = (PurchaseRequestListFragment) mViewPager_purchaseHome.getAdapter().instantiateItem(mViewPager_purchaseHome, 0);
+        purchaseRequestListFragment.onDatePickerClicked_purchaseRequest();
     }
 
-    public void hideDateLayout(boolean isPurchaseRequest) {
-        if (isPurchaseRequest) {
-            relativeLayoutSelectDate.setVisibility(View.VISIBLE);
-            toolbarPurchaseHome.setTitle("");
-        } else {
-            relativeLayoutSelectDate.setVisibility(View.GONE);
+    public void hideDateLayout(boolean isHideDateLayout) {
+        if (isHideDateLayout) {
+            relativeLayoutDatePickerPurchaseRequest.setVisibility(View.GONE);
             toolbarPurchaseHome.setTitle("Purchase");
+        } else {
+            relativeLayoutDatePickerPurchaseRequest.setVisibility(View.VISIBLE);
+            toolbarPurchaseHome.setTitle("");
         }
     }
 
@@ -143,7 +131,7 @@ public class PurchaseHomeActivity extends BaseActivity implements DatePickerDial
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                PurchaseRequestListFragment purchaseRequestListFragment = (PurchaseRequestListFragment) mViewPager_purchaseHome.getAdapter().instantiateItem(mViewPager_purchaseHome, 1);
+                PurchaseRequestListFragment purchaseRequestListFragment = (PurchaseRequestListFragment) mViewPager_purchaseHome.getAdapter().instantiateItem(mViewPager_purchaseHome, 0);
                 purchaseRequestListFragment.onActivityResultActions();
             }
         }

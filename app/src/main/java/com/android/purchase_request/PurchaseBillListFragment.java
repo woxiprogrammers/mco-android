@@ -76,7 +76,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         requestPrListOnline();
         if (isFromPurchaseRequestHome) {
             if (getUserVisibleHint()) {
-                ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
             }
         }
     }

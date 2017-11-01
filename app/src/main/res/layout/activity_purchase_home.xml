@@ -26,7 +26,7 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay">
 
                 <RelativeLayout
-                    android:id="@+id/relative_layout_selectDate"
+                    android:id="@+id/relative_layout_datePicker_purchaseRequest"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
 

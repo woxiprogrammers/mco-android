@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +36,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -74,7 +72,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     public void fragmentBecameVisible() {
         if (!isFromPurchaseRequest) {
             if (getUserVisibleHint()) {
-                ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
             }
         }
     }
@@ -139,7 +137,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                         Timber.d(String.valueOf(purchaseOrderListItems));
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
                         intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
-                        intent.putExtra("VendorName",purchaseOrderListItems.get(position).getVendorName());
+                        intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
                         startActivity(intent);
                     }
 
@@ -173,7 +171,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("purchase_request_id", purchaseRequestId);
-            params.put("page",0);
+            params.put("page", 0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
