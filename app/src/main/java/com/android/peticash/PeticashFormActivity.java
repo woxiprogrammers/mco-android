@@ -620,7 +620,7 @@ public class PeticashFormActivity extends BaseActivity {
                 }
             } else {
                 params.put("days", 0);
-                params.put("payable_amount", null);
+//                params.put("payable_amount", null);
             }
 
             if (jsonImageNameArray != null) {
