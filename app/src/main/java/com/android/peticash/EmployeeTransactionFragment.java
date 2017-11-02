@@ -176,7 +176,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
             holder.textvieEmpSalaryDate.setText(employeeTransactionsItem.getDate());
             holder.textviewEmpSalaryAmount.setText(employeeTransactionsItem.getSalaryAmount());
             holder.textviewEmpSalaryType.setText(employeeTransactionsItem.getType());
-            if()
+//            if()
             holder.textviewEmpSalaryStatus.setText(employeeTransactionsItem.getTransactionStatusName());
             holder.textviewSiteNameOfEmp.setText(employeeTransactionsItem.getProjectSiteName());
 
