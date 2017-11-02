@@ -79,9 +79,6 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.textViewBalance)
     TextView textViewBalance;
 
-    @BindView(R.id.textViewExtraAmount)
-    TextView textviewExtraAmount;
-
     @BindView(R.id.edittextWeihges)
     EditText edittextWeihges;
 
@@ -457,6 +454,7 @@ public class PeticashFormActivity extends BaseActivity {
             EmployeesearchdataItem employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
+            textViewBalance.setText("Balance - " + employeesearchdataItem.getBalance());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
              payableAmountForSalary = floatAmount - employeesearchdataItem.getAdvanceAmount();
@@ -580,15 +578,18 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSalaryDate.setError(null);
             editTextSalaryDate.clearFocus();
         }
-        if (TextUtils.isEmpty(strTotalDays)) {
-            edittextDay.setFocusableInTouchMode(true);
-            edittextDay.requestFocus();
-            edittextDay.setError(getString(R.string.please_enter) + " Days");
-            return;
-        } else {
-            edittextDay.setError(null);
-            edittextDay.clearFocus();
+        if(spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")){
+            if (TextUtils.isEmpty(strTotalDays)) {
+                edittextDay.setFocusableInTouchMode(true);
+                edittextDay.requestFocus();
+                edittextDay.setError(getString(R.string.please_enter) + " Days");
+                return;
+            } else {
+                edittextDay.setError(null);
+                edittextDay.clearFocus();
+            }
         }
+
         if (TextUtils.isEmpty(strSalaryAmount)) {
             editTextSalaryAmount.setFocusableInTouchMode(true);
             editTextSalaryAmount.requestFocus();

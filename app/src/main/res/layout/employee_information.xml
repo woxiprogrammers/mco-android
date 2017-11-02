@@ -96,12 +96,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Bank Balance"/>
-
-                            <TextView
-                                android:id="@+id/textViewExtraAmount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Bank Balance"/>
                         </LinearLayout>
 
                         <ImageView
