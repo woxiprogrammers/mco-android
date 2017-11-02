@@ -117,6 +117,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(EmployeeTransactionsItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -175,6 +176,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
             holder.textvieEmpSalaryDate.setText(employeeTransactionsItem.getDate());
             holder.textviewEmpSalaryAmount.setText(employeeTransactionsItem.getSalaryAmount());
             holder.textviewEmpSalaryType.setText(employeeTransactionsItem.getType());
+            if()
             holder.textviewEmpSalaryStatus.setText(employeeTransactionsItem.getTransactionStatusName());
             holder.textviewSiteNameOfEmp.setText(employeeTransactionsItem.getProjectSiteName());
 
