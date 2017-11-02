@@ -18,9 +18,6 @@ public class EmployeesearchdataItem extends RealmObject{
 	@SerializedName("employee_id")
 	private int employeeId;
 
-	@SerializedName("employee_profile_picture")
-	private String employeeProfilePicture;
-
 	@SerializedName("employee_name")
 	private String employeeName;
 
@@ -29,6 +26,42 @@ public class EmployeesearchdataItem extends RealmObject{
 
 	@SerializedName("per_day_wages")
 	private int perDayWages;
+
+	@SerializedName("employee_profile_picture")
+	private String employeeProfilePicture;
+
+	@SerializedName("is_transaction_pending")
+	private boolean isTransactionPending;
+
+	@SerializedName("balance")
+	private int balance;
+
+	@SerializedName("advance_after_last_salary")
+	private int advanceAmount;
+
+	public boolean isTransactionPending() {
+		return isTransactionPending;
+	}
+
+	public void setTransactionPending(boolean transactionPending) {
+		isTransactionPending = transactionPending;
+	}
+
+	public int getBalance() {
+		return balance;
+	}
+
+	public void setBalance(int balance) {
+		this.balance = balance;
+	}
+
+	public int getAdvanceAmount() {
+		return advanceAmount;
+	}
+
+	public void setAdvanceAmount(int advanceAmount) {
+		this.advanceAmount = advanceAmount;
+	}
 
 	public void setEmployeeId(int employeeId){
 		this.employeeId = employeeId;

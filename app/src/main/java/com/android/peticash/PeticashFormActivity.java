@@ -170,7 +170,7 @@ public class PeticashFormActivity extends BaseActivity {
     LinearLayout linearLayoutForCategoryPurchase;
 
     @BindView(R.id.editText_PayableAmount)
-    EditText editTextPayableAmount;
+    EditText editTextPayableAmount_purchase;
 
     @BindView(R.id.linearLayoutPayableAmount)
     LinearLayout linearLayoutPayableAmount;
@@ -215,7 +215,7 @@ public class PeticashFormActivity extends BaseActivity {
     LinearLayout layoutCapture;
 
     @BindView(R.id.edittextPayableAmount)
-    EditText edittextPayableAmount;
+    EditText edittextPayableAmountSalary;
 
     @BindView(R.id.linearPayableAmount)
     LinearLayout linearPayableAmount;
@@ -252,6 +252,7 @@ public class PeticashFormActivity extends BaseActivity {
     private ArrayList<File> arrayImageFileList;
     private File currentImageFile;
     private String flagForLayout = "";
+    private float floatAmount,payableAmountForSalary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -426,7 +427,7 @@ public class PeticashFormActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
-                    float floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
+                    floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
                     editTextSalaryAmount.setText(String.valueOf(floatAmount));
                 } else editTextSalaryAmount.setText("");
             }
@@ -456,10 +457,13 @@ public class PeticashFormActivity extends BaseActivity {
             EmployeesearchdataItem employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
-            textViewBalance.setText("Total Amount Paid - " + employeesearchdataItem.getTotalAmountPaid() + "");
-            textviewExtraAmount.setText("Extra Amount Paid - " + employeesearchdataItem.getExtraAmountPaid());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
+             payableAmountForSalary = floatAmount - employeesearchdataItem.getAdvanceAmount();
+            if(payableAmountForSalary < 0)
+                edittextPayableAmountSalary.setText(String.valueOf(0));
+            else
+                edittextPayableAmountSalary.setText(String.valueOf(payableAmountForSalary));
 
             edittextWeihges.setText("" + getPerWeges);
             Glide.with(mContext).load("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture())
@@ -605,12 +609,22 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("employee_id", primaryKey);
             params.put("type", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
             params.put("date", editTextSalaryDate.getText().toString());
-            params.put("days", edittextDay.getText().toString());
             params.put("amount", editTextSalaryAmount.getText().toString());
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
+                params.put("days", edittextDay.getText().toString());
+                if(payableAmountForSalary < 0){
+                    params.put("payable_amount", 0);
+                }else {
+                    params.put("payable_amount", edittextPayableAmountSalary.getText().toString());
+                }
+            } else {
+                params.put("days", 0);
+                params.put("payable_amount", null);
+            }
+
             if (jsonImageNameArray != null) {
                 params.put("images", jsonImageNameArray);
-
             }
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString()))
                 params.put("remark", editTextAddNote.getText().toString());
@@ -656,7 +670,7 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("", editTextDate.getText().toString());
             params.put("", editTextBillNumber.getText().toString());
             params.put("", editTextBillamount.getText().toString());
-            params.put("",editTextAddNote.getText().toString());
+            params.put("", editTextAddNote.getText().toString());
             params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -686,15 +700,15 @@ public class PeticashFormActivity extends BaseActivity {
                 });
     }
 
-    private void requestForPurchasePayment(){
+    private void requestForPurchasePayment() {
         JSONObject params = new JSONObject();
         //ToDO Add Keys for params
         try {
             params.put("", editTextDate.getText().toString());
             params.put("", editTextBillNumber.getText().toString());
             params.put("", editTextBillamount.getText().toString());
-            params.put("",editTextAddNote.getText().toString());
-            params.put("images",jsonImageNameArray);
+            params.put("", editTextAddNote.getText().toString());
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
