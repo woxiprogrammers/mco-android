@@ -53,13 +53,15 @@ import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * <b></b>
  * <p>This class is used to </p>
  * Created by Rohit.
  */
 public class PurchaseRequestListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
-    private static String subModuleTag, permissionList;
+    private String subModuleTag, permissionList;
     @BindView(R.id.rv_material_purchase_request_list)
     RecyclerView recyclerView_commonListingView;
     @BindView(R.id.floating_create_purchase_request)
@@ -79,10 +81,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     public static PurchaseRequestListFragment newInstance(String subModule_Tag, String permissionsItemList) {
         Bundle args = new Bundle();
+        args.putString("subModule_Tag", subModule_Tag);
+        args.putString("permissionsItemList", permissionsItemList);
         PurchaseRequestListFragment fragment = new PurchaseRequestListFragment();
         fragment.setArguments(args);
-        subModuleTag = subModule_Tag;
-        permissionList = permissionsItemList;
         return fragment;
     }
 
@@ -101,6 +103,11 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            permissionList = bundle.getString("permissionsItemList");
+            subModuleTag = bundle.getString("subModule_Tag");
+        }
         //Initialize Views
         initializeViews();
         setUpPrAdapter();
@@ -309,8 +316,14 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         }
     }
 
-    public void onActivityResultActions() {
-        setUpPrAdapter();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                pageNumber = 0;
+                requestPrListOnline(pageNumber);
+            }
+        }
     }
 
     @OnClick(R.id.floating_create_purchase_request)

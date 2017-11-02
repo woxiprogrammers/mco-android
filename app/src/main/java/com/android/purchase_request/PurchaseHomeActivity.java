@@ -129,12 +129,7 @@ public class PurchaseHomeActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                PurchaseRequestListFragment purchaseRequestListFragment = (PurchaseRequestListFragment) mViewPager_purchaseHome.getAdapter().instantiateItem(mViewPager_purchaseHome, 0);
-                purchaseRequestListFragment.onActivityResultActions();
-            }
-        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     class PurchaseHomeViewPagerAdapter extends FragmentStatePagerAdapter {

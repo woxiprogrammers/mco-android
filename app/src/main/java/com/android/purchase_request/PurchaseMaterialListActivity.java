@@ -290,7 +290,13 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         List<PurchaseMaterialListItem> purchaseMaterialListItems_prAssigned = realm.copyFromRealm(purchaseMaterialListRealmResult_prAssigned);
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
-        int userId = availableUserArray.get(index).getId();
+        int userId;
+        if (availableUserArray != null && !availableUserArray.isEmpty()) {
+            userId = availableUserArray.get(index).getId();
+        } else {
+            Toast.makeText(mContext, "Please wait, getting users", Toast.LENGTH_SHORT).show();
+            return;
+        }
         JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
         JSONObject currentJonObject;
         JSONArray jsonArrayMaterialRequestCompoId = new JSONArray();
@@ -828,6 +834,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         if (!isMaterial) {
             unitId = searchAssetListItem_fromResult.getAssetUnitId();
         }
+        floatItemQuantity = Float.parseFloat(mEditTextQuantityMaterialAsset.getText().toString().trim());
         uploadImages_addItemToLocal();
     }
 

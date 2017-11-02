@@ -196,7 +196,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
     public void onAddClicked() {
-        createAlertDialog();
         setUpUsersSpinnerValueChangeListener();
         requestUsersWithApproveAcl(getString(R.string.approve_material_request));
         setUpCurrentMaterialListAdapter();
@@ -240,7 +239,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(materialListRealmResults_New);
         JSONObject params = new JSONObject();
         int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
-        int userId = availableUserArray.get(index).getId();
+        int userId;
+        if (availableUserArray != null && !availableUserArray.isEmpty()) {
+            userId = availableUserArray.get(index).getId();
+        } else {
+            Toast.makeText(mContext, "Please wait, getting users", Toast.LENGTH_SHORT).show();
+            return;
+        }
         JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
         JSONObject currentJonObject;
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_New) {
@@ -860,6 +865,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         if (!isMaterial) {
             unitId = searchAssetListItem_fromResult.getAssetUnitId();
         }
+        floatItemQuantity = Float.parseFloat(mEditTextQuantityMaterialAsset.getText().toString().trim());
         uploadImages_addItemToLocal();
     }
 
