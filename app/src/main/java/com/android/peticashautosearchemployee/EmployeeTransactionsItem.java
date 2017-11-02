@@ -6,22 +6,17 @@ import io.realm.annotations.PrimaryKey;
 
 public class EmployeeTransactionsItem extends RealmObject{
 
+	/*
+			"advance_amount": 1000,
+			"salary_amount": 0,
+			"payable_amount": 0,
+*/
+
+
 
 	@PrimaryKey
 	@SerializedName("peticash_salary_transaction_id")
 	private int id;
-
-	@SerializedName("date")
-	private String date;
-
-	@SerializedName("amount")
-	private String amount;
-
-	@SerializedName("project_site_id")
-	private int projectSiteId;
-
-	@SerializedName("project_site_name")
-	private String projectSiteName;
 
 	@SerializedName("transaction_status_id")
 	private int transactionStatusId;
@@ -29,8 +24,26 @@ public class EmployeeTransactionsItem extends RealmObject{
 	@SerializedName("transaction_status_name")
 	private String transactionStatusName;
 
+	@SerializedName("project_site_id")
+	private int projectSiteId;
+
+	@SerializedName("project_site_name")
+	private String projectSiteName;
+
 	@SerializedName("type")
 	private String type;
+
+	@SerializedName("date")
+	private String date;
+
+	@SerializedName("salary_amount")
+	private String salaryAmount;
+
+	@SerializedName("advance_amount")
+	private int advanceAmount;
+
+	@SerializedName("payable_amount")
+	private int payableAmount;
 
 	public int getId() {
 		return id;
@@ -48,12 +61,12 @@ public class EmployeeTransactionsItem extends RealmObject{
 		return date;
 	}
 
-	public void setAmount(String amount){
-		this.amount = amount;
+	public void setSalaryAmount(String amount){
+		this.salaryAmount = amount;
 	}
 
-	public String getAmount(){
-		return amount;
+	public String getSalaryAmount(){
+		return salaryAmount;
 	}
 
 	public void setProjectSiteId(int projectSiteId){

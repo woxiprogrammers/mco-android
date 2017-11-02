@@ -6,18 +6,20 @@ import io.realm.annotations.PrimaryKey;
 
 public class EmployeesearchdataItem extends RealmObject{
 
-	@SerializedName("extra_amount_paid")
-	private int extraAmountPaid;
-
+	/*
+	"employee_id": 4,
+			"format_employee_id": "M109",
+			"employee_name": "Raju",
+			"per_day_wages": 500,
+			"employee_profile_picture": "/assets/global/img/logo.jpg",
+			"is_transaction_pending": false,
+			"balance": 0*/
 	@PrimaryKey
 	@SerializedName("employee_id")
 	private int employeeId;
 
 	@SerializedName("employee_profile_picture")
 	private String employeeProfilePicture;
-
-	@SerializedName("total_amount_paid")
-	private int totalAmountPaid;
 
 	@SerializedName("employee_name")
 	private String employeeName;
@@ -27,14 +29,6 @@ public class EmployeesearchdataItem extends RealmObject{
 
 	@SerializedName("per_day_wages")
 	private int perDayWages;
-
-	public void setExtraAmountPaid(int extraAmountPaid){
-		this.extraAmountPaid = extraAmountPaid;
-	}
-
-	public int getExtraAmountPaid(){
-		return extraAmountPaid;
-	}
 
 	public void setEmployeeId(int employeeId){
 		this.employeeId = employeeId;
@@ -50,14 +44,6 @@ public class EmployeesearchdataItem extends RealmObject{
 
 	public String getEmployeeProfilePicture(){
 		return employeeProfilePicture;
-	}
-
-	public void setTotalAmountPaid(int totalAmountPaid){
-		this.totalAmountPaid = totalAmountPaid;
-	}
-
-	public int getTotalAmountPaid(){
-		return totalAmountPaid;
 	}
 
 	public void setEmployeeName(String employeeName){
