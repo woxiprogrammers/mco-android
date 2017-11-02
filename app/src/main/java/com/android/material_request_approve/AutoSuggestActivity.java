@@ -49,6 +49,7 @@ public class AutoSuggestActivity extends BaseActivity {
     RecyclerView mRecyclerViewSearchResultList;
     @BindView(R.id.buttonAddAsNewItem)
     Button mButtonAddAsNewItem;
+
     boolean isMaterial = false;
     boolean isForMaterial = false;
     private Context mContext;

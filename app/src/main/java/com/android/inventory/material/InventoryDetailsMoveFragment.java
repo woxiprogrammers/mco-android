@@ -38,6 +38,7 @@ import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -126,7 +127,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private Context mContext;
     private String transferType = "";
     private ArrayList<File> arrayImageFileList;
-    private JSONObject jsonImageNameObject = new JSONObject();
+    private JSONArray jsonImageNameArray = new JSONArray();
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
@@ -555,7 +556,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                             arrayImageFileList.remove(0);
                             try {
                                 String fileName = response.getString("filename");
-                                jsonImageNameObject.put("image", fileName);
+                                jsonImageNameArray.put(fileName);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

@@ -74,7 +74,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private String strModelNumber;
     private int componentId;
     private ArrayList<File> arrayImageFileList;
-    private JSONObject jsonImageNameObject = new JSONObject();
+    private JSONArray jsonImageNameArray = new JSONArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -257,8 +257,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
 
     private void requestAssetMaintenance() {
         JSONObject params = new JSONObject();
-        JSONArray jsonImageNameArray = new JSONArray();
-        jsonImageNameArray.put(jsonImageNameObject);
         try {
             if (componentId != -1) {
                 params.put("inventory_component_id", componentId);
@@ -316,7 +314,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
                             arrayImageFileList.remove(0);
                             try {
                                 String fileName = response.getString("filename");
-                                jsonImageNameObject.put("image", fileName);
+                                jsonImageNameArray.put(fileName);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

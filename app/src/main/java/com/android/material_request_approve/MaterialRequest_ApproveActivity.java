@@ -1420,7 +1420,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
-            if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) {
+            final String strUserRole = AppUtils.getInstance().getUserRole();
+            if ((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin)))) {
                 holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
             } else {
                 holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
