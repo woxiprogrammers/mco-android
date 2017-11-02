@@ -59,7 +59,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     @BindView(R.id.textViewListHeader_peticash)
     TextView mTextViewListHeaderPeticash;
     @BindView(R.id.recycler_view_peticash_list)
-    RecyclerView mRecyclerViewLeticashList;
+    RecyclerView mRecyclerViewPeticashList;
     @BindView(R.id.floating_add_button_peticash)
     FloatingActionButton mFloatingAddButtonPeticash;
     private Context mContext;
