@@ -163,7 +163,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             params.put("month", PurchaseHomeActivity.passMonth);
             params.put("year", PurchaseHomeActivity.passYear);
             params.put("page", pageId);
-            Log.i("@@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -179,7 +178,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         if (!response.getPage_id().equalsIgnoreCase("")) {
                             pageNumber = Integer.parseInt(response.getPage_id());
                         }
-                        Log.i("@@@RespNum", String.valueOf(pageNumber));
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {

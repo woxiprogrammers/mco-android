@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -65,6 +66,14 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         TextView textviewWorkHour;
         @BindView(R.id.textview_diesel_consume)
         TextView textviewDieselConsume;
+        @BindView(R.id.linearLayoutForOtherAssets)
+        LinearLayout linearLayoutForOtherAssets;
+        @BindView(R.id.textviewInQuantityAsset)
+        TextView textviewInQuantityAsset;
+        @BindView(R.id.textviewOutQuantityAsset)
+        TextView textviewOutQuantityAsset;
+        @BindView(R.id.textviewAvailableAsset)
+        TextView textviewAvailableAsset;
 
         private MyViewHolder(View itemView) {
             super(itemView);
