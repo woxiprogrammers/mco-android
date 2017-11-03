@@ -114,6 +114,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.textView_pick)
     TextView textViewPick;
     private View mParentView;
+
     private String strDate;
     private String strVehicleNumber;
     private String strInTime;
@@ -142,6 +143,15 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
+        initializeViews();
+        unbinder = ButterKnife.bind(this, mParentView);
+        return mParentView;
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             /*case R.id.textview_materialCount:
@@ -150,6 +160,30 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 break;*/
             case R.id.button_move:
                 validateEntries();
+                break;
+        }
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+    }
+
+    @OnClick({R.id.textView_capture, R.id.textView_pick})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textView_capture:
+                chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
+                break;
+            case R.id.textView_pick:
+                Intent intent = new Intent(mContext, GalleryActivity.class);
+                Params params = new Params();
+                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params.setToolbarColor(R.color.colorPrimaryLight);
+                params.setActionButtonColor(R.color.colorAccentDark);
+                params.setButtonTextColor(R.color.colorWhite);
+                intent.putExtra(Constants.KEY_PARAMS, params);
+                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
                 break;
         }
     }
@@ -238,25 +272,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         }
     }
 
-    @Override
-    public void fragmentBecameVisible() {
-    }
-
     private void requestForMaterial() {
-
-        /*inventory_component_id  => 1
-        name => client / hand / office / supplier / site / labour / sub-contractor
-        type => IN / OUT
-        quantity => 2
-        unit_id => 6
-        date => 2017-10-03 15:42:14
-        in_time => 2017-10-03 10:42:14
-        out_time => 2017-10-03 15:42:14
-        vehicle_number => MH12 1684
-        bill_number => B198
-        bill_amount =>540
-        remark => demo
-        source_name => Dwarkadhish*/
         JSONObject params = new JSONObject();
         try {
             params.put("inventory_component_id", 1);
@@ -299,26 +315,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
-    }
-
-    @OnClick({R.id.textView_capture, R.id.textView_pick})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textView_capture:
-                chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-                break;
-            case R.id.textView_pick:
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
-                break;
-        }
     }
 
     private void chooseAction(int type, Class aClass) {
@@ -395,15 +391,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
-        initializeViews();
-        unbinder = ButterKnife.bind(this, mParentView);
-        return mParentView;
     }
 
     private void initializeViews() {
