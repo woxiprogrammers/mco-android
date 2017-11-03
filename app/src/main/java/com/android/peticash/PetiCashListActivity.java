@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
+import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -34,7 +35,10 @@ import java.util.TimeZone;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.OrderedCollectionChangeSet;
+import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class PetiCashListActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
@@ -66,6 +70,8 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     public int passYear, passMonth;
     private int pageNumber = 0;
     private Realm realm;
+    private RealmResults<PurchaseRequestListItem> peticashTransactionsRealmResult;
+    private PeticashTransactionsListAdapter peticashTransactionsListAdapter;
 
     @OnClick(R.id.relative_layout_datePicker_peticash)
     public void onMRelativeLayoutDatePickerPeticashClicked() {
@@ -79,7 +85,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     }
 
     @OnClick(R.id.floating_add_button_peticash)
-    public void onMFloatingAddButtonPeticashClicked() {
+    public void onFloatingAddButtonPeticashClicked() {
         startActivity(new Intent(mContext, PeticashFormActivity.class));
     }
 
@@ -112,13 +118,14 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
      */
     private void initializeViews() {
         mContext = PetiCashListActivity.this;
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        passMonth = calendar.get(Calendar.MONTH) + 1;
-        passYear = calendar.get(Calendar.YEAR);
         setUpAppBarDatePicker();
+        requestPeticashTransactionsOnline(pageNumber);
     }
 
     private void setUpAppBarDatePicker() {
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passYear = calendar.get(Calendar.YEAR);
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
         mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
     }
@@ -133,13 +140,13 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         return super.onOptionsItemSelected(item);
     }
 
-    private void requestPeticashListOnline(int pageId) {
+    private void requestPeticashTransactionsOnline(int currentPageNumber) {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("month", passMonth);
             params.put("year", passYear);
-            params.put("page", pageId);
+            params.put("page", currentPageNumber);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -147,7 +154,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("requestPeticashListOnline")
+                .setTag("requestPeticashTransactionsOnline")
                 .build()
                 .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
                     @Override
@@ -155,7 +162,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                         if (!response.getPage_id().equalsIgnoreCase("")) {
                             pageNumber = Integer.parseInt(response.getPage_id());
                         }
-                        Log.i("@@@RespNum", String.valueOf(pageNumber));
+                        Timber.i("nextPageNumber", String.valueOf(pageNumber));
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -166,9 +173,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    setUpPrAdapter();
-                                    Timber.d("Success");
-//                                    setUpPrAdapter();
+                                    setUpPeticashTransactionsListAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -185,81 +190,51 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                        AppUtils.getInstance().logApiError(anError, "requestPeticashTransactionsOnline");
                     }
                 });
     }
 
-    /*private void setUpPrAdapter() {
+    private void setUpPeticashTransactionsListAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        String strMonth = new DateFormatSymbols().getMonths()[PurchaseHomeActivity.passMonth - 1];
-        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        peticashTransactionsRealmResult = realm.where(PurchaseRequestListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .contains("date", String.valueOf(PurchaseHomeActivity.passYear))
+                .contains("date", String.valueOf(passYear))
                 .contains("date", strMonth).findAllAsync();
-        purchaseRequestRvAdapter = new PurchaseRequestListFragment.PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
-        recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
-        recyclerView_commonListingView.setHasFixedSize(true);
-        recyclerView_commonListingView.setAdapter(purchaseRequestRvAdapter);
-        recyclerView_commonListingView.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                recyclerView_commonListingView,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, final int position) {
-                        PurchaseRequestListItem purchaseRequestListItem = purchaseRequestListItems.get(position);
-                        if (BuildConfig.DEBUG) {
-                            Timber.d(String.valueOf(purchaseRequestListItem));
-                        }
-                        Intent intent = new Intent(mContext, PurchaseRequestDetailsHomeActivity.class);
-                        intent.putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId());
-                        intent.putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId());
-                        intent.putExtra("KEY_SUBMODULETAG", subModuleTag);
-                        intent.putExtra("KEY_PERMISSIONLIST", permissionList);
-                        startActivity(intent);
-//                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
-                    }
+        peticashTransactionsListAdapter  = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
+        mRecyclerViewPeticashList.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerViewPeticashList.setHasFixedSize(true);
+        mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
 
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                }));
-        recyclerView_commonListingView.addOnScrollListener(new EndlessRecyclerViewScrollListener(new LinearLayoutManager(mContext)) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (oldPageNumber != pageNumber) {
-                    oldPageNumber = pageNumber;
-                    requestPrListOnline(page);
-                }
-            }
-        });
-        if (purchaseRequestListItems != null) {
-            purchaseRequestListItems.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseRequestListItem>>() {
+        if (peticashTransactionsRealmResult != null) {
+            peticashTransactionsRealmResult.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseRequestListItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
                     // `null`  means the async query returns the first time.
                     if (changeSet == null) {
-                        purchaseRequestRvAdapter.notifyDataSetChanged();
+                        peticashTransactionsListAdapter.notifyDataSetChanged();
                         return;
                     }
                     // For deletions, the adapter has to be notified in reverse order.
                     OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
                     for (int i = deletions.length - 1; i >= 0; i--) {
                         OrderedCollectionChangeSet.Range range = deletions[i];
-                        purchaseRequestRvAdapter.notifyItemRangeRemoved(range.startIndex, range.length);
+                        peticashTransactionsListAdapter.notifyItemRangeRemoved(range.startIndex, range.length);
                     }
                     OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
                     for (OrderedCollectionChangeSet.Range range : insertions) {
-                        purchaseRequestRvAdapter.notifyItemRangeInserted(range.startIndex, range.length);
+                        peticashTransactionsListAdapter.notifyItemRangeInserted(range.startIndex, range.length);
                     }
                     OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
                     for (OrderedCollectionChangeSet.Range range : modifications) {
-                        purchaseRequestRvAdapter.notifyItemRangeChanged(range.startIndex, range.length);
+                        peticashTransactionsListAdapter.notifyItemRangeChanged(range.startIndex, range.length);
                     }
                 }
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
         }
-    }*/
+    }
 }
