@@ -136,9 +136,9 @@ public class AssetDetailsActivity extends BaseActivity {
     public void onViewClicked() {
         Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
         //ToDo Start Reading
-        /*Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
+        Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
         intent.putExtra("asset_name",strAssetName);
-        startActivity(intent);*/
+        startActivity(intent);
     }
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {

@@ -29,4 +29,10 @@
         android:orderInCategory="100"
         android:title="Request Maintainance"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_move_in_out"
+        app:showAsAction="never"
+        android:title="Move In/Out"
+          />
 </menu>

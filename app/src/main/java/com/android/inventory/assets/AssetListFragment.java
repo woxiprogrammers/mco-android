@@ -89,7 +89,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).equalTo("isDiesel", true).findAll();
+        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class)/*.equalTo("isDiesel", true)*/.findAll();
         Timber.d(String.valueOf(assetsListItems));
         AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -136,7 +136,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         JSONObject params = new JSONObject();
         try {
             params.put("page", 0);
-            params.put("project_site_id", 5);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
