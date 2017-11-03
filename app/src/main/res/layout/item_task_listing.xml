@@ -28,13 +28,6 @@
                 android:rotation="90"
                 app:srcCompat="@drawable/ic_arrow_up"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|left"
-                android:layout_marginLeft="16dp"
-                app:srcCompat="@drawable/ic_purchase"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,17 +43,17 @@
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/dimen_18dp"/>
 
-                <!--<TextView
+                <TextView
                     android:id="@+id/tv_Description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>-->
+                    android:textSize="@dimen/dimen_14dp"/>
             </LinearLayout>
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/ll_sub_modules"
+            android:id="@+id/ll_remaining_transactions_expandable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

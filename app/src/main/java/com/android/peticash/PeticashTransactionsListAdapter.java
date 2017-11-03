@@ -16,7 +16,6 @@ import com.android.constro360.R;
 import com.android.dashboard.ModulesAdapter;
 import com.android.models.login_acl.ModulesItem;
 import com.android.models.login_acl.SubModulesItem;
-import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.utils.SlideAnimationUtil;
 
 import io.realm.OrderedRealmCollection;
@@ -29,12 +28,12 @@ import io.realm.RealmResults;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<PurchaseRequestListItem, PeticashTransactionsListAdapter.MyViewHolder> {
-    private OrderedRealmCollection<PurchaseRequestListItem> modulesItemOrderedRealmCollection;
+class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<ModulesItem, PeticashTransactionsListAdapter.MyViewHolder> {
+    private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     // Define listener member variable
     private ModulesAdapter.OnItemClickListener clickListener;
 
-    public PeticashTransactionsListAdapter(@Nullable OrderedRealmCollection<PurchaseRequestListItem> data, boolean autoUpdate, boolean updateOnModification) {
+    public PeticashTransactionsListAdapter(@Nullable RealmResults<ModulesItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, true, true);
         this.modulesItemOrderedRealmCollection = data;
         setHasStableIds(true);
@@ -120,7 +119,7 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<PurchaseR
             moduleName = (TextView) view.findViewById(R.id.tv_moduleName);
 //            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
             fl_mainModuleFrame = (FrameLayout) view.findViewById(R.id.fl_mainModuleFrame);
-            ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_sub_modules);
+            ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_remaining_transactions_expandable );
             int intMaxSize = 0;
             for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
                 int intMaxSizeTemp = modulesItemOrderedRealmCollection.get(index).getSubModules().size();

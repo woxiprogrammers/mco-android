@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
-import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
+import com.android.models.login_acl.ModulesItem;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -70,7 +70,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     public int passYear, passMonth;
     private int pageNumber = 0;
     private Realm realm;
-    private RealmResults<PurchaseRequestListItem> peticashTransactionsRealmResult;
+    private RealmResults<ModulesItem> peticashTransactionsRealmResult;
     private PeticashTransactionsListAdapter peticashTransactionsListAdapter;
 
     @OnClick(R.id.relative_layout_datePicker_peticash)
@@ -199,19 +199,18 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        peticashTransactionsRealmResult = realm.where(PurchaseRequestListItem.class)
+        peticashTransactionsRealmResult = realm.where(ModulesItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
                 .contains("date", strMonth).findAllAsync();
-        peticashTransactionsListAdapter  = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
+        peticashTransactionsListAdapter = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
         mRecyclerViewPeticashList.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerViewPeticashList.setHasFixedSize(true);
         mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
-
         if (peticashTransactionsRealmResult != null) {
-            peticashTransactionsRealmResult.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseRequestListItem>>() {
+            peticashTransactionsRealmResult.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<ModulesItem>>() {
                 @Override
-                public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
+                public void onChange(RealmResults<ModulesItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
                     // `null`  means the async query returns the first time.
                     if (changeSet == null) {
                         peticashTransactionsListAdapter.notifyDataSetChanged();
