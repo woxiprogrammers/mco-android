@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_8dp"
         android:orientation="vertical"
         android:paddingBottom="@dimen/dimen_16dp">
+
         <LinearLayout
             android:id="@+id/linearLayoutVendorName"
             android:layout_width="match_parent"
@@ -31,9 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_3dp"
                 android:textColor="@color/colorTextLight"/>
-
         </LinearLayout>
-
 
         <Button
             android:id="@+id/button_edit"
@@ -56,7 +54,6 @@
                 android:layout_marginLeft="@dimen/dimen_3dp"
                 android:text="Material Name:"
                 android:textColor="@color/colorTextLight"/>
-
         </LinearLayout>
 
         <FrameLayout
@@ -83,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:background="@android:drawable/editbox_background_normal"
                 android:enabled="false"/>
-
         </LinearLayout>
 
         <RadioGroup
@@ -102,7 +98,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Create Amendment"/>
-
         </RadioGroup>
 
         <LinearLayout
@@ -170,10 +165,8 @@
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:enabled="false"/>
-
                 </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
 
         <HorizontalScrollView
@@ -303,7 +296,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
-                    android:focusable="false"/>
+                    android:focusable="false"
+                    android:inputType="date"/>
             </LinearLayout>
 
             <LinearLayout
@@ -324,11 +318,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
-                    android:focusable="false"/>
-
-
+                    android:focusable="false"
+                    android:inputType="time"/>
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -355,7 +347,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
-                    android:focusable="false"/>
+                    android:focusable="false"
+                    android:inputType="date"/>
             </LinearLayout>
 
             <LinearLayout
@@ -376,11 +369,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
-                    android:focusable="false"/>
-
-
+                    android:focusable="false"
+                    android:inputType="time"/>
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -402,10 +393,9 @@
                 android:layout_height="wrap_content"
                 android:background="@android:drawable/editbox_background_normal"
                 android:focusable="false"
-                android:textColor="@color/black"
-                android:onClick="onViewClicked"/>
+                android:onClick="onViewClicked"
+                android:textColor="@color/black"/>
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -424,8 +414,8 @@
                 android:id="@+id/editText_BillAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:background="@android:drawable/editbox_background_normal"/>
+                android:background="@android:drawable/editbox_background_normal"
+                android:inputType="number"/>
         </LinearLayout>
 
         <LinearLayout
@@ -449,6 +439,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:drawable/editbox_background_normal"/>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/linearLayoutPaymentMode"
             android:layout_width="match_parent"
@@ -475,8 +466,8 @@
                     android:layout_height="match_parent"
                     android:entries="@array/payment_mode_array"/>
             </FrameLayout>
-
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_PayableAmount"
             android:layout_width="match_parent"
@@ -496,8 +487,8 @@
                 android:id="@+id/editText_PayableAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:background="@android:drawable/editbox_background_normal"/>
+                android:background="@android:drawable/editbox_background_normal"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
         <LinearLayout
@@ -519,8 +510,8 @@
                 android:id="@+id/editText_refNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:background="@android:drawable/editbox_background_normal"/>
+                android:background="@android:drawable/editbox_background_normal"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
         <LinearLayout
@@ -572,7 +563,6 @@
                 android:orientation="horizontal"
                 android:visibility="visible">
             </LinearLayout>
-
         </HorizontalScrollView>
 
         <android.support.v7.widget.CardView
