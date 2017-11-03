@@ -984,6 +984,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
         JSONObject params = new JSONObject();
         try {
+            int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+            float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
+            unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             if (!isMoveIndent) {
                 params.put("material_request_component_id", materialRequestComponentId);
                 params.put("change_component_status_id_to", statusId);
