@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/fl_mainModuleFrame"
+            android:id="@+id/fl_mainTrasactionFrame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top">
@@ -24,44 +24,44 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="16dp"
-                android:rotation="90"
+                android:layout_marginRight="12dp"
+                android:rotation="180"
                 app:srcCompat="@drawable/ic_arrow_up"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|left"
-                android:layout_marginLeft="16dp"
-                app:srcCompat="@drawable/ic_purchase"/>
-
             <LinearLayout
-                android:id="@+id/ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_4dp"
+                android:layout_marginRight="@dimen/dimen_40dp"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"
-                android:paddingLeft="80dp"
-                android:paddingTop="16dp">
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
 
                 <TextView
-                    android:id="@+id/tv_moduleName"
+                    android:id="@+id/tv_transaction_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorText"
-                    android:textSize="@dimen/dimen_18dp"/>
+                    android:textSize="@dimen/dimen_16dp"/>
 
-                <!--<TextView
-                    android:id="@+id/tv_Description"
+                <TextView
+                    android:id="@+id/tv_no_of_transactions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>-->
+                    android:textSize="@dimen/dimen_14dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Click here to see more transactions."
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/dimen_14dp"/>
             </LinearLayout>
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/ll_sub_modules"
+            android:id="@+id/ll_remaining_transactions_expandable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

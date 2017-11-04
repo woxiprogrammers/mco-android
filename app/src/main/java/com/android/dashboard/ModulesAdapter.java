@@ -116,7 +116,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             moduleName = (TextView) view.findViewById(R.id.tv_moduleName);
 //            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
             fl_mainModuleFrame = (FrameLayout) view.findViewById(R.id.fl_mainModuleFrame);
-            ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_remaining_transactions_expandable);
+            ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_sub_modules);
             int intMaxSize = 0;
             for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
                 int intMaxSizeTemp = modulesItemOrderedRealmCollection.get(index).getSubModules().size();

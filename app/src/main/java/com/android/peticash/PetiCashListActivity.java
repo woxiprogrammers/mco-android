@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
-import com.android.models.login_acl.ModulesItem;
-import com.android.purchase_request.models_purchase_request.PurchaseRequestResponse;
+import com.android.peticash.peticash_models.DatewiseTransactionsListItem;
+import com.android.peticash.peticash_models.PeticashTransactionsResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -70,7 +70,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     public int passYear, passMonth;
     private int pageNumber = 0;
     private Realm realm;
-    private RealmResults<ModulesItem> peticashTransactionsRealmResult;
+    private RealmResults<DatewiseTransactionsListItem> peticashTransactionsRealmResult;
     private PeticashTransactionsListAdapter peticashTransactionsListAdapter;
 
     @OnClick(R.id.relative_layout_datePicker_peticash)
@@ -109,6 +109,24 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         }
         //Calling function to initialize required views.
         initializeViews();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        for (int i = 0; i < 5; i++) {
+            if (realm != null) {
+                realm.close();
+            }
+        }
     }
 
     /**
@@ -156,11 +174,11 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPeticashTransactionsOnline")
                 .build()
-                .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
+                .getAsObject(PeticashTransactionsResponse.class, new ParsedRequestListener<PeticashTransactionsResponse>() {
                     @Override
-                    public void onResponse(final PurchaseRequestResponse response) {
-                        if (!response.getPage_id().equalsIgnoreCase("")) {
-                            pageNumber = Integer.parseInt(response.getPage_id());
+                    public void onResponse(final PeticashTransactionsResponse response) {
+                        if (!response.getPageId().equalsIgnoreCase("")) {
+                            pageNumber = Integer.parseInt(response.getPageId());
                         }
                         Timber.i("nextPageNumber", String.valueOf(pageNumber));
                         realm = Realm.getDefaultInstance();
@@ -199,7 +217,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        peticashTransactionsRealmResult = realm.where(ModulesItem.class)
+        peticashTransactionsRealmResult = realm.where(DatewiseTransactionsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
                 .contains("date", strMonth).findAllAsync();
@@ -208,9 +226,9 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         mRecyclerViewPeticashList.setHasFixedSize(true);
         mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
         if (peticashTransactionsRealmResult != null) {
-            peticashTransactionsRealmResult.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<ModulesItem>>() {
+            peticashTransactionsRealmResult.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<DatewiseTransactionsListItem>>() {
                 @Override
-                public void onChange(RealmResults<ModulesItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
+                public void onChange(RealmResults<DatewiseTransactionsListItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
                     // `null`  means the async query returns the first time.
                     if (changeSet == null) {
                         peticashTransactionsListAdapter.notifyDataSetChanged();

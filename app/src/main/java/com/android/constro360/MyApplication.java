@@ -26,7 +26,7 @@ public class MyApplication extends Application {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .name(getString(R.string.realm_database_name))
                 .schemaVersion(AppConstants.PREFS_REALM_DATABASE_VERSION)
-//                .deleteRealmIfMigrationNeeded()
+                .deleteRealmIfMigrationNeeded()
                 .build();
         Realm.setDefaultConfiguration(realmConfiguration);
         if (BuildConfig.DEBUG) {
