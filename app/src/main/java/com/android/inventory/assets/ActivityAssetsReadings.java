@@ -33,6 +33,7 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 public class ActivityAssetsReadings extends BaseActivity {
     @BindView(R.id.ll_add_readings)
@@ -58,6 +59,8 @@ public class ActivityAssetsReadings extends BaseActivity {
     private String setAssetTitle;
     private int intComponentId;
     private String strStartReading, strStartTime, strStopReading, strStopTime, strTopUp, strTopUpTime, strFuelPerUnit, strLtrPerUnit;
+    private Realm realm;
+    private String slug;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,11 @@ public class ActivityAssetsReadings extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(setAssetTitle);
         }
+
+        realm=Realm.getDefaultInstance();
+        AssetsListItem assetsListItem=realm.where(AssetsListItem.class).equalTo("id",intComponentId).findFirst();
+        slug=assetsListItem.getSlug();
+
     }
 
     private void inflateReadingLayout() {
@@ -97,6 +105,20 @@ public class ActivityAssetsReadings extends BaseActivity {
             @Override
             public void onClick(View view) {
                 setInOutTime(editTextStartTime);
+            }
+        });
+
+        editTextStopTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInOutTime(editTextStopTime);
+            }
+        });
+
+        editTextTopUpTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInOutTime(editTextTopUpTime);
             }
         });
         /*imageAddReadingsPoint.setOnClickListener(new View.OnClickListener() {
@@ -279,13 +301,24 @@ public class ActivityAssetsReadings extends BaseActivity {
             params.put("inventory_component_id", intComponentId);
             params.put("start_reading", strStartReading);
             params.put("stop_reading", strStopReading);
-            params.put("top_up_time", strTopUpTime);
             params.put("start_time", strStartTime);
             params.put("stop_time", strStopTime);
+            if(slug.equalsIgnoreCase("fuel_dependent")){
+                params.put("fuel_per_unit", strLtrPerUnit);
+                params.put("top_up", strTopUp);
+                params.put("top_up_time", strTopUpTime);
+
+            }else if(slug.equalsIgnoreCase("electricity_dependent")){
+                params.put("electricity_per_unit", strLtrPerUnit);
+
+            }else if(slug.equalsIgnoreCase("fuel_and_electricity_dependent")){
+                params.put("fuel_per_unit", strLtrPerUnit);
+                params.put("electricity_per_unit", strLtrPerUnit);
+                params.put("top_up", strTopUp);
+                params.put("top_up_time", strTopUpTime);
+
+            }
             //ToDO
-            params.put("electricity_per_unit", strLtrPerUnit);
-            params.put("fuel_per_unit", strLtrPerUnit);
-            params.put("top_up", strTopUp);
         } catch (JSONException e) {
             e.printStackTrace();
         }
