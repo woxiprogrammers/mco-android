@@ -247,14 +247,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             editText_Date.setError(null);
         }
         if (!checkboxMoveInOut.isChecked()) {
-            strBillAmount = editTextBillamount.getText().toString();
-            if (TextUtils.isEmpty(strBillAmount)) {
-                editTextBillamount.setError("Please Enter Bill Amount");
-                return;
-            } else {
-                editTextBillamount.requestFocus();
-                editTextBillamount.setError(null);
-            }
+
         }
         if (isChecked) {
             //Vehicle Number
@@ -283,6 +276,15 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             } else {
                 editTextOutTime.setError(null);
                 editTextOutTime.requestFocus();
+            }
+
+            strBillAmount = editTextBillamount.getText().toString();
+            if (TextUtils.isEmpty(strBillAmount)) {
+                editTextBillamount.setError("Please Enter Bill Amount");
+                return;
+            } else {
+                editTextBillamount.requestFocus();
+                editTextBillamount.setError(null);
             }
 
 
@@ -565,6 +567,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
+                        isChecked = true;
                         break;
                 }
             }
@@ -671,6 +674,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     }
                 });
     }
+
     private void setUpUnitQuantityChangeListener() {
         realm = Realm.getDefaultInstance();
         unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
@@ -713,6 +717,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
         editTextUpdateDate.setError(null);
     }
+
     private void setInOutTime(final EditText currentEditText) {
         final Calendar mcurrentTime = Calendar.getInstance();
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);

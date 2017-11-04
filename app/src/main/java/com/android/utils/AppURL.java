@@ -47,6 +47,6 @@ public class AppURL {
 
 
     //Inventory
-    public static final String API_CREATE_FUEL_READING = BASE_URL + "";
+    public static final String API_CREATE_FUEL_READING = BASE_URL + "inventory/asset/add-readings?token=";
 
 }
