@@ -42,6 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:checked="true"
+
                     android:text="@string/move_out"
                     android:textSize="16dp"/>
             </LinearLayout>
