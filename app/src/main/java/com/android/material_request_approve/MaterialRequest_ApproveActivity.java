@@ -1050,6 +1050,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                             status = "in-indent";
                                             break;
                                     }
+                                    //ToDO ROhit
                                     purchaseMaterialListItem.setComponentStatus(status);
                                     purchaseMaterialListItem.setItem_quantity(Float.parseFloat(editText_quantity_material_asset.getText().toString().trim()));
                                     realm.insertOrUpdate(purchaseMaterialListItem);
@@ -1489,12 +1490,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     private void setUpUnitQuantityChangeListener() {
         realm = Realm.getDefaultInstance();
-       unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
-
+        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
         setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
-    }
-    private void getId(){
-
     }
 
     private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {

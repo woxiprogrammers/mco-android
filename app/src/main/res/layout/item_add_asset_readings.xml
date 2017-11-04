@@ -4,88 +4,101 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/dimen_8dp"
+    android:background="@android:drawable/editbox_background"
     android:elevation="@dimen/dimen_10dp">
 
     <ImageButton
-        android:id="@+id/iamgeButton_open_readings_menu"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="top|right"
         android:background="@color/colorWhite"
         android:onClick="onViewClicked"
-        android:src="@drawable/ic_action_more_vert"/>
+        android:src="@drawable/ic_action_more_vert"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/dimen_8dp">
+        android:padding="@dimen/dimen_3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="00.4"
+                android:layout_weight="00.3"
                 android:text="Start Reading:"/>
+
+            <EditText
+                android:id="@+id/editTextStartReading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"/>
 
             <TextView
                 android:id="@+id/startRead"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="0 KM"/>
+                android:layout_weight="0.1"
+                android:text="KM"/>
         </LinearLayout>
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="00.4"
+                android:layout_weight="00.3"
                 android:text="Start Time:"/>
 
-            <TextView
-                android:id="@+id/startTime"
+            <EditText
+                android:id="@+id/editTextStartTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="0 KM"/>
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="KM"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.3"
                 android:text="Stop Reading:"/>
 
-            <TextView
-                android:id="@+id/text_view_setStopReading"
+            <EditText
+                android:id="@+id/editTextStopReading"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="0 KM"/>
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="KM"/>
         </LinearLayout>
 
 
@@ -94,41 +107,51 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="00.4"
+                android:layout_weight="00.3"
                 android:text="Stop Time:"/>
 
-            <TextView
-                android:id="@+id/stopTime"
+            <EditText
+                android:id="@+id/editTextStopTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="0 KM"/>
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="AM/PM"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.3"
                 android:text="Top-Up:"/>
 
+            <EditText
+                android:id="@+id/editTextTopUp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"/>
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="0 KM"/>
+                android:layout_weight="0.1"
+                android:text="KM"/>
         </LinearLayout>
 
         <LinearLayout
@@ -136,44 +159,52 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:text="Top-Up Time:"/>
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
+                android:text="Top-Up Time:"/>
+
+            <EditText
+                android:id="@+id/editTextTopUpTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
                 android:text="AM/PM"/>
         </LinearLayout>
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="00.4"
+                android:layout_weight="00.3"
                 android:text="Litre Per Unit:"/>
 
-            <TextView
-                android:id="@+id/ltrPerUnit"
+            <EditText
+                android:id="@+id/editTextLtrPerUnit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="0 KM"/>
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="KM"/>
         </LinearLayout>
 
     </LinearLayout>

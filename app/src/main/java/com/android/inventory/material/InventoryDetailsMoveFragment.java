@@ -12,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -23,8 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.dummy.UnitsResponse;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.SelectedMaterialListAdapter;
+import com.android.material_request_approve.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -32,6 +35,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
@@ -45,12 +49,15 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import id.zelory.compressor.Compressor;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -68,16 +75,12 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     TextView text_ViewSetSelectedTextName;
     @BindView(R.id.edit_text_selected_dest_name)
     EditText edit_text_selected_dest_name;
-    @BindView(R.id.ll_forSite)
-    LinearLayout ll_forsite;
     @BindView(R.id.ll_forSupplierVehicle)
     LinearLayout ll_forSupplierVehicle;
     @BindView(R.id.ll_forSupplierInOutTime)
     LinearLayout ll_forSupplierInOutTime;
     @BindView(R.id.checkbox_moveInOut)
     CheckBox checkboxMoveInOut;
-    @BindView(R.id.text_view_project_name)
-    Spinner textViewProjectName;
     @BindView(R.id.edit_text_vehicleNumber)
     EditText editTextVehicleNumber;
     @BindView(R.id.edit_text_ChallanNumber)
@@ -106,13 +109,15 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     LinearLayout llAddImage;
     @BindView(R.id.edittext_quantity)
     EditText edittextQuantity;
-    @BindView(R.id.edittext_unit)
-    EditText edittextUnit;
     @BindView(R.id.textView_capture)
     TextView textViewCapture;
     Unbinder unbinder;
     @BindView(R.id.textView_pick)
     TextView textViewPick;
+    @BindView(R.id.spinnerMaterialUnits)
+    Spinner spinnerMaterialUnits;
+    @BindView(R.id.frameLayout)
+    FrameLayout frameLayout;
     private View mParentView;
 
     private String strDate;
@@ -129,6 +134,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private String transferType = "";
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
+    private Realm realm;
+    private int indexItemUnit,unidId;
+    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
@@ -205,14 +213,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             edittextQuantity.requestFocus();
             edittextQuantity.setError(null);
         }
-        //Unit
-        strUnit = edittextUnit.getText().toString();
-        if (TextUtils.isEmpty(strUnit)) {
-            edittextUnit.setError("Please " + getString(R.string.edittext_hint_units));
-        } else {
-            edittextUnit.requestFocus();
-            edittextUnit.setError(null);
-        }
         //Date
         strDate = editText_Date.getText().toString();
         if (TextUtils.isEmpty(strDate)) {
@@ -270,6 +270,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 editTextOutTime.requestFocus();
             }
         }
+
+        uploadImages_addItemToLocal();
     }
 
     private void requestForMaterial() {
@@ -283,14 +285,23 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             }
             params.put("type", transferType);
             params.put("quantity", strQuantity);
-            params.put("unit_id", strMaterialName);
+            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                unidId = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
+                params.put("unit_id", unidId);
+            }
             params.put("date", strDate);
             params.put("in_time", strInTime);
             params.put("out_time", strOutTime);
             params.put("vehicle_number", strVehicleNumber);
             params.put("bill_number", strBillNumber);
-            params.put("bill_amount", strMaterialName);
-            params.put("remark", strMaterialName);
+            params.put("bill_amount", editTextBillamount.getText().toString());
+            if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
+                params.put("remark", editTextAddNote.getText().toString());
+            } else {
+
+                params.put("remark", "");
+            }
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -396,6 +407,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void initializeViews() {
         ButterKnife.bind(this, mParentView);
         mContext = getActivity();
+        checkAvailability(1);
 //        text_view_materialCount.setOnClickListener(this);
         buttonMove.setOnClickListener(this);
         text_view_materialCount.setText(strMaterialName);
@@ -409,14 +421,12 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     sourceMoveInSpinner.setVisibility(View.GONE);
                     llChallanNumber.setVisibility(View.GONE);
                     linearBillAmount.setVisibility(View.GONE);
-                    ll_forsite.setVisibility(View.VISIBLE);
                     transferType = "OUT";
                 } else {
                     checkboxMoveInOut.setText(getString(R.string.move_in));
                     transferType = "IN";
                     spinnerDestinations.setVisibility(View.GONE);
                     sourceMoveInSpinner.setVisibility(View.VISIBLE);
-                    ll_forsite.setVisibility(View.GONE);
                     ll_forSupplierVehicle.setVisibility(View.GONE);
                     ll_forSupplierInOutTime.setVisibility(View.GONE);
                     text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
@@ -430,7 +440,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Site
                     case 0:
                         text_ViewSetSelectedTextName.setText(getString(R.string.site_name));
-                        ll_forsite.setVisibility(View.VISIBLE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.site_name);
@@ -438,7 +447,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Client
                     case 1:
                         text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
-                        ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.client_name);
@@ -446,7 +454,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Labour
                     case 2:
                         text_ViewSetSelectedTextName.setText(getString(R.string.labour_name));
-                        ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.labour_name);
@@ -454,7 +461,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For SubContracter
                     case 3:
                         text_ViewSetSelectedTextName.setText(getString(R.string.sub_contracter_name));
-                        ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.sub_contracter_name);
@@ -558,5 +564,73 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         } else {
             requestForMaterial();
         }
+    }
+
+    private void checkAvailability(int materialRequestComponentId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("material_request_component_id", materialRequestComponentId);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_MATERIAL_REQUEST_AVAILABLE_QUANTITY + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("checkAvailability")
+                .build()
+                .getAsObject(UnitsResponse.class, new ParsedRequestListener<UnitsResponse>() {
+                    @Override
+                    public void onResponse(final UnitsResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(UnitQuantityItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Timber.d("Realm Execution Successful");
+                                    setUpUnitQuantityChangeListener();
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "checkAvailability");
+                    }
+                });
+    }
+    private void setUpUnitQuantityChangeListener() {
+        realm = Realm.getDefaultInstance();
+        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
+        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
+    }
+
+    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
+        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (UnitQuantityItem currentUser : unitQuantityItems) {
+            String strUserName = currentUser.getUnitName();
+            arrayOfUsers.add(strUserName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMaterialUnits.setAdapter(arrayAdapter);
     }
 }

@@ -144,6 +144,7 @@ public class AssetDetailsActivity extends BaseActivity {
         //ToDo Start Reading
         Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
         intent.putExtra("asset_name",strAssetName);
+        intent.putExtra("componentId",inventoryComponentId);
         startActivity(intent);
     }
 
