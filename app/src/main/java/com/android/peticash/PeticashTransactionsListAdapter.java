@@ -2,9 +2,7 @@ package com.android.peticash;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
-import com.android.dashboard.ModulesAdapter;
 import com.android.peticash.peticash_models.DatewiseTransactionsListItem;
 import com.android.peticash.peticash_models.TransactionListItem;
 import com.android.utils.SlideAnimationUtil;
@@ -33,9 +30,9 @@ import io.realm.RealmResults;
 class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseTransactionsListItem, PeticashTransactionsListAdapter.MyViewHolder> {
     private OrderedRealmCollection<DatewiseTransactionsListItem> modulesItemOrderedRealmCollection;
     // Define listener member variable
-    private ModulesAdapter.OnItemClickListener clickListener;
+    private PeticashTransactionsListAdapter.OnItemClickListener clickListener;
 
-    public PeticashTransactionsListAdapter(@Nullable RealmResults<DatewiseTransactionsListItem> data, boolean autoUpdate, boolean updateOnModification) {
+    PeticashTransactionsListAdapter(@Nullable RealmResults<DatewiseTransactionsListItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, true, true);
         this.modulesItemOrderedRealmCollection = data;
         setHasStableIds(true);
@@ -47,7 +44,7 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
     }
 
     // Define the method that allows the parent activity or fragment to define the listener
-    public void setOnItemClickListener(ModulesAdapter.OnItemClickListener listener) {
+    void setOnItemClickListener(PeticashTransactionsListAdapter.OnItemClickListener listener) {
         this.clickListener = listener;
     }
 
@@ -130,13 +127,16 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
                 if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
             }
             for (int indexView = 0; indexView < intMaxSize; indexView++) {
-                TextView textView = new TextView(context);
-                textView.setId(indexView);
-                textView.setPadding(0, 20, 0, 20);
-                textView.setGravity(Gravity.CENTER);
-                textView.setBackground(ContextCompat.getDrawable(context, R.drawable.background_sub_module_text));
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                mLlRemainingTransactionsExpandable.addView(textView, layoutParams);
+                View transactionDetailLayout = LayoutInflater.from(context).inflate(R.layout.item_transaction_detail, null);
+                transactionDetailLayout.setId(indexView);
+//                TextView textView = new TextView(context);
+//                textView.setId(indexView);
+//                textView.setPadding(0, 20, 0, 20);
+//                textView.setGravity(Gravity.CENTER);
+//                textView.setBackground(ContextCompat.getDrawable(context, R.drawable.background_sub_module_text));
+//                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                mLlRemainingTransactionsExpandable.addView(textView, layoutParams);
+                mLlRemainingTransactionsExpandable.addView(transactionDetailLayout);
             }
         }
     }

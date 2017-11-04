@@ -12,7 +12,7 @@ public class PeticashTransactionsResponse extends RealmObject {
     private String pageId;
     @SerializedName("message")
     private String message;
-    @SerializedName("peticash_transaction_data")
+    @SerializedName("data")
     private PeticashTransactionData peticashTransactionData;
 
     public void setPageId(String pageId) {

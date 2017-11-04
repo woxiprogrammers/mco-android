@@ -13,8 +13,6 @@ import android.widget.NumberPicker;
 
 import com.android.constro360.R;
 
-import java.util.Calendar;
-
 /**
  * <b></b>
  * <p>This class is used to </p>
@@ -23,6 +21,7 @@ import java.util.Calendar;
 public class MonthYearPickerDialog extends DialogFragment {
     private int maxYear = 2050;
     private int minYear = 2017;
+    private int currentYear, currentMonth;
     private DatePickerDialog.OnDateSetListener listener;
 
     public MonthYearPickerDialog() {
@@ -39,11 +38,13 @@ public class MonthYearPickerDialog extends DialogFragment {
         if (bundle != null) {
             maxYear = bundle.getInt("maxYear");
             minYear = bundle.getInt("minYear");
+            currentYear = bundle.getInt("currentYear");
+            currentMonth = bundle.getInt("currentMonth");
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        Calendar cal = Calendar.getInstance();
+//        Calendar cal = Calendar.getInstance();
         View dialog = inflater.inflate(R.layout.date_picker_dialog, null);
         final NumberPicker monthPicker = (NumberPicker) dialog.findViewById(R.id.picker_month);
         final NumberPicker yearPicker = (NumberPicker) dialog.findViewById(R.id.picker_year);
@@ -51,11 +52,12 @@ public class MonthYearPickerDialog extends DialogFragment {
         final Button buttonDismiss = (Button) dialog.findViewById(R.id.button_dismiss_date_picker);
         monthPicker.setMinValue(1);
         monthPicker.setMaxValue(12);
-        monthPicker.setValue(cal.get(Calendar.MONTH) + 1);
-        int year = cal.get(Calendar.YEAR);
+//        monthPicker.setValue(cal.get(Calendar.MONTH) + 1);
+        monthPicker.setValue(currentMonth);
+//        int year = cal.get(Calendar.YEAR);
         yearPicker.setMinValue(minYear);
         yearPicker.setMaxValue(maxYear);
-        yearPicker.setValue(year);
+        yearPicker.setValue(currentYear);
         builder.setView(dialog);
         buttonSelect.setOnClickListener(new View.OnClickListener() {
             @Override

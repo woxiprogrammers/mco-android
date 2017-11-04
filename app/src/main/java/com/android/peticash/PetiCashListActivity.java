@@ -8,16 +8,21 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
 import com.android.peticash.peticash_models.DatewiseTransactionsListItem;
+import com.android.peticash.peticash_models.PeticashTransactionData;
 import com.android.peticash.peticash_models.PeticashTransactionsResponse;
+import com.android.peticash.peticash_models.TransactionListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -79,6 +84,8 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         Bundle bundleArgs = new Bundle();
         bundleArgs.putInt("maxYear", 2019);
         bundleArgs.putInt("minYear", 2016);
+        bundleArgs.putInt("currentYear", passYear);
+        bundleArgs.putInt("currentMonth", passMonth);
         monthYearPickerDialog.setArguments(bundleArgs);
         monthYearPickerDialog.setListener(this);
         monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
@@ -95,6 +102,8 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         passMonth = month;
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
         mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
+        pageNumber = 0;
+        requestPeticashTransactionsOnline(pageNumber);
     }
 
     @Override
@@ -164,7 +173,9 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("month", passMonth);
             params.put("year", passYear);
+            params.put("type", "both");
             params.put("page", currentPageNumber);
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -177,15 +188,18 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                 .getAsObject(PeticashTransactionsResponse.class, new ParsedRequestListener<PeticashTransactionsResponse>() {
                     @Override
                     public void onResponse(final PeticashTransactionsResponse response) {
-                        if (!response.getPageId().equalsIgnoreCase("")) {
-                            pageNumber = Integer.parseInt(response.getPageId());
-                        }
                         Timber.i("nextPageNumber", String.valueOf(pageNumber));
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    if (pageNumber == 0) {
+                                        realm.delete(PeticashTransactionsResponse.class);
+                                        realm.delete(PeticashTransactionData.class);
+                                        realm.delete(DatewiseTransactionsListItem.class);
+                                        realm.delete(TransactionListItem.class);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -203,6 +217,9 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                             if (realm != null) {
                                 realm.close();
                             }
+                        }
+                        if (!TextUtils.isEmpty(response.getPageId())) {
+                            pageNumber = Integer.parseInt(response.getPageId());
                         }
                     }
 
@@ -224,6 +241,14 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         peticashTransactionsListAdapter = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
         mRecyclerViewPeticashList.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerViewPeticashList.setHasFixedSize(true);
+        peticashTransactionsListAdapter.setOnItemClickListener(new PeticashTransactionsListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int modulePosition) {
+                int subModuleIndex = itemView.getId();
+                TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
+                Toast.makeText(mContext, "" + transactionListItem.getPeticashTransactionId() + " " + transactionListItem.getPeticashTransactionType(), Toast.LENGTH_SHORT).show();
+            }
+        });
         mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
         if (peticashTransactionsRealmResult != null) {
             peticashTransactionsRealmResult.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<DatewiseTransactionsListItem>>() {
