@@ -85,8 +85,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     LinearLayout linearLayoutSite;
     @BindView(R.id.edittextAssetQuantity)
     EditText edittextAssetQuantity;
-    @BindView(R.id.edittextAssetUnit)
-    EditText edittextAssetUnit;
     @BindView(R.id.editTextVehicleNum)
     EditText editTextVehicleNum;
     @BindView(R.id.linearLayoutSupplierVehicle)
@@ -366,14 +364,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         } else {
             edittextAssetQuantity.requestFocus();
             edittextAssetQuantity.setError(null);
-        }
-        //Unit
-        strUnit = edittextAssetUnit.getText().toString();
-        if (TextUtils.isEmpty(strUnit)) {
-            edittextAssetUnit.setError("Please " + getString(R.string.edittext_hint_units));
-        } else {
-            edittextAssetUnit.requestFocus();
-            edittextAssetUnit.setError(null);
         }
         //Date
         strDate = editTextDate.getText().toString();

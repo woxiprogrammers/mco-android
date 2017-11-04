@@ -40,6 +40,7 @@
                 android:textSize="@dimen/dimen_16dp"/>
 
             <LinearLayout
+                android:id="@+id/linearLayoutForThreeTypes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_8dp"
@@ -118,6 +119,7 @@
                         android:textSize="@dimen/dimen_18dp"/>
 
                     <TextView
+                        android:id="@+id/textviewConsumed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -129,6 +131,35 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/linearLayoutBothType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_2dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/textviewBothElectrcityUsed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_18dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="Electricity Used"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_16dp"/>
+
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
