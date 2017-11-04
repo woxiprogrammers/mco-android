@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +41,12 @@ public class ActivityAssetsReadings extends BaseActivity {
     LinearLayout llAddReadings;
     @BindView(R.id.buttonSubmit)
     Button buttonSubmit;
+
+    LinearLayout linearLayoutTopUp;
+    LinearLayout linearLayoutTopUpTime;
+    LinearLayout linearLayoutLtrPerUnit;
+    EditText editTextElePerUnit;
+    LinearLayout linearLayoutElePerUnit;
 
     private EditText editTextStartReading;
     private EditText editTextStartTime;
@@ -84,13 +91,18 @@ public class ActivityAssetsReadings extends BaseActivity {
             getSupportActionBar().setTitle(setAssetTitle);
         }
 
-        realm=Realm.getDefaultInstance();
-        AssetsListItem assetsListItem=realm.where(AssetsListItem.class).equalTo("id",intComponentId).findFirst();
-        slug=assetsListItem.getSlug();
+        realm = Realm.getDefaultInstance();
+        AssetsListItem assetsListItem = realm.where(AssetsListItem.class).equalTo("id", intComponentId).findFirst();
+        slug = assetsListItem.getSlug();
 
     }
 
     private void inflateReadingLayout() {
+        /*
+
+        LinearLayout linearLayoutLtrPerUnit;
+        EditText editTextElePerUnit;
+        LinearLayout linearLayoutElePerUnit;*/
         child = getLayoutInflater().inflate(R.layout.item_add_asset_readings, null);
         startRead = child.findViewById(R.id.startRead);
         editTextStartReading = child.findViewById(R.id.editTextStartReading);
@@ -100,7 +112,25 @@ public class ActivityAssetsReadings extends BaseActivity {
         editTextTopUp = child.findViewById(R.id.editTextTopUp);
         editTextTopUpTime = child.findViewById(R.id.editTextTopUpTime);
         editTextLtrPerUnit = child.findViewById(R.id.editTextLtrPerUnit);
+        linearLayoutTopUp = child.findViewById(R.id.linearLayoutTopUp);
+        linearLayoutTopUpTime = child.findViewById(R.id.linearLayoutTopUpTime);
+        linearLayoutLtrPerUnit = child.findViewById(R.id.linearLayoutTopUpTime);
+        editTextElePerUnit = child.findViewById(R.id.editTextElePerUnit);
+        linearLayoutElePerUnit = child.findViewById(R.id.linearLayoutElePerUnit);
+
         llAddReadings.addView(child);
+        if (slug.equalsIgnoreCase("fuel_dependent")) {
+            linearLayoutElePerUnit.setVisibility(View.GONE);
+            linearLayoutTopUp.setVisibility(View.VISIBLE);
+            linearLayoutTopUpTime.setVisibility(View.VISIBLE);
+            linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
+
+        } else if (slug.equalsIgnoreCase("electricity_dependent")) {
+            linearLayoutElePerUnit.setVisibility(View.VISIBLE);
+            linearLayoutLtrPerUnit.setVisibility(View.GONE);
+            linearLayoutTopUp.setVisibility(View.GONE);
+            linearLayoutTopUpTime.setVisibility(View.GONE);
+        }
         editTextStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -252,34 +282,48 @@ public class ActivityAssetsReadings extends BaseActivity {
             editTextStopTime.clearFocus();
         }
 
-        if (TextUtils.isEmpty(strTopUp)) {
-            editTextTopUp.setFocusableInTouchMode(true);
-            editTextTopUp.requestFocus();
-            editTextTopUp.setError("Enter Top Up");
-            return;
-        } else {
-            editTextTopUp.setError(null);
-            editTextTopUp.clearFocus();
-        }
 
-        if (TextUtils.isEmpty(strTopUpTime)) {
-            editTextTopUpTime.setFocusableInTouchMode(true);
-            editTextTopUpTime.requestFocus();
-            editTextTopUpTime.setError("Enter Top Up Time");
-            return;
-        } else {
-            editTextTopUpTime.setError(null);
-            editTextTopUpTime.clearFocus();
-        }
+        if (slug.equalsIgnoreCase("fuel_dependent")) {
+            if (TextUtils.isEmpty(strTopUp)) {
+                editTextTopUp.setFocusableInTouchMode(true);
+                editTextTopUp.requestFocus();
+                editTextTopUp.setError("Enter Top Up");
+                return;
+            } else {
+                editTextTopUp.setError(null);
+                editTextTopUp.clearFocus();
+            }
 
-        if (TextUtils.isEmpty(strLtrPerUnit)) {
-            editTextLtrPerUnit.setFocusableInTouchMode(true);
-            editTextLtrPerUnit.requestFocus();
-            editTextLtrPerUnit.setError("Enter Unit");
-            return;
-        } else {
-            editTextLtrPerUnit.setError(null);
-            editTextLtrPerUnit.clearFocus();
+            if (TextUtils.isEmpty(strTopUpTime)) {
+                editTextTopUpTime.setFocusableInTouchMode(true);
+                editTextTopUpTime.requestFocus();
+                editTextTopUpTime.setError("Enter Top Up Time");
+                return;
+            } else {
+                editTextTopUpTime.setError(null);
+                editTextTopUpTime.clearFocus();
+            }
+
+            if (TextUtils.isEmpty(strLtrPerUnit)) {
+                editTextLtrPerUnit.setFocusableInTouchMode(true);
+                editTextLtrPerUnit.requestFocus();
+                editTextLtrPerUnit.setError("Enter Unit");
+                return;
+            } else {
+                editTextLtrPerUnit.setError(null);
+                editTextLtrPerUnit.clearFocus();
+            }
+        }
+        if(slug.equalsIgnoreCase("electricity_dependent")){
+            if (TextUtils.isEmpty(editTextElePerUnit.getText().toString())) {
+                editTextElePerUnit.setFocusableInTouchMode(true);
+                editTextElePerUnit.requestFocus();
+                editTextElePerUnit.setError("Enter Unit");
+                return;
+            } else {
+                editTextElePerUnit.setError(null);
+                editTextElePerUnit.clearFocus();
+            }
         }
 
         requestToCreateReadings();
@@ -303,21 +347,22 @@ public class ActivityAssetsReadings extends BaseActivity {
             params.put("stop_reading", strStopReading);
             params.put("start_time", strStartTime);
             params.put("stop_time", strStopTime);
-            if(slug.equalsIgnoreCase("fuel_dependent")){
+            if (slug.equalsIgnoreCase("fuel_dependent")) {
                 params.put("fuel_per_unit", strLtrPerUnit);
                 params.put("top_up", strTopUp);
                 params.put("top_up_time", strTopUpTime);
 
-            }else if(slug.equalsIgnoreCase("electricity_dependent")){
-                params.put("electricity_per_unit", strLtrPerUnit);
+            } else if (slug.equalsIgnoreCase("electricity_dependent")) {
+                params.put("electricity_per_unit", editTextElePerUnit.getText().toString());
 
-            }else if(slug.equalsIgnoreCase("fuel_and_electricity_dependent")){
+            } else if (slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
                 params.put("fuel_per_unit", strLtrPerUnit);
-                params.put("electricity_per_unit", strLtrPerUnit);
+                params.put("electricity_per_unit", editTextElePerUnit.getText().toString());
                 params.put("top_up", strTopUp);
                 params.put("top_up_time", strTopUpTime);
 
             }
+            Log.i("@@Params",params.toString());
             //ToDO
         } catch (JSONException e) {
             e.printStackTrace();

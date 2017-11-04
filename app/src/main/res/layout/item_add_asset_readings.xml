@@ -72,7 +72,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
-                android:text="KM"/>
+                android:text="AM/PM"/>
         </LinearLayout>
 
         <LinearLayout
@@ -129,6 +129,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayoutTopUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
@@ -151,10 +152,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
-                android:text="KM"/>
+                android:text="Ltr"/>
         </LinearLayout>
 
         <LinearLayout
+
+            android:id="@+id/linearLayoutTopUpTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
@@ -182,11 +185,13 @@
 
 
         <LinearLayout
+            android:id="@+id/linearLayoutLtrPerUnit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="0dp"
@@ -196,6 +201,34 @@
 
             <EditText
                 android:id="@+id/editTextLtrPerUnit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayoutElePerUnit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="00.3"
+                android:text="Electric Per Unit:"/>
+
+            <EditText
+                android:id="@+id/editTextElePerUnit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.2"/>
