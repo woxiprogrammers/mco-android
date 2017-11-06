@@ -100,6 +100,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
+            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
             params.put("purchase_order_id", intPrimaryKey);
             params.put("page",0);
         } catch (JSONException e) {

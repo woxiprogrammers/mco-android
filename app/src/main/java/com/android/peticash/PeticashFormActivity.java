@@ -1,6 +1,7 @@
 package com.android.peticash;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -21,12 +23,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.material_request_approve.AutoSuggestActivity;
+import com.android.material_request_approve.SearchAssetListItem;
+import com.android.material_request_approve.SearchMaterialListItem;
+import com.android.material_request_approve.UnitQuantityItem;
 import com.android.peticashautosearchemployee.EmployeesearchdataItem;
-import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -51,6 +57,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -58,6 +65,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class PeticashFormActivity extends BaseActivity {
@@ -241,8 +250,12 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.linearLayoutEmployeInfo)
     LinearLayout linearLayoutEmployeInfo;
 
+    @BindView(R.id.linearLayoutUnits)
+    LinearLayout linearLayoutUnits;
+
     private String strSelectedSource, strItemName, strItemQuantity, strBillNumber, strBillAmount, strDate;
     private String strSalaryDate, strEmployeeIDOrName, strSalaryAmount, strTotalDays;
+    private int componentTypeId;
     private String str;
     private Context mContext;
     private Realm realm;
@@ -254,6 +267,15 @@ public class PeticashFormActivity extends BaseActivity {
     private String flagForLayout = "";
     private float floatAmount, payableAmountForSalary;
     private int intAdvanceAmount;
+    private boolean isMaterial;
+    private boolean isNewItem;
+    public static SearchMaterialListItem searchMaterialListItem_fromResult_staticNew = null;
+    private SearchMaterialListItem searchMaterialListItem_fromResult = null;
+    public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
+    private SearchAssetListItem searchAssetListItem_fromResult = null;
+    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
+    private int unidId, indexItemUnit;
+    private int peticashTransactionId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -305,21 +327,12 @@ public class PeticashFormActivity extends BaseActivity {
 
     @OnClick(R.id.editText_salary_date)
     public void selectSalaryDate() {
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText(editTextSalaryDate);
-            }
-        };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
+        setInOutDate(editTextSalaryDate);
+    }
+
+    @OnClick(R.id.editText_Date)
+    public void dateForPurchaseCreate() {
+        setInOutDate(editTextDate);
     }
 
     @OnClick(R.id.imageviewEmpTransactions)
@@ -370,10 +383,14 @@ public class PeticashFormActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
                 switch (selectedItemIndex) {
                     case 0:
+                        isMaterial = true;
                         textViewItemName.setText("Material Name");
+                        linearLayoutUnits.setVisibility(View.VISIBLE);
                         break;
                     case 1:
+                        isMaterial = false;
                         textViewItemName.setText("Asset Name");
+                        linearLayoutUnits.setVisibility(View.GONE);
                         break;
                 }
             }
@@ -433,7 +450,7 @@ public class PeticashFormActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
                     floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
                     editTextSalaryAmount.setText(String.valueOf(floatAmount));
-                    payableAmountForSalary = floatAmount -intAdvanceAmount;
+                    payableAmountForSalary = floatAmount - intAdvanceAmount;
                     Log.i("@payableAmountForSalary", String.valueOf(payableAmountForSalary));
                     Log.i("@floatAmount", String.valueOf(floatAmount));
                     Log.i("@intAdvanceAmount", String.valueOf(intAdvanceAmount));
@@ -459,6 +476,17 @@ public class PeticashFormActivity extends BaseActivity {
 
         }
 
+        editTextItemName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentSearch = new Intent(mContext, AutoSuggestActivity.class);
+                intentSearch.putExtra("isMaterial", isMaterial);
+                intentSearch.putExtra("moduleName", "peticash");
+                startActivityForResult(intentSearch, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_PETICASH);
+
+            }
+        });
+
     }
 
     private void functionToSetEmployeeInfo(Intent intent) {
@@ -483,9 +511,9 @@ public class PeticashFormActivity extends BaseActivity {
             textViewBalance.setText("Balance - " + employeesearchdataItem.getBalance());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
-            intAdvanceAmount=employeesearchdataItem.getAdvanceAmount();;
+            intAdvanceAmount = employeesearchdataItem.getAdvanceAmount();
+            ;
 //
-
 
             edittextWeihges.setText("" + getPerWeges);
             Glide.with(mContext).load("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture())
@@ -497,13 +525,6 @@ public class PeticashFormActivity extends BaseActivity {
         }
     }
 
-    private void updateEditText(EditText editTextUpdateDate) {
-        String myFormat = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
-        editTextUpdateDate.setError(null);
-    }
-
     private void valideateEntries() {
         strSelectedSource = editTextSelectedSourceName.getText().toString();
         strItemName = editTextItemName.getText().toString();
@@ -512,15 +533,18 @@ public class PeticashFormActivity extends BaseActivity {
         strBillAmount = editTextBillamount.getText().toString();
         strDate = editTextDate.getText().toString();
         //For SelectedSourceName
-        if (TextUtils.isEmpty(strSelectedSource)) {
-            editTextSelectedSourceName.setFocusableInTouchMode(true);
-            editTextSelectedSourceName.requestFocus();
-            editTextSelectedSourceName.setError(getString(R.string.please_enter) + " " + str);
-            return;
-        } else {
-            editTextSelectedSourceName.setError(null);
-            editTextSelectedSourceName.clearFocus();
-        }/*
+        if(!(spinnerPeticashSource.getSelectedItemPosition() == 2)){
+            if (TextUtils.isEmpty(strSelectedSource)) {
+                editTextSelectedSourceName.setFocusableInTouchMode(true);
+                editTextSelectedSourceName.requestFocus();
+                editTextSelectedSourceName.setError(getString(R.string.please_enter) + " " + str);
+                return;
+            } else {
+                editTextSelectedSourceName.setError(null);
+                editTextSelectedSourceName.clearFocus();
+            }
+        }
+        /*
 
         if (TextUtils.isEmpty(strItemName)) {
             editTextItemName.setFocusableInTouchMode(true);
@@ -568,14 +592,8 @@ public class PeticashFormActivity extends BaseActivity {
             editTextBillamount.setError(null);
             editTextBillamount.clearFocus();
         }
-        linearLayoutGRN.setVisibility(View.VISIBLE);
-        linearLayoutPayableAmount.setVisibility(View.VISIBLE);
-        linearLayoutRefNumber.setVisibility(View.VISIBLE);
-        buttonGenerateGrn.setVisibility(View.GONE);
-        buttonPayWithPeticash.setVisibility(View.VISIBLE);
-        layoutCapture.setVisibility(View.VISIBLE);
-        Toast.makeText(mContext, "GRN Generated", Toast.LENGTH_SHORT).show();
-//        uploadImages_addItemToLocal("requestToGrnGeneration");
+//        Toast.makeText(mContext, "GRN Generated", Toast.LENGTH_SHORT).show();
+        uploadImages_addItemToLocal("requestToGrnGeneration");
     }
 
     private void validationForSalaryAdvance() {
@@ -624,6 +642,70 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSalaryAmount.clearFocus();
         }
         uploadImages_addItemToLocal("Salary");
+    }
+
+    private void functionForProcessingSearchResult(Intent intent) {
+        edittextQuantity.setText("");
+        Bundle bundleExtras = intent.getExtras();
+        if (bundleExtras != null) {
+            editTextItemName.clearFocus();
+            isNewItem = bundleExtras.getBoolean("isNewItem");
+            isMaterial = bundleExtras.getBoolean("isMaterial");
+            String searchedItemName = bundleExtras.getString("searchedItemName");
+            realm = Realm.getDefaultInstance();
+            if (isMaterial) {
+                edittextQuantity.setText("");
+                edittextQuantity.setFocusableInTouchMode(true);
+                if (isNewItem) {
+                    searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
+                } else {
+                    searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                }
+            } else {
+                edittextQuantity.setText("1");
+                edittextQuantity.setFocusable(false);
+                if (isNewItem) {
+                    searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
+                } else {
+                    searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
+                }
+            }
+            Timber.d("AutoSearch complete");
+            if (realm != null) {
+                realm.close();
+            }
+//            if (alertDialog.isShowing()) {
+            if (isMaterial) {
+                if (searchMaterialListItem_fromResult != null) {
+                    editTextItemName.setText(searchMaterialListItem_fromResult.getMaterialName());
+                    spinnerSelectUnits.setAdapter(setSpinnerUnits(searchMaterialListItem_fromResult.getUnitQuantity()));
+                }
+            } else {
+                if (searchAssetListItem_fromResult != null) {
+                    editTextItemName.setText(searchAssetListItem_fromResult.getAssetName());
+                }
+            }
+            /*} else {
+                Timber.i("missing alert dialog");
+            }*/
+        }
+    }
+
+    private ArrayAdapter<String> setSpinnerUnits(RealmList<UnitQuantityItem> unitQuantityItems) {
+        List<UnitQuantityItem> arrUnitQuantityItems = null;
+        try {
+            arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
+        } catch (Exception e) {
+            arrUnitQuantityItems = unitQuantityItems;
+        }
+        ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
+        for (UnitQuantityItem quantityItem : arrUnitQuantityItems) {
+            String unitName = quantityItem.getUnitName();
+            arrayOfUnitNames.add(unitName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUnitNames);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
     }
 
     /////API Calls//////////////////////////////////////////////////
@@ -684,24 +766,50 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestToGenerateGRN() {
         JSONObject params = new JSONObject();
-        //ToDO Add Keys for params
         try {
-            params.put("", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
-            params.put("", spinnerMaterialOrAsset.getSelectedItem().toString().toLowerCase());
-            params.put("", spinnerPeticashSource.getSelectedItem().toString().toLowerCase());
-            params.put("", editTextSelectedSourceName.getText().toString());
-            params.put("", editTextItemName.getText().toString().toLowerCase());
-            params.put("", edittextQuantity.getText().toString());
-            params.put("", editTextDate.getText().toString());
-            params.put("", editTextBillNumber.getText().toString());
-            params.put("", editTextBillamount.getText().toString());
-            params.put("", editTextAddNote.getText().toString());
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            if(spinnerPeticashSource.getSelectedItemPosition() == 1 ){
+                params.put("source_slug", "hand");
+
+            }else {
+                params.put("source_slug", spinnerPeticashSource.getSelectedItem().toString().toLowerCase());
+
+            }
+            params.put("source_name", editTextSelectedSourceName.getText().toString());
+            params.put("name", editTextItemName.getText().toString().toLowerCase());
+            params.put("quantity", edittextQuantity.getText().toString());
+            if(spinnerMaterialOrAsset.getSelectedItemPosition() == 0){
+                if (isNewItem) {
+                    unidId = searchMaterialListItem_fromResult_staticNew.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
+                    params.put("unit_id", unidId);
+                } else {
+                    unidId = searchMaterialListItem_fromResult.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
+                    params.put("unit_id", unidId);
+                }
+            }
+
+            if (spinnerMaterialOrAsset.getSelectedItemPosition() == 0) {
+                params.put("component_type_id", searchMaterialListItem_fromResult.getMaterialRequestComponentTypeId());
+            } else {
+                params.put("component_type_id", searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
+            }
+
+            params.put("date", editTextDate.getText().toString());
+            params.put("bill_number", editTextBillNumber.getText().toString());
+            params.put("bill_amount", editTextBillamount.getText().toString());
+//            params.put("", editTextAddNote.getText().toString());
             params.put("images", jsonImageNameArray);
+
+            if (spinnerPeticashSource.getSelectedItem().toString().equalsIgnoreCase("Supplier")) {
+                params.put("in_time", editTextDate.getText().toString() + " " + editTextInTime.getText().toString());
+                params.put("out_time", editTextDate.getText().toString() + " " + editTextOutTime.getText().toString());
+                params.put("vehicle_number", editTextVehicleNumber.getText().toString());
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        //ToDo Change API
         AndroidNetworking.post(AppURL.API_GENERATE_GRN_PETICASH + AppUtils.getInstance().getCurrentToken())
                 .setTag("API_GENERATE_GRN_PETICASH")
                 .addJSONObjectBody(params)
@@ -713,6 +821,11 @@ public class PeticashFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            editTextGrnNumber.setText(String.valueOf(jsonObject.getString("grn")));
+                            editTextPayableAmount_purchase.setText(jsonObject.getString("payable_amount"));
+                            peticashTransactionId = jsonObject.getInt("peticash_transaction_id");
+                            setEnabledFalse();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -868,6 +981,10 @@ public class PeticashFormActivity extends BaseActivity {
                 functionToSetEmployeeInfo(intent);
                 break;
 
+            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_PETICASH:
+                functionForProcessingSearchResult(intent);
+                break;
+
         }
 
     }
@@ -939,5 +1056,87 @@ public class PeticashFormActivity extends BaseActivity {
                 requestToGenerateGRN();
             }
         }
+    }
+
+    private void updateEditText(EditText editTextUpdateDate) {
+        String myFormat = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
+        editTextUpdateDate.setError(null);
+    }
+
+    private void setInOutDate(final EditText editext_updateDate) {
+        date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateEditText(editext_updateDate);
+            }
+        };
+        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
+
+    private void setInOutTime(final EditText currentEditText) {
+        final Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        final int minute = mcurrentTime.get(Calendar.MINUTE);
+        final int seconds = mcurrentTime.get(Calendar.SECOND);
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
+                mcurrentTime.set(Calendar.SECOND, seconds);
+                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
+            }
+        }, hour, minute, true);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();
+    }
+
+    @OnClick({R.id.edit_text_inTime, R.id.edit_text_outTime})
+    public void onViewClickediNoUTtIME(View view) {
+        switch (view.getId()) {
+            case R.id.edit_text_inTime:
+                setInOutTime(editTextInTime);
+                break;
+            case R.id.edit_text_outTime:
+                setInOutTime(editTextOutTime);
+                break;
+        }
+    }
+
+    private void setEnabledFalse(){
+        spinnerCategoryArray.setEnabled(false);
+        spinnerMaterialOrAsset.setEnabled(false);
+        spinnerPeticashSource.setEnabled(false);
+        editTextDate.setEnabled(false);
+        edittextQuantity.setEnabled(false);
+        spinnerSelectUnits.setEnabled(false);
+        editTextBillamount.setEnabled(false);
+        editTextBillNumber.setEnabled(false);
+        editTextInTime.setEnabled(false);
+        editTextOutTime.setEnabled(false);
+        editTextVehicleNumber.setEnabled(false);
+        editTextItemName.setEnabled(false);
+        textViewCapturFirst.setEnabled(false);
+        textViewPickFirst.setEnabled(false);
+
+        /////////////
+
+        linearLayoutGRN.setVisibility(View.VISIBLE);
+        linearLayoutPayableAmount.setVisibility(View.VISIBLE);
+        linearLayoutRefNumber.setVisibility(View.VISIBLE);
+        buttonGenerateGrn.setVisibility(View.GONE);
+        buttonPayWithPeticash.setVisibility(View.VISIBLE);
+        layoutCapture.setVisibility(View.VISIBLE);
     }
 }

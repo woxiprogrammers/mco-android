@@ -43,7 +43,7 @@ public class AppURL {
     public static final String API_AUTO_SUGGEST_FOR_PETICASH_EMPLOYEE = BASE_URL + "peticash/employee-salary/auto-suggest";
     public static final String API_CREATE_SALARY_FOR_EMPLOYEE = BASE_URL + "peticash/employee-salary/create?token=";
     public static final String API_EMP_TRANSATIONS = BASE_URL + "peticash/employee-salary/employee-detail?token=";
-    public static final String API_GENERATE_GRN_PETICASH = BASE_URL + "";
+    public static final String API_GENERATE_GRN_PETICASH = BASE_URL + "peticash/purchase/create?token=";
 
 
     //Inventory

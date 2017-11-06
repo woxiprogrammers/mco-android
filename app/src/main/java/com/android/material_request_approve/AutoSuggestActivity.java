@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.peticash.PeticashFormActivity;
 import com.android.purchase_request.PurchaseMaterialListActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -59,6 +60,7 @@ public class AutoSuggestActivity extends BaseActivity {
     private RealmResults<SearchAssetListItem> searchAssetListItemRealmResults;
     private SearchMaterialListItem searchMaterialListItem;
     private SearchAssetListItem searchAssetListItem;
+    private boolean isFromPeticash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,8 @@ public class AutoSuggestActivity extends BaseActivity {
                 isForMaterial = false;
             } else if (moduleName.equalsIgnoreCase("material")) {
                 isForMaterial = true;
+            }else if(moduleName.equalsIgnoreCase("peticash")){
+                isFromPeticash=true;
             }
         }
         deletePreviousLocalData();
@@ -348,6 +352,10 @@ public class AutoSuggestActivity extends BaseActivity {
                 } else {
                     PurchaseMaterialListActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
                 }
+
+                if(isFromPeticash){
+                    PeticashFormActivity.searchMaterialListItem_fromResult_staticNew=searchMaterialListItem;
+                }
             }
         } else {
             if (isNewItem) {
@@ -357,6 +365,9 @@ public class AutoSuggestActivity extends BaseActivity {
                     MaterialRequest_ApproveActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
                 } else {
                     PurchaseMaterialListActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
+                }
+                if(isFromPeticash){
+                    PeticashFormActivity.searchAssetListItem_fromResult_staticNew=searchAssetListItem;
                 }
             }
         }
