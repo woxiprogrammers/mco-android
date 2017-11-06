@@ -37,12 +37,11 @@
                 android:padding="4dp">
 
                 <CheckBox
-                    android:id="@+id/checkbox_moveInOut"
+                    android:id="@+id/checkboxMoveInOut"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:checked="true"
-
                     android:text="@string/move_out"
                     android:textSize="16dp"/>
             </LinearLayout>
@@ -54,10 +53,10 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textview_materialCount"
+                    android:id="@+id/textviewAssetName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Material Names:"
+                    android:text="Asset Names:"
                     android:textColor="@color/colorTextLight"/>
             </LinearLayout>
 
@@ -98,11 +97,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Material Destination:"
+                    android:text="Asset Destination:"
                     android:textColor="@color/colorTextLight"/>
-
                 <Spinner
-                    android:id="@+id/destination_spinner"
+                    android:id="@+id/assetDestSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:entries="@array/destination_array"
@@ -110,7 +108,7 @@
                     />
 
                 <Spinner
-                    android:id="@+id/source_spinner"
+                    android:id="@+id/assetSourceSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:entries="@array/destination_array_move_in"
@@ -120,26 +118,47 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linerLayoutSelectedNames"
+                android:id="@+id/linerLayoutAssetDestNames"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_view_name"
+                    android:id="@+id/textViewNameDestSource"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Client"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
-                    android:id="@+id/edit_text_selected_dest_name"
+                    android:id="@+id/editTextDestSourcename"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/linearLayoutSite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/text_view_project_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:entries="@array/project_array"/>
+                </FrameLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -160,7 +179,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        android:id="@+id/edittext_quantity"
+                        android:id="@+id/edittextAssetQuantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -178,10 +197,8 @@
                         android:text="Unit:"
                         android:textColor="@color/colorTextLight"/>
 
-
-
                     <FrameLayout
-                        android:id="@+id/frameLayout"
+                        android:id="@+id/frameLayoutAsset"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background"
@@ -189,7 +206,7 @@
                         android:visibility="visible">
 
                         <Spinner
-                            android:id="@+id/spinnerMaterialUnits"
+                            android:id="@+id/spinnerAssetUnits"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"/>
                     </FrameLayout>
@@ -197,7 +214,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_forSupplierVehicle"
+                android:id="@+id/linearLayoutSupplierVehicle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -211,7 +228,7 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
-                    android:id="@+id/edit_text_vehicleNumber"
+                    android:id="@+id/editTextVehicleNum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_5dp"
@@ -219,7 +236,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_forSupplierInOutTime"
+                android:id="@+id/linearLayoutSupplierInOutTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -241,7 +258,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        android:id="@+id/edit_text_inTime"
+                        android:id="@+id/editTextInTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -261,7 +278,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        android:id="@+id/edit_text_outTime"
+                        android:id="@+id/edittextOutTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
@@ -288,7 +305,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_challanNumber"
+                android:id="@+id/linearLayoutBillNum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -302,14 +319,14 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
-                    android:id="@+id/edit_text_ChallanNumber"
+                    android:id="@+id/edittextBillNum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearBillAmount"
+                android:id="@+id/linearLayoutBillAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -323,14 +340,44 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
-                    android:id="@+id/edit_text_billamount"
+                    android:id="@+id/edittextBillAmountAsset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
-            <include
-                layout="@layout/layout_multi_capture_select"/>
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewCaptureAsset"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:drawableTop="@android:drawable/ic_menu_camera"
+                    android:gravity="center_horizontal"
+                    android:text="Capture Images"/>
+
+                <View
+                    android:layout_width="@dimen/dimen_20dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/textViewPickAsset"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:drawableTop="@android:drawable/ic_menu_gallery"
+                    android:gravity="center_horizontal"
+                    android:onClick="onViewClicked"
+                    android:text="Choose Images"/>
+            </LinearLayout>
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
@@ -339,7 +386,7 @@
                 android:fadeScrollbars="false">
 
                 <LinearLayout
-                    android:id="@+id/ll_addImage"
+                    android:id="@+id/linearLayoutFirstImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
@@ -354,7 +401,7 @@
                 >
 
                 <EditText
-                    android:id="@+id/editText_addNote"
+                    android:id="@+id/editTextAssetRemark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#FFD740"
@@ -365,7 +412,7 @@
             </android.support.v7.widget.CardView>
 
             <Button
-                android:id="@+id/button_move"
+                android:id="@+id/buttonMoveAsset"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"

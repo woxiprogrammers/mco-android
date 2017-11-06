@@ -120,6 +120,12 @@ public class AssetDetailsActivity extends BaseActivity {
             case R.id.action_request_maintaianance:
                 startRequestMaintainanceActivity();
                 break;
+
+            case R.id.action_move_in_out:
+                Intent startIntent=new Intent(mContext,ActivityAssetMoveInOutTransfer.class);
+                startActivity(startIntent);
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -136,9 +142,10 @@ public class AssetDetailsActivity extends BaseActivity {
     public void onViewClicked() {
         Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
         //ToDo Start Reading
-        /*Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
+        Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
         intent.putExtra("asset_name",strAssetName);
-        startActivity(intent);*/
+        intent.putExtra("componentId",inventoryComponentId);
+        startActivity(intent);
     }
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {

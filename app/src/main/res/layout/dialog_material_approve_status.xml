@@ -81,7 +81,7 @@
 
 
             <LinearLayout
-                android:id="@+id/ll_dialog_unit"
+                android:id="@+id/linearLayoutUnit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

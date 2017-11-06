@@ -132,6 +132,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private boolean isQuotationMaterial;
     private boolean validationForQuotation;
     private CurrentMaterialRvAdapter purchaseMaterialRvAdapter;
+    private int unitIDForDialog;
+    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
+    private LinearLayout linearLayoutUnit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -858,6 +861,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         } else */
         if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
+
+
+
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
             Timber.i("Material New: unitId: " + unitId + " strUnitName " + strUnitName);
@@ -878,6 +884,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         editText_name_material_asset = dialogView.findViewById(R.id.editText_name_material_asset);
         editText_quantity_material_asset = dialogView.findViewById(R.id.editText_quantity_material_asset);
         editextDialogRemark = dialogView.findViewById(R.id.editext_remark_for_disapproval);
+        linearLayoutUnit=dialogView.findViewById(R.id.linearLayoutUnit);
         edittext_unit = dialogView.findViewById(R.id.edittext_unit);
         spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
         mTextViewExceedQuantity = dialogView.findViewById(R.id.TextViewExceedQuantity);
@@ -978,17 +985,28 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void approveDisapproveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
-                                           final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
+                                           final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent)
+    {
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
         final PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
         int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
         JSONObject params = new JSONObject();
+
         try {
+
             if (!isMoveIndent) {
+                int indexItemUnit = spinner_select_units.getSelectedItemPosition();
+                int userId;
+                if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                    unitIDForDialog = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
+                    params.put("unit_id", unitIDForDialog);
+
+                }
+
+
                 params.put("material_request_component_id", materialRequestComponentId);
                 params.put("change_component_status_id_to", statusId);
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-                params.put("unit_id", spinner_select_units.getSelectedItem());
                 if (editText_quantity_material_asset.getText().toString() != null) {
                     params.put("quantity", editText_quantity_material_asset.getText().toString());
                 }
@@ -1002,6 +1020,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 params.put("change_component_status_id_to", statusId);
                 params.put("remark", "");
             }
+            Log.i("@@params",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1031,7 +1050,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                             status = "in-indent";
                                             break;
                                     }
+                                    //ToDO ROhit
                                     purchaseMaterialListItem.setComponentStatus(status);
+                                    purchaseMaterialListItem.setItem_quantity(Float.parseFloat(editText_quantity_material_asset.getText().toString().trim()));
                                     realm.insertOrUpdate(purchaseMaterialListItem);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -1266,9 +1287,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d("Realm Execution Successful");
-                                    frameLayoutSpinnerUnitDialog.setVisibility(View.VISIBLE);
-                                    edittext_unit.setVisibility(View.GONE);
-                                    setUpUnitQuantityChangeListener();
+                                    if(response.getUnitsResponseData().getAllowedQuantityUnit().isEmpty()){
+                                        linearLayoutUnit.setVisibility(View.GONE);
+
+                                    }else {
+                                        linearLayoutUnit.setVisibility(View.VISIBLE);
+                                        edittext_unit.setVisibility(View.GONE);
+                                        setUpUnitQuantityChangeListener();
+                                    }
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -1461,6 +1487,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
     }
 
+
+
+    private void setUpUnitQuantityChangeListener() {
+        realm = Realm.getDefaultInstance();
+        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
+        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
+    }
+
     private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
         List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
@@ -1471,12 +1505,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_select_units.setAdapter(arrayAdapter);
-    }
-
-    private void setUpUnitQuantityChangeListener() {
-        realm = Realm.getDefaultInstance();
-        RealmResults<UnitQuantityItem> availableUsersRealmResults = realm.where(UnitQuantityItem.class).findAll();
-        setUpSpinnerUnitAdapterForDialogUnit(availableUsersRealmResults);
     }
 }
 

@@ -1,5 +1,7 @@
 package com.android.inventory.material;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,23 +10,29 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.dummy.UnitsResponse;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.SelectedMaterialListAdapter;
+import com.android.material_request_approve.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -32,6 +40,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
@@ -44,13 +53,20 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import id.zelory.compressor.Compressor;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -68,16 +84,12 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     TextView text_ViewSetSelectedTextName;
     @BindView(R.id.edit_text_selected_dest_name)
     EditText edit_text_selected_dest_name;
-    @BindView(R.id.ll_forSite)
-    LinearLayout ll_forsite;
     @BindView(R.id.ll_forSupplierVehicle)
     LinearLayout ll_forSupplierVehicle;
     @BindView(R.id.ll_forSupplierInOutTime)
     LinearLayout ll_forSupplierInOutTime;
     @BindView(R.id.checkbox_moveInOut)
     CheckBox checkboxMoveInOut;
-    @BindView(R.id.text_view_project_name)
-    Spinner textViewProjectName;
     @BindView(R.id.edit_text_vehicleNumber)
     EditText editTextVehicleNumber;
     @BindView(R.id.edit_text_ChallanNumber)
@@ -106,14 +118,17 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     LinearLayout llAddImage;
     @BindView(R.id.edittext_quantity)
     EditText edittextQuantity;
-    @BindView(R.id.edittext_unit)
-    EditText edittextUnit;
     @BindView(R.id.textView_capture)
     TextView textViewCapture;
     Unbinder unbinder;
     @BindView(R.id.textView_pick)
     TextView textViewPick;
+    @BindView(R.id.spinnerMaterialUnits)
+    Spinner spinnerMaterialUnits;
+    @BindView(R.id.frameLayout)
+    FrameLayout frameLayout;
     private View mParentView;
+
     private String strDate;
     private String strVehicleNumber;
     private String strInTime;
@@ -125,9 +140,15 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private boolean isChecked;
     private String str;
     private Context mContext;
-    private String transferType = "";
+    private String transferType = "OUT";
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
+    private Realm realm;
+    private int indexItemUnit,unidId;
+    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
+    private DatePickerDialog.OnDateSetListener date;
+    private Calendar myCalendar;
+    private String strToDate;
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
@@ -142,6 +163,15 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
+        unbinder = ButterKnife.bind(this, mParentView);
+        initializeViews();
+        return mParentView;
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             /*case R.id.textview_materialCount:
@@ -150,6 +180,42 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 break;*/
             case R.id.button_move:
                 validateEntries();
+                break;
+        }
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+    }
+
+    @OnClick({R.id.textView_capture, R.id.textView_pick,R.id.editText_Date,R.id.edit_text_inTime,R.id.edit_text_outTime})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textView_capture:
+                chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
+                break;
+            case R.id.textView_pick:
+                Intent intent = new Intent(mContext, GalleryActivity.class);
+                Params params = new Params();
+                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+                params.setToolbarColor(R.color.colorPrimaryLight);
+                params.setActionButtonColor(R.color.colorAccentDark);
+                params.setButtonTextColor(R.color.colorWhite);
+                intent.putExtra(Constants.KEY_PARAMS, params);
+                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
+                break;
+
+            case R.id.editText_Date:
+                setInOutDate(editText_Date);
+                break;
+
+            case R.id.edit_text_inTime:
+                setInOutTime(editTextInTime);
+                break;
+
+            case R.id.edit_text_outTime:
+                setInOutTime(editTextOutTime);
                 break;
         }
     }
@@ -171,14 +237,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             edittextQuantity.requestFocus();
             edittextQuantity.setError(null);
         }
-        //Unit
-        strUnit = edittextUnit.getText().toString();
-        if (TextUtils.isEmpty(strUnit)) {
-            edittextUnit.setError("Please " + getString(R.string.edittext_hint_units));
-        } else {
-            edittextUnit.requestFocus();
-            edittextUnit.setError(null);
-        }
         //Date
         strDate = editText_Date.getText().toString();
         if (TextUtils.isEmpty(strDate)) {
@@ -188,24 +246,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             editText_Date.requestFocus();
             editText_Date.setError(null);
         }
-        //Bill
-        strBillNumber = editTextChallanNumber.getText().toString();
-        if (TextUtils.isEmpty(strBillNumber)) {
-            editTextChallanNumber.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
-            return;
-        } else {
-            editTextChallanNumber.setError(null);
-            editTextChallanNumber.requestFocus();
-        }
         if (!checkboxMoveInOut.isChecked()) {
-            strBillAmount = editTextBillamount.getText().toString();
-            if (TextUtils.isEmpty(strBillAmount)) {
-                editTextBillamount.setError("Please Enter Bill Amount");
-                return;
-            } else {
-                editTextBillamount.requestFocus();
-                editTextBillamount.setError(null);
-            }
+
         }
         if (isChecked) {
             //Vehicle Number
@@ -235,46 +277,71 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 editTextOutTime.setError(null);
                 editTextOutTime.requestFocus();
             }
-        }
-    }
 
-    @Override
-    public void fragmentBecameVisible() {
+            strBillAmount = editTextBillamount.getText().toString();
+            if (TextUtils.isEmpty(strBillAmount)) {
+                editTextBillamount.setError("Please Enter Bill Amount");
+                return;
+            } else {
+                editTextBillamount.requestFocus();
+                editTextBillamount.setError(null);
+            }
+
+
+            //Bill
+            strBillNumber = editTextChallanNumber.getText().toString();
+            if (TextUtils.isEmpty(strBillNumber)) {
+                editTextChallanNumber.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
+                return;
+            } else {
+                editTextChallanNumber.setError(null);
+                editTextChallanNumber.requestFocus();
+            }
+        }
+
+        uploadImages_addItemToLocal();
     }
 
     private void requestForMaterial() {
-
-        /*inventory_component_id  => 1
-        name => client / hand / office / supplier / site / labour / sub-contractor
-        type => IN / OUT
-        quantity => 2
-        unit_id => 6
-        date => 2017-10-03 15:42:14
-        in_time => 2017-10-03 10:42:14
-        out_time => 2017-10-03 15:42:14
-        vehicle_number => MH12 1684
-        bill_number => B198
-        bill_amount =>540
-        remark => demo
-        source_name => Dwarkadhish*/
         JSONObject params = new JSONObject();
         try {
-            params.put("inventory_component_id", 1);
+
             if (checkboxMoveInOut.isChecked()) {
                 params.put("name", spinnerDestinations.getSelectedItem().toString().toLowerCase());
             } else {
                 params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
             }
+            if(str.equalsIgnoreCase("Office")){
+                params.put("source_name","");
+
+            }else {
+                params.put("source_name",edit_text_selected_dest_name.getText().toString());
+            }
+            params.put("inventory_component_id", 1);
             params.put("type", transferType);
             params.put("quantity", strQuantity);
-            params.put("unit_id", strMaterialName);
+            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                unidId = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
+                params.put("unit_id", unidId);
+            }
             params.put("date", strDate);
-            params.put("in_time", strInTime);
-            params.put("out_time", strOutTime);
-            params.put("vehicle_number", strVehicleNumber);
-            params.put("bill_number", strBillNumber);
-            params.put("bill_amount", strMaterialName);
-            params.put("remark", strMaterialName);
+            if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
+                params.put("remark", editTextAddNote.getText().toString());
+            } else {
+
+                params.put("remark", "");
+            }
+            params.put("images", jsonImageNameArray);
+            if(str.equalsIgnoreCase(getString(R.string.supplier_name))){
+                params.put("in_time", strToDate + " " + strInTime);
+                params.put("out_time", strToDate + " " + strOutTime);
+                params.put("vehicle_number", strVehicleNumber);
+                params.put("bill_number", strBillNumber);
+                params.put("bill_amount", editTextBillamount.getText().toString());
+            }else if(str.equalsIgnoreCase(getString(R.string.shop_name))){
+                params.put("bill_number", strBillNumber);
+                params.put("bill_amount", editTextBillamount.getText().toString());
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -299,26 +366,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
-    }
-
-    @OnClick({R.id.textView_capture, R.id.textView_pick})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textView_capture:
-                chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-                break;
-            case R.id.textView_pick:
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
-                break;
-        }
     }
 
     private void chooseAction(int type, Class aClass) {
@@ -397,19 +444,13 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
-        initializeViews();
-        unbinder = ButterKnife.bind(this, mParentView);
-        return mParentView;
-    }
-
     private void initializeViews() {
-        ButterKnife.bind(this, mParentView);
+        myCalendar = Calendar.getInstance();
         mContext = getActivity();
-//        text_view_materialCount.setOnClickListener(this);
+        Date curDate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        strToDate = format.format(curDate);
+        checkAvailability(1);
         buttonMove.setOnClickListener(this);
         text_view_materialCount.setText(strMaterialName);
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -422,20 +463,19 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     sourceMoveInSpinner.setVisibility(View.GONE);
                     llChallanNumber.setVisibility(View.GONE);
                     linearBillAmount.setVisibility(View.GONE);
-                    ll_forsite.setVisibility(View.VISIBLE);
                     transferType = "OUT";
                 } else {
                     checkboxMoveInOut.setText(getString(R.string.move_in));
                     transferType = "IN";
                     spinnerDestinations.setVisibility(View.GONE);
                     sourceMoveInSpinner.setVisibility(View.VISIBLE);
-                    ll_forsite.setVisibility(View.GONE);
                     ll_forSupplierVehicle.setVisibility(View.GONE);
                     ll_forSupplierInOutTime.setVisibility(View.GONE);
                     text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
                 }
             }
         });
+
         spinnerDestinations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
@@ -443,33 +483,37 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Site
                     case 0:
                         text_ViewSetSelectedTextName.setText(getString(R.string.site_name));
-                        ll_forsite.setVisibility(View.VISIBLE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
+                        llChallanNumber.setVisibility(View.GONE);
+                        linearBillAmount.setVisibility(View.GONE);
                         str = getString(R.string.site_name);
                         break;
                     //For Client
                     case 1:
                         text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
-                        ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
+                        llChallanNumber.setVisibility(View.GONE);
+                        linearBillAmount.setVisibility(View.GONE);
                         str = getString(R.string.client_name);
                         break;
                     //For Labour
                     case 2:
                         text_ViewSetSelectedTextName.setText(getString(R.string.labour_name));
-                        ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
+                        llChallanNumber.setVisibility(View.GONE);
+                        linearBillAmount.setVisibility(View.GONE);
                         str = getString(R.string.labour_name);
                         break;
                     //For SubContracter
                     case 3:
                         text_ViewSetSelectedTextName.setText(getString(R.string.sub_contracter_name));
-                        ll_forsite.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
+                        llChallanNumber.setVisibility(View.GONE);
+                        linearBillAmount.setVisibility(View.GONE);
                         str = getString(R.string.sub_contracter_name);
                         break;
                     //For Supplier
@@ -477,6 +521,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         text_ViewSetSelectedTextName.setText(getString(R.string.supplier_name));
                         ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
+                        llChallanNumber.setVisibility(View.VISIBLE);
+                        linearBillAmount.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
                         isChecked = true;
                         break;
@@ -493,6 +539,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 switch (selectedItemIndex) {
                     //For Client
                     case 0:
+                        text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
                         linerLayoutSelectedNames.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
@@ -500,6 +547,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         break;
                     //For By Hand
                     case 1:
+                        text_ViewSetSelectedTextName.setText(getString(R.string.shop_name));
                         linerLayoutSelectedNames.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
@@ -510,13 +558,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
                         linerLayoutSelectedNames.setVisibility(View.GONE);
+                        str="Office";
                         break;
                     //For Supplier
                     case 3:
+                        text_ViewSetSelectedTextName.setText(getString(R.string.supplier_name));
                         linerLayoutSelectedNames.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
+                        isChecked = true;
                         break;
                 }
             }
@@ -571,5 +622,118 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         } else {
             requestForMaterial();
         }
+    }
+
+    private void checkAvailability(int materialRequestComponentId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("material_request_component_id", materialRequestComponentId);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_MATERIAL_REQUEST_AVAILABLE_QUANTITY + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("checkAvailability")
+                .build()
+                .getAsObject(UnitsResponse.class, new ParsedRequestListener<UnitsResponse>() {
+                    @Override
+                    public void onResponse(final UnitsResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(UnitQuantityItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Timber.d("Realm Execution Successful");
+                                    setUpUnitQuantityChangeListener();
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "checkAvailability");
+                    }
+                });
+    }
+
+    private void setUpUnitQuantityChangeListener() {
+        realm = Realm.getDefaultInstance();
+        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
+        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
+    }
+
+    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
+        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (UnitQuantityItem currentUser : unitQuantityItems) {
+            String strUserName = currentUser.getUnitName();
+            arrayOfUsers.add(strUserName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMaterialUnits.setAdapter(arrayAdapter);
+    }
+
+    private void setInOutDate(final EditText editext_updateDate) {
+        date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateEditText(editext_updateDate);
+            }
+        };
+        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
+
+    private void updateEditText(EditText editTextUpdateDate) {
+        String myFormat = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
+        editTextUpdateDate.setError(null);
+    }
+
+    private void setInOutTime(final EditText currentEditText) {
+        final Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        final int minute = mcurrentTime.get(Calendar.MINUTE);
+        final int seconds = mcurrentTime.get(Calendar.SECOND);
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
+                mcurrentTime.set(Calendar.SECOND, seconds);
+                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
+            }
+        }, hour, minute, true);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();
     }
 }

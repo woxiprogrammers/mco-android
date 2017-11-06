@@ -89,7 +89,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).equalTo("isDiesel", true).findAll();
+        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class)/*.equalTo("isDiesel", true)*/.findAll();
         Timber.d(String.valueOf(assetsListItems));
         AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -100,11 +100,19 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        Intent intent = new Intent(mContext, AssetDetailsActivity.class);
-                        intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
-                        intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
-                        intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
-                        startActivity(intent);
+
+                        if(assetsListItems.get(position).getSlug().equalsIgnoreCase("other")){
+                            Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
+                            startIntent.putExtra("inventoryCompId",assetsListItems.get(position).getId());
+                            startActivity(startIntent);
+
+                        }else {
+                            Intent intent = new Intent(mContext, AssetDetailsActivity.class);
+                            intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
+                            intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
+                            intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
+                            startActivity(intent);
+                        }
                     }
 
                     @Override
@@ -136,7 +144,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         JSONObject params = new JSONObject();
         try {
             params.put("page", 0);
-            params.put("project_site_id", 5);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }

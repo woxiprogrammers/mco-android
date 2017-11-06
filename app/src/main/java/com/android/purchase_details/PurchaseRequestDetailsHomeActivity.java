@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +24,7 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.login_acl.PermissionsItem;
 import com.android.purchase_request.PurchaseOrderListFragment;
+import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -36,6 +39,7 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.Realm;
 
 public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     @BindView(R.id.view_pager_purchase_details)
@@ -49,6 +53,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     private int mPurchaseRequestId;
     private boolean isForApproval;
     private boolean isFrom;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +140,16 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        realm = Realm.getDefaultInstance();
+        PurchaseRequestListItem purchaseRequestListItem = realm.where(PurchaseRequestListItem.class).equalTo("id", mPurchaseRequestId).findFirst();
+        if (purchaseRequestListItem.getStatus().equalsIgnoreCase("p-r-manager-approved")) {
+            menu.findItem(R.id.action_approve).setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
         if (isInValidate) {
@@ -161,7 +176,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         alertDialogBuilder
                 .setTitle("Approve")
                 .setMessage("Do You Want To approve?")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Approve", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         isInValidate = true;
                         invalidateOptionsMenu();
@@ -178,8 +193,10 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         alertDialog.show();
         Button positiveOk = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         positiveOk.setBackgroundColor(Color.RED);
+        positiveOk.setPadding(8,0,0,0);
         Button negativeDisapprove = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        negativeDisapprove.setBackgroundColor(Color.RED);
+        negativeDisapprove.setPadding(0,0,118,0);
+        negativeDisapprove.setBackgroundColor(R.color.custom_progress_message_color);
     }
 
     private void requestToChangeStatus(int changeComponentStatusId) {

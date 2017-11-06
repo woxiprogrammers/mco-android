@@ -191,7 +191,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             params.put("month", passMonth);
             params.put("year", passYear);
             params.put("page", pageId);
-            Log.i("@@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }

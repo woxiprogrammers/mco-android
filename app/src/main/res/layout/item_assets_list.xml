@@ -28,16 +28,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorText"
+                android:text="Wood Cutter"
                 android:textSize="@dimen/dimen_16dp"/>
 
             <TextView
                 android:id="@+id/asset_model_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Model 1234"
                 android:layout_marginTop="@dimen/dimen_5dp"
                 android:textSize="@dimen/dimen_16dp"/>
 
             <LinearLayout
+                android:id="@+id/linearLayoutForThreeTypes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_8dp"
@@ -116,6 +119,7 @@
                         android:textSize="@dimen/dimen_18dp"/>
 
                     <TextView
+                        android:id="@+id/textviewConsumed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -127,7 +131,131 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/linearLayoutBothType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_2dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/textviewBothElectrcityUsed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_18dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="Electricity Used"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_16dp"/>
+
+                </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutForOtherAssets"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dimen_40dp"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textviewInQuantityAsset"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="3534"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_18dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="In"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_16dp"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/textviewOutQuantityAsset"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="34"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_18dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="Out"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_16dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textviewAvailableAsset"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="3500"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_18dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:text="Available"
+                        android:textColor="@color/colorTextLight"
+                        android:textSize="@dimen/dimen_16dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
