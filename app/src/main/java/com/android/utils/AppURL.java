@@ -44,11 +44,11 @@ public class AppURL {
     public static final String API_CREATE_SALARY_FOR_EMPLOYEE = BASE_URL + "peticash/employee-salary/create?token=";
     public static final String API_EMP_TRANSATIONS = BASE_URL + "peticash/employee-salary/employee-detail?token=";
     public static final String API_GENERATE_GRN_PETICASH = BASE_URL + "peticash/purchase/create?token=";
-    public static final String API_PURCHASE_TRANSACTION_DETAIL =BASE_URL + "peticash/purchase/transaction-detail?token=" ;
+    public static final String API_PURCHASE_PETICASH_TRANSACTION_DETAIL =BASE_URL + "peticash/purchase/transaction-detail?token=" ;
 
 
     //Inventory
-    public static final String API_CREATE_FUEL_READING = BASE_URL + "inventory/asset/add-readings?token=";
+    public static final String API_CREATE_FUEL_READING = BASE_URL + "inventory/asset/readings/add?token";
 
-    /inventory/asset/readings/listing?token= 
+//    /inventory/asset/readings/listing?token=
 }
