@@ -8,9 +8,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -76,11 +78,11 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     @BindView(R.id.textViewNameDestSource)
     TextView textViewNameDestSource;
     @BindView(R.id.editTextDestSourcename)
-    EditText editTextDestSourcename;
+    AutoCompleteTextView editTextDestSourcename;
     @BindView(R.id.linerLayoutAssetDestNames)
     LinearLayout linerLayoutAssetDestNames;
     @BindView(R.id.text_view_project_name)
-    Spinner textViewProjectName;
+    EditText textViewProjectName;
     @BindView(R.id.linearLayoutSite)
     LinearLayout linearLayoutSite;
     @BindView(R.id.edittextAssetQuantity)
@@ -122,7 +124,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     private JSONArray jsonImageNameArray = new JSONArray();
 
     private Context mContext;
-    private String transferType = "", str = "";
+    private String transferType = "OUT", str = "";
     private boolean isChecked;
 
     private String strDate;
@@ -137,9 +139,15 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     private ArrayList<File> arrayImageFileList;
     private Realm realm;
     private Calendar myCalendar;
-    private int indexItemUnit,unidId;
+    private int indexItemUnit, unidId;
     private String strToDate;
+    private JSONArray jsonArray;
+    private int unitId;
+
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> siteNameArray;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
+    private int intComponentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,16 +156,33 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         ButterKnife.bind(this);
         buttonMove.setOnClickListener(this);
         initializeViews();
-        checkAvailability(1);
+        checkAvailability(2);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initializeViews() {
         mContext = ActivityAssetMoveInOutTransfer.this;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            intComponentId = bundle.getInt("inventoryCompId", -1);
+        }
         myCalendar = Calendar.getInstance();
         Date curDate = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         strToDate = format.format(curDate);
         textviewAssetName.setText("strAssetName");
+        getSystemSites();
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -271,6 +296,23 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+
+        editTextDestSourcename.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                setProjectNameFromIndex(i);
+            }
+        });
+    }
+
+    private void setProjectNameFromIndex(int selectedIndex) {
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
+            String strProject = jsonObject.getString("project_name");
+            textViewProjectName.setText(strProject + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void requestForMaterial() {
@@ -280,21 +322,26 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             if (checkboxMoveInOut.isChecked()) {
                 params.put("name", assetDestSpinner.getSelectedItem().toString().toLowerCase());
             } else {
-                params.put("name", assetSourceSpinner.getSelectedItem().toString().toLowerCase());
-            }
-            if(str.equalsIgnoreCase("Office")){
-                params.put("source_name","");
+                if(assetSourceSpinner.getSelectedItemPosition() == 1){
+                    params.put("name", "hand");
 
-            }else {
-                params.put("source_name",editTextDestSourcename.getText().toString());
+                }else {
+                    params.put("name", assetSourceSpinner.getSelectedItem().toString().toLowerCase());
+
+                }
             }
-            params.put("inventory_component_id", 1);
+            if (str.equalsIgnoreCase("Office")) {
+                params.put("source_name", "");
+
+            } else {
+                params.put("source_name", editTextDestSourcename.getText().toString());
+            }
+            params.put("inventory_component_id", intComponentId);
             params.put("type", transferType);
             params.put("quantity", strQuantity);
-            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unidId = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
-                params.put("unit_id", unidId);
-            }
+
+            params.put("unit_id", unitId);
+
             params.put("date", strDate);
             if (!TextUtils.isEmpty(editTextAssetRemark.getText().toString())) {
                 params.put("remark", editTextAssetRemark.getText().toString());
@@ -303,13 +350,13 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                 params.put("remark", "");
             }
             params.put("images", jsonImageNameArray);
-            if(str.equalsIgnoreCase(getString(R.string.supplier_name))){
+            if (str.equalsIgnoreCase(getString(R.string.supplier_name))) {
                 params.put("in_time", strToDate + " " + strInTime);
                 params.put("out_time", strToDate + " " + strOutTime);
                 params.put("vehicle_number", strVehicleNumber);
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", edittextBillAmountAssetAsset.getText().toString());
-            }else if(str.equalsIgnoreCase(getString(R.string.shop_name))){
+            } else if (str.equalsIgnoreCase(getString(R.string.shop_name))) {
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", edittextBillAmountAssetAsset.getText().toString());
             }
@@ -327,6 +374,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -374,16 +422,16 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             editTextDate.requestFocus();
             editTextDate.setError(null);
         }
-        //Bill
-        strBillNumber = edittextBillNum.getText().toString();
-        if (TextUtils.isEmpty(strBillNumber)) {
-            edittextBillNum.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
-            return;
-        } else {
-            edittextBillNum.setError(null);
-            edittextBillNum.requestFocus();
-        }
         if (!checkboxMoveInOut.isChecked()) {
+            //Bill
+            strBillNumber = edittextBillNum.getText().toString();
+            if (TextUtils.isEmpty(strBillNumber)) {
+                edittextBillNum.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
+                return;
+            } else {
+                edittextBillNum.setError(null);
+                edittextBillNum.requestFocus();
+            }
             strBillAmount = edittextBillAmountAssetAsset.getText().toString();
             if (TextUtils.isEmpty(strBillAmount)) {
                 edittextBillAmountAssetAsset.setError("Please Enter Bill Amount");
@@ -559,52 +607,33 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     }
 
     private void checkAvailability(int materialRequestComponentId) {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("material_request_component_id", materialRequestComponentId);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_MATERIAL_REQUEST_AVAILABLE_QUANTITY + AppUtils.getInstance().getCurrentToken())
+
+        AndroidNetworking.get(AppURL.API_SYSTEM_UNITS)
                 .setPriority(Priority.MEDIUM)
-                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("checkAvailability")
                 .build()
-                .getAsObject(UnitsResponse.class, new ParsedRequestListener<UnitsResponse>() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(final UnitsResponse response) {
-                        realm = Realm.getDefaultInstance();
+                    public void onResponse(JSONObject response) {
                         try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(UnitQuantityItem.class);
-                                    realm.insertOrUpdate(response);
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (jsonObject.getString("slug").equalsIgnoreCase("nos")) {
+                                    unitId = jsonObject.getInt("id");
                                 }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    Timber.d("Realm Execution Successful");
-                                    setUpUnitQuantityChangeListener();
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "checkAvailability");
+                        anError.printStackTrace();
+
                     }
                 });
     }
@@ -685,4 +714,36 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                 break;
         }
     }
+
+    private void getSystemSites() {
+        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
+                .setTag("getSystemSites")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArray = response.getJSONArray("data");
+                            siteNameArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
+                            editTextDestSourcename.setAdapter(adapter);
+                            setProjectNameFromIndex(editTextDestSourcename.getListSelection());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                    }
+                });
+    }
+
 }

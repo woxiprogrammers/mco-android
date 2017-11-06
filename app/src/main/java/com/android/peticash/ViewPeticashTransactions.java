@@ -212,6 +212,7 @@ public class ViewPeticashTransactions extends BaseActivity {
         editTextSetDate.setText(transactionDetailData.getDate());
         editTextSetBillamount.setText(transactionDetailData.getBillAmount());
         editTextSetGrnNumber.setText(transactionDetailData.getGrn());
+        edittextPayableAmount.setText(transactionDetailData.getBillAmount());
 
         if(!transactionDetailData.getRemark().isEmpty()){
             editTextSetRemark.setText(transactionDetailData.getRemark());

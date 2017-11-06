@@ -50,6 +50,8 @@ public class AppURL {
     //Inventory
     public static final String API_CREATE_FUEL_READING = BASE_URL + "inventory/asset/readings/add?token";
     public static final String API_PETICASH_BILL_PAYMENT = BASE_URL + "peticash/purchase/bill-payment?token=";
+    public static final String API_GET_SYSTEM_SITES=BASE_URL + "system-project-sites";
+    public static final String API_SYSTEM_UNITS=BASE_URL + "system-units";
 
 //    /inventory/asset/readings/listing?token=
 }

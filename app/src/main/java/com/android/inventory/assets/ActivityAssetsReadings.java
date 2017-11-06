@@ -10,9 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -68,6 +71,8 @@ public class ActivityAssetsReadings extends BaseActivity {
     private String strStartReading, strStartTime, strStopReading, strStopTime, strTopUp, strTopUpTime, strFuelPerUnit, strLtrPerUnit;
     private Realm realm;
     private String slug;
+    FrameLayout frameLayoutTypeForAsset;
+    private Spinner spinnerSelectType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +110,10 @@ public class ActivityAssetsReadings extends BaseActivity {
         LinearLayout linearLayoutElePerUnit;*/
         child = getLayoutInflater().inflate(R.layout.item_add_asset_readings, null);
         startRead = child.findViewById(R.id.startRead);
+        frameLayoutTypeForAsset=child.findViewById(R.id.frameLayoutTypeForAsset);
         editTextStartReading = child.findViewById(R.id.editTextStartReading);
         editTextStartTime = child.findViewById(R.id.editTextStartTime);
+        spinnerSelectType=child.findViewById(R.id.spinnerSelectType);
         editTextStopReading = child.findViewById(R.id.editTextStopReading);
         editTextStopTime = child.findViewById(R.id.editTextStopTime);
         editTextTopUp = child.findViewById(R.id.editTextTopUp);
@@ -118,18 +125,47 @@ public class ActivityAssetsReadings extends BaseActivity {
         editTextElePerUnit = child.findViewById(R.id.editTextElePerUnit);
         linearLayoutElePerUnit = child.findViewById(R.id.linearLayoutElePerUnit);
 
+        spinnerSelectType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0:
+                        //Fuel
+                        linearLayoutTopUp.setVisibility(View.VISIBLE);
+                        linearLayoutTopUpTime.setVisibility(View.VISIBLE);
+                        linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
+                        linearLayoutElePerUnit.setVisibility(View.GONE);
+                        break;
+                    case 1:
+                        linearLayoutTopUp.setVisibility(View.GONE);
+                        linearLayoutTopUpTime.setVisibility(View.GONE);
+                        linearLayoutLtrPerUnit.setVisibility(View.GONE);
+                        linearLayoutElePerUnit.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
         llAddReadings.addView(child);
         if (slug.equalsIgnoreCase("fuel_dependent")) {
             linearLayoutElePerUnit.setVisibility(View.GONE);
             linearLayoutTopUp.setVisibility(View.VISIBLE);
             linearLayoutTopUpTime.setVisibility(View.VISIBLE);
             linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
+            frameLayoutTypeForAsset.setVisibility(View.GONE);
 
         } else if (slug.equalsIgnoreCase("electricity_dependent")) {
             linearLayoutElePerUnit.setVisibility(View.VISIBLE);
             linearLayoutLtrPerUnit.setVisibility(View.GONE);
             linearLayoutTopUp.setVisibility(View.GONE);
             linearLayoutTopUpTime.setVisibility(View.GONE);
+            frameLayoutTypeForAsset.setVisibility(View.GONE);
+        }else if(slug.equalsIgnoreCase("fuel_and_electricity_dependent")){
+            frameLayoutTypeForAsset.setVisibility(View.VISIBLE);
         }
         editTextStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
