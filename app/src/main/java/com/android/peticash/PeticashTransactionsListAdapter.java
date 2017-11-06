@@ -68,8 +68,27 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
                 currentTextView.setVisibility(View.GONE);
             }
         }
-        for (int textViewIndex = 0; textViewIndex < noOfSubModules; textViewIndex++) {
-            TextView currentTextView = (TextView) holder.mLlRemainingTransactionsExpandable.getChildAt(textViewIndex);
+        for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
+            LinearLayout currentChildView = (LinearLayout) holder.mLlRemainingTransactionsExpandable.getChildAt(viewIndex);
+            TextView currentTextView_Name = currentChildView.findViewById(R.id.textView_transactionName);
+            currentTextView_Name.setText(modulesItemRealmList.get(viewIndex).getName());
+            TextView currentTextView_Status = currentChildView.findViewById(R.id.textView_transactionStatus);
+            currentTextView_Status.setText(modulesItemRealmList.get(viewIndex).getPaymentStatus());
+            TextView currentTextView_Type = currentChildView.findViewById(R.id.textView_transactionType);
+            currentTextView_Type.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionType() + ":  ");
+            TextView currentTextView_Amount = currentChildView.findViewById(R.id.textView_transactionAmount);
+            currentTextView_Amount.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionAmount());
+            currentChildView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (clickListener != null) {
+                        clickListener.onItemClick(view, holder.getAdapterPosition());
+                    }
+                }
+            });
+
+
+            /*TextView currentTextView = (TextView) holder.mLlRemainingTransactionsExpandable.getChildAt(textViewIndex);
             currentTextView.setText(modulesItemRealmList.get(textViewIndex).getName());
             currentTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,7 +97,7 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
                         clickListener.onItemClick(view, holder.getAdapterPosition());
                     }
                 }
-            });
+            });*/
         }
         holder.mLlRemainingTransactionsExpandable.setVisibility(View.GONE);
         holder.mFlMainTransactionFrame.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +107,7 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
 //                    SlideAnimationUtil.slideOutToLeft(holder.context, holder.ll_sub_modules);
                     holder.mLlRemainingTransactionsExpandable.setVisibility(View.GONE);
                 } else {
-                    SlideAnimationUtil.slideInFromRight(holder.context, holder.mLlRemainingTransactionsExpandable);
+//                    SlideAnimationUtil.slideInFromRight(holder.context, holder.mLlRemainingTransactionsExpandable);
                     holder.mLlRemainingTransactionsExpandable.setVisibility(View.VISIBLE);
                 }
             }

@@ -200,8 +200,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         List<PermissionsItem> permissionsItemList = realm.copyFromRealm(subModulesItem.getPermissions());
         intent.putExtra("permissionsItemList", new Gson().toJson(permissionsItemList));
         intent.putExtra("subModuleTag", subModulesItem.getSubModuleTag());
-        intent.setClassName(getApplicationContext(), strClassName);
-        startActivity(intent);
+        if (strClassName != null) {
+            intent.setClassName(getApplicationContext(), strClassName);
+            startActivity(intent);
+        }
     }
 
     private void setUpProjectsSpinnerAdapter(RealmResults<ProjectsItem> projectsItems) {
@@ -279,6 +281,4 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             Timber.d(e.getMessage());
         }
     }
-
-
 }

@@ -10,6 +10,8 @@ public class PeticashTransactionsResponse extends RealmObject {
     private int primaryKey = 0;
     @SerializedName("page_id")
     private String pageId;
+    @SerializedName("date")
+    private String date;
     @SerializedName("message")
     private String message;
     @SerializedName("data")
@@ -21,6 +23,14 @@ public class PeticashTransactionsResponse extends RealmObject {
 
     public String getPageId() {
         return pageId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public void setMessage(String message) {

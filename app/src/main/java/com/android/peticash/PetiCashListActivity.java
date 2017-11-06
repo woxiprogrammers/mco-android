@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
@@ -128,7 +127,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         }
     }
 
-    @Override
+    /*@Override
     protected void onPause() {
         super.onPause();
         for (int i = 0; i < 5; i++) {
@@ -136,7 +135,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                 realm.close();
             }
         }
-    }
+    }*/
 
     /**
      * <b>private void initializeViews()</b>
@@ -221,6 +220,9 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                         if (!TextUtils.isEmpty(response.getPageId())) {
                             pageNumber = Integer.parseInt(response.getPageId());
                         }
+                        if (!TextUtils.isEmpty(response.getDate())) {
+                            mTextViewListHeaderPeticash.setText("Latest transactions as on: " + response.getDate());
+                        }
                     }
 
                     @Override
@@ -246,7 +248,13 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
             public void onItemClick(View itemView, int modulePosition) {
                 int subModuleIndex = itemView.getId();
                 TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
-                Toast.makeText(mContext, "" + transactionListItem.getPeticashTransactionId() + " " + transactionListItem.getPeticashTransactionType(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "" + transactionListItem.getPeticashTransactionId() + " " + transactionListItem.getPeticashTransactionType(), Toast.LENGTH_SHORT).show();
+                if (transactionListItem.isValid()) {
+                    Intent formIntent = new Intent(mContext, PeticashFormActivity.class);
+                    formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
+                    formIntent.putExtra("transactionType", transactionListItem.getPeticashTransactionType());
+                    startActivity(formIntent);
+                }
             }
         });
         mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);

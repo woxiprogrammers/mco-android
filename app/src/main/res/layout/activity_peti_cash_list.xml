@@ -170,8 +170,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_8dp"
-            android:layout_marginTop="@dimen/dimen_8dp"
-            android:text="Latest transactions as on: 03 Oct 2017"/>
+            android:layout_marginTop="@dimen/dimen_8dp"/>
         <!--<android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
