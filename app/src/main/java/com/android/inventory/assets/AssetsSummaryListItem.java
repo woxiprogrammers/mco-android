@@ -26,6 +26,22 @@ public class AssetsSummaryListItem extends RealmObject {
     private int assetsUnits;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
+    /*"date": "2017-11-04",
+            "total_working_hours": 5,
+            "fuel_used": -1,
+            "electricity_used": -1,
+            "units_used": 110,
+            "total_top_up": -1
+            "id": 6,
+            "start_reading": "200",
+            "stop_reading": "230",
+            "start_time": "12:05",
+            "stop_time": "14:06",
+            "top_up_time": null,
+            "top_up": null,
+            "electricity_per_unit": "5",
+            "fuel_per_unit": null*/
+
     public String getStartTime() {
         return startTime;
     }

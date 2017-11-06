@@ -120,6 +120,9 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         JSONObject params = new JSONObject();
         try {
             params.put("inventory_component_id", 3);
+            params.put("date", 3);
+            params.put("month", 3);
+            params.put("year", 3);
         } catch (JSONException e) {
             e.printStackTrace();
         }

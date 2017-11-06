@@ -57,7 +57,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="July"
+                                android:text="Nov"
                                 android:textColor="@color/colorTextLight"
                                 android:textSize="25sp"/>
 
@@ -68,7 +68,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="@dimen/dimen_2dp"
                                 android:layout_marginTop="@dimen/dimen_2dp"
-                                android:text="₹2546"
+                                android:text="₹ -"
                                 android:textColor="@color/colorText"
                                 android:textSize="20dp"
                                 android:textStyle="bold"/>
@@ -78,7 +78,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="₹216"
+                                android:text="₹ -"
                                 android:textColor="@color/colorTextLight"
                                 android:textSize="15dp"/>
                         </LinearLayout>
@@ -114,7 +114,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginBottom="@dimen/dimen_2dp"
                                 android:layout_marginTop="@dimen/dimen_2dp"
-                                android:text="₹2546"
+                                android:text="₹ -"
                                 android:textColor="@color/colorText"
                                 android:textSize="20dp"
                                 android:textStyle="bold"/>
@@ -124,7 +124,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="₹216"
+                                android:text="₹ -"
                                 android:textColor="@color/colorTextLight"
                                 android:textSize="15dp"/>
                         </LinearLayout>

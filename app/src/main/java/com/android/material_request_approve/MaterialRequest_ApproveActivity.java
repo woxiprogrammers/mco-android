@@ -861,9 +861,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         } else */
         if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
-
-
-
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
             strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
             Timber.i("Material New: unitId: " + unitId + " strUnitName " + strUnitName);
@@ -884,7 +881,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         editText_name_material_asset = dialogView.findViewById(R.id.editText_name_material_asset);
         editText_quantity_material_asset = dialogView.findViewById(R.id.editText_quantity_material_asset);
         editextDialogRemark = dialogView.findViewById(R.id.editext_remark_for_disapproval);
-        linearLayoutUnit=dialogView.findViewById(R.id.linearLayoutUnit);
+        linearLayoutUnit = dialogView.findViewById(R.id.linearLayoutUnit);
         edittext_unit = dialogView.findViewById(R.id.edittext_unit);
         spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
         mTextViewExceedQuantity = dialogView.findViewById(R.id.TextViewExceedQuantity);
@@ -947,7 +944,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         editText_quantity_material_asset.setError(null);
                         editText_quantity_material_asset.clearFocus();
                     }
-                    if (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))) {
+                    if (strUserRole.toLowerCase().contains("admin") /*|| strUserRole.equalsIgnoreCase(getString(R.string.admin))*/) {
                         approveDisapproveMaterial(5, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                     } else {
                         approveDisapproveMaterial(3, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
@@ -985,25 +982,19 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void approveDisapproveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
-                                           final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent)
-    {
+                                           final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
         final PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
         int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
         JSONObject params = new JSONObject();
-
         try {
-
             if (!isMoveIndent) {
                 int indexItemUnit = spinner_select_units.getSelectedItemPosition();
                 int userId;
                 if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
                     unitIDForDialog = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
                     params.put("unit_id", unitIDForDialog);
-
                 }
-
-
                 params.put("material_request_component_id", materialRequestComponentId);
                 params.put("change_component_status_id_to", statusId);
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -1020,7 +1011,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 params.put("change_component_status_id_to", statusId);
                 params.put("remark", "");
             }
-            Log.i("@@params",params.toString());
+            Log.i("@@params", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1287,10 +1278,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d("Realm Execution Successful");
-                                    if(response.getUnitsResponseData().getAllowedQuantityUnit().isEmpty()){
+                                    if (response.getUnitsResponseData().getAllowedQuantityUnit().isEmpty()) {
                                         linearLayoutUnit.setVisibility(View.GONE);
-
-                                    }else {
+                                    } else {
                                         linearLayoutUnit.setVisibility(View.VISIBLE);
                                         edittext_unit.setVisibility(View.GONE);
                                         setUpUnitQuantityChangeListener();
@@ -1448,10 +1438,12 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
             final String strUserRole = AppUtils.getInstance().getUserRole();
-            if ((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin)))) {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-            } else {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+            if (purchaseMaterialListItem.getHave_access() != null) {
+                if ((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin)))) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                } else {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                }
             }
             if (strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) {
 //                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
@@ -1486,8 +1478,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             textView.setText(newDateStr);
         }
     }
-
-
 
     private void setUpUnitQuantityChangeListener() {
         realm = Realm.getDefaultInstance();
