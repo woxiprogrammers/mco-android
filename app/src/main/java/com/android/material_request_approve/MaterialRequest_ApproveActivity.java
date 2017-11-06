@@ -1153,6 +1153,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 //                .addBodyParameter("component_status_slug", statusSlug)
 //                .addBodyParameter("can_access", getString(R.string.approve_material_request))
 //                .addBodyParameter("component_status_slug", "in-indent")
+                .addBodyParameter("project_site_id", String.valueOf(AppUtils.getInstance().getCurrentSiteId()))
                 .setTag("requestUsersWithApproveAcl")
                 .build()
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {

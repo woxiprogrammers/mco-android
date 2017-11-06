@@ -742,6 +742,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 .setPriority(Priority.MEDIUM)
                 .addBodyParameter("can_access", getString(R.string.approve_purchase_request))
                 .addBodyParameter("component_status_slug", "in-indent")
+                .addBodyParameter("project_site_id", String.valueOf(AppUtils.getInstance().getCurrentSiteId()))
                 .setTag("requestUsersWithApproveAcl")
                 .build()
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
