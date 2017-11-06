@@ -1131,6 +1131,7 @@ public class PeticashFormActivity extends BaseActivity {
         editTextItemName.setEnabled(false);
         textViewCapturFirst.setEnabled(false);
         textViewPickFirst.setEnabled(false);
+        editTextAddNote.setEnabled(false);
 
         /////////////
 

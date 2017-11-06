@@ -2,16 +2,15 @@ package com.android.peticash;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.inventory.assets.AssetListResponse;
 import com.android.peticashautosearchemployee.TransactionDetailData;
 import com.android.peticashautosearchemployee.TransactionDetailResponse;
 import com.android.utils.AppURL;
@@ -19,7 +18,6 @@ import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
@@ -28,7 +26,6 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
-import timber.log.Timber;
 
 public class ViewPeticashTransactions extends BaseActivity {
 
@@ -36,40 +33,36 @@ public class ViewPeticashTransactions extends BaseActivity {
     TextView textViewSetSourceName;
     @BindView(R.id.editTextSourceSetName)
     EditText editTextSourceSetName;
-    @BindView(R.id.linerLayoutSelectedNames_PC)
-    LinearLayout linerLayoutSelectedNamesPC;
     @BindView(R.id.editTextSetItemName)
     EditText editTextSetItemName;
     @BindView(R.id.edittextSetQuantity)
     EditText edittextSetQuantity;
     @BindView(R.id.editTextSetUnit)
     EditText editTextSetUnit;
-    @BindView(R.id.linearLayoutUnits)
-    LinearLayout linearLayoutUnits;
+    @BindView(R.id.linearLayoutSetUnits)
+    LinearLayout linearLayoutSetUnits;
     @BindView(R.id.editTextSetDate)
     EditText editTextSetDate;
-    @BindView(R.id.edit_text_inTime)
-    EditText editTextInTime;
-    @BindView(R.id.edit_text_outTime)
-    EditText editTextOutTime;
-    @BindView(R.id.ll_forSupplierInOutTime)
-    LinearLayout llForSupplierInOutTime;
-    @BindView(R.id.edit_text_BillNumber)
-    EditText editTextBillNumber;
-    @BindView(R.id.lineraLayoutBillNumber)
-    LinearLayout lineraLayoutBillNumber;
-    @BindView(R.id.edit_text_billamount)
-    EditText editTextBillamount;
-    @BindView(R.id.linearBillAmount)
-    LinearLayout linearBillAmount;
-    @BindView(R.id.edit_text_vehicleNumber)
-    EditText editTextVehicleNumber;
-    @BindView(R.id.ll_forSupplierVehicle)
-    LinearLayout llForSupplierVehicle;
+    @BindView(R.id.edittextSetinTime)
+    EditText edittextSetinTime;
+    @BindView(R.id.edittestSetOutTime)
+    EditText edittestSetOutTime;
+    @BindView(R.id.ll_forSupplierSetInOutTime)
+    LinearLayout llForSupplierSetInOutTime;
+    @BindView(R.id.editTesxtSetBillNumber)
+    EditText editTesxtSetBillNumber;
+    @BindView(R.id.lineraLayoutSetBillNumber)
+    LinearLayout lineraLayoutSetBillNumber;
+    @BindView(R.id.editTextSetBillamount)
+    EditText editTextSetBillamount;
+    @BindView(R.id.linearSetBillAmount)
+    LinearLayout linearSetBillAmount;
+    @BindView(R.id.editTextSetVehicleNumber)
+    EditText editTextSetVehicleNumber;
+    @BindView(R.id.ll_SetforSupplierVehicle)
+    LinearLayout llSetforSupplierVehicle;
     @BindView(R.id.linearLayoutSetUploadImage)
     LinearLayout linearLayoutSetUploadImage;
-    @BindView(R.id.linearLayoutForCategoryPurchase)
-    LinearLayout linearLayoutForCategoryPurchase;
     @BindView(R.id.edit_text_emp_id_name)
     EditText editTextEmpIdName;
     @BindView(R.id.linerLayoutSelectedNames)
@@ -122,10 +115,12 @@ public class ViewPeticashTransactions extends BaseActivity {
     EditText editTextSetPayableAmount;
     @BindView(R.id.linearLayoutSetPayableAmount)
     LinearLayout linearLayoutSetPayableAmount;
-    @BindView(R.id.linearLayoutRefNumber)
-    LinearLayout linearLayoutRefNumber;
+    @BindView(R.id.linearLayoutSetRefNumber)
+    LinearLayout linearLayoutSetRefNumber;
     @BindView(R.id.editTextSetRemark)
     EditText editTextSetRemark;
+    @BindView(R.id.editTextRefNum)
+    EditText editTextRefNum;
     private Context mContext;
     private Realm realm;
 
@@ -187,9 +182,23 @@ public class ViewPeticashTransactions extends BaseActivity {
     }
 
     private void setData() {
-        realm=Realm.getDefaultInstance();
-        TransactionDetailData transactionDetailData=realm.where(TransactionDetailData.class).equalTo("peticashTransactionId",2).findFirst();
+        realm = Realm.getDefaultInstance();
+        TransactionDetailData transactionDetailData = realm.where(TransactionDetailData.class).equalTo("peticashTransactionId", 2).findFirst();
+        editTextSourceSetName.setText(transactionDetailData.getSourceName());
         editTextSetItemName.setText(transactionDetailData.getName());
+        edittextSetQuantity.setText(transactionDetailData.getQuantity());
+        editTextSetUnit.setText(transactionDetailData.getUnitName());
+        editTextSetDate.setText(transactionDetailData.getDate());
+        editTextSetBillamount.setText(transactionDetailData.getBillAmount());
+        editTextSetGrnNumber.setText(transactionDetailData.getGrn());
+        editTextSetRemark.setText(transactionDetailData.getRemark());
+        editTesxtSetBillNumber.setText(transactionDetailData.getBillNumber());
+        if(!transactionDetailData.getReferenceNumber().isEmpty()){
+            linearLayoutSetRefNumber.setVisibility(View.VISIBLE);
+            editTextRefNum.setText(transactionDetailData.getReferenceNumber());
+        }else {
+            linearLayoutSetRefNumber.setVisibility(View.GONE);
+        }
 
     }
 }

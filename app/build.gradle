@@ -13,6 +13,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         versionCode 2
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -76,4 +77,5 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:0.0.14'
     compile 'id.zelory:compressor:2.1.0'
+    compile 'com.android.support:multidex:1.0.1'
 }

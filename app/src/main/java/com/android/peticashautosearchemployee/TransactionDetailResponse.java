@@ -5,7 +5,7 @@ import io.realm.RealmObject;
 
 public class TransactionDetailResponse extends RealmObject{
 
-	@SerializedName("transactionDetailData")
+	@SerializedName("data")
 	private TransactionDetailData transactionDetailData;
 
 	@SerializedName("message")
