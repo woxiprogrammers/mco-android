@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.android.constro360.R;
 import com.android.peticash.peticash_models.DatewiseTransactionsListItem;
 import com.android.peticash.peticash_models.TransactionListItem;
-import com.android.utils.SlideAnimationUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,47 +56,16 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final DatewiseTransactionsListItem modulesItem = modulesItemOrderedRealmCollection.get(position);
-        RealmList<TransactionListItem> modulesItemRealmList = modulesItem.getTransactionList();
+        final RealmList<TransactionListItem> modulesItemRealmList = modulesItem.getTransactionList();
         holder.mTvTransactionDate.setText(modulesItem.getDate());
         holder.mTvNoOfTransactions.setText("Total no. of transactions: " + modulesItem.getTransactionList().size());
-        int noOfTextViews = holder.mLlRemainingTransactionsExpandable.getChildCount();
-        int noOfSubModules = modulesItemRealmList.size();
-        if (noOfSubModules < noOfTextViews) {
-            for (int index = noOfSubModules; index < noOfTextViews; index++) {
-                TextView currentTextView = (TextView) holder.mLlRemainingTransactionsExpandable.getChildAt(index);
-                currentTextView.setVisibility(View.GONE);
+        int noOfChildViews = holder.mLlRemainingTransactionsExpandable.getChildCount();
+        final int noOfSubModules = modulesItemRealmList.size();
+        if (noOfSubModules < noOfChildViews) {
+            for (int index = noOfSubModules; index < noOfChildViews; index++) {
+                LinearLayout currentChildView = (LinearLayout) holder.mLlRemainingTransactionsExpandable.getChildAt(index);
+                currentChildView.setVisibility(View.GONE);
             }
-        }
-        for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
-            LinearLayout currentChildView = (LinearLayout) holder.mLlRemainingTransactionsExpandable.getChildAt(viewIndex);
-            TextView currentTextView_Name = currentChildView.findViewById(R.id.textView_transactionName);
-            currentTextView_Name.setText(modulesItemRealmList.get(viewIndex).getName());
-            TextView currentTextView_Status = currentChildView.findViewById(R.id.textView_transactionStatus);
-            currentTextView_Status.setText(modulesItemRealmList.get(viewIndex).getPaymentStatus());
-            TextView currentTextView_Type = currentChildView.findViewById(R.id.textView_transactionType);
-            currentTextView_Type.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionType() + ":  ");
-            TextView currentTextView_Amount = currentChildView.findViewById(R.id.textView_transactionAmount);
-            currentTextView_Amount.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionAmount());
-            currentChildView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (clickListener != null) {
-                        clickListener.onItemClick(view, holder.getAdapterPosition());
-                    }
-                }
-            });
-
-
-            /*TextView currentTextView = (TextView) holder.mLlRemainingTransactionsExpandable.getChildAt(textViewIndex);
-            currentTextView.setText(modulesItemRealmList.get(textViewIndex).getName());
-            currentTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (clickListener != null) {
-                        clickListener.onItemClick(view, holder.getAdapterPosition());
-                    }
-                }
-            });*/
         }
         holder.mLlRemainingTransactionsExpandable.setVisibility(View.GONE);
         holder.mFlMainTransactionFrame.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +75,25 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
 //                    SlideAnimationUtil.slideOutToLeft(holder.context, holder.ll_sub_modules);
                     holder.mLlRemainingTransactionsExpandable.setVisibility(View.GONE);
                 } else {
-//                    SlideAnimationUtil.slideInFromRight(holder.context, holder.mLlRemainingTransactionsExpandable);
+                    for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
+                        LinearLayout currentChildView = (LinearLayout) holder.mLlRemainingTransactionsExpandable.getChildAt(viewIndex);
+                        TextView currentTextView_Name = currentChildView.findViewById(R.id.textView_transactionName);
+                        currentTextView_Name.setText(modulesItemRealmList.get(viewIndex).getName());
+                        TextView currentTextView_Status = currentChildView.findViewById(R.id.textView_transactionStatus);
+                        currentTextView_Status.setText(modulesItemRealmList.get(viewIndex).getPaymentStatus());
+                        TextView currentTextView_Type = currentChildView.findViewById(R.id.textView_transactionType);
+                        currentTextView_Type.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionType() + ":  ");
+                        TextView currentTextView_Amount = currentChildView.findViewById(R.id.textView_transactionAmount);
+                        currentTextView_Amount.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionAmount());
+                        currentChildView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (clickListener != null) {
+                                    clickListener.onItemClick(view, holder.getAdapterPosition());
+                                }
+                            }
+                        });
+                    }
                     holder.mLlRemainingTransactionsExpandable.setVisibility(View.VISIBLE);
                 }
             }
@@ -148,13 +134,6 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
             for (int indexView = 0; indexView < intMaxSize; indexView++) {
                 View transactionDetailLayout = LayoutInflater.from(context).inflate(R.layout.item_transaction_detail, null);
                 transactionDetailLayout.setId(indexView);
-//                TextView textView = new TextView(context);
-//                textView.setId(indexView);
-//                textView.setPadding(0, 20, 0, 20);
-//                textView.setGravity(Gravity.CENTER);
-//                textView.setBackground(ContextCompat.getDrawable(context, R.drawable.background_sub_module_text));
-//                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//                mLlRemainingTransactionsExpandable.addView(textView, layoutParams);
                 mLlRemainingTransactionsExpandable.addView(transactionDetailLayout);
             }
         }
