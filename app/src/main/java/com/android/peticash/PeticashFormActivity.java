@@ -874,6 +874,38 @@ public class PeticashFormActivity extends BaseActivity {
                 });
     }
 
+
+
+    private void requestToPurchaseTransactionDetail(){
+        JSONObject params=new JSONObject();
+        try {
+            params.put("peticash_transaction_id","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_PURCHASE_TRANSACTION_DETAIL + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_GENERATE_GRN_PETICASH")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
     ////////////////////////////////////////////////////////////////
 
     /////////////////////////Images Part/////////////////////////////
@@ -1138,5 +1170,9 @@ public class PeticashFormActivity extends BaseActivity {
         buttonGenerateGrn.setVisibility(View.GONE);
         buttonPayWithPeticash.setVisibility(View.VISIBLE);
         layoutCapture.setVisibility(View.VISIBLE);
+    }
+
+    private void setData(){
+
     }
 }
