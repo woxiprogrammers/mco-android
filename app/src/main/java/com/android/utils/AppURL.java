@@ -49,6 +49,7 @@ public class AppURL {
 
     //Inventory
     public static final String API_CREATE_FUEL_READING = BASE_URL + "inventory/asset/readings/add?token";
+    public static final String API_PETICASH_BILL_PAYMENT = BASE_URL + "peticash/purchase/bill-payment?token=";
 
 //    /inventory/asset/readings/listing?token=
 }

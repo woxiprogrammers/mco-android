@@ -250,7 +250,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                 TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
 //                Toast.makeText(mContext, "" + transactionListItem.getPeticashTransactionId() + " " + transactionListItem.getPeticashTransactionType(), Toast.LENGTH_SHORT).show();
                 if (transactionListItem.isValid()) {
-                    Intent formIntent = new Intent(mContext, PeticashFormActivity.class);
+                    Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
                     formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
                     formIntent.putExtra("transactionType", transactionListItem.getPeticashTransactionType());
                     startActivity(formIntent);

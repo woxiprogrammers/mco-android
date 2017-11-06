@@ -1448,11 +1448,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
             final String strUserRole = AppUtils.getInstance().getUserRole();
-            if ((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin)))) {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-            } else {
-                holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+            if(!purchaseMaterialListItem.getHave_access().isEmpty()){
+                if ((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin)))) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                } else {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                }
             }
+
             if (strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) {
 //                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                 holder.buttonMoveToIndent.setVisibility(View.VISIBLE);

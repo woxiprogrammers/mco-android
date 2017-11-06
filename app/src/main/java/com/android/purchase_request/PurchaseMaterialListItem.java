@@ -46,13 +46,13 @@ public class PurchaseMaterialListItem extends RealmObject {
     @SerializedName("have_access")
     private String have_access;
 
+    public void setHave_access(String have_access) {
+        this.have_access = have_access;
+    }
     public String getHave_access() {
         return have_access;
     }
 
-    public void setHave_access(String have_access) {
-        this.have_access = have_access;
-    }
 
     /////////////////////////
 //    private String item_category;

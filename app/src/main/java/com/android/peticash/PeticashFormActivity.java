@@ -238,6 +238,9 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.linerLayoutSelectedNames)
     LinearLayout linerLayoutSelectedNames;
 
+    @BindView(R.id.editTextRefNumber)
+    EditText editTextRefNumber;
+
     @BindView(R.id.linearLayoutUploadImageSalary)
     LinearLayout linearLayoutUploadImageSalary;
 
@@ -309,6 +312,7 @@ public class PeticashFormActivity extends BaseActivity {
                 valideateEntries();
                 break;
             case R.id.button_pay_with_peticash:
+                uploadImages_addItemToLocal("billPayment");
                 break;
         }
     }
@@ -842,17 +846,18 @@ public class PeticashFormActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         //ToDO Add Keys for params
         try {
-            params.put("", editTextDate.getText().toString());
-            params.put("", editTextBillNumber.getText().toString());
-            params.put("", editTextBillamount.getText().toString());
-            params.put("", editTextAddNote.getText().toString());
+            params.put("peticash_transaction_id", peticashTransactionId);
+            if(!editTextRefNumber.getText().toString().isEmpty()){
+                params.put("reference_number", editTextRefNumber.getText().toString());
+
+            }
             params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        AndroidNetworking.post(AppURL.API_GENERATE_GRN_PETICASH + AppUtils.getInstance().getCurrentToken())
-                .setTag("API_GENERATE_GRN_PETICASH")
+        AndroidNetworking.post(AppURL.API_PETICASH_BILL_PAYMENT + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_PETICASH_BILL_PAYMENT")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
@@ -862,6 +867,7 @@ public class PeticashFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1056,6 +1062,8 @@ public class PeticashFormActivity extends BaseActivity {
                 requestForSalaryOrAdvance();
             else if (strTag.equalsIgnoreCase("requestToGrnGeneration")) {
                 requestToGenerateGRN();
+            }else if(strTag.equalsIgnoreCase("billPayment")){
+                requestForPurchasePayment();
             }
         }
     }

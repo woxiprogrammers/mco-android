@@ -2,6 +2,8 @@ package com.android.peticash;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,8 +49,6 @@ public class ViewPeticashTransactions extends BaseActivity {
     EditText edittextSetinTime;
     @BindView(R.id.edittestSetOutTime)
     EditText edittestSetOutTime;
-    @BindView(R.id.ll_forSupplierSetInOutTime)
-    LinearLayout llForSupplierSetInOutTime;
     @BindView(R.id.editTesxtSetBillNumber)
     EditText editTesxtSetBillNumber;
     @BindView(R.id.lineraLayoutSetBillNumber)
@@ -122,21 +122,42 @@ public class ViewPeticashTransactions extends BaseActivity {
     @BindView(R.id.editTextRefNum)
     EditText editTextRefNum;
     private Context mContext;
+    @BindView(R.id.ll_forSupplierSetInOutTime)
+    LinearLayout ll_forSupplierSetInOutTime;
     private Realm realm;
+    private int transactionTypeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_peticash_transactions);
         ButterKnife.bind(this);
-        requestToPurchaseTransactionDetail();
+        Bundle bundle = getIntent().getExtras();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Transaction Details");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (bundle != null) {
+            transactionTypeId = bundle.getInt("transactionId", -1);
+            requestToPurchaseTransactionDetail();
+
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
 
     }
 
     private void requestToPurchaseTransactionDetail() {
         JSONObject params = new JSONObject();
         try {
-            params.put("peticash_transaction_id", 2);
+            params.put("peticash_transaction_id", transactionTypeId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -183,7 +204,7 @@ public class ViewPeticashTransactions extends BaseActivity {
 
     private void setData() {
         realm = Realm.getDefaultInstance();
-        TransactionDetailData transactionDetailData = realm.where(TransactionDetailData.class).equalTo("peticashTransactionId", 2).findFirst();
+        TransactionDetailData transactionDetailData = realm.where(TransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
         editTextSourceSetName.setText(transactionDetailData.getSourceName());
         editTextSetItemName.setText(transactionDetailData.getName());
         edittextSetQuantity.setText(transactionDetailData.getQuantity());
@@ -191,12 +212,31 @@ public class ViewPeticashTransactions extends BaseActivity {
         editTextSetDate.setText(transactionDetailData.getDate());
         editTextSetBillamount.setText(transactionDetailData.getBillAmount());
         editTextSetGrnNumber.setText(transactionDetailData.getGrn());
-        editTextSetRemark.setText(transactionDetailData.getRemark());
+
+        if(!transactionDetailData.getRemark().isEmpty()){
+            editTextSetRemark.setText(transactionDetailData.getRemark());
+            editTextSetRemark.setVisibility(View.VISIBLE);
+        }else {
+            editTextSetRemark.setVisibility(View.GONE);
+        }
         editTesxtSetBillNumber.setText(transactionDetailData.getBillNumber());
-        if(!transactionDetailData.getReferenceNumber().isEmpty()){
+
+        if (!transactionDetailData.getInTime().isEmpty()) {
+            ll_forSupplierSetInOutTime.setVisibility(View.VISIBLE);
+            llSetforSupplierVehicle.setVisibility(View.VISIBLE);
+            edittextSetinTime.setText(transactionDetailData.getInTime());
+            edittestSetOutTime.setText(transactionDetailData.getOutTime());
+            editTextSetVehicleNumber.setText(transactionDetailData.getVehicleNumber());
+
+        } else {
+            llSetforSupplierVehicle.setVisibility(View.GONE);
+            ll_forSupplierSetInOutTime.setVisibility(View.GONE);
+        }
+
+        if (!transactionDetailData.getReferenceNumber().isEmpty()) {
             linearLayoutSetRefNumber.setVisibility(View.VISIBLE);
             editTextRefNum.setText(transactionDetailData.getReferenceNumber());
-        }else {
+        } else {
             linearLayoutSetRefNumber.setVisibility(View.GONE);
         }
 
