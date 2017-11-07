@@ -100,17 +100,16 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-
-                        if(assetsListItems.get(position).getSlug().equalsIgnoreCase("other")){
+                        if (assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
                             Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
-                            startIntent.putExtra("inventoryCompId",assetsListItems.get(position).getId());
+                            startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
                             startActivity(startIntent);
-
-                        }else {
+                        } else {
                             Intent intent = new Intent(mContext, AssetDetailsActivity.class);
                             intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
                             intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
                             intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
+                            intent.putExtra("component_type_slug", assetsListItems.get(position).getSlug());
                             startActivity(intent);
                         }
                     }

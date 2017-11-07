@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -49,14 +50,16 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private Unbinder unbinder;
     private Realm realm;
     private int inventoryComponentId;
+    private String component_type_slug;
 
     public AssetsReadingsFragment() {
         // Required empty public constructor
     }
 
-    public static AssetsReadingsFragment newInstance(int inventoryComponentId) {
+    public static AssetsReadingsFragment newInstance(int inventoryComponentId, String component_type_slug) {
         Bundle args = new Bundle();
         args.putInt("inventoryComponentId", inventoryComponentId);
+        args.putString("component_type_slug", component_type_slug);
         AssetsReadingsFragment fragment = new AssetsReadingsFragment();
         fragment.setArguments(args);
         return fragment;
@@ -69,6 +72,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         Bundle bundleArgs = getArguments();
         if (bundleArgs != null) {
             inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
+            component_type_slug = bundleArgs.getString("component_type_slug");
         }
         initializeViews(view);
         setUpAssetListAdapter();
@@ -90,7 +94,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
         final RealmResults<AssetReadingsListDataItem> assetReadingsListDataItems = realm.where(AssetReadingsListDataItem.class).findAllAsync();
-        AssetReadingsAdapter assetReadingAdapter = new AssetReadingsAdapter(assetReadingsListDataItems, true, true);
+        AssetReadingsAdapter assetReadingAdapter = new AssetReadingsAdapter(assetReadingsListDataItems, true, true, component_type_slug);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
         rvMaterialList.setAdapter(assetReadingAdapter);
@@ -176,34 +180,45 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
 class AssetReadingsAdapter extends RealmRecyclerViewAdapter<AssetReadingsListDataItem, AssetReadingsAdapter.MyViewHolder> {
     private OrderedRealmCollection<AssetReadingsListDataItem> summaryListItems;
+    private String component_type_slug;
 
-    AssetReadingsAdapter(@Nullable OrderedRealmCollection<AssetReadingsListDataItem> data, boolean autoUpdate, boolean updateOnModification) {
+    AssetReadingsAdapter(@Nullable OrderedRealmCollection<AssetReadingsListDataItem> data, boolean autoUpdate, boolean updateOnModification, String current_component_type_slug) {
         super(data, autoUpdate, updateOnModification);
         summaryListItems = data;
+        component_type_slug = current_component_type_slug;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_asset_summary_list, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_asset_readings_list, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         AssetReadingsListDataItem assetReadingsListDataItem = summaryListItems.get(position);
-        holder.textviewStopTime.setText(assetReadingsListDataItem.getStopTime());
-        holder.textviewTopupTime.setText(assetReadingsListDataItem.getTopUpTime());
-        holder.textViewAssetUnits.setText("" + assetReadingsListDataItem.getUnitsUsed());
-        holder.textviewDieselConsume.setText("" + assetReadingsListDataItem.getFuelUsed());
-        holder.textviewWorkHour.setText("" + assetReadingsListDataItem.getTotalWorkingHours());
-        setTime(assetReadingsListDataItem.getStartTime(), holder.textviewStartTime);
-        setTime(assetReadingsListDataItem.getStopTime(), holder.textviewStopTime);
-        setTime(assetReadingsListDataItem.getTopUpTime(), holder.textviewTopupTime);
-        if (assetReadingsListDataItem.getFuelUsed() != 0) {
-            holder.textviewFuelRemaining.setText(assetReadingsListDataItem.getFuelUsed()+"");
-            holder.textviewFuelRemaining.setVisibility(View.VISIBLE);
-        } else {
-            holder.textviewFuelRemaining.setVisibility(View.GONE);
+        holder.textViewAssetListName.setText(assetReadingsListDataItem.getDate());
+        holder.textviewWorkHour.setText(String.valueOf(assetReadingsListDataItem.getTotalWorkingHours()));
+        if (component_type_slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
+            holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
+            holder.linearLayoutBothType.setVisibility(View.VISIBLE);
+            holder.textviewBothElectrcityUsed.setText(String.valueOf(assetReadingsListDataItem.getElectricityUsed()));
+            holder.textViewAssetUnits.setText(String.valueOf(assetReadingsListDataItem.getUnitsUsed()));
+            holder.textviewDieselConsume.setText(String.valueOf(assetReadingsListDataItem.getFuelUsed()));
+        } else if (component_type_slug.equalsIgnoreCase("electricity_dependent")) {
+            holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
+            holder.linearLayoutBothType.setVisibility(View.GONE);
+            holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
+            holder.textviewConsumed.setText("Electricity Used");
+            holder.textViewAssetUnits.setText(String.valueOf(assetReadingsListDataItem.getUnitsUsed()));
+            holder.textviewDieselConsume.setText(String.valueOf(assetReadingsListDataItem.getElectricityUsed()));
+        } else if (component_type_slug.equalsIgnoreCase("fuel_dependent")) {
+            holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
+            holder.linearLayoutBothType.setVisibility(View.GONE);
+            holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
+            holder.textviewConsumed.setText("Diesel Consumed");
+            holder.textViewAssetUnits.setText(String.valueOf(assetReadingsListDataItem.getUnitsUsed()));
+            holder.textviewDieselConsume.setText(String.valueOf(assetReadingsListDataItem.getFuelUsed()));
         }
     }
 
@@ -232,20 +247,30 @@ class AssetReadingsAdapter extends RealmRecyclerViewAdapter<AssetReadingsListDat
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.textview_fuel_remaining)
-        TextView textviewFuelRemaining;
-        @BindView(R.id.textview_start_time)
-        TextView textviewStartTime;
-        @BindView(R.id.textview_stop_time)
-        TextView textviewStopTime;
-        @BindView(R.id.textview_topup_time)
-        TextView textviewTopupTime;
+        @BindView(R.id.text_view_asset_list_name)
+        TextView textViewAssetListName;
         @BindView(R.id.text_view_asset_units)
         TextView textViewAssetUnits;
+        @BindView(R.id.linearLayoutBothType)
+        LinearLayout linearLayoutBothType;
+        @BindView(R.id.textviewBothElectrcityUsed)
+        TextView textviewBothElectrcityUsed;
         @BindView(R.id.textview_work_hour)
         TextView textviewWorkHour;
         @BindView(R.id.textview_diesel_consume)
         TextView textviewDieselConsume;
+        @BindView(R.id.linearLayoutForOtherAssets)
+        LinearLayout linearLayoutForOtherAssets;
+        //        @BindView(R.id.textviewInQuantityAsset)
+//        TextView textviewInQuantityAsset;
+//        @BindView(R.id.textviewOutQuantityAsset)
+//        TextView textviewOutQuantityAsset;
+//        @BindView(R.id.textviewAvailableAsset)
+//        TextView textviewAvailableAsset;
+        @BindView(R.id.linearLayoutForThreeTypes)
+        LinearLayout linearLayoutForThreeTypes;
+        @BindView(R.id.textviewConsumed)
+        TextView textviewConsumed;
 
         MyViewHolder(View itemView) {
             super(itemView);

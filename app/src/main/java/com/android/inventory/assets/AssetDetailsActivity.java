@@ -33,6 +33,7 @@ public class AssetDetailsActivity extends BaseActivity {
     private Context mContext;
     private String strAssetName, strModelNumber;
     private int inventoryComponentId;
+    private String component_type_slug;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -54,7 +55,6 @@ public class AssetDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asset_details);
-        getSupportActionBar().setTitle("Readings");
         ButterKnife.bind(this);
         initializeViews();
         setAdapter();
@@ -70,6 +70,7 @@ public class AssetDetailsActivity extends BaseActivity {
             strAssetName = extras.getStringExtra("assetName");
             strModelNumber = extras.getStringExtra("modelNumber");
             inventoryComponentId = extras.getIntExtra("inventory_component_id", -1);
+            component_type_slug=extras.getStringExtra("component_type_slug");
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -165,7 +166,7 @@ public class AssetDetailsActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return AssetsReadingsFragment.newInstance(inventoryComponentId);
+                    return AssetsReadingsFragment.newInstance(inventoryComponentId, component_type_slug);
                 //ToDo Enable History For Asset History
                 /*case 1:
                     return AssetsHistoryFragment.newInstance();*/

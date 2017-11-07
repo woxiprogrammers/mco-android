@@ -41,43 +41,33 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
         holder.assetModelNumber.setText(assetsListItem.getModelNumber());
         holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
-
-        if(assetsListItem.getSlug().equalsIgnoreCase("fuel_and_electricity_dependent")){
+        if (assetsListItem.getSlug().equalsIgnoreCase("fuel_and_electricity_dependent")) {
             holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
             holder.linearLayoutBothType.setVisibility(View.VISIBLE);
             holder.textviewBothElectrcityUsed.setText(String.valueOf(assetsListItem.getTotalElectricityConsumed()));
             holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
             holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume()));
-
-
-
-
-        }else if(assetsListItem.getSlug().equalsIgnoreCase("electricity_dependent")){
+        } else if (assetsListItem.getSlug().equalsIgnoreCase("electricity_dependent")) {
             holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
             holder.linearLayoutBothType.setVisibility(View.GONE);
             holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
             holder.textviewConsumed.setText("Electricity Used");
             holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
             holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalElectricityConsumed()));
-
-
-        }else if(assetsListItem.getSlug().equalsIgnoreCase("fuel_dependent")){
+        } else if (assetsListItem.getSlug().equalsIgnoreCase("fuel_dependent")) {
             holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
             holder.linearLayoutBothType.setVisibility(View.GONE);
             holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
             holder.textviewConsumed.setText("Diesel Consumed");
             holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
             holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume()));
-
-
-        }else if(assetsListItem.getSlug().equalsIgnoreCase("other")){
+        } else if (assetsListItem.getSlug().equalsIgnoreCase("other")) {
             holder.linearLayoutForThreeTypes.setVisibility(View.GONE);
             holder.linearLayoutForOtherAssets.setVisibility(View.VISIBLE);
             holder.linearLayoutBothType.setVisibility(View.GONE);
             holder.textviewInQuantityAsset.setText(String.valueOf(assetsListItem.getIn()));
             holder.textviewOutQuantityAsset.setText(String.valueOf(assetsListItem.getOut()));
             holder.textviewAvailableAsset.setText(String.valueOf(assetsListItem.getAvailable()));
-
         }
     }
 
@@ -98,13 +88,10 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         TextView textViewAssetUnits;
         @BindView(R.id.asset_model_number)
         TextView assetModelNumber;
-
         @BindView(R.id.linearLayoutBothType)
         LinearLayout linearLayoutBothType;
-
         @BindView(R.id.textviewBothElectrcityUsed)
         TextView textviewBothElectrcityUsed;
-
         @BindView(R.id.textview_work_hour)
         TextView textviewWorkHour;
         @BindView(R.id.textview_diesel_consume)
@@ -117,7 +104,6 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         TextView textviewOutQuantityAsset;
         @BindView(R.id.textviewAvailableAsset)
         TextView textviewAvailableAsset;
-
         @BindView(R.id.linearLayoutForThreeTypes)
         LinearLayout linearLayoutForThreeTypes;
         @BindView(R.id.textviewConsumed)
