@@ -133,13 +133,33 @@
                     android:text="Client"
                     android:textColor="@color/colorTextLight"/>
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/edit_text_selected_dest_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayoutMaterialSite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Project Name"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editTexttProjName"
+                    android:layout_width="match_parent"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

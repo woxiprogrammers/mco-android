@@ -2,6 +2,7 @@ package com.android.peticash;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -70,11 +71,23 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         ButterKnife.bind(this);
         mContext=ActivityEmpSalaryTransactionDetails.this;
         Bundle bundle = getIntent().getExtras();
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Transaction Details");
+        }
         if (bundle != null) {
             transactionTypeId = bundle.getInt("idForTransactionDetails");
             transactionDetailType=bundle.getString("transactionDetailType");
             requestForData();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void requestForData() {
@@ -137,6 +150,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         }else {
             linearPayableAmount.setVisibility(View.GONE);
         }
+        edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
         editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
         editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());
         textViewSetStatus.setText(empSalaryTransactionDetailData.getPeticashStatusName());
@@ -144,7 +158,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         if (empSalaryTransactionDetailData.getListOfImages().size() > 0) {
             for (int index = 0; index < empSalaryTransactionDetailData.getListOfImages().size(); index++) {
                 ImageView imageView = new ImageView(mContext);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(80, 80);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(150, 150);
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutSetImage.addView(imageView);

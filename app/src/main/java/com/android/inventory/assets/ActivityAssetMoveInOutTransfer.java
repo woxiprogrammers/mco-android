@@ -69,8 +69,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
 
     @BindView(R.id.checkboxMoveInOut)
     CheckBox checkboxMoveInOut;
-    @BindView(R.id.textviewAssetName)
-    TextView textviewAssetName;
+
     @BindView(R.id.assetDestSpinner)
     Spinner assetDestSpinner;
     @BindView(R.id.assetSourceSpinner)
@@ -156,7 +155,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         ButterKnife.bind(this);
         buttonMove.setOnClickListener(this);
         initializeViews();
-        checkAvailability(2);
+        checkAvailability();
     }
 
     @Override
@@ -169,19 +168,26 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
 
     private void initializeViews() {
         mContext = ActivityAssetMoveInOutTransfer.this;
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            intComponentId = bundle.getInt("inventoryCompId", -1);
+            intComponentId = bundle.getInt("inventoryCompId");
+        }
+        realm = Realm.getDefaultInstance();
+        AssetsListItem assetsListItem = realm.where(AssetsListItem.class).equalTo("id", intComponentId).findFirst();
+        if (getSupportActionBar() != null) {
+            if (!assetsListItem.getAssetsName().isEmpty()) {
+                getSupportActionBar().setTitle(assetsListItem.getAssetsName());
+            }else {
+                getSupportActionBar().setTitle("");
+            }
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         myCalendar = Calendar.getInstance();
         Date curDate = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         strToDate = format.format(curDate);
-        textviewAssetName.setText("strAssetName");
+
         getSystemSites();
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -322,10 +328,10 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             if (checkboxMoveInOut.isChecked()) {
                 params.put("name", assetDestSpinner.getSelectedItem().toString().toLowerCase());
             } else {
-                if(assetSourceSpinner.getSelectedItemPosition() == 1){
+                if (assetSourceSpinner.getSelectedItemPosition() == 1) {
                     params.put("name", "hand");
 
-                }else {
+                } else {
                     params.put("name", assetSourceSpinner.getSelectedItem().toString().toLowerCase());
 
                 }
@@ -579,7 +585,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                     .setPriority(Priority.MEDIUM)
                     .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "request-maintenance")
+                    .addMultipartParameter("image_for", "inventory_transfer")
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")
                     .build()
@@ -606,7 +612,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         }
     }
 
-    private void checkAvailability(int materialRequestComponentId) {
+    private void checkAvailability() {
 
         AndroidNetworking.get(AppURL.API_SYSTEM_UNITS)
                 .setPriority(Priority.MEDIUM)

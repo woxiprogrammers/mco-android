@@ -50,6 +50,17 @@ public class EmpSalaryTransactionDetailData extends RealmObject{
 	@SerializedName("payable_amount")
 	private String payableAmount;
 
+	@SerializedName("per_day_wages")
+	private String perDayWages;
+
+	public String getPerDayWages() {
+		return perDayWages;
+	}
+
+	public void setPerDayWages(String perDayWages) {
+		this.perDayWages = perDayWages;
+	}
+
 	public void setDate(String date){
 		this.date = date;
 	}

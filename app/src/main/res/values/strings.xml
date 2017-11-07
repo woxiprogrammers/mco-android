@@ -59,7 +59,7 @@
         <item>Asset</item>
     </string-array>
     <string-array name="selectTypeForAsset">
-        <item>Diesl</item>
+        <item>Fuel</item>
         <item>Electric</item>
     </string-array>
 

@@ -32,7 +32,9 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,6 +75,7 @@ public class ActivityAssetsReadings extends BaseActivity {
     private String slug;
     FrameLayout frameLayoutTypeForAsset;
     private Spinner spinnerSelectType;
+    private boolean isExceed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +108,10 @@ public class ActivityAssetsReadings extends BaseActivity {
     private void inflateReadingLayout() {
         child = getLayoutInflater().inflate(R.layout.item_add_asset_readings, null);
         startRead = child.findViewById(R.id.startRead);
-        frameLayoutTypeForAsset=child.findViewById(R.id.frameLayoutTypeForAsset);
+        frameLayoutTypeForAsset = child.findViewById(R.id.frameLayoutTypeForAsset);
         editTextStartReading = child.findViewById(R.id.editTextStartReading);
         editTextStartTime = child.findViewById(R.id.editTextStartTime);
-        spinnerSelectType=child.findViewById(R.id.spinnerSelectType);
+        spinnerSelectType = child.findViewById(R.id.spinnerSelectType);
         editTextStopReading = child.findViewById(R.id.editTextStopReading);
         editTextStopTime = child.findViewById(R.id.editTextStopTime);
         editTextTopUp = child.findViewById(R.id.editTextTopUp);
@@ -116,14 +119,14 @@ public class ActivityAssetsReadings extends BaseActivity {
         editTextLtrPerUnit = child.findViewById(R.id.editTextLtrPerUnit);
         linearLayoutTopUp = child.findViewById(R.id.linearLayoutTopUp);
         linearLayoutTopUpTime = child.findViewById(R.id.linearLayoutTopUpTime);
-        linearLayoutLtrPerUnit = child.findViewById(R.id.linearLayoutTopUpTime);
+        linearLayoutLtrPerUnit = child.findViewById(R.id.linearLayoutLtrPerUnit);
         editTextElePerUnit = child.findViewById(R.id.editTextElePerUnit);
         linearLayoutElePerUnit = child.findViewById(R.id.linearLayoutElePerUnit);
 
         spinnerSelectType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
+                switch (i) {
                     case 0:
                         //Fuel
                         linearLayoutTopUp.setVisibility(View.VISIBLE);
@@ -159,8 +162,9 @@ public class ActivityAssetsReadings extends BaseActivity {
             linearLayoutTopUp.setVisibility(View.GONE);
             linearLayoutTopUpTime.setVisibility(View.GONE);
             frameLayoutTypeForAsset.setVisibility(View.GONE);
-        }else if(slug.equalsIgnoreCase("fuel_and_electricity_dependent")){
+        } else if (slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
             frameLayoutTypeForAsset.setVisibility(View.VISIBLE);
+            linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
         }
         editTextStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -313,9 +317,8 @@ public class ActivityAssetsReadings extends BaseActivity {
             editTextStopTime.clearFocus();
         }
 
-
         if (slug.equalsIgnoreCase("fuel_dependent")) {
-            if (TextUtils.isEmpty(strTopUp)) {
+           /* if (TextUtils.isEmpty(strTopUp)) {
                 editTextTopUp.setFocusableInTouchMode(true);
                 editTextTopUp.requestFocus();
                 editTextTopUp.setError("Enter Top Up");
@@ -323,9 +326,9 @@ public class ActivityAssetsReadings extends BaseActivity {
             } else {
                 editTextTopUp.setError(null);
                 editTextTopUp.clearFocus();
-            }
+            }*/
 
-            if (TextUtils.isEmpty(strTopUpTime)) {
+           /* if (TextUtils.isEmpty(strTopUpTime)) {
                 editTextTopUpTime.setFocusableInTouchMode(true);
                 editTextTopUpTime.requestFocus();
                 editTextTopUpTime.setError("Enter Top Up Time");
@@ -334,7 +337,7 @@ public class ActivityAssetsReadings extends BaseActivity {
                 editTextTopUpTime.setError(null);
                 editTextTopUpTime.clearFocus();
             }
-
+*/
             if (TextUtils.isEmpty(strLtrPerUnit)) {
                 editTextLtrPerUnit.setFocusableInTouchMode(true);
                 editTextLtrPerUnit.requestFocus();
@@ -345,7 +348,7 @@ public class ActivityAssetsReadings extends BaseActivity {
                 editTextLtrPerUnit.clearFocus();
             }
         }
-        if(slug.equalsIgnoreCase("electricity_dependent")){
+        if (slug.equalsIgnoreCase("electricity_dependent")) {
             if (TextUtils.isEmpty(editTextElePerUnit.getText().toString())) {
                 editTextElePerUnit.setFocusableInTouchMode(true);
                 editTextElePerUnit.requestFocus();
@@ -363,16 +366,6 @@ public class ActivityAssetsReadings extends BaseActivity {
     private void requestToCreateReadings() {
         JSONObject params = new JSONObject();
         try {
-
-          /*  "inventory_component_id" => 2
-            "start_reading" => ""
-            "stop_reading" => ""
-            "top_up_time" => null
-            "start_time" => null
-            "stop_time" => null
-            "electricity_per_unit" => ""
-            "fuel_per_unit" => ""
-            "top_up" => "*/
             params.put("inventory_component_id", intComponentId);
             params.put("start_reading", strStartReading);
             params.put("stop_reading", strStopReading);
@@ -387,14 +380,16 @@ public class ActivityAssetsReadings extends BaseActivity {
                 params.put("electricity_per_unit", editTextElePerUnit.getText().toString());
 
             } else if (slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
-                params.put("fuel_per_unit", strLtrPerUnit);
-                params.put("electricity_per_unit", editTextElePerUnit.getText().toString());
-                params.put("top_up", strTopUp);
-                params.put("top_up_time", strTopUpTime);
+                if (spinnerSelectType.getSelectedItemPosition() == 0) {
+                    params.put("fuel_per_unit", strLtrPerUnit);
+                    params.put("top_up", strTopUp);
+                    params.put("top_up_time", strTopUpTime);
+                } else {
+                    params.put("electricity_per_unit", editTextElePerUnit.getText().toString());
+
+                }
 
             }
-            Log.i("@@Params",params.toString());
-            //ToDO
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -409,7 +404,12 @@ public class ActivityAssetsReadings extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_LONG).show();
+                            /* isExceed=response.getBoolean("is_fuel_limit_exceeded");
+                            if(!isExceed) {
+                                finish();
+                            }*/
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -432,13 +432,12 @@ public class ActivityAssetsReadings extends BaseActivity {
         mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.SECOND, seconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
+                String time = AppUtils.getInstance().getTime("HH:mm", "HH:mm:ss", selectedHour + ":" + selectedMinute);
+                currentEditText.setText(time);
             }
         }, hour, minute, true);//Yes 24 hour time
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
     }
+
 }

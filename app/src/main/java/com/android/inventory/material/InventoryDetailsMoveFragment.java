@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -83,7 +84,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.text_view_name)
     TextView text_ViewSetSelectedTextName;
     @BindView(R.id.edit_text_selected_dest_name)
-    EditText edit_text_selected_dest_name;
+    AutoCompleteTextView edit_text_selected_dest_name;
     @BindView(R.id.ll_forSupplierVehicle)
     LinearLayout ll_forSupplierVehicle;
     @BindView(R.id.ll_forSupplierInOutTime)
@@ -125,6 +126,11 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     TextView textViewPick;
     @BindView(R.id.spinnerMaterialUnits)
     Spinner spinnerMaterialUnits;
+
+    @BindView(R.id.linearLayoutMaterialSite)
+    LinearLayout linearLayoutMaterialSite;
+    @BindView(R.id.editTexttProjName)
+    EditText editTexttProjName;
     @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
     private View mParentView;
@@ -149,6 +155,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
     private String strToDate;
+    private JSONArray jsonArray;
+    private ArrayList<String> siteNameArray;
+    private ArrayAdapter<String> adapter;
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
@@ -356,6 +365,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -463,6 +473,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     sourceMoveInSpinner.setVisibility(View.GONE);
                     llChallanNumber.setVisibility(View.GONE);
                     linearBillAmount.setVisibility(View.GONE);
+                    linearLayoutMaterialSite.setVisibility(View.VISIBLE);
                     transferType = "OUT";
                 } else {
                     checkboxMoveInOut.setText(getString(R.string.move_in));
@@ -471,6 +482,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     sourceMoveInSpinner.setVisibility(View.VISIBLE);
                     ll_forSupplierVehicle.setVisibility(View.GONE);
                     ll_forSupplierInOutTime.setVisibility(View.GONE);
+                    linearLayoutMaterialSite.setVisibility(View.GONE);
                     text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
                 }
             }
@@ -482,11 +494,13 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 switch (selectedItemIndex) {
                     //For Site
                     case 0:
+                        getSystemSites();
                         text_ViewSetSelectedTextName.setText(getString(R.string.site_name));
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
+                        linearLayoutMaterialSite.setVisibility(View.VISIBLE);
                         str = getString(R.string.site_name);
                         break;
                     //For Client
@@ -496,6 +510,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
+                        linearLayoutMaterialSite.setVisibility(View.GONE);
                         str = getString(R.string.client_name);
                         break;
                     //For Labour
@@ -505,6 +520,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
+                        linearLayoutMaterialSite.setVisibility(View.GONE);
                         str = getString(R.string.labour_name);
                         break;
                     //For SubContracter
@@ -513,6 +529,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
+                        linearLayoutMaterialSite.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
                         str = getString(R.string.sub_contracter_name);
                         break;
@@ -522,6 +539,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.VISIBLE);
+                        linearLayoutMaterialSite.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
                         isChecked = true;
@@ -576,6 +594,23 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+
+        edit_text_selected_dest_name.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                setProjectNameFromIndex(i);
+            }
+        });
+    }
+
+    private void setProjectNameFromIndex(int selectedIndex) {
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
+            String strProject = jsonObject.getString("project_name");
+            editTexttProjName.setText(strProject + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -597,7 +632,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                     .setPriority(Priority.MEDIUM)
                     .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "request-maintenance")
+                    .addMultipartParameter("image_for", "inventory_transfer")
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")
                     .build()
@@ -735,5 +770,36 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         }, hour, minute, true);//Yes 24 hour time
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
+    }
+
+    private void getSystemSites() {
+        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
+                .setTag("getSystemSites")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArray = response.getJSONArray("data");
+                            siteNameArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
+                            edit_text_selected_dest_name.setAdapter(adapter);
+                            setProjectNameFromIndex(edit_text_selected_dest_name.getListSelection());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                    }
+                });
     }
 }

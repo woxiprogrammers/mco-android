@@ -312,7 +312,7 @@ public class PeticashFormActivity extends BaseActivity {
                 valideateEntries();
                 break;
             case R.id.button_pay_with_peticash:
-                uploadImages_addItemToLocal("billPayment");
+                uploadImages_addItemToLocal("billPayment","peticash_purchase_payment_transaction");
                 break;
         }
     }
@@ -597,7 +597,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextBillamount.clearFocus();
         }
 //        Toast.makeText(mContext, "GRN Generated", Toast.LENGTH_SHORT).show();
-        uploadImages_addItemToLocal("requestToGrnGeneration");
+        uploadImages_addItemToLocal("requestToGrnGeneration","peticash_purchase_transaction");
     }
 
     private void validationForSalaryAdvance() {
@@ -645,7 +645,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSalaryAmount.setError(null);
             editTextSalaryAmount.clearFocus();
         }
-        uploadImages_addItemToLocal("Salary");
+        uploadImages_addItemToLocal("Salary","peticash_salary_transaction");
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
@@ -1019,7 +1019,7 @@ public class PeticashFormActivity extends BaseActivity {
         }
     }
 
-    private void uploadImages_addItemToLocal(String strTag) {
+    private void uploadImages_addItemToLocal(final String strTag, final String imageFor) {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
             File compressedImageFile = sendImageFile;
@@ -1032,7 +1032,7 @@ public class PeticashFormActivity extends BaseActivity {
             AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                     .setPriority(Priority.MEDIUM)
                     .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "peticash_salary_transaction")
+                    .addMultipartParameter("image_for", imageFor)
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")
                     .setPercentageThresholdForCancelling(50)
@@ -1047,7 +1047,7 @@ public class PeticashFormActivity extends BaseActivity {
                                 e.printStackTrace();
                             }
                             arrayImageFileList.remove(0);
-                            uploadImages_addItemToLocal("");
+                            uploadImages_addItemToLocal(strTag,imageFor);
                         }
 
                         @Override
