@@ -1,6 +1,7 @@
 package com.android.inventory.assets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.inventory.asset_models.AssetReadingsListDataItem;
+import com.android.inventory.asset_models.AssetReadingsListResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -32,7 +35,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -46,13 +48,15 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private Context mContext;
     private Unbinder unbinder;
     private Realm realm;
+    private int inventoryComponentId;
 
     public AssetsReadingsFragment() {
         // Required empty public constructor
     }
 
-    public static AssetsReadingsFragment newInstance() {
+    public static AssetsReadingsFragment newInstance(int inventoryComponentId) {
         Bundle args = new Bundle();
+        args.putInt("inventoryComponentId", inventoryComponentId);
         AssetsReadingsFragment fragment = new AssetsReadingsFragment();
         fragment.setArguments(args);
         return fragment;
@@ -63,6 +67,10 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recyclerview_lsiting_for_asset_summary, container, false);
         unbinder = ButterKnife.bind(this, view);
+        Bundle bundleArgs = getArguments();
+        if (bundleArgs != null) {
+            inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
+        }
         initializeViews(view);
         setUpAssetListAdapter();
         functionForGettingData();
@@ -82,8 +90,8 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsSummaryListItem> assetsListItems = realm.where(AssetsSummaryListItem.class).findAllAsync();
-        AssetRedingAdapter assetRadingAdapter = new AssetRedingAdapter(assetsListItems, true, true);
+        final RealmResults<AssetReadingsListDataItem> assetReadingsListDataItems = realm.where(AssetReadingsListDataItem.class).findAllAsync();
+        AssetRedingAdapter assetRadingAdapter = new AssetRedingAdapter(assetReadingsListDataItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
         rvMaterialList.setAdapter(assetRadingAdapter);
@@ -92,21 +100,24 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        Intent intentSummary = new Intent(mContext, AssetSummaryActivity.class);
+                        intentSummary.putExtra("inventoryComponentId", inventoryComponentId);
+                        startActivity(intentSummary);
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (assetsListItems != null) {
-            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsSummaryListItem>>() {
+        /*if (assetReadingsListDataItems != null) {
+            assetReadingsListDataItems.addChangeListener(new RealmChangeListener<RealmResults<AssetReadingsListDataItem>>() {
                 @Override
-                public void onChange(RealmResults<AssetsSummaryListItem> assetsSummaryListItems) {
+                public void onChange(RealmResults<AssetReadingsListDataItem> assetsSummaryListItems) {
                 }
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }
+        }*/
     }
 
     private void functionForGettingData() {
@@ -119,23 +130,23 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private void requestAssetSummaryList() {
         JSONObject params = new JSONObject();
         try {
-            params.put("inventory_component_id", 3);
-            params.put("date", 3);
-            params.put("month", 3);
-            params.put("year", 3);
+            params.put("inventory_component_id", inventoryComponentId);
+//            params.put("date", 3);
+            params.put("month", 11);
+            params.put("year", 2017);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Timber.d(AppURL.API_ASSET_SUMMARY_LIST_URL + AppUtils.getInstance().getCurrentToken());
-        AndroidNetworking.post(AppURL.API_ASSET_SUMMARY_LIST_URL + AppUtils.getInstance().getCurrentToken())
+        Timber.d(AppURL.API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL + AppUtils.getInstance().getCurrentToken());
+        AndroidNetworking.post(AppURL.API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("requestAssetSummaryListOnline")
+                .setTag("requestAssetSummaryList")
                 .build()
-                .getAsObject(AssetSummaryListResponse.class, new ParsedRequestListener<AssetSummaryListResponse>() {
+                .getAsObject(AssetReadingsListResponse.class, new ParsedRequestListener<AssetReadingsListResponse>() {
                     @Override
-                    public void onResponse(final AssetSummaryListResponse response) {
+                    public void onResponse(final AssetReadingsListResponse response) {
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -146,8 +157,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    Timber.d(String.valueOf(response));
-                                    Timber.d("hello");
+                                    Timber.d("requestAssetSummaryList execution success");
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -164,7 +174,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
+                        AppUtils.getInstance().logApiError(anError, "requestAssetSummaryList");
                     }
                 });
     }
@@ -174,10 +184,10 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     }
 }
 
-class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem, AssetRedingAdapter.MyViewHolder> {
-    private OrderedRealmCollection<AssetsSummaryListItem> summaryListItems;
+class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetReadingsListDataItem, AssetRedingAdapter.MyViewHolder> {
+    private OrderedRealmCollection<AssetReadingsListDataItem> summaryListItems;
 
-    AssetRedingAdapter(@Nullable OrderedRealmCollection<AssetsSummaryListItem> data, boolean autoUpdate, boolean updateOnModification) {
+    AssetRedingAdapter(@Nullable OrderedRealmCollection<AssetReadingsListDataItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, autoUpdate, updateOnModification);
         summaryListItems = data;
     }
@@ -190,17 +200,17 @@ class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        AssetsSummaryListItem assetsSummaryListItem = summaryListItems.get(position);
-        holder.textviewStopTime.setText(assetsSummaryListItem.getStopTime());
-        holder.textviewTopupTime.setText(assetsSummaryListItem.getTopUpTime());
-        holder.textViewAssetUnits.setText(" " + assetsSummaryListItem.getAssetsUnits());
-        holder.textviewDieselConsume.setText(" " + assetsSummaryListItem.getTotalDieselConsume());
-        holder.textviewWorkHour.setText("" + assetsSummaryListItem.getWorkHourInDay());
-        setTime(assetsSummaryListItem.getStartTime(), holder.textviewStartTime);
-        setTime(assetsSummaryListItem.getStopTime(), holder.textviewStopTime);
-        setTime(assetsSummaryListItem.getTopUpTime(), holder.textviewTopupTime);
-        if (assetsSummaryListItem.getFuelRemaining() != null) {
-            holder.textviewFuelRemaining.setText(assetsSummaryListItem.getFuelRemaining());
+        AssetReadingsListDataItem assetReadingsListDataItem = summaryListItems.get(position);
+        holder.textviewStopTime.setText(assetReadingsListDataItem.getStopTime());
+        holder.textviewTopupTime.setText(assetReadingsListDataItem.getTopUpTime());
+        holder.textViewAssetUnits.setText("" + assetReadingsListDataItem.getUnitsUsed());
+        holder.textviewDieselConsume.setText("" + assetReadingsListDataItem.getFuelUsed());
+        holder.textviewWorkHour.setText("" + assetReadingsListDataItem.getTotalWorkingHours());
+        setTime(assetReadingsListDataItem.getStartTime(), holder.textviewStartTime);
+        setTime(assetReadingsListDataItem.getStopTime(), holder.textviewStopTime);
+        setTime(assetReadingsListDataItem.getTopUpTime(), holder.textviewTopupTime);
+        if (assetReadingsListDataItem.getFuelUsed() != 0) {
+            holder.textviewFuelRemaining.setText(assetReadingsListDataItem.getFuelUsed());
             holder.textviewFuelRemaining.setVisibility(View.VISIBLE);
         } else {
             holder.textviewFuelRemaining.setVisibility(View.GONE);
@@ -223,7 +233,7 @@ class AssetRedingAdapter extends RealmRecyclerViewAdapter<AssetsSummaryListItem,
 
     @Override
     public long getItemId(int index) {
-        return summaryListItems.get(index).getId();
+        return summaryListItems.get(index).getPrimaryKey();
     }
 
     @Override

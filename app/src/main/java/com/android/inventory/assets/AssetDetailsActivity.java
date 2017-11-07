@@ -164,7 +164,7 @@ public class AssetDetailsActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return AssetsReadingsFragment.newInstance();
+                    return AssetsReadingsFragment.newInstance(inventoryComponentId);
                 //ToDo Enable History For Asset History
                 /*case 1:
                     return AssetsHistoryFragment.newInstance();*/
