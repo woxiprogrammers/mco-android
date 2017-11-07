@@ -1,5 +1,4 @@
 package com.android.peticashautosearchemployee;
-
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
