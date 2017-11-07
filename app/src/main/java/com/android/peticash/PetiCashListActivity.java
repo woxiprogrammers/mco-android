@@ -145,6 +145,11 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     private void initializeViews() {
         mContext = PetiCashListActivity.this;
         setUpAppBarDatePicker();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         requestPeticashTransactionsOnline(pageNumber);
     }
 
@@ -250,10 +255,17 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
                 TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
 //                Toast.makeText(mContext, "" + transactionListItem.getPeticashTransactionId() + " " + transactionListItem.getPeticashTransactionType(), Toast.LENGTH_SHORT).show();
                 if (transactionListItem.isValid()) {
-                    Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
-                    formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
-                    formIntent.putExtra("transactionType", transactionListItem.getPeticashTransactionType());
-                    startActivity(formIntent);
+                    if (transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Salary") || transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Advance")) {
+                        Intent intent = new Intent(mContext, ActivityEmpSalaryTransactionDetails.class);
+                        intent.putExtra("idForTransactionDetails", transactionListItem.getPeticashTransactionId());
+                        intent.putExtra("transactionDetailType", transactionListItem.getPeticashTransactionType());
+                        startActivity(intent);
+                    } else {
+                        Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
+                        formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
+                        formIntent.putExtra("transactionType", transactionListItem.getPeticashTransactionType());
+                        startActivity(formIntent);
+                    }
                 }
             }
         });

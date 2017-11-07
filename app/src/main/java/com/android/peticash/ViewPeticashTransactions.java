@@ -2,6 +2,8 @@ package com.android.peticash;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,14 +13,18 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.peticashautosearchemployee.ListOfImagesItem;
 import com.android.peticashautosearchemployee.TransactionDetailData;
 import com.android.peticashautosearchemployee.TransactionDetailResponse;
+import com.android.purchase_details.MaterialImagesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,8 +53,6 @@ public class ViewPeticashTransactions extends BaseActivity {
     EditText edittextSetinTime;
     @BindView(R.id.edittestSetOutTime)
     EditText edittestSetOutTime;
-    @BindView(R.id.ll_forSupplierSetInOutTime)
-    LinearLayout llForSupplierSetInOutTime;
     @BindView(R.id.editTesxtSetBillNumber)
     EditText editTesxtSetBillNumber;
     @BindView(R.id.lineraLayoutSetBillNumber)
@@ -63,50 +67,6 @@ public class ViewPeticashTransactions extends BaseActivity {
     LinearLayout llSetforSupplierVehicle;
     @BindView(R.id.linearLayoutSetUploadImage)
     LinearLayout linearLayoutSetUploadImage;
-    @BindView(R.id.edit_text_emp_id_name)
-    EditText editTextEmpIdName;
-    @BindView(R.id.linerLayoutSelectedNames)
-    LinearLayout linerLayoutSelectedNames;
-    @BindView(R.id.imageViewProfilePicture)
-    ImageView imageViewProfilePicture;
-    @BindView(R.id.textViewEmployeeName)
-    TextView textViewEmployeeName;
-    @BindView(R.id.textViewEployeeId)
-    TextView textViewEployeeId;
-    @BindView(R.id.textViewBalance)
-    TextView textViewBalance;
-    @BindView(R.id.imageviewEmpTransactions)
-    ImageView imageviewEmpTransactions;
-    @BindView(R.id.linearLayoutEmployeInfo)
-    LinearLayout linearLayoutEmployeInfo;
-    @BindView(R.id.editText_salary_date)
-    EditText editTextSalaryDate;
-    @BindView(R.id.edittextWeihges)
-    EditText edittextWeihges;
-    @BindView(R.id.edittextDay)
-    EditText edittextDay;
-    @BindView(R.id.linearLayoutForSalary)
-    LinearLayout linearLayoutForSalary;
-    @BindView(R.id.edit_text_salary_amount)
-    EditText editTextSalaryAmount;
-    @BindView(R.id.linearAmount)
-    LinearLayout linearAmount;
-    @BindView(R.id.edittextPayableAmount)
-    EditText edittextPayableAmount;
-    @BindView(R.id.linearPayableAmount)
-    LinearLayout linearPayableAmount;
-    @BindView(R.id.textView_captureSalaryImage)
-    TextView textViewCaptureSalaryImage;
-    @BindView(R.id.textView_pickSalaryImage)
-    TextView textViewPickSalaryImage;
-    @BindView(R.id.linearLayoutUploadImageSalary)
-    LinearLayout linearLayoutUploadImageSalary;
-    @BindView(R.id.editText_addtonoteforsalary)
-    EditText editTextAddtonoteforsalary;
-    @BindView(R.id.button_salary_submit)
-    Button buttonSalarySubmit;
-    @BindView(R.id.textViewDenyTransaction)
-    TextView textViewDenyTransaction;
     @BindView(R.id.editTextSetGrnNumber)
     EditText editTextSetGrnNumber;
     @BindView(R.id.linearLayoutSetGRN)
@@ -122,21 +82,43 @@ public class ViewPeticashTransactions extends BaseActivity {
     @BindView(R.id.editTextRefNum)
     EditText editTextRefNum;
     private Context mContext;
+    @BindView(R.id.ll_forSupplierSetInOutTime)
+    LinearLayout ll_forSupplierSetInOutTime;
     private Realm realm;
+    private int transactionTypeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_peticash_transactions);
         ButterKnife.bind(this);
-        requestToPurchaseTransactionDetail();
+        mContext=ViewPeticashTransactions.this;
+        Bundle bundle = getIntent().getExtras();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Transaction Details");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (bundle != null) {
+            transactionTypeId = bundle.getInt("transactionId", -1);
+            requestToPurchaseTransactionDetail();
+
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
 
     }
 
     private void requestToPurchaseTransactionDetail() {
         JSONObject params = new JSONObject();
         try {
-            params.put("peticash_transaction_id", 2);
+            params.put("peticash_transaction_id", transactionTypeId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -183,7 +165,7 @@ public class ViewPeticashTransactions extends BaseActivity {
 
     private void setData() {
         realm = Realm.getDefaultInstance();
-        TransactionDetailData transactionDetailData = realm.where(TransactionDetailData.class).equalTo("peticashTransactionId", 2).findFirst();
+        TransactionDetailData transactionDetailData = realm.where(TransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
         editTextSourceSetName.setText(transactionDetailData.getSourceName());
         editTextSetItemName.setText(transactionDetailData.getName());
         edittextSetQuantity.setText(transactionDetailData.getQuantity());
@@ -191,13 +173,50 @@ public class ViewPeticashTransactions extends BaseActivity {
         editTextSetDate.setText(transactionDetailData.getDate());
         editTextSetBillamount.setText(transactionDetailData.getBillAmount());
         editTextSetGrnNumber.setText(transactionDetailData.getGrn());
-        editTextSetRemark.setText(transactionDetailData.getRemark());
+        editTextSetPayableAmount.setText(transactionDetailData.getBillAmount());
+
+        if(!transactionDetailData.getRemark().isEmpty()){
+            editTextSetRemark.setText(transactionDetailData.getRemark());
+            editTextSetRemark.setVisibility(View.VISIBLE);
+        }else {
+            editTextSetRemark.setVisibility(View.GONE);
+        }
         editTesxtSetBillNumber.setText(transactionDetailData.getBillNumber());
-        if(!transactionDetailData.getReferenceNumber().isEmpty()){
+
+        if (!transactionDetailData.getInTime().isEmpty()) {
+            ll_forSupplierSetInOutTime.setVisibility(View.VISIBLE);
+            llSetforSupplierVehicle.setVisibility(View.VISIBLE);
+            edittextSetinTime.setText(transactionDetailData.getInTime());
+            edittestSetOutTime.setText(transactionDetailData.getOutTime());
+            editTextSetVehicleNumber.setText(transactionDetailData.getVehicleNumber());
+
+        } else {
+            llSetforSupplierVehicle.setVisibility(View.GONE);
+            ll_forSupplierSetInOutTime.setVisibility(View.GONE);
+        }
+
+        if (!transactionDetailData.getReferenceNumber().isEmpty()) {
             linearLayoutSetRefNumber.setVisibility(View.VISIBLE);
             editTextRefNum.setText(transactionDetailData.getReferenceNumber());
-        }else {
+        } else {
             linearLayoutSetRefNumber.setVisibility(View.GONE);
+        }
+
+        if(transactionDetailData.getListOfImages().size() > 0){
+            for (ListOfImagesItem currentUser : transactionDetailData.getListOfImages()) {
+                String strMaterialImageUrl = currentUser.getImageUrl();
+                ImageView imageView = new ImageView(mContext);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                linearLayoutSetUploadImage.addView(imageView);
+                Glide.with(mContext).load("http://test.mconstruction.co.in" + strMaterialImageUrl)
+                        .thumbnail(0.1f)
+                        .crossFade()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(imageView);
+            }
         }
 
     }

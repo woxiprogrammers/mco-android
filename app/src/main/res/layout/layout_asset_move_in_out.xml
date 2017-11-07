@@ -46,19 +46,6 @@
                     android:textSize="16dp"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textviewAssetName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Asset Names:"
-                    android:textColor="@color/colorTextLight"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -66,10 +53,10 @@
                 android:layout_gravity="right"
                 android:layout_marginBottom="4dp"
                 android:layout_marginRight="@dimen/dimen_8dp"
-                android:visibility="gone"
                 android:background="@drawable/background_button_pressed"
                 android:orientation="horizontal"
-                android:padding="4dp">
+                android:padding="4dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -99,6 +86,7 @@
                     android:layout_height="wrap_content"
                     android:text="Asset Destination:"
                     android:textColor="@color/colorTextLight"/>
+
                 <Spinner
                     android:id="@+id/assetDestSpinner"
                     android:layout_width="match_parent"
@@ -131,7 +119,7 @@
                     android:text="Client"
                     android:textColor="@color/colorTextLight"/>
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/editTextDestSourcename"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -144,20 +132,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:visibility="gone">
 
-                <FrameLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background">
-
-                    <Spinner
-                        android:id="@+id/text_view_project_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:entries="@array/project_array"/>
-                </FrameLayout>
+                    android:text="Project Name:"
+                    android:textColor="@color/colorTextLight"/>
+                <EditText
+                    android:id="@+id/text_view_project_name"
+                    android:layout_width="match_parent"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:layout_height="match_parent"/>
             </LinearLayout>
 
             <LinearLayout
@@ -189,7 +176,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -301,6 +289,7 @@
                     android:id="@+id/editText_Date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 

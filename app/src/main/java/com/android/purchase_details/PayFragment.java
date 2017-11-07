@@ -745,21 +745,23 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private void setImage(RealmList<MaterialImagesItem> image) {
         llIm.removeAllViews();
         materialImagesItemList = realm.copyFromRealm(image);
-        for (MaterialImagesItem currentUser : materialImagesItemList) {
-            String strMaterialImageUrl = currentUser.getImageUrl();
-            ImageView imageView = new ImageView(mContext);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-            layoutParams.setMargins(10, 10, 10, 10);
-            imageView.setLayoutParams(layoutParams);
-            llIm.addView(imageView);
-            Log.i("##Url", strMaterialImageUrl);
-            Glide.with(mContext).load("http://test.mconstruction.co.in" + strMaterialImageUrl)
-                    .thumbnail(0.1f)
-                    .crossFade()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(imageView);
+        if(materialImagesItemList.size() > 0){
+            for (MaterialImagesItem currentUser : materialImagesItemList) {
+                String strMaterialImageUrl = currentUser.getImageUrl();
+                ImageView imageView = new ImageView(mContext);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                llIm.addView(imageView);
+                Glide.with(mContext).load("http://test.mconstruction.co.in" + strMaterialImageUrl)
+                        .thumbnail(0.1f)
+                        .crossFade()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(imageView);
+            }
         }
+
     }
 
     private void setUpSpinnerValueChangeListener() {

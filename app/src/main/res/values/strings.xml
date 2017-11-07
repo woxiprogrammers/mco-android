@@ -58,6 +58,11 @@
         <item>Material</item>
         <item>Asset</item>
     </string-array>
+    <string-array name="selectTypeForAsset">
+        <item>Fuel</item>
+        <item>Electric</item>
+    </string-array>
+
     <string-array name="project_array">
         <item>ProjABC</item>
         <item>ProjXYZ</item>

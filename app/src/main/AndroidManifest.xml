@@ -81,7 +81,8 @@
         </activity>
         <activity android:name="com.android.peticash.ViewPeticashTransactions">
         </activity>
-        <activity android:name="com.android.inventory.assets.AssetSummaryActivity">
+        <activity android:name="com.android.inventory.assets.AssetSummaryActivity"/>
+        <activity android:name="com.android.peticash.ActivityEmpSalaryTransactionDetails">
         </activity>
     </application>
 </manifest>

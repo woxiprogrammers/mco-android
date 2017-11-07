@@ -43,11 +43,13 @@ public class AppURL {
     public static final String API_CREATE_SALARY_FOR_EMPLOYEE = BASE_URL + "peticash/employee-salary/create?token=";
     public static final String API_EMP_TRANSATIONS = BASE_URL + "peticash/employee-salary/employee-detail?token=";
     public static final String API_GENERATE_GRN_PETICASH = BASE_URL + "peticash/purchase/create?token=";
-    public static final String API_PURCHASE_PETICASH_TRANSACTION_DETAIL =BASE_URL + "peticash/purchase/transaction-detail?token=" ;
-
-
+    public static final String API_PURCHASE_PETICASH_TRANSACTION_DETAIL = BASE_URL + "peticash/purchase/transaction-detail?token=";
+    public static final String API_PETICASH_EMP_SALARY_TRANS_DETAILS = BASE_URL + "peticash/employee-salary/transaction-detail?token=";
     //Inventory
-    public static final String API_CREATE_FUEL_READING = BASE_URL + "inventory/asset/readings/add?token";
     public static final String API_ASSET_SUMMARY_LIST_URL = BASE_URL + "inventory/asset/summary-listing?token=";
     public static final String API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL = BASE_URL + "inventory/asset/readings/listing?token=";
+    public static final String API_CREATE_FUEL_READING = BASE_URL + "inventory/asset/readings/add?token=";
+    public static final String API_PETICASH_BILL_PAYMENT = BASE_URL + "peticash/purchase/bill-payment?token=";
+    public static final String API_GET_SYSTEM_SITES = BASE_URL + "system-project-sites";
+    public static final String API_SYSTEM_UNITS = BASE_URL + "system-units";
 }
