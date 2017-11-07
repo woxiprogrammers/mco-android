@@ -39,7 +39,6 @@
                         />
                 </FrameLayout>
                 <EditText
-                    android:id="@+id/edittextSetCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
@@ -83,7 +82,6 @@
                     </FrameLayout>
 
                     <EditText
-                        android:id="@+id/edittextSetType"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
@@ -121,7 +119,6 @@
 
 
                     <EditText
-                        android:id="@+id/edittextSetSource"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"

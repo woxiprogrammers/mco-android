@@ -14,7 +14,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_fuel_remaining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -23,7 +22,6 @@
             android:background="@drawable/background_oval_for_diesel_remaining"/>
 
         <LinearLayout
-            android:id="@+id/ff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -39,7 +37,6 @@
                 android:padding="@dimen/dimen_3dp">
 
                 <TextView
-                    android:id="@+id/textview_start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -69,7 +66,6 @@
                 android:padding="@dimen/dimen_2dp">
 
                 <TextView
-                    android:id="@+id/textview_stop_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -97,7 +93,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textview_topup_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
