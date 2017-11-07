@@ -31,7 +31,7 @@
                         android:id="@+id/textViewSetSourceName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Name"
+                        android:text="Source Name"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
@@ -286,10 +286,6 @@
 
             </LinearLayout>
 
-            <include
-                android:id="@+id/layoutSetEmployeeInformation"
-                layout="@layout/employee_information"
-                android:visibility="gone"/>
 
             <LinearLayout
                 android:id="@+id/linearLayoutSetGRN"

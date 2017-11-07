@@ -145,7 +145,13 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     private void initializeViews() {
         mContext = PetiCashListActivity.this;
         setUpAppBarDatePicker();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         requestPeticashTransactionsOnline(pageNumber);
+
     }
 
     private void setUpAppBarDatePicker() {

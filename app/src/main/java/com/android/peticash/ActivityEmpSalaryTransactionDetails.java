@@ -142,15 +142,21 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         realm = Realm.getDefaultInstance();
         EmpSalaryTransactionDetailData empSalaryTransactionDetailData = realm.where(EmpSalaryTransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
         edittextSetEmpName.setText(empSalaryTransactionDetailData.getEmployeeName());
-        edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
         editTextSetSalaryDate.setText(empSalaryTransactionDetailData.getDate());
+        if(transactionDetailType.equalsIgnoreCase("Salary")){
+            edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
+            edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
+        }else {
+
+            linearPayableAmount.setVisibility(View.GONE);
+            linearSetLayoutForSalary.setVisibility(View.VISIBLE);
+        }
         if(!empSalaryTransactionDetailData.getPayableAmount().isEmpty()){
             edittextSetPayableAmount.setText(empSalaryTransactionDetailData.getPayableAmount());
             linearPayableAmount.setVisibility(View.VISIBLE);
         }else {
             linearPayableAmount.setVisibility(View.GONE);
         }
-        edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
         editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
         editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());
         textViewSetStatus.setText(empSalaryTransactionDetailData.getPeticashStatusName());
