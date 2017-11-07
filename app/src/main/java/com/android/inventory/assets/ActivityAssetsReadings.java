@@ -406,10 +406,10 @@ public class ActivityAssetsReadings extends BaseActivity {
                         try {
 
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_LONG).show();
-                            /* isExceed=response.getBoolean("is_fuel_limit_exceeded");
+                             isExceed=response.getBoolean("is_fuel_limit_exceeded");
                             if(!isExceed) {
                                 finish();
-                            }*/
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
