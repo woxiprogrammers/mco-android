@@ -7,12 +7,10 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class AssetReadingsListResponse extends RealmObject {
-    @PrimaryKey
-    private int primaryKey = 0;
     @SerializedName("inventory_component_id")
     private int inventoryComponentId;
-    @SerializedName("test_data")
-    private RealmList<AssetReadingsListDataItem> testData;
+    @SerializedName("data")
+    private RealmList<AssetReadingsListDataItem> readingsListDataItems;
     @SerializedName("message")
     private String message;
 
@@ -24,12 +22,12 @@ public class AssetReadingsListResponse extends RealmObject {
         return inventoryComponentId;
     }
 
-    public void setTestData(RealmList<AssetReadingsListDataItem> testData) {
-        this.testData = testData;
+    public void setReadingsListDataItems(RealmList<AssetReadingsListDataItem> readingsListDataItems) {
+        this.readingsListDataItems = readingsListDataItems;
     }
 
-    public RealmList<AssetReadingsListDataItem> getTestData() {
-        return testData;
+    public RealmList<AssetReadingsListDataItem> getReadingsListDataItems() {
+        return readingsListDataItems;
     }
 
     public void setMessage(String message) {

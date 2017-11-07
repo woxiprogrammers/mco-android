@@ -54,6 +54,7 @@ public class AssetDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asset_details);
+        getSupportActionBar().setTitle("Readings");
         ButterKnife.bind(this);
         initializeViews();
         setAdapter();
