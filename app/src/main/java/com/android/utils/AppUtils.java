@@ -28,7 +28,7 @@ import timber.log.Timber;
  */
 public class AppUtils {
     public static AppUtils instance;
-    public static Context mContext;
+    private static Context mContext;
     private static SharedPreferences preference;
     private static SharedPreferences.Editor editor;
     private final Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(

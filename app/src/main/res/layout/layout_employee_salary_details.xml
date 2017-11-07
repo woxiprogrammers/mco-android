@@ -3,7 +3,24 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
-
+<!--
+    peticash_transaction_id": 2,
+    "employee_name": "Test labour",
+    "project_site_name": "Konark Orchid School",
+    "amount": "3000",
+    "payable_amount": null,
+    "reference_user_name": "Super Admin ",
+    "date": "Thursday, 02 November 2017",
+    "days": "15",
+    "remark": "test advance ",
+    "admin_remark": "",
+    "peticash_transaction_type": "Salary",
+    "peticash_status_name": "Pending",
+    "payment_type": "Peticash",
+    "list_of_images": [
+    {
+    "image_url": null
+    }-->
     <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -23,6 +40,15 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/setStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="status"
+                    android:layout_gravity="right"
+                    android:textColor="@color/colorAccent"/>
+
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Employee Id/Name :"
@@ -31,6 +57,7 @@
                 <EditText
                     android:id="@+id/edittextSetEmpName"
                     android:layout_width="match_parent"
+                    android:enabled="false"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:focusable="false"/>
@@ -54,6 +81,7 @@
                     android:id="@+id/editTextSetSalaryDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     android:background="@android:drawable/editbox_background_normal"
                     android:focusable="false"/>
             </LinearLayout>
@@ -108,6 +136,7 @@
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789."
+                        android:enabled="false"
                         android:inputType="number"/>
 
 
@@ -133,6 +162,7 @@
                     android:id="@+id/editTextSetSalaryAmount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     android:background="@android:drawable/editbox_background_normal"
                     android:textColor="@color/black"/>
             </LinearLayout>
@@ -155,6 +185,7 @@
                     android:id="@+id/edittextSetPayableAmount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     android:background="@android:drawable/editbox_background_normal"
                     android:textColor="@color/black"/>
             </LinearLayout>
@@ -188,6 +219,7 @@
                     android:background="#FFD740"
                     android:hint="@string/tap_too_add_note"
                     android:padding="@dimen/dimen_16dp"
+                    android:enabled="false"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/dimen_16dp"/>
             </android.support.v7.widget.CardView>

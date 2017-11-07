@@ -505,10 +505,10 @@ public class PeticashFormActivity extends BaseActivity {
             EmployeesearchdataItem employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
             if (employeesearchdataItem.isTransactionPending()) {
                 textViewDenyTransaction.setVisibility(View.VISIBLE);
-                buttonPayWithPeticash.setEnabled(false);
+                buttonPayWithPeticash.setVisibility(View.GONE);
             } else {
                 textViewDenyTransaction.setVisibility(View.GONE);
-                buttonPayWithPeticash.setEnabled(true);
+                buttonPayWithPeticash.setVisibility(View.VISIBLE);
             }
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
@@ -537,7 +537,7 @@ public class PeticashFormActivity extends BaseActivity {
         strBillAmount = editTextBillamount.getText().toString();
         strDate = editTextDate.getText().toString();
         //For SelectedSourceName
-        if(!(spinnerPeticashSource.getSelectedItemPosition() == 2)){
+        if (!(spinnerPeticashSource.getSelectedItemPosition() == 2)) {
             if (TextUtils.isEmpty(strSelectedSource)) {
                 editTextSelectedSourceName.setFocusableInTouchMode(true);
                 editTextSelectedSourceName.requestFocus();
@@ -731,16 +731,15 @@ public class PeticashFormActivity extends BaseActivity {
                 }
             } else {
                 params.put("days", 0);
-//                params.put("payable_amount", null);
             }
 
             if (jsonImageNameArray != null) {
                 params.put("images", jsonImageNameArray);
             }
-            if (!TextUtils.isEmpty(editTextAddNote.getText().toString()))
-                params.put("remark", editTextAddNote.getText().toString());
-            else
+            if (TextUtils.isEmpty(editTextAddNote.getText().toString()))
                 params.put("remark", "");
+            else
+                params.put("remark", editTextAddNote.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -755,6 +754,7 @@ public class PeticashFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -772,17 +772,17 @@ public class PeticashFormActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            if(spinnerPeticashSource.getSelectedItemPosition() == 1 ){
+            if (spinnerPeticashSource.getSelectedItemPosition() == 1) {
                 params.put("source_slug", "hand");
 
-            }else {
+            } else {
                 params.put("source_slug", spinnerPeticashSource.getSelectedItem().toString().toLowerCase());
 
             }
             params.put("source_name", editTextSelectedSourceName.getText().toString());
             params.put("name", editTextItemName.getText().toString().toLowerCase());
             params.put("quantity", edittextQuantity.getText().toString());
-            if(spinnerMaterialOrAsset.getSelectedItemPosition() == 0){
+            if (spinnerMaterialOrAsset.getSelectedItemPosition() == 0) {
                 if (isNewItem) {
                     unidId = searchMaterialListItem_fromResult_staticNew.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
                     params.put("unit_id", unidId);
@@ -847,7 +847,7 @@ public class PeticashFormActivity extends BaseActivity {
         //ToDO Add Keys for params
         try {
             params.put("peticash_transaction_id", peticashTransactionId);
-            if(!editTextRefNumber.getText().toString().isEmpty()){
+            if (!editTextRefNumber.getText().toString().isEmpty()) {
                 params.put("reference_number", editTextRefNumber.getText().toString());
 
             }
@@ -879,8 +879,6 @@ public class PeticashFormActivity extends BaseActivity {
                     }
                 });
     }
-
-
 
     ////////////////////////////////////////////////////////////////
 
@@ -1034,7 +1032,7 @@ public class PeticashFormActivity extends BaseActivity {
             AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                     .setPriority(Priority.MEDIUM)
                     .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "material-request")
+                    .addMultipartParameter("image_for", "peticash_salary_transaction")
                     .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("uploadImages_addItemToLocal")
                     .setPercentageThresholdForCancelling(50)
@@ -1062,7 +1060,7 @@ public class PeticashFormActivity extends BaseActivity {
                 requestForSalaryOrAdvance();
             else if (strTag.equalsIgnoreCase("requestToGrnGeneration")) {
                 requestToGenerateGRN();
-            }else if(strTag.equalsIgnoreCase("billPayment")){
+            } else if (strTag.equalsIgnoreCase("billPayment")) {
                 requestForPurchasePayment();
             }
         }
@@ -1124,7 +1122,7 @@ public class PeticashFormActivity extends BaseActivity {
         }
     }
 
-    private void setEnabledFalse(){
+    private void setEnabledFalse() {
         spinnerCategoryArray.setEnabled(false);
         spinnerMaterialOrAsset.setEnabled(false);
         spinnerPeticashSource.setEnabled(false);

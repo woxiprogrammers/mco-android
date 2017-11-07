@@ -59,8 +59,8 @@
         <item>Asset</item>
     </string-array>
     <string-array name="selectTypeForAsset">
-        <item>Dies</item>
-        <item>Asset</item>
+        <item>Diesl</item>
+        <item>Electric</item>
     </string-array>
 
     <string-array name="project_array">

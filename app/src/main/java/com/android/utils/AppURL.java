@@ -45,6 +45,7 @@ public class AppURL {
     public static final String API_EMP_TRANSATIONS = BASE_URL + "peticash/employee-salary/employee-detail?token=";
     public static final String API_GENERATE_GRN_PETICASH = BASE_URL + "peticash/purchase/create?token=";
     public static final String API_PURCHASE_PETICASH_TRANSACTION_DETAIL =BASE_URL + "peticash/purchase/transaction-detail?token=" ;
+    public static final String API_PETICASH_EMP_SALARY_TRANS_DETAILS = BASE_URL + "peticash/employee-salary/transaction-detail?token=";
 
 
     //Inventory

@@ -103,11 +103,6 @@ public class ActivityAssetsReadings extends BaseActivity {
     }
 
     private void inflateReadingLayout() {
-        /*
-
-        LinearLayout linearLayoutLtrPerUnit;
-        EditText editTextElePerUnit;
-        LinearLayout linearLayoutElePerUnit;*/
         child = getLayoutInflater().inflate(R.layout.item_add_asset_readings, null);
         startRead = child.findViewById(R.id.startRead);
         frameLayoutTypeForAsset=child.findViewById(R.id.frameLayoutTypeForAsset);
