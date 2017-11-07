@@ -1041,10 +1041,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                             status = "in-indent";
                                             break;
                                     }
-                                    //ToDO ROhit
                                     purchaseMaterialListItem.setComponentStatus(status);
                                     purchaseMaterialListItem.setItem_quantity(Float.parseFloat(editText_quantity_material_asset.getText().toString().trim()));
                                     realm.insertOrUpdate(purchaseMaterialListItem);
+                                    //TODO refresh listing according to local realm changes
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
@@ -1438,8 +1438,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
             final String strUserRole = AppUtils.getInstance().getUserRole();
+            holder.buttonMoveToIndent.setVisibility(View.GONE);
+            holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
             if (purchaseMaterialListItem.getHave_access() != null) {
-                if ((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin)))) {
+                if (((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin)))) && !(strStatus.equalsIgnoreCase("in-indent"))) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                 } else {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);

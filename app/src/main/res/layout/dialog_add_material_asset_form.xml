@@ -26,7 +26,8 @@
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="8dp"
             android:text="This item is Diesel"
-            android:textSize="@dimen/text_16sp"/>
+            android:textSize="@dimen/text_16sp"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -106,7 +107,6 @@
             </LinearLayout>
         </LinearLayout>
 
-
         <TextView
             android:id="@+id/textview_error_for_exceed_quantity"
             android:layout_width="match_parent"
@@ -114,6 +114,7 @@
             android:text="Quantity is greater than allowed max quantity"
             android:textColor="@color/colorAccent"
             android:visibility="gone"/>
+
         <include
             android:id="@+id/layoutCamera"
             layout="@layout/layout_multi_capture_select"/>
@@ -144,8 +145,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:text="DISMISS"
                 android:background="@drawable/selectable_button_background_gray"
+                android:text="DISMISS"
                 android:textColor="@color/colorWhite"/>
 
             <View
