@@ -305,6 +305,7 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="@dimen/dimen_8dp"
                 android:padding="@dimen/dimen_8dp"
+                android:visibility="gone"
                 android:text="@string/paywithpeticash"/>
 
             <TextView

@@ -279,6 +279,7 @@ public class PeticashFormActivity extends BaseActivity {
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private int unidId, indexItemUnit;
     private int peticashTransactionId;
+    private EmployeesearchdataItem employeesearchdataItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -367,6 +368,7 @@ public class PeticashFormActivity extends BaseActivity {
                         linearLayoutForCategoryPurchase.setVisibility(View.GONE);
                         buttonGenerateGrn.setVisibility(View.GONE);
                         linearPayableAmount.setVisibility(View.VISIBLE);
+
                         break;
                     case 2:
                         linearLayoutForSalary.setVisibility(View.GONE);
@@ -502,13 +504,13 @@ public class PeticashFormActivity extends BaseActivity {
         if (bundleExtras != null) {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
-            EmployeesearchdataItem employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
+            employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
             if (employeesearchdataItem.isTransactionPending()) {
                 textViewDenyTransaction.setVisibility(View.VISIBLE);
-                buttonPayWithPeticash.setVisibility(View.GONE);
+                buttonSalarySubmit.setVisibility(View.GONE);
             } else {
                 textViewDenyTransaction.setVisibility(View.GONE);
-                buttonPayWithPeticash.setVisibility(View.VISIBLE);
+                buttonSalarySubmit.setVisibility(View.VISIBLE);
             }
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
@@ -516,7 +518,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
             intAdvanceAmount = employeesearchdataItem.getAdvanceAmount();
-            ;
+
 //
 
             edittextWeihges.setText("" + getPerWeges);
@@ -975,7 +977,7 @@ public class PeticashFormActivity extends BaseActivity {
                 if (flagForLayout.equalsIgnoreCase("firstcapture")) {
                     onActivityResultForImage(linearLayoutUploadImage, imagesList2);
 
-                } else if (flagForLayout.equalsIgnoreCase("")) {
+                } else if (flagForLayout.equalsIgnoreCase("secondcapture")) {
                     onActivityResultForImage(linearLayoutUploadBillImage, imagesList2);
 
                 } else if (flagForLayout.equalsIgnoreCase("salarycapture")) {
