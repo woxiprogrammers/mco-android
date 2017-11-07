@@ -20,10 +20,23 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
     private int assetUnitId;
     @SerializedName("material_request_component_type_id")
     private int materialRequestComponentTypeId;
+
+    @SerializedName("asset_type_slug")
+    private String assetTypeSlug;
+
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
+
+    public String getAssetTypeSlug() {
+        return assetTypeSlug;
+    }
+
+    public void setAssetTypeSlug(String assetTypeSlug) {
+        this.assetTypeSlug = assetTypeSlug;
+    }
 
     public String getAssetUnit() {
         return assetUnit;
+
     }
 
     public void setAssetUnit(String assetUnit) {

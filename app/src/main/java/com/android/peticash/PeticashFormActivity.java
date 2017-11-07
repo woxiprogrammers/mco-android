@@ -279,6 +279,7 @@ public class PeticashFormActivity extends BaseActivity {
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private int unidId, indexItemUnit;
     private int peticashTransactionId;
+    private boolean isOtherType;
     private EmployeesearchdataItem employeesearchdataItem;
 
     @Override
@@ -669,11 +670,19 @@ public class PeticashFormActivity extends BaseActivity {
                 }
             } else {
                 edittextQuantity.setText("1");
-                edittextQuantity.setFocusable(false);
+//                edittextQuantity.setFocusable(false);
                 if (isNewItem) {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                 } else {
                     searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
+                    isOtherType=searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
+
+                }
+                if(isOtherType){
+                    edittextQuantity.setEnabled(true);
+                }else {
+                    edittextQuantity.setEnabled(false);
+
                 }
             }
             Timber.d("AutoSearch complete");

@@ -130,7 +130,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private TextView mTextViewExceedQuantity;
     private TextView textViewExceedQuantityForQuotation;
     private boolean isQuotationMaterial;
-    private boolean validationForQuotation;
+    private boolean validationForQuotation,isOtherType;
     private CurrentMaterialRvAdapter purchaseMaterialRvAdapter;
     private int unitIDForDialog;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
@@ -634,7 +634,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             strDialogTitle = getString(R.string.dialog_title_add_asset);
             ll_dialog_unit.setVisibility(View.INVISIBLE);
             mEditTextQuantityMaterialAsset.setText("1");
-            mEditTextQuantityMaterialAsset.setFocusable(false);
+//            mEditTextQuantityMaterialAsset.setFocusable(false);
         }
         mEditTextNameMaterialAsset.setText("");
         mEditTextNameMaterialAsset.clearFocus();
@@ -715,6 +715,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     private void functionForProcessingSearchResult(Intent intent) {
         validationForQuotation = false;
+        isOtherType=false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             mEditTextNameMaterialAsset.clearFocus();
@@ -733,11 +734,19 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
             } else {
                 mEditTextQuantityMaterialAsset.setText("1");
-                mEditTextQuantityMaterialAsset.setFocusable(false);
+//                mEditTextQuantityMaterialAsset.setFocusable(false);
                 if (isNewItem) {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                 } else {
                     searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
+                    isOtherType=searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
+
+                }
+                if(isOtherType){
+                    mEditTextQuantityMaterialAsset.setEnabled(true);
+                }else {
+                    mEditTextQuantityMaterialAsset.setEnabled(false);
+
                 }
             }
             Timber.d("AutoSearch complete");

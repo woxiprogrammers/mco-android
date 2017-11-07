@@ -231,13 +231,18 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     private void validateEntries() {
         String strSourceName = edit_text_selected_dest_name.getText().toString();
-        if (TextUtils.isEmpty(strSourceName)) {
-            edit_text_selected_dest_name.setError(getString(R.string.please_enter) + " " + str);
-            return;
-        } else {
-            edit_text_selected_dest_name.requestFocus();
-            edit_text_selected_dest_name.setError(null);
+
+        if(!(sourceMoveInSpinner.getSelectedItemPosition() == 2)){
+            if (TextUtils.isEmpty(strSourceName)) {
+                edit_text_selected_dest_name.setError(getString(R.string.please_enter) + " " + str);
+                return;
+            } else {
+                edit_text_selected_dest_name.requestFocus();
+                edit_text_selected_dest_name.setError(null);
+            }
         }
+
+
         //Quantity
         strQuantity = edittextQuantity.getText().toString();
         if (TextUtils.isEmpty(strQuantity)) {

@@ -404,13 +404,16 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
 
     private void validateEntries() {
         String strSourceName = editTextDestSourcename.getText().toString();
-        if (TextUtils.isEmpty(strSourceName)) {
-            editTextDestSourcename.setError(getString(R.string.please_enter) + " " + str);
-            return;
-        } else {
-            editTextDestSourcename.requestFocus();
-            editTextDestSourcename.setError(null);
+        if(!(assetSourceSpinner.getSelectedItemPosition() == 2)){
+            if (TextUtils.isEmpty(strSourceName)) {
+                editTextDestSourcename.setError(getString(R.string.please_enter) + " " + str);
+                return;
+            } else {
+                editTextDestSourcename.requestFocus();
+                editTextDestSourcename.setError(null);
+            }
         }
+
         //Quantity
         strQuantity = edittextAssetQuantity.getText().toString();
         if (TextUtils.isEmpty(strQuantity)) {

@@ -146,10 +146,10 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         if(transactionDetailType.equalsIgnoreCase("Salary")){
             edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
             edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
-        }else {
-
-            linearPayableAmount.setVisibility(View.GONE);
             linearSetLayoutForSalary.setVisibility(View.VISIBLE);
+        }else {
+            linearPayableAmount.setVisibility(View.GONE);
+            linearSetLayoutForSalary.setVisibility(View.GONE);
         }
         if(!empSalaryTransactionDetailData.getPayableAmount().isEmpty()){
             edittextSetPayableAmount.setText(empSalaryTransactionDetailData.getPayableAmount());
