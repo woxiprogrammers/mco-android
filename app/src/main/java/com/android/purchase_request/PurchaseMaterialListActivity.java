@@ -115,6 +115,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isQuotationMaterial;
+    private boolean isOtherType;
     private int indexItemUnit;
     private RecyclerViewClickListener recyclerViewClickListener;
 
@@ -517,7 +518,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             strDialogTitle = getString(R.string.dialog_title_add_asset);
             ll_dialog_unit.setVisibility(View.INVISIBLE);
             mEditTextQuantityMaterialAsset.setText("1");
-            mEditTextQuantityMaterialAsset.setFocusable(false);
+//            mEditTextQuantityMaterialAsset.setFocusable(false);
         }
         mEditTextNameMaterialAsset.setText("");
         mEditTextNameMaterialAsset.clearFocus();
@@ -631,6 +632,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
+        isOtherType=false;
         isQuotationMaterial = false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
@@ -650,11 +652,18 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 }
             } else {
                 mEditTextQuantityMaterialAsset.setText("1");
-                mEditTextQuantityMaterialAsset.setFocusable(false);
+//                mEditTextQuantityMaterialAsset.setFocusable(false);
                 if (isNewItem) {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                 } else {
                     searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
+                    isOtherType=searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
+                }
+                if(isOtherType){
+                    mEditTextQuantityMaterialAsset.setEnabled(true);
+                }else {
+                    mEditTextQuantityMaterialAsset.setEnabled(false);
+
                 }
             }
             Timber.d("AutoSearch complete");
