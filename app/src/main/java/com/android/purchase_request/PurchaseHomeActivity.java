@@ -16,13 +16,13 @@ import android.widget.TextView;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.utils.AppConstants;
 
 import java.text.DateFormatSymbols;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 public class PurchaseHomeActivity extends BaseActivity {
     //    public static int passYear, passMonth;
@@ -165,4 +165,15 @@ public class PurchaseHomeActivity extends BaseActivity {
             }
         }
     }
+
+    /*@Override
+    protected void onPause() {
+        super.onPause();
+        Realm realm = Realm.getDefaultInstance();
+        for (int i = 0; i < 5; i++) {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+    }*/
 }

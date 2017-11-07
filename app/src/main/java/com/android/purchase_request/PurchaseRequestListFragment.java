@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,6 +190,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             params.put("month", passMonth);
             params.put("year", passYear);
             params.put("page", pageId);
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -316,6 +316,16 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
         }
     }
+
+    /*@Override
+    public void onPause() {
+        super.onPause();
+        for (int i = 0; i < 5; i++) {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

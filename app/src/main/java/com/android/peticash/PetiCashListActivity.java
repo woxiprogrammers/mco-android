@@ -127,16 +127,6 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         }
     }
 
-    /*@Override
-    protected void onPause() {
-        super.onPause();
-        for (int i = 0; i < 5; i++) {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-    }*/
-
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
@@ -144,12 +134,12 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
      */
     private void initializeViews() {
         mContext = PetiCashListActivity.this;
-        setUpAppBarDatePicker();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        setUpAppBarDatePicker();
         requestPeticashTransactionsOnline(pageNumber);
     }
 
