@@ -395,6 +395,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                                        assetsListItem.setOut(Float.parseFloat(strQuantity));
                                        assetsListItem.setAvailable(Float.parseFloat(strQuantity));
                                         realm.insertOrUpdate(assetsListItem);
+                                        //TODO Need to refresh UI according to local realm changes
                                     }
                                 }, new Realm.Transaction.OnSuccess() {
                                     @Override
