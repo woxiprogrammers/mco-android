@@ -573,6 +573,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linerLayoutSelectedNames.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
+                        ll_forSupplierVehicle.setVisibility(View.GONE);
+                        ll_forSupplierInOutTime.setVisibility(View.GONE);
+
                         str = getString(R.string.client_name);
                         break;
                     //For By Hand
@@ -581,6 +584,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linerLayoutSelectedNames.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
+                        ll_forSupplierVehicle.setVisibility(View.GONE);
+                        ll_forSupplierInOutTime.setVisibility(View.GONE);
+
                         str = getString(R.string.shop_name);
                         break;
                     //For Office
@@ -588,6 +594,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
                         linerLayoutSelectedNames.setVisibility(View.GONE);
+                        ll_forSupplierVehicle.setVisibility(View.GONE);
+                        ll_forSupplierInOutTime.setVisibility(View.GONE);
+
                         str="Office";
                         break;
                     //For Supplier
@@ -596,6 +605,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linerLayoutSelectedNames.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
+                        ll_forSupplierVehicle.setVisibility(View.VISIBLE);
+                        ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
+
                         str = getString(R.string.supplier_name);
                         isChecked = true;
                         break;
