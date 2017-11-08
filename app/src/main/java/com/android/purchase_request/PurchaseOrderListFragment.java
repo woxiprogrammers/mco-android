@@ -105,9 +105,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
+//        getActivity().getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
         MenuItem item = menu.findItem(R.id.action_approve);
-        item.setVisible(false);
+        if (item!=null) {
+            item.setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 

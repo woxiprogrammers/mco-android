@@ -44,7 +44,7 @@
         <item>Site</item>
         <item>Client</item>
         <item>Labour</item>
-        <item>Sub-contracter</item>
+        <item>Sub-contractor</item>
         <item>Supplier</item>
     </string-array>
     <string-array name="destination_array_move_in">

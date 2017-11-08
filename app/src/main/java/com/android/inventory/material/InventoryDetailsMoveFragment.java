@@ -323,7 +323,13 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             if (checkboxMoveInOut.isChecked()) {
                 params.put("name", spinnerDestinations.getSelectedItem().toString().toLowerCase());
             } else {
-                params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
+                if (sourceMoveInSpinner.getSelectedItemPosition() == 1) {
+                    params.put("name", "hand");
+
+                } else {
+                    params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
+
+                }
             }
             if(str.equalsIgnoreCase("Office")){
                 params.put("source_name","");
@@ -356,6 +362,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
             }
+            Log.i("@@SParams", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }

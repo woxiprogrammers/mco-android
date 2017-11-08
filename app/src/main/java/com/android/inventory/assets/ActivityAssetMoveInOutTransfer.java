@@ -30,6 +30,7 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.UnitsResponse;
 import com.android.material_request_approve.UnitQuantityItem;
+import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -178,7 +179,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         if (getSupportActionBar() != null) {
             if (!assetsListItem.getAssetsName().isEmpty()) {
                 getSupportActionBar().setTitle(assetsListItem.getAssetsName());
-            }else {
+            } else {
                 getSupportActionBar().setTitle("");
             }
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -277,6 +278,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                         break;
                     //For By Hand
                     case 1:
+                        textViewNameDestSource.setText(getString(R.string.shop_name));
                         linerLayoutAssetDestNames.setVisibility(View.VISIBLE);
                         linearLayoutBillNum.setVisibility(View.VISIBLE);
                         linearLayoutBillAmount.setVisibility(View.VISIBLE);
@@ -290,6 +292,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                         break;
                     //For Supplier
                     case 3:
+                        textViewNameDestSource.setText(getString(R.string.supplier_name));
                         linerLayoutAssetDestNames.setVisibility(View.VISIBLE);
                         linearLayoutBillNum.setVisibility(View.VISIBLE);
                         linearLayoutBillAmount.setVisibility(View.VISIBLE);
@@ -306,12 +309,14 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         editTextDestSourcename.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                setProjectNameFromIndex(i);
+                String selectedString = (String) adapterView.getItemAtPosition(i);
+                setProjectNameFromIndex(selectedString);
             }
         });
     }
 
-    private void setProjectNameFromIndex(int selectedIndex) {
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
         try {
             JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
             String strProject = jsonObject.getString("project_name");
@@ -380,6 +385,33 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            realm = Realm.getDefaultInstance();
+                            try {
+                                realm.executeTransactionAsync(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                       AssetsListItem assetsListItem=realm.where(AssetsListItem.class).equalTo("",intComponentId).findFirst();
+                                       assetsListItem.setIn(Float.parseFloat(strQuantity));
+                                       assetsListItem.setOut(Float.parseFloat(strQuantity));
+                                       assetsListItem.setAvailable(Float.parseFloat(strQuantity));
+                                        realm.insertOrUpdate(assetsListItem);
+                                    }
+                                }, new Realm.Transaction.OnSuccess() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Timber.d("Realm Execution Successful");
+                                    }
+                                }, new Realm.Transaction.OnError() {
+                                    @Override
+                                    public void onError(Throwable error) {
+                                        AppUtils.getInstance().logRealmExecutionError(error);
+                                    }
+                                });
+                            } finally {
+                                if (realm != null) {
+                                    realm.close();
+                                }
+                            }
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -404,7 +436,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
 
     private void validateEntries() {
         String strSourceName = editTextDestSourcename.getText().toString();
-        if(!(assetSourceSpinner.getSelectedItemPosition() == 2)){
+        if (!(assetSourceSpinner.getSelectedItemPosition() == 2)) {
             if (TextUtils.isEmpty(strSourceName)) {
                 editTextDestSourcename.setError(getString(R.string.please_enter) + " " + str);
                 return;
@@ -433,6 +465,9 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         }
         if (!checkboxMoveInOut.isChecked()) {
             //Bill
+
+        }
+        if (isChecked) {
             strBillNumber = edittextBillNum.getText().toString();
             if (TextUtils.isEmpty(strBillNumber)) {
                 edittextBillNum.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
@@ -449,8 +484,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                 edittextBillAmountAssetAsset.requestFocus();
                 edittextBillAmountAssetAsset.setError(null);
             }
-        }
-        if (isChecked) {
             //Vehicle Number
             strVehicleNumber = editTextVehicleNum.getText().toString();
             if (TextUtils.isEmpty(strVehicleNumber)) {
@@ -742,7 +775,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                             }
                             adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
                             editTextDestSourcename.setAdapter(adapter);
-                            setProjectNameFromIndex(editTextDestSourcename.getListSelection());
+//                            setProjectNameFromIndex(editTextDestSourcename.getListSelection());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
