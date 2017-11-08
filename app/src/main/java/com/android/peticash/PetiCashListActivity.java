@@ -14,12 +14,14 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
 import com.android.peticash.peticash_models.DatewiseTransactionsListItem;
 import com.android.peticash.peticash_models.PeticashTransactionData;
+import com.android.peticash.peticash_models.PeticashTransactionStatsResponse;
 import com.android.peticash.peticash_models.PeticashTransactionsResponse;
 import com.android.peticash.peticash_models.TransactionListItem;
 import com.android.utils.AppURL;
@@ -140,7 +142,60 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     protected void onResume() {
         super.onResume();
         setUpAppBarDatePicker();
+        requestTransactionStats();
         requestPeticashTransactionsOnline(pageNumber);
+    }
+
+    private void requestTransactionStats() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_TRANSACTION_STATS + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("requestTransactionStats")
+                .build()
+                .getAsObject(PeticashTransactionStatsResponse.class, new ParsedRequestListener<PeticashTransactionStatsResponse>() {
+                    @Override
+                    public void onResponse(final PeticashTransactionStatsResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    setUpTransactionStatsData_inAppBar();
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestTransactionStats");
+                    }
+                });
+    }
+
+    private void setUpTransactionStatsData_inAppBar() {
+        Toast.makeText(mContext, "Stats received", Toast.LENGTH_SHORT).show();
     }
 
     private void setUpAppBarDatePicker() {
