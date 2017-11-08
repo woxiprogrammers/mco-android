@@ -14,7 +14,7 @@
         <!--Collapsing AppBar-->
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="290dp"
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -43,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_12dp"
                         android:orientation="horizontal"
-                        android:paddingBottom="@dimen/dimen_12dp">
+                        android:paddingBottom="@dimen/dimen_8dp">
 
                         <TextView
                             android:layout_width="wrap_content"

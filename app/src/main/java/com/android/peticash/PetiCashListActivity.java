@@ -148,6 +148,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -195,7 +196,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     private void setUpTransactionStatsData_inAppBar() {
         try {
             realm = Realm.getDefaultInstance();
-            PeticashTransactionStatsData peticashTransactionStatsData = realm.where(PeticashTransactionStatsData.class).findFirstAsync();
+            PeticashTransactionStatsData peticashTransactionStatsData = realm.where(PeticashTransactionStatsData.class).findFirst();
             if (peticashTransactionStatsData != null && peticashTransactionStatsData.isValid()) {
                 mTextViewAllocatedAmount.setText("₹" + peticashTransactionStatsData.getAllocatedAmount());
                 mTextViewSalaryAmount.setText("₹" + peticashTransactionStatsData.getTotalSalaryAmount());

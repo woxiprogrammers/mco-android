@@ -235,10 +235,10 @@ class AssetReadingsAdapter extends RealmRecyclerViewAdapter<AssetReadingsListDat
         textView.setText(newDateStr);
     }
 
-    @Override
+    /*@Override
     public long getItemId(int index) {
         return summaryListItems.get(index).getPrimaryKey();
-    }
+    }*/
 
     @Override
     public int getItemCount() {

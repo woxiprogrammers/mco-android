@@ -1,5 +1,7 @@
 package com.android.inventory.asset_models;
 
+import android.annotation.SuppressLint;
+
 import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +12,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class AssetReadingsListDataItem extends RealmObject {
     @PrimaryKey
-    private int primaryKey = new Random().nextInt((999999) + 11) + new Random().nextInt((999999) + 11);
+    private String primaryKey;/* = new Random().nextInt((999999) + 11) + new Random().nextInt((999999) + 11);*/
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("date")
     private String date;
@@ -117,11 +119,11 @@ public class AssetReadingsListDataItem extends RealmObject {
     }
     ///////////////////
 
-    public int getPrimaryKey() {
+    public String getPrimaryKey() {
         return primaryKey;
     }
 
-    public void setPrimaryKey(int primaryKey) {
+    public void setPrimaryKey(String primaryKey) {
         this.primaryKey = primaryKey;
     }
 
@@ -171,5 +173,15 @@ public class AssetReadingsListDataItem extends RealmObject {
 
     public int getTotalTopUp() {
         return totalTopUp;
+    }
+
+    // local defined primary key
+    @SuppressLint("DefaultLocale")
+    public void compoundPrimaryKey() {
+        if (!isManaged()) {
+            // only un-managed objects needs compound key
+            int randomNum = new Random().nextInt((999999) + 11);
+            this.primaryKey = String.format("%s%d%d", this.date.replaceAll("[^a-zA-Z]+", ""), this.id, randomNum);
+        }
     }
 }
