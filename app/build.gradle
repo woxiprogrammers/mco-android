@@ -9,30 +9,28 @@ android {
         applicationId 'com.mcon.android'
         minSdkVersion 16
         targetSdkVersion 26
-        versionName '1.1'
+        versionName '1.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 2
+        versionCode 3
         multiDexEnabled true
     }
     buildTypes {
         release {
             debuggable false
-            minifyEnabled true
-            zipAlignEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            minifyEnabled true
+//            zipAlignEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     productFlavors {
         dev {
-            applicationIdSuffix ".debug"
-            versionNameSuffix '-dev'
-//            minSdkVersion 21
+//            applicationIdSuffix ".debug"
+//            versionNameSuffix '-dev'
             buildConfigField "String", "BASE_URL", '"http://testapi.mconstruction.co.in/"'
             resValue "string", "app_name", "MConDev"
         }
         prod {
-            versionNameSuffix '-prod'
             buildConfigField "String", "BASE_URL", '"http://api.mconstruction.co.in/"'
             resValue "string", "app_name", "MCon"
         }
@@ -59,12 +57,12 @@ dependencies {
     compile 'org.mockito:mockito-core:2.8.47'
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'com.amitshekhar.android:android-networking:1.0.0'
-//    compile 'com.yarolegovich:discrete-scrollview:1.2.0'
+    //    compile 'com.yarolegovich:discrete-scrollview:1.2.0'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'io.realm:android-adapters:2.1.0'
     //    compile 'com.github.thorbenprimke:realm-recyclerview:0.9.25'
     compile 'com.android.support:support-v4:26.0.0-alpha1'
-//    compile 'com.theartofdev.edmodo:android-image-cropper:2.3.1'
+    //    compile 'com.theartofdev.edmodo:android-image-cropper:2.3.1'
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.github.vansikrishna:Multimager:1.0.6'
@@ -72,7 +70,7 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:cardview-v7:26.0.0-alpha1'
     compile 'com.android.support:support-vector-drawable:26.0.0-alpha1'
-//    compile 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.1.3'
+    //    compile 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.1.3'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     debugCompile 'com.github.jonasrottmann.realm-browser:realm-browser:0.0.14'

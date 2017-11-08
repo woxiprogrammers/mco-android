@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
-import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.login_mvp.LoginActivity;
 import com.android.models.login_acl.LoginResponseData;
@@ -42,7 +41,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -79,10 +77,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
         ButterKnife.bind(this);
-        if (BuildConfig.DEBUG) {
+        /*if (BuildConfig.DEBUG) {
             //Start Realm Browser
             RealmBrowser.showRealmFilesNotification(getApplicationContext());
-        }
+        }*/
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
