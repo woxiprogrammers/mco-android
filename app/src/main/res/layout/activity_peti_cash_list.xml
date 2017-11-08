@@ -14,7 +14,7 @@
         <!--Collapsing AppBar-->
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_200dp"
+            android:layout_height="300dp"
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -35,100 +35,163 @@
                     android:layout_marginBottom="@dimen/dimen_16dp"
                     android:fitsSystemWindows="true"
                     android:gravity="center_horizontal|bottom"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     app:layout_collapseMode="parallax">
 
-                    <RelativeLayout
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_marginLeft="@dimen/dimen_12dp"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/dimen_12dp">
 
-                        <LinearLayout
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginRight="@dimen/dimen_10dp"
-                            android:background="@drawable/background_circular_120"
-                            android:gravity="center"
-                            android:orientation="vertical">
+                            android:text="Allocated Amount: "
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/text_size_20"
+                            android:textStyle="bold"/>
 
-                            <TextView
-                                android:id="@+id/textView_monthTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="Nov"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="25sp"/>
+                        <TextView
+                            android:id="@+id/textView_allocatedAmount"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/text_size_20"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/textView_monthAmount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginBottom="@dimen/dimen_2dp"
-                                android:layout_marginTop="@dimen/dimen_2dp"
-                                android:text="₹ -"
-                                android:textColor="@color/colorText"
-                                android:textSize="20dp"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:id="@+id/textView_monthRemaining"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="₹ -"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="15dp"/>
-                        </LinearLayout>
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
 
-                        <LinearLayout
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="@dimen/dimen_5dp"
+                                android:background="@drawable/background_circular_120"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Salary"
+                                    android:textColor="@color/colorTextLight"
+                                    android:textSize="@dimen/text_size_20"/>
+
+                                <TextView
+                                    android:id="@+id/textView_salaryAmount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="@dimen/dimen_2dp"
+                                    android:layout_marginTop="@dimen/dimen_2dp"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:background="@drawable/background_circular_120"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Advance"
+                                    android:textColor="@color/colorTextLight"
+                                    android:textSize="@dimen/text_size_20"/>
+
+                                <TextView
+                                    android:id="@+id/textView_advanceAmount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="@dimen/dimen_2dp"
+                                    android:layout_marginTop="@dimen/dimen_2dp"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="@dimen/dimen_5dp"
+                                android:background="@drawable/background_circular_120"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Purchase"
+                                    android:textColor="@color/colorTextLight"
+                                    android:textSize="@dimen/text_size_20"/>
+
+                                <TextView
+                                    android:id="@+id/textView_purchaseAmount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="@dimen/dimen_2dp"
+                                    android:layout_marginTop="@dimen/dimen_2dp"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_12dp"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/dimen_12dp">
+
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginLeft="@dimen/dimen_10dp"
-                            android:background="@drawable/background_circular_120"
-                            android:gravity="center"
-                            android:orientation="vertical">
+                            android:text="Remaining Amount: "
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/text_size_20"
+                            android:textStyle="bold"/>
 
-                            <TextView
-                                android:id="@+id/textView_balanceTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="Balance"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="25sp"/>
-
-                            <TextView
-                                android:id="@+id/textView_balanceAmount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginBottom="@dimen/dimen_2dp"
-                                android:layout_marginTop="@dimen/dimen_2dp"
-                                android:text="₹ -"
-                                android:textColor="@color/colorText"
-                                android:textSize="20dp"
-                                android:textStyle="bold"/>
-
-                            <TextView
-                                android:id="@+id/textView_balanceRemaining"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="₹ -"
-                                android:textColor="@color/colorTextLight"
-                                android:textSize="15dp"/>
-                        </LinearLayout>
-                    </RelativeLayout>
+                        <TextView
+                            android:id="@+id/textView_remainingAmount"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="@dimen/text_size_20"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
                 </LinearLayout>
 
                 <android.support.v7.widget.Toolbar

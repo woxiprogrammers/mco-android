@@ -14,13 +14,13 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
 import com.android.peticash.peticash_models.DatewiseTransactionsListItem;
 import com.android.peticash.peticash_models.PeticashTransactionData;
+import com.android.peticash.peticash_models.PeticashTransactionStatsData;
 import com.android.peticash.peticash_models.PeticashTransactionStatsResponse;
 import com.android.peticash.peticash_models.PeticashTransactionsResponse;
 import com.android.peticash.peticash_models.TransactionListItem;
@@ -48,18 +48,6 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class PetiCashListActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
-    @BindView(R.id.textView_monthTitle)
-    TextView mTextViewMonthTitle;
-    @BindView(R.id.textView_monthAmount)
-    TextView mTextViewMonthAmount;
-    @BindView(R.id.textView_monthRemaining)
-    TextView mTextViewMonthRemaining;
-    @BindView(R.id.textView_balanceTitle)
-    TextView mTextViewBalanceTitle;
-    @BindView(R.id.textView_balanceAmount)
-    TextView mTextViewBalanceAmount;
-    @BindView(R.id.textView_balanceRemaining)
-    TextView mTextViewBalanceRemaining;
     @BindView(R.id.textView_peticashHome_appBarTitle)
     TextView mTextViewPeticashHomeAppBarTitle;
     @BindView(R.id.relative_layout_datePicker_peticash)
@@ -72,6 +60,16 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     RecyclerView mRecyclerViewPeticashList;
     @BindView(R.id.floating_add_button_peticash)
     FloatingActionButton mFloatingAddButtonPeticash;
+    @BindView(R.id.textView_allocatedAmount)
+    TextView mTextViewAllocatedAmount;
+    @BindView(R.id.textView_salaryAmount)
+    TextView mTextViewSalaryAmount;
+    @BindView(R.id.textView_advanceAmount)
+    TextView mTextViewAdvanceAmount;
+    @BindView(R.id.textView_purchaseAmount)
+    TextView mTextViewPurchaseAmount;
+    @BindView(R.id.textView_remainingAmount)
+    TextView mTextViewRemainingAmount;
     private Context mContext;
     public int passYear, passMonth;
     private int pageNumber = 0;
@@ -195,7 +193,19 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
     }
 
     private void setUpTransactionStatsData_inAppBar() {
-        Toast.makeText(mContext, "Stats received", Toast.LENGTH_SHORT).show();
+        try {
+            realm = Realm.getDefaultInstance();
+            PeticashTransactionStatsData peticashTransactionStatsData = realm.where(PeticashTransactionStatsData.class).findFirstAsync();
+            if (peticashTransactionStatsData != null && peticashTransactionStatsData.isValid()) {
+                mTextViewAllocatedAmount.setText("₹" + peticashTransactionStatsData.getAllocatedAmount());
+                mTextViewSalaryAmount.setText("₹" + peticashTransactionStatsData.getTotalSalaryAmount());
+                mTextViewAdvanceAmount.setText("₹" + peticashTransactionStatsData.getTotalAdvanceAmount());
+                mTextViewPurchaseAmount.setText("₹" + peticashTransactionStatsData.getTotalPurchaseAmount());
+                mTextViewRemainingAmount.setText("₹" + peticashTransactionStatsData.getRemainingAmount());
+            }
+        } finally {
+            if (realm != null) realm.close();
+        }
     }
 
     private void setUpAppBarDatePicker() {
