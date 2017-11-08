@@ -25,8 +25,8 @@ android {
     }
     productFlavors {
         dev {
-//            applicationIdSuffix ".debug"
-//            versionNameSuffix '-dev'
+            applicationIdSuffix ".debug"
+            versionNameSuffix '-dev'
             buildConfigField "String", "BASE_URL", '"http://testapi.mconstruction.co.in/"'
             resValue "string", "app_name", "MConDev"
         }
