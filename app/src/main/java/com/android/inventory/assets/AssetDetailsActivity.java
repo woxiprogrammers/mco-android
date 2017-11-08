@@ -21,6 +21,7 @@ import com.android.interfaces.FragmentInterface;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 public class AssetDetailsActivity extends BaseActivity {
     @BindView(R.id.view_pager_assets)
@@ -34,6 +35,7 @@ public class AssetDetailsActivity extends BaseActivity {
     private String strAssetName, strModelNumber;
     private int inventoryComponentId;
     private String component_type_slug;
+    private Realm realm;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -76,6 +78,7 @@ public class AssetDetailsActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(strAssetName);
         }
+
     }
 
     private void setAdapter() {

@@ -55,6 +55,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     private boolean isFrom;
     private Realm realm;
     private AlertDialog alert_Dialog;
+    private String strUserRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         setContentView(R.layout.activity_purchase_request_details_home);
         initializeViews();
         callFragments();
+        strUserRole=AppUtils.getInstance().getUserRole();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             bundle.getString("KEY_SUBMODULETAG");
@@ -71,10 +73,8 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 String accessPermission = permissionsItem.getCanAccess();
                 if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
                     isForApproval = true;
-                }//ToDo Sharvari
-                else if (accessPermission.equalsIgnoreCase(getString(R.string.create_purchase_request))) {
-                    isForApproval = false;
                 }
+
             }
         }
     }
@@ -184,7 +184,13 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
             public void onClick(View view) {
                 isInValidate = true;
                 invalidateOptionsMenu();
-                requestToChangeStatus(9);
+                if(strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))){
+                    requestToChangeStatus(11);
+
+                }else {
+                    requestToChangeStatus(9);
+
+                }
                 alert_Dialog.dismiss();
                 onBackPressed();
             }
@@ -192,7 +198,13 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         buttonDisapprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestToChangeStatus(10);
+                if(strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))) {
+                    requestToChangeStatus(12);
+
+                }else {
+                    requestToChangeStatus(10);
+
+                }
                 alert_Dialog.dismiss();
                 onBackPressed();
             }
@@ -258,6 +270,12 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
 
                                         } else if (changeComponentStatusId == 10) {
                                             purchaseRequestListItem.setStatus("p-r-manager-disapproved");
+
+                                        }else if (changeComponentStatusId == 11) {
+                                            purchaseRequestListItem.setStatus("p-r-admin-approved");
+
+                                        }else if (changeComponentStatusId == 12) {
+                                            purchaseRequestListItem.setStatus("p-r-admin-disapproved");
 
                                         }
                                         realm.insertOrUpdate(purchaseRequestListItem);

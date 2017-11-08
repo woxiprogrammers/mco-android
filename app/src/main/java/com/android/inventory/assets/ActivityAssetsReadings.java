@@ -76,6 +76,7 @@ public class ActivityAssetsReadings extends BaseActivity {
     FrameLayout frameLayoutTypeForAsset;
     private Spinner spinnerSelectType;
     private boolean isExceed;
+    private float elePerUnit,ltrPerUnit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,8 @@ public class ActivityAssetsReadings extends BaseActivity {
         realm = Realm.getDefaultInstance();
         AssetsListItem assetsListItem = realm.where(AssetsListItem.class).equalTo("id", intComponentId).findFirst();
         slug = assetsListItem.getSlug();
+        elePerUnit=assetsListItem.getElectricityPerUnit();
+        ltrPerUnit=assetsListItem.getLitrePerUnit();
 
     }
 
@@ -133,12 +136,14 @@ public class ActivityAssetsReadings extends BaseActivity {
                         linearLayoutTopUpTime.setVisibility(View.VISIBLE);
                         linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
                         linearLayoutElePerUnit.setVisibility(View.GONE);
+                        editTextLtrPerUnit.setText(String.valueOf(ltrPerUnit));
                         break;
                     case 1:
                         linearLayoutTopUp.setVisibility(View.GONE);
                         linearLayoutTopUpTime.setVisibility(View.GONE);
                         linearLayoutLtrPerUnit.setVisibility(View.GONE);
                         linearLayoutElePerUnit.setVisibility(View.VISIBLE);
+                        editTextElePerUnit.setText(String.valueOf(elePerUnit));
                         break;
                 }
             }
@@ -155,6 +160,7 @@ public class ActivityAssetsReadings extends BaseActivity {
             linearLayoutTopUpTime.setVisibility(View.VISIBLE);
             linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
             frameLayoutTypeForAsset.setVisibility(View.GONE);
+            editTextLtrPerUnit.setText(String.valueOf(ltrPerUnit));
 
         } else if (slug.equalsIgnoreCase("electricity_dependent")) {
             linearLayoutElePerUnit.setVisibility(View.VISIBLE);
@@ -162,6 +168,7 @@ public class ActivityAssetsReadings extends BaseActivity {
             linearLayoutTopUp.setVisibility(View.GONE);
             linearLayoutTopUpTime.setVisibility(View.GONE);
             frameLayoutTypeForAsset.setVisibility(View.GONE);
+            editTextElePerUnit.setText(String.valueOf(elePerUnit));
         } else if (slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
             frameLayoutTypeForAsset.setVisibility(View.VISIBLE);
             linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);

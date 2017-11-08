@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +60,7 @@ public class AssetSummaryActivity extends AppCompatActivity {
         if (bundleArgs != null) {
             inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
             strDate = bundleArgs.getString("getDate");
+            component_type_slug = bundleArgs.getString("component_type_slug");
 
         }
         setAdapter();
@@ -170,17 +173,73 @@ public class AssetSummaryActivity extends AppCompatActivity {
             holder.editTextSetStartTime.setText(assetReadingsListDataItem.getStartTime());
             holder.editTextSetStopReading.setText(assetReadingsListDataItem.getStopReading());
             holder.editTextSetStopTime.setText(assetReadingsListDataItem.getStopTime());
-            if(component_type_slug.equalsIgnoreCase(""))
-            {
-                holder.editTextSetTopUp.setText(assetReadingsListDataItem.getTopUp());
+            if (component_type_slug.equalsIgnoreCase("fuel_dependent")) {
+                holder.linearLayoutSetTopUp.setVisibility(View.VISIBLE);
+                holder.linearLayoutSetTopUpTime.setVisibility(View.VISIBLE);
+                holder.linearLayoutSetLtrPerUnit.setVisibility(View.VISIBLE);
+                holder.linearLayoutSetElePerUnit.setVisibility(View.GONE);
                 holder.editTextSetTopUpTime.setText(assetReadingsListDataItem.getTopUpTime());
-                holder.editTextSetLtrPerUnit.setText(assetReadingsListDataItem.getFuelPerUnit());
-            }else if(component_type_slug.equalsIgnoreCase(""))
-            {
-                holder.editTextSetElePerUnit.setText(assetReadingsListDataItem.getElectricityPerUnit());
-            }else if(component_type_slug.equalsIgnoreCase(""))
-            {
+                //////TopUp
+                if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUp())) {
+                    Log.i("@@CHeck", "sharvari");
+                    holder.linearLayoutSetTopUp.setVisibility(View.VISIBLE);
+                    holder.editTextSetTopUp.setText(assetReadingsListDataItem.getTopUp());
+                } else {
+                    Log.i("@@CHeck", "sharvari1");
+                    holder.linearLayoutSetTopUp.setVisibility(View.GONE);
 
+                }
+                ////Top Up Time
+                if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUpTime())) {
+                    holder.linearLayoutSetTopUpTime.setVisibility(View.VISIBLE);
+                    holder.editTextSetTopUpTime.setText(assetReadingsListDataItem.getTopUpTime());
+                } else {
+                    holder.linearLayoutSetTopUpTime.setVisibility(View.GONE);
+
+                }
+                ///Ele
+                if (!TextUtils.isEmpty(assetReadingsListDataItem.getFuelPerUnit())) {
+                    holder.linearLayoutSetLtrPerUnit.setVisibility(View.VISIBLE);
+                    holder.editTextSetLtrPerUnit.setText(assetReadingsListDataItem.getFuelPerUnit());
+                } else {
+                    holder.linearLayoutSetLtrPerUnit.setVisibility(View.GONE);
+
+                }
+            } else if (component_type_slug.equalsIgnoreCase("electricity_dependent")) {
+                holder.linearLayoutSetTopUp.setVisibility(View.GONE);
+                holder.linearLayoutSetTopUpTime.setVisibility(View.GONE);
+                holder.linearLayoutSetLtrPerUnit.setVisibility(View.GONE);
+                holder.linearLayoutSetElePerUnit.setVisibility(View.VISIBLE);
+                holder.editTextSetElePerUnit.setText(assetReadingsListDataItem.getElectricityPerUnit());
+            } else if (component_type_slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
+                if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUp())) {
+                    holder.linearLayoutSetTopUp.setVisibility(View.VISIBLE);
+                    holder.editTextSetTopUp.setText(assetReadingsListDataItem.getTopUp());
+                } else {
+                    holder.linearLayoutSetTopUp.setVisibility(View.GONE);
+
+                }
+                if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUpTime())) {
+                    holder.linearLayoutSetTopUpTime.setVisibility(View.VISIBLE);
+                    holder.editTextSetTopUpTime.setText(assetReadingsListDataItem.getTopUpTime());
+                } else {
+                    holder.linearLayoutSetTopUpTime.setVisibility(View.GONE);
+
+                }
+                if (!TextUtils.isEmpty(assetReadingsListDataItem.getElectricityPerUnit())) {
+                    holder.linearLayoutSetElePerUnit.setVisibility(View.VISIBLE);
+                    holder.editTextSetElePerUnit.setText(assetReadingsListDataItem.getElectricityPerUnit());
+                } else {
+                    holder.linearLayoutSetElePerUnit.setVisibility(View.GONE);
+
+                }
+                if (!TextUtils.isEmpty(assetReadingsListDataItem.getFuelPerUnit())) {
+                    holder.linearLayoutSetLtrPerUnit.setVisibility(View.VISIBLE);
+                    holder.editTextSetLtrPerUnit.setText(assetReadingsListDataItem.getFuelPerUnit());
+                } else {
+                    holder.linearLayoutSetLtrPerUnit.setVisibility(View.GONE);
+
+                }
             }
         }
 
@@ -225,6 +284,7 @@ public class AssetSummaryActivity extends AppCompatActivity {
             EditText editTextSetElePerUnit;
             @BindView(R.id.linearLayoutSetElePerUnit)
             LinearLayout linearLayoutSetElePerUnit;
+
             private MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
