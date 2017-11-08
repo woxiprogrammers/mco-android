@@ -1,21 +1,19 @@
 package com.android.purchase_details;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,6 +21,7 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.login_acl.PermissionsItem;
+import com.android.purchase_request.PurchaseMaterialListItem;
 import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.utils.AppURL;
@@ -40,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.Realm;
+import timber.log.Timber;
 
 public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     @BindView(R.id.view_pager_purchase_details)
@@ -54,6 +54,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     private boolean isForApproval;
     private boolean isFrom;
     private Realm realm;
+    private AlertDialog alert_Dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,14 +166,42 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 onBackPressed();
                 break;
             case R.id.action_approve:
-                openApproveDialog(item);
+                openApproveDialog();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void openApproveDialog(final MenuItem item) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+    private void openApproveDialog() {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(mContext);
+        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_approve_disapprove_paurchase_request, null);
+        alertDialogBuilder.setView(dialogView);
+        Button buttonApprove = dialogView.findViewById(R.id.buttonApprove);
+        Button buttonDisapprove = dialogView.findViewById(R.id.buttonDisapprove);
+
+        buttonApprove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isInValidate = true;
+                invalidateOptionsMenu();
+                requestToChangeStatus(9);
+                alert_Dialog.dismiss();
+                onBackPressed();
+            }
+        });
+        buttonDisapprove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestToChangeStatus(10);
+                alert_Dialog.dismiss();
+                onBackPressed();
+            }
+        });
+        alert_Dialog = alertDialogBuilder.create();
+        alert_Dialog.show();
+
+
+       /* AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder
                 .setTitle("Approve")
                 .setMessage("Do You Want To approve?")
@@ -196,10 +225,10 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         positiveOk.setPadding(8,0,0,0);
         Button negativeDisapprove = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
         negativeDisapprove.setPadding(0,0,118,0);
-        negativeDisapprove.setBackgroundColor(R.color.custom_progress_message_color);
+        negativeDisapprove.setBackgroundColor(R.color.custom_progress_message_color);*/
     }
 
-    private void requestToChangeStatus(int changeComponentStatusId) {
+    private void requestToChangeStatus(final int changeComponentStatusId) {
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_request_id", mPurchaseRequestId);
@@ -218,6 +247,37 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            realm = Realm.getDefaultInstance();
+                            try {
+                                realm.executeTransactionAsync(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        PurchaseRequestListItem purchaseRequestListItem = realm.where(PurchaseRequestListItem.class).equalTo("id", mPurchaseRequestId).findFirst();
+                                        if (changeComponentStatusId == 9) {
+                                            purchaseRequestListItem.setStatus("p-r-manager-approved");
+
+                                        } else if (changeComponentStatusId == 10) {
+                                            purchaseRequestListItem.setStatus("p-r-manager-disapproved");
+
+                                        }
+                                        realm.insertOrUpdate(purchaseRequestListItem);
+                                    }
+                                }, new Realm.Transaction.OnSuccess() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Timber.d("Realm Execution Successful");
+                                    }
+                                }, new Realm.Transaction.OnError() {
+                                    @Override
+                                    public void onError(Throwable error) {
+                                        AppUtils.getInstance().logRealmExecutionError(error);
+                                    }
+                                });
+                            } finally {
+                                if (realm != null) {
+                                    realm.close();
+                                }
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -1,6 +1,7 @@
 package com.android.inventory.assets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -102,9 +103,12 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-//                        Intent intentSummary = new Intent(mContext, AssetSummaryActivity.class);
-//                        intentSummary.putExtra("inventoryComponentId", inventoryComponentId);
-//                        startActivity(intentSummary);
+                        String date=assetReadingsListDataItems.get(position).getDate();
+                        Intent intentSummary = new Intent(mContext, AssetSummaryActivity.class);
+                        intentSummary.putExtra("inventoryComponentId", inventoryComponentId);
+                        intentSummary.putExtra("getDate",date);
+                        intentSummary.putExtra("component_type_slug",component_type_slug);
+                        startActivity(intentSummary);
                     }
 
                     @Override
