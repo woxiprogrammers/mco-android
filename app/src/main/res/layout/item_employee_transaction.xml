@@ -8,129 +8,135 @@
     android:background="@drawable/selector_is_material_selected"
     app:cardCornerRadius="8dp"
     app:cardElevation="@dimen/dimen_4dp">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/selector_is_material_selected"
         android:orientation="vertical"
         android:padding="@dimen/dimen_12dp">
-
         <LinearLayout
+            android:id="@+id/linearLayoutSetEmpSalAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1">
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:text="Amount : "/>
-
             <TextView
                 android:id="@+id/textviewEmpSalaryAmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:text="Amount"/>
-
-
         </LinearLayout>
-
         <LinearLayout
-
+            android:id="@+id/linearLayoutSetPayAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:text="Payable Amount : "/>
+            <TextView
+                android:id="@+id/textviewEmpPayableAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:text="Amount"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayoutSetEmpAdv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:text="Advance Amount : "/>
+            <TextView
+                android:id="@+id/textviewEmpAdvAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:text="Amount"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1">
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:text="Date : "/>
-
             <TextView
                 android:id="@+id/textvieEmpSalaryDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:text="Date"/>
-
-
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1">
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:text="Type : "/>
-
             <TextView
                 android:id="@+id/textviewEmpSalaryType"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:text="Type"/>
-
-
         </LinearLayout>
-
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1">
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:text="Status : "/>
-
             <TextView
                 android:id="@+id/textviewEmpSalaryStatus"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:text="Status Name"/>
-
-
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1">
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:text="Project Site : "/>
-
             <TextView
                 android:id="@+id/textviewSiteNameOfEmp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:text="Project Site"/>
-
-
         </LinearLayout>
-
-
     </LinearLayout>
-
-
 </android.support.v7.widget.CardView>
-

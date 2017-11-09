@@ -707,7 +707,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
                                     setUpSpinnerValueChangeListener();
                                 }
                             }, new Realm.Transaction.OnError() {

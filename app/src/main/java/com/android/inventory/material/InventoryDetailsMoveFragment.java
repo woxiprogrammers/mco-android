@@ -126,7 +126,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     TextView textViewPick;
     @BindView(R.id.spinnerMaterialUnits)
     Spinner spinnerMaterialUnits;
-
     @BindView(R.id.linearLayoutMaterialSite)
     LinearLayout linearLayoutMaterialSite;
     @BindView(R.id.editTexttProjName)
@@ -134,7 +133,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
     private View mParentView;
-
     private String strDate;
     private String strVehicleNumber;
     private String strInTime;
@@ -150,7 +148,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
-    private int indexItemUnit,unidId;
+    private int indexItemUnit, unidId;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
@@ -158,16 +156,18 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private JSONArray jsonArray;
     private ArrayList<String> siteNameArray;
     private ArrayAdapter<String> adapter;
+    private static int inventoryComponentId;
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
     }
 
-    public static InventoryDetailsMoveFragment newInstance(String materialName) {
+    public static InventoryDetailsMoveFragment newInstance(String materialName,int inventoryCompId) {
         Bundle args = new Bundle();
         InventoryDetailsMoveFragment fragment = new InventoryDetailsMoveFragment();
         fragment.setArguments(args);
         strMaterialName = materialName;
+        inventoryComponentId=inventoryCompId;
         return fragment;
     }
 
@@ -197,7 +197,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     public void fragmentBecameVisible() {
     }
 
-    @OnClick({R.id.textView_capture, R.id.textView_pick,R.id.editText_Date,R.id.edit_text_inTime,R.id.edit_text_outTime})
+    @OnClick({R.id.textView_capture, R.id.textView_pick, R.id.editText_Date, R.id.edit_text_inTime, R.id.edit_text_outTime})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textView_capture:
@@ -214,15 +214,12 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 intent.putExtra(Constants.KEY_PARAMS, params);
                 startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
                 break;
-
             case R.id.editText_Date:
                 setInOutDate(editText_Date);
                 break;
-
             case R.id.edit_text_inTime:
                 setInOutTime(editTextInTime);
                 break;
-
             case R.id.edit_text_outTime:
                 setInOutTime(editTextOutTime);
                 break;
@@ -231,8 +228,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     private void validateEntries() {
         String strSourceName = edit_text_selected_dest_name.getText().toString();
-
-        if(!(sourceMoveInSpinner.getSelectedItemPosition() == 2)){
+        if (!(sourceMoveInSpinner.getSelectedItemPosition() == 2)) {
             if (TextUtils.isEmpty(strSourceName)) {
                 edit_text_selected_dest_name.setError(getString(R.string.please_enter) + " " + str);
                 return;
@@ -241,8 +237,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 edit_text_selected_dest_name.setError(null);
             }
         }
-
-
         //Quantity
         strQuantity = edittextQuantity.getText().toString();
         if (TextUtils.isEmpty(strQuantity)) {
@@ -261,7 +255,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             editText_Date.setError(null);
         }
         if (!checkboxMoveInOut.isChecked()) {
-
         }
         if (isChecked) {
             //Vehicle Number
@@ -291,7 +284,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 editTextOutTime.setError(null);
                 editTextOutTime.requestFocus();
             }
-
             strBillAmount = editTextBillamount.getText().toString();
             if (TextUtils.isEmpty(strBillAmount)) {
                 editTextBillamount.setError("Please Enter Bill Amount");
@@ -300,8 +292,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 editTextBillamount.requestFocus();
                 editTextBillamount.setError(null);
             }
-
-
             //Bill
             strBillNumber = editTextChallanNumber.getText().toString();
             if (TextUtils.isEmpty(strBillNumber)) {
@@ -312,30 +302,25 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 editTextChallanNumber.requestFocus();
             }
         }
-
         uploadImages_addItemToLocal();
     }
 
     private void requestForMaterial() {
         JSONObject params = new JSONObject();
         try {
-
             if (checkboxMoveInOut.isChecked()) {
                 params.put("name", spinnerDestinations.getSelectedItem().toString().toLowerCase());
             } else {
                 if (sourceMoveInSpinner.getSelectedItemPosition() == 1) {
                     params.put("name", "hand");
-
                 } else {
                     params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
-
                 }
             }
-            if(str.equalsIgnoreCase("Office")){
-                params.put("source_name","");
-
-            }else {
-                params.put("source_name",edit_text_selected_dest_name.getText().toString());
+            if (str.equalsIgnoreCase("Office")) {
+                params.put("source_name", "");
+            } else {
+                params.put("source_name", edit_text_selected_dest_name.getText().toString());
             }
             params.put("inventory_component_id", 1);
             params.put("type", transferType);
@@ -348,17 +333,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
                 params.put("remark", editTextAddNote.getText().toString());
             } else {
-
                 params.put("remark", "");
             }
             params.put("images", jsonImageNameArray);
-            if(str.equalsIgnoreCase(getString(R.string.supplier_name))){
+            if (str.equalsIgnoreCase(getString(R.string.supplier_name))) {
                 params.put("in_time", strToDate + " " + strInTime);
                 params.put("out_time", strToDate + " " + strOutTime);
                 params.put("vehicle_number", strVehicleNumber);
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
-            }else if(str.equalsIgnoreCase(getString(R.string.shop_name))){
+            } else if (str.equalsIgnoreCase(getString(R.string.shop_name))) {
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
             }
@@ -472,7 +456,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         Date curDate = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         strToDate = format.format(curDate);
-        checkAvailability(1);
+        checkAvailability(inventoryComponentId);
         buttonMove.setOnClickListener(this);
         text_view_materialCount.setText(strMaterialName);
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -499,7 +483,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 }
             }
         });
-
         spinnerDestinations.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
@@ -575,7 +558,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linearBillAmount.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
-
                         str = getString(R.string.client_name);
                         break;
                     //For By Hand
@@ -586,7 +568,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linearBillAmount.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
-
                         str = getString(R.string.shop_name);
                         break;
                     //For Office
@@ -596,8 +577,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linerLayoutSelectedNames.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         ll_forSupplierInOutTime.setVisibility(View.GONE);
-
-                        str="Office";
+                        str = "Office";
                         break;
                     //For Supplier
                     case 3:
@@ -607,7 +587,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linearBillAmount.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
                         ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
-
                         str = getString(R.string.supplier_name);
                         isChecked = true;
                         break;
@@ -618,16 +597,17 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
         edit_text_selected_dest_name.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                setProjectNameFromIndex(i);
+                String selectedString = (String) adapterView.getItemAtPosition(i);
+                setProjectNameFromIndex(selectedString);
             }
         });
     }
 
-    private void setProjectNameFromIndex(int selectedIndex) {
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
         try {
             JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
             String strProject = jsonObject.getString("project_name");
@@ -686,12 +666,12 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void checkAvailability(int materialRequestComponentId) {
         JSONObject params = new JSONObject();
         try {
-            params.put("material_request_component_id", materialRequestComponentId);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("inventory_component_id", materialRequestComponentId);
+//            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_MATERIAL_REQUEST_AVAILABLE_QUANTITY + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_INVENTORY_CHECK_AVAILABLE_FOR_UNITS + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -814,7 +794,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                             }
                             adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
                             edit_text_selected_dest_name.setAdapter(adapter);
-                            setProjectNameFromIndex(edit_text_selected_dest_name.getListSelection());
+//                            setProjectNameFromIndex(edit_text_selected_dest_name.getListSelection());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

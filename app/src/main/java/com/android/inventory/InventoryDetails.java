@@ -29,9 +29,9 @@ public class InventoryDetails extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     private MenuItem prevMenuItem;
-    private ArrayList<Integer> arrayList = new ArrayList<Integer>();
     private Context mContext;
     private String materialName;
+    private int intCompId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,7 @@ public class InventoryDetails extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null) {
             materialName = intent.getStringExtra("ClickedMaterialName");
+            intCompId=intent.getIntExtra("id",-1);
         }
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -137,7 +138,7 @@ public class InventoryDetails extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return InventoryDetailsMoveFragment.newInstance(materialName);
+                    return InventoryDetailsMoveFragment.newInstance(materialName,intCompId);
                 case 1:
                     return MaterialHistoryFragment.newInstance();
                 default:

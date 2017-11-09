@@ -1,31 +1,26 @@
 package com.android.peticash;
 
-import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.constro360.R;
-import com.android.inventory.assets.AssetDetailsActivity;
-import com.android.inventory.assets.AssetListResponse;
-import com.android.inventory.assets.AssetsListAdapter;
-import com.android.inventory.assets.AssetsListItem;
 import com.android.peticashautosearchemployee.EmpTransactionResponse;
 import com.android.peticashautosearchemployee.EmployeeTransactionsItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -38,7 +33,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -46,10 +40,7 @@ import timber.log.Timber;
 /**
  * Created by Sharvari on 1/11/17.
  */
-
 public class EmployeeTransactionFragment extends DialogFragment {
-
-
     private AlertDialog alertDialog;
     private Realm realm;
     private RecyclerView recyclerviewTransaction;
@@ -67,11 +58,11 @@ public class EmployeeTransactionFragment extends DialogFragment {
         builder.setView(dialog);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            employeeId=bundle.getInt("empId");
+            employeeId = bundle.getInt("empId");
         }
-        recyclerviewTransaction=dialog.findViewById(R.id.recyclerviewTransaction);
-        buttonOk=dialog.findViewById(R.id.btnOk);
-        progressBar=dialog.findViewById(R.id.progressBarTrans);
+        recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
+        buttonOk = dialog.findViewById(R.id.btnOk);
+        progressBar = dialog.findViewById(R.id.progressBarTrans);
         requestForEmpTransactions();
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,9 +70,8 @@ public class EmployeeTransactionFragment extends DialogFragment {
                 alertDialog.dismiss();
             }
         });
-        alertDialog= builder.create();
+        alertDialog = builder.create();
         return alertDialog;
-
     }
 
     private void setUpAdapter() {
@@ -93,16 +83,14 @@ public class EmployeeTransactionFragment extends DialogFragment {
         recyclerviewTransaction.setHasFixedSize(true);
         recyclerviewTransaction.setAdapter(empTransactionAdapter);
     }
-    public void requestForEmpTransactions(){
 
-        JSONObject params=new JSONObject();
+    public void requestForEmpTransactions() {
+        JSONObject params = new JSONObject();
         try {
-            params.put("employee_id",employeeId);
-
+            params.put("employee_id", employeeId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         AndroidNetworking.post(AppURL.API_EMP_TRANSATIONS + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -147,11 +135,6 @@ public class EmployeeTransactionFragment extends DialogFragment {
                     }
                 });
     }
-
-
-
-
-
     ///////Adapter
 
     public class EmpTransactionAdapter extends RealmRecyclerViewAdapter<EmployeeTransactionsItem, EmpTransactionAdapter.MyViewHolder> {
@@ -174,17 +157,28 @@ public class EmployeeTransactionFragment extends DialogFragment {
         public void onBindViewHolder(MyViewHolder holder, int position) {
             employeeTransactionsItem = employeeTransactionsItemOrderedRealmCollection.get(position);
             holder.textvieEmpSalaryDate.setText(employeeTransactionsItem.getDate());
-            holder.textviewEmpSalaryAmount.setText(employeeTransactionsItem.getSalaryAmount());
             holder.textviewEmpSalaryType.setText(employeeTransactionsItem.getType());
-//            if()
+            if (employeeTransactionsItem.getType().equalsIgnoreCase("Salary")) {
+                holder.textviewEmpSalaryAmount.setText(employeeTransactionsItem.getSalaryAmount());
+                holder.TextviewEmpPayableAmount.setText(employeeTransactionsItem.getPayableAmount());
+                holder.linearLayoutSetEmpSalAmount.setVisibility(View.VISIBLE);
+                holder.mLinearLayoutSetPayAmount.setVisibility(View.VISIBLE);
+                holder.mLinearLayoutSetEmpAdv.setVisibility(View.GONE);
+            } else if (employeeTransactionsItem.getType().equalsIgnoreCase("Advance")) {
+                holder.mTextviewEmpAdvAmount.setText(employeeTransactionsItem.getAdvanceAmount());
+                holder.linearLayoutSetEmpSalAmount.setVisibility(View.GONE);
+                holder.mLinearLayoutSetPayAmount.setVisibility(View.GONE);
+                holder.mLinearLayoutSetEmpAdv.setVisibility(View.VISIBLE);
+            }
             holder.textviewEmpSalaryStatus.setText(employeeTransactionsItem.getTransactionStatusName());
             holder.textviewSiteNameOfEmp.setText(employeeTransactionsItem.getProjectSiteName());
-
         }
+
         @Override
         public long getItemId(int index) {
             return employeeTransactionsItemOrderedRealmCollection.get(index).getId();
         }
+
         @Override
         public int getItemCount() {
             return employeeTransactionsItemOrderedRealmCollection == null ? 0 : employeeTransactionsItemOrderedRealmCollection.size();
@@ -201,6 +195,17 @@ public class EmployeeTransactionFragment extends DialogFragment {
             TextView textviewEmpSalaryStatus;
             @BindView(R.id.textviewSiteNameOfEmp)
             TextView textviewSiteNameOfEmp;
+            @BindView(R.id.linearLayoutSetEmpSalAmount)
+            LinearLayout linearLayoutSetEmpSalAmount;
+
+            @BindView(R.id.textviewEmpPayableAmount)
+            TextView TextviewEmpPayableAmount;
+            @BindView(R.id.linearLayoutSetPayAmount)
+            LinearLayout mLinearLayoutSetPayAmount;
+            @BindView(R.id.textviewEmpAdvAmount)
+            TextView mTextviewEmpAdvAmount;
+            @BindView(R.id.linearLayoutSetEmpAdv)
+            LinearLayout mLinearLayoutSetEmpAdv;
 
             private MyViewHolder(View itemView) {
                 super(itemView);

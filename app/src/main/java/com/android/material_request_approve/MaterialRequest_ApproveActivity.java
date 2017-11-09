@@ -130,7 +130,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private TextView mTextViewExceedQuantity;
     private TextView textViewExceedQuantityForQuotation;
     private boolean isQuotationMaterial;
-    private boolean validationForQuotation,isOtherType;
+    private boolean validationForQuotation, isOtherType;
     private CurrentMaterialRvAdapter purchaseMaterialRvAdapter;
     private int unitIDForDialog;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
@@ -715,7 +715,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     private void functionForProcessingSearchResult(Intent intent) {
         validationForQuotation = false;
-        isOtherType=false;
+        isOtherType = false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             mEditTextNameMaterialAsset.clearFocus();
@@ -739,14 +739,12 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                 } else {
                     searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
-                    isOtherType=searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
-
+                    isOtherType = searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
                 }
-                if(isOtherType){
+                if (isOtherType) {
                     mEditTextQuantityMaterialAsset.setEnabled(true);
-                }else {
+                } else {
                     mEditTextQuantityMaterialAsset.setEnabled(false);
-
                 }
             }
             Timber.d("AutoSearch complete");
@@ -894,7 +892,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         edittext_unit = dialogView.findViewById(R.id.edittext_unit);
         spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
         mTextViewExceedQuantity = dialogView.findViewById(R.id.TextViewExceedQuantity);
-        final Button buttonAapproveDisapprove = dialogView.findViewById(R.id.button_approve);
+        final Button buttonApproveDisapprove = dialogView.findViewById(R.id.button_approve);
         final Button button_dismiss = dialogView.findViewById(R.id.button_dismiss);
         Button button_for_edit = dialogView.findViewById(R.id.button_for_edit);
         editText_name_material_asset.setText(arrPurchaseMaterialListItems.get(position).getItem_name());
@@ -934,16 +932,16 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             }
         });
         if (isApprove) {
-            buttonAapproveDisapprove.setText("Approve");
+            buttonApproveDisapprove.setText("Approve");
             button_for_edit.setVisibility(View.VISIBLE);
         } else {
-            buttonAapproveDisapprove.setText("Dispprove");
+            buttonApproveDisapprove.setText("Disapprove");
             button_for_edit.setVisibility(View.GONE);
         }
-        buttonAapproveDisapprove.setOnClickListener(new View.OnClickListener() {
+        buttonApproveDisapprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (buttonAapproveDisapprove.getText().toString().equalsIgnoreCase("Approve")) {
+                if (buttonApproveDisapprove.getText().toString().equalsIgnoreCase("Approve")) {
                     realm = Realm.getDefaultInstance();
                     if (TextUtils.isEmpty(editText_quantity_material_asset.getText().toString())) {
                         editText_quantity_material_asset.setError("Please Enter Quantity");
@@ -958,8 +956,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     } else {
                         approveDisapproveMaterial(3, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                     }
-                } else if (buttonAapproveDisapprove.getText().toString().equalsIgnoreCase("Dispprove")) {
-                    if (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))) {
+                } else if (buttonApproveDisapprove.getText().toString().equalsIgnoreCase("Disapprove")) {
+                    if (strUserRole.toLowerCase().contains("admin")/*strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))*/) {
                         approveDisapproveMaterial(6, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                     } else {
                         approveDisapproveMaterial(4, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
@@ -999,7 +997,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         try {
             if (!isMoveIndent) {
                 int indexItemUnit = spinner_select_units.getSelectedItemPosition();
-                int userId;
+//                int userId;
                 if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
                     unitIDForDialog = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
                     params.put("unit_id", unitIDForDialog);
@@ -1007,10 +1005,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 params.put("material_request_component_id", materialRequestComponentId);
                 params.put("change_component_status_id_to", statusId);
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-                if (editText_quantity_material_asset.getText().toString() != null) {
+                if (!TextUtils.isEmpty(editText_quantity_material_asset.getText().toString())) {
                     params.put("quantity", editText_quantity_material_asset.getText().toString());
                 }
-                if (editextDialogRemark.getText().toString() != null) {
+                if (!TextUtils.isEmpty(editextDialogRemark.getText().toString())) {
                     params.put("remark", editextDialogRemark.getText().toString());
                 } else {
                     params.put("remark", "");
