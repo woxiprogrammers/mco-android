@@ -43,8 +43,6 @@ public class AssetReadingsListDataItem extends RealmObject {
     private int id;
     @SerializedName("fuel_per_unit")
     private String fuelPerUnit;
-    @PrimaryKey
-    private String primaryKey = id + date;/* = new Random().nextInt((999999) + 11) + new Random().nextInt((999999) + 11);*/
 
     public void setStartReading(String startReading) {
         this.startReading = startReading;
@@ -119,14 +117,6 @@ public class AssetReadingsListDataItem extends RealmObject {
     }
     ///////////////////
 
-    public String getPrimaryKey() {
-        return primaryKey;
-    }
-
-    public void setPrimaryKey(String primaryKey) {
-        this.primaryKey = primaryKey;
-    }
-
     public void setDate(String date) {
         this.date = date;
     }
@@ -173,15 +163,5 @@ public class AssetReadingsListDataItem extends RealmObject {
 
     public int getTotalTopUp() {
         return totalTopUp;
-    }
-
-    // local defined primary key
-    @SuppressLint("DefaultLocale")
-    public void compoundPrimaryKey() {
-        if (!isManaged()) {
-            // only un-managed objects needs compound key
-            int randomNum = new Random().nextInt((999999) + 11);
-            this.primaryKey = String.format("%s%d%d", this.date.replaceAll("[^a-zA-Z]+", ""), this.id, randomNum);
-        }
     }
 }
