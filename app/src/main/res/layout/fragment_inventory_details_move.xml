@@ -33,11 +33,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:checked="true"
-
                     android:text="@string/move_out"
                     android:textSize="16dp"/>
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -45,10 +43,10 @@
                 android:layout_gravity="right"
                 android:layout_marginBottom="4dp"
                 android:layout_marginRight="@dimen/dimen_8dp"
-                android:visibility="gone"
                 android:background="@drawable/background_button_pressed"
                 android:orientation="horizontal"
-                android:padding="4dp">
+                android:padding="4dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -80,27 +78,35 @@
                     android:textColor="@color/colorTextLight"/>
 
                 <FrameLayout
-                    android:id="@+id/frameLayout_UnitSpinner"
+                    android:id="@+id/frameLayoutFirst"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background">
-                <Spinner
-                    android:id="@+id/destination_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/destination_array"
-                    android:padding="@dimen/dimen_5dp"
-                    />
+
+                    <Spinner
+                        android:id="@+id/destination_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/destination_array"
+                        android:padding="@dimen/dimen_5dp"
+                        />
                 </FrameLayout>
 
-                <Spinner
-                    android:id="@+id/source_spinner"
+                <FrameLayout
+                    android:id="@+id/frameLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:entries="@array/destination_array_move_in"
-                    android:padding="@dimen/dimen_5dp"
                     android:visibility="gone"
-                    />
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/source_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/destination_array_move_in"
+                        android:padding="@dimen/dimen_5dp"
+                        />
+                </FrameLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -123,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/linearLayoutMaterialSite"
                 android:layout_width="match_parent"
@@ -141,8 +148,8 @@
                 <EditText
                     android:id="@+id/editTexttProjName"
                     android:layout_width="match_parent"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
             <LinearLayout
@@ -181,8 +188,6 @@
                         android:layout_height="wrap_content"
                         android:text="Unit:"
                         android:textColor="@color/colorTextLight"/>
-
-
 
                     <FrameLayout
                         android:id="@+id/frameLayout"
@@ -248,8 +253,8 @@
                         android:id="@+id/edit_text_inTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -267,10 +272,10 @@
 
                     <EditText
                         android:id="@+id/edit_text_outTime"
-                        android:focusable="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -290,8 +295,8 @@
                     android:id="@+id/editText_Date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:focusable="false"/>
             </LinearLayout>
 
             <LinearLayout

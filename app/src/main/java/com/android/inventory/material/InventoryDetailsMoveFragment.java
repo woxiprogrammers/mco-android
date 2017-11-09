@@ -129,6 +129,10 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     EditText editTexttProjName;
     @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
+    @BindView(R.id.frameLayoutFirst)
+    FrameLayout mFrameLayoutFirst;
+    @BindView(R.id.frameLayout1)
+    FrameLayout mFrameLayout1;
     private View mParentView;
     private String strDate;
     private String strVehicleNumber;
@@ -163,7 +167,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         Bundle args = new Bundle();
         InventoryDetailsMoveFragment fragment = new InventoryDetailsMoveFragment();
         fragment.setArguments(args);
-        inventoryComponentId=inventoryCompId;
+        inventoryComponentId = inventoryCompId;
         return fragment;
     }
 
@@ -460,8 +464,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 if (isChecked) {
                     text_ViewSetSelectedTextName.setText(getString(R.string.site_name));
                     checkboxMoveInOut.setText(getString(R.string.move_out));
-                    spinnerDestinations.setVisibility(View.VISIBLE);
-                    sourceMoveInSpinner.setVisibility(View.GONE);
+                    mFrameLayoutFirst.setVisibility(View.VISIBLE);
+                    mFrameLayout1.setVisibility(View.GONE);
                     llChallanNumber.setVisibility(View.GONE);
                     linearBillAmount.setVisibility(View.GONE);
                     linearLayoutMaterialSite.setVisibility(View.VISIBLE);
@@ -469,8 +473,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 } else {
                     checkboxMoveInOut.setText(getString(R.string.move_in));
                     transferType = "IN";
-                    spinnerDestinations.setVisibility(View.GONE);
-                    sourceMoveInSpinner.setVisibility(View.VISIBLE);
+                    mFrameLayoutFirst.setVisibility(View.GONE);
+                    mFrameLayout1.setVisibility(View.VISIBLE);
                     ll_forSupplierVehicle.setVisibility(View.GONE);
                     ll_forSupplierInOutTime.setVisibility(View.GONE);
                     linearLayoutMaterialSite.setVisibility(View.GONE);
