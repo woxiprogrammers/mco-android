@@ -63,7 +63,6 @@ public class AssetSummaryActivity extends AppCompatActivity {
             component_type_slug = bundleArgs.getString("component_type_slug");
 
         }
-        setAdapter();
         if (AppUtils.getInstance().checkNetworkState()) {
 
             requestAssetReadingList();
@@ -79,7 +78,7 @@ public class AssetSummaryActivity extends AppCompatActivity {
 
     private void setAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetReadingsListDataItem> assetReadingsListDataItems = realm.where(AssetReadingsListDataItem.class).findAllAsync();
+        final RealmResults<AssetReadingsListDataItem> assetReadingsListDataItems = realm.where(AssetReadingsListDataItem.class).findAll();
         AssetsReadingListingAdapter assetReadingAdapter = new AssetsReadingListingAdapter(assetReadingsListDataItems, true, true, component_type_slug);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
@@ -128,6 +127,7 @@ public class AssetSummaryActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d(String.valueOf(response));
+                                    setAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

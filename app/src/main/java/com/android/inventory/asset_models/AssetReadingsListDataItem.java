@@ -11,8 +11,6 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class AssetReadingsListDataItem extends RealmObject {
-    @PrimaryKey
-    private String primaryKey;/* = new Random().nextInt((999999) + 11) + new Random().nextInt((999999) + 11);*/
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("date")
     private String date;
@@ -45,6 +43,8 @@ public class AssetReadingsListDataItem extends RealmObject {
     private int id;
     @SerializedName("fuel_per_unit")
     private String fuelPerUnit;
+    @PrimaryKey
+    private String primaryKey = id + date;/* = new Random().nextInt((999999) + 11) + new Random().nextInt((999999) + 11);*/
 
     public void setStartReading(String startReading) {
         this.startReading = startReading;

@@ -6,6 +6,7 @@ import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 
+import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import timber.log.Timber;
@@ -30,7 +31,7 @@ public class MyApplication extends Application {
         Realm.setDefaultConfiguration(realmConfiguration);
         if (BuildConfig.DEBUG) {
             //Realm Browser Notification Shortcut
-//            RealmBrowser.addFilesShortcut(getApplicationContext());
+            RealmBrowser.addFilesShortcut(getApplicationContext());
             //Enable Timber Log for DebugTree
             Timber.plant(new Timber.DebugTree());
         }
