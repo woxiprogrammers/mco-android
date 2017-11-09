@@ -322,7 +322,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             } else {
                 params.put("source_name", edit_text_selected_dest_name.getText().toString());
             }
-            params.put("inventory_component_id", 1);
+            params.put("inventory_component_id", inventoryComponentId);
             params.put("type", transferType);
             params.put("quantity", strQuantity);
             if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {

@@ -173,6 +173,8 @@
                         android:id="@+id/edittext_quantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:digits="1234567890."
                         android:background="@android:drawable/editbox_background_normal"/>
                 </LinearLayout>
 
