@@ -41,7 +41,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -80,7 +79,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         ButterKnife.bind(this);
 //        if (BuildConfig.DEBUG) {
         //Start Realm Browser
-        RealmBrowser.showRealmFilesNotification(getApplicationContext());
+//        RealmBrowser.showRealmFilesNotification(getApplicationContext());
 //        }
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -90,16 +89,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Calling function to initialize required views.
         initializeViews();
         setUpDrawerData();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        for (int i = 0; i < 5; i++) {
-            if (realm != null) {
-                realm.close();
-            }
-        }
     }
 
     @Override
