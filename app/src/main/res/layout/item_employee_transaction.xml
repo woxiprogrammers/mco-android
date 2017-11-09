@@ -23,13 +23,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:text="Amount : "/>
             <TextView
                 android:id="@+id/textviewEmpSalaryAmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:text="Amount"/>
         </LinearLayout>
         <LinearLayout
@@ -38,17 +38,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="1"
-            android:visibility="gone">
+            android:visibility="visible">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:text="Payable Amount : "/>
             <TextView
-                android:id="@+id/textviewEmpPayableAmount"
+                android:id="@+id/textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:text="Amount"/>
         </LinearLayout>
         <LinearLayout
@@ -61,13 +61,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:text="Advance Amount : "/>
             <TextView
                 android:id="@+id/textviewEmpAdvAmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:text="Amount"/>
         </LinearLayout>
         <LinearLayout
@@ -78,13 +78,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:text="Date : "/>
             <TextView
                 android:id="@+id/textvieEmpSalaryDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:text="Date"/>
         </LinearLayout>
         <LinearLayout
@@ -95,13 +95,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:text="Type : "/>
             <TextView
                 android:id="@+id/textviewEmpSalaryType"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:text="Type"/>
         </LinearLayout>
         <LinearLayout
@@ -112,13 +112,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:text="Status : "/>
             <TextView
                 android:id="@+id/textviewEmpSalaryStatus"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:text="Status Name"/>
         </LinearLayout>
         <LinearLayout
@@ -129,13 +129,13 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.5"
                 android:text="Project Site : "/>
             <TextView
                 android:id="@+id/textviewSiteNameOfEmp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
+                android:layout_weight="0.5"
                 android:text="Project Site"/>
         </LinearLayout>
     </LinearLayout>

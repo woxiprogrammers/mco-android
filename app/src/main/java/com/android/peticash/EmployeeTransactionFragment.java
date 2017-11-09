@@ -160,12 +160,12 @@ public class EmployeeTransactionFragment extends DialogFragment {
             holder.textviewEmpSalaryType.setText(employeeTransactionsItem.getType());
             if (employeeTransactionsItem.getType().equalsIgnoreCase("Salary")) {
                 holder.textviewEmpSalaryAmount.setText(employeeTransactionsItem.getSalaryAmount());
-                holder.TextviewEmpPayableAmount.setText(employeeTransactionsItem.getPayableAmount());
+                holder.textview.setText(String.valueOf(employeeTransactionsItem.getPayableAmount()));
                 holder.linearLayoutSetEmpSalAmount.setVisibility(View.VISIBLE);
                 holder.mLinearLayoutSetPayAmount.setVisibility(View.VISIBLE);
                 holder.mLinearLayoutSetEmpAdv.setVisibility(View.GONE);
             } else if (employeeTransactionsItem.getType().equalsIgnoreCase("Advance")) {
-                holder.mTextviewEmpAdvAmount.setText(employeeTransactionsItem.getAdvanceAmount());
+                holder.mTextviewEmpAdvAmount.setText(String.valueOf(employeeTransactionsItem.getAdvanceAmount()));
                 holder.linearLayoutSetEmpSalAmount.setVisibility(View.GONE);
                 holder.mLinearLayoutSetPayAmount.setVisibility(View.GONE);
                 holder.mLinearLayoutSetEmpAdv.setVisibility(View.VISIBLE);
@@ -198,8 +198,9 @@ public class EmployeeTransactionFragment extends DialogFragment {
             @BindView(R.id.linearLayoutSetEmpSalAmount)
             LinearLayout linearLayoutSetEmpSalAmount;
 
-            @BindView(R.id.textviewEmpPayableAmount)
-            TextView TextviewEmpPayableAmount;
+            @BindView(R.id.textview)
+            TextView textview;
+
             @BindView(R.id.linearLayoutSetPayAmount)
             LinearLayout mLinearLayoutSetPayAmount;
             @BindView(R.id.textviewEmpAdvAmount)
