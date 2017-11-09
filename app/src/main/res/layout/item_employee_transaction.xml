@@ -139,4 +139,5 @@
                 android:text="Project Site"/>
         </LinearLayout>
     </LinearLayout>
+
 </android.support.v7.widget.CardView>

@@ -44,14 +44,14 @@ public class InventoryDetails extends BaseActivity {
     private void initializeViews() {
         ButterKnife.bind(this);
         mContext = InventoryDetails.this;
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Details");
-        }
         Intent intent = getIntent();
         if (intent != null) {
             materialName = intent.getStringExtra("ClickedMaterialName");
             intCompId=intent.getIntExtra("id",-1);
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(materialName);
         }
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -138,7 +138,7 @@ public class InventoryDetails extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return InventoryDetailsMoveFragment.newInstance(materialName,intCompId);
+                    return InventoryDetailsMoveFragment.newInstance(intCompId);
                 case 1:
                     return MaterialHistoryFragment.newInstance();
                 default:

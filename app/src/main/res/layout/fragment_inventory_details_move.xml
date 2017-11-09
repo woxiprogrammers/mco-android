@@ -5,15 +5,6 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dimen_8dp"
-        android:paddingRight="@dimen/dimen_8dp"
-        android:text="Home > Inventory"
-        android:textColor="@color/colorTextLight"
-        android:textSize="@dimen/dimen_16dp"/>
-
     <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -47,19 +38,6 @@
                     android:textSize="16dp"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textview_materialCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Material Names:"
-                    android:textColor="@color/colorTextLight"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -101,6 +79,11 @@
                     android:text="Material Destination:"
                     android:textColor="@color/colorTextLight"/>
 
+                <FrameLayout
+                    android:id="@+id/frameLayout_UnitSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background">
                 <Spinner
                     android:id="@+id/destination_spinner"
                     android:layout_width="match_parent"
@@ -108,6 +91,7 @@
                     android:entries="@array/destination_array"
                     android:padding="@dimen/dimen_5dp"
                     />
+                </FrameLayout>
 
                 <Spinner
                     android:id="@+id/source_spinner"

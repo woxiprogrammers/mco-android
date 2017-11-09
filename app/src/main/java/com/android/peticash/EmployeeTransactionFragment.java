@@ -47,6 +47,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
     private int employeeId;
     private Button buttonOk;
     private ProgressBar progressBar;
+    private TextView textViewNoTransactions;
 
     @NonNull
     @Override
@@ -63,6 +64,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
         buttonOk = dialog.findViewById(R.id.btnOk);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
+        textViewNoTransactions=dialog.findViewById(R.id.textViewNoTransactions);
         requestForEmpTransactions();
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,8 +114,12 @@ public class EmployeeTransactionFragment extends DialogFragment {
                                 @Override
                                 public void onSuccess() {
                                     progressBar.setVisibility(View.GONE);
-                                    Timber.d(String.valueOf(response));
-                                    setUpAdapter();
+                                    if(response.getTransactionsData().getEmployeeTransactions().size() > 0){
+                                        setUpAdapter();
+                                        textViewNoTransactions.setVisibility(View.GONE);
+                                    }else {
+                                        textViewNoTransactions.setVisibility(View.VISIBLE);
+                                    }
                                     Timber.d("hello");
                                 }
                             }, new Realm.Transaction.OnError() {

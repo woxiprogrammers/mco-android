@@ -76,9 +76,6 @@ import static android.app.Activity.RESULT_OK;
  * A simple {@link Fragment} subclass.
  */
 public class InventoryDetailsMoveFragment extends Fragment implements View.OnClickListener, FragmentInterface {
-    private static String strMaterialName;
-    @BindView(R.id.textview_materialCount)
-    TextView text_view_materialCount;
     @BindView(R.id.destination_spinner)
     Spinner spinnerDestinations;
     @BindView(R.id.text_view_name)
@@ -162,11 +159,10 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         // Required empty public constructor
     }
 
-    public static InventoryDetailsMoveFragment newInstance(String materialName,int inventoryCompId) {
+    public static InventoryDetailsMoveFragment newInstance(int inventoryCompId) {
         Bundle args = new Bundle();
         InventoryDetailsMoveFragment fragment = new InventoryDetailsMoveFragment();
         fragment.setArguments(args);
-        strMaterialName = materialName;
         inventoryComponentId=inventoryCompId;
         return fragment;
     }
@@ -458,7 +454,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         strToDate = format.format(curDate);
         checkAvailability(inventoryComponentId);
         buttonMove.setOnClickListener(this);
-        text_view_materialCount.setText(strMaterialName);
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
