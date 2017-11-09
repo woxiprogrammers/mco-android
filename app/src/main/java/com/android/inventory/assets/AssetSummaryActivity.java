@@ -78,7 +78,7 @@ public class AssetSummaryActivity extends AppCompatActivity {
 
     private void setAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetReadingsListDataItem> assetReadingsListDataItems = realm.where(AssetReadingsListDataItem.class).findAll();
+        final RealmResults<AssetReadingsSummaryDataItem> assetReadingsListDataItems = realm.where(AssetReadingsSummaryDataItem.class).findAll();
         AssetsReadingListingAdapter assetReadingAdapter = new AssetsReadingListingAdapter(assetReadingsListDataItems, true, true, component_type_slug);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
@@ -113,9 +113,9 @@ public class AssetSummaryActivity extends AppCompatActivity {
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestAssetSummaryList")
                 .build()
-                .getAsObject(AssetReadingsListResponse.class, new ParsedRequestListener<AssetReadingsListResponse>() {
+                .getAsObject(AssetReadingsSummaryResponse.class, new ParsedRequestListener<AssetReadingsSummaryResponse>() {
                     @Override
-                    public void onResponse(final AssetReadingsListResponse response) {
+                    public void onResponse(final AssetReadingsSummaryResponse response) {
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -149,12 +149,12 @@ public class AssetSummaryActivity extends AppCompatActivity {
                 });
     }
 
-    public class AssetsReadingListingAdapter extends RealmRecyclerViewAdapter<AssetReadingsListDataItem, AssetsReadingListingAdapter.MyViewHolder> {
+    public class AssetsReadingListingAdapter extends RealmRecyclerViewAdapter<AssetReadingsSummaryDataItem, AssetsReadingListingAdapter.MyViewHolder> {
 
-        private OrderedRealmCollection<AssetReadingsListDataItem> assetReadingsListDataItemOrderedRealmCollection;
-        private AssetReadingsListDataItem assetReadingsListDataItem;
+        private OrderedRealmCollection<AssetReadingsSummaryDataItem> assetReadingsListDataItemOrderedRealmCollection;
+        private AssetReadingsSummaryDataItem assetReadingsListDataItem;
 
-        public AssetsReadingListingAdapter(@Nullable OrderedRealmCollection<AssetReadingsListDataItem> data, boolean autoUpdate, boolean updateOnModification, String current_component_type_slug) {
+        public AssetsReadingListingAdapter(@Nullable OrderedRealmCollection<AssetReadingsSummaryDataItem> data, boolean autoUpdate, boolean updateOnModification, String current_component_type_slug) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
             assetReadingsListDataItemOrderedRealmCollection = data;
