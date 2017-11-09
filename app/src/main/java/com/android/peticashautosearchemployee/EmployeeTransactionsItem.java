@@ -39,6 +39,22 @@ public class EmployeeTransactionsItem extends RealmObject{
 	@SerializedName("salary_amount")
 	private String salaryAmount;
 
+	public int getAdvanceAmount() {
+		return advanceAmount;
+	}
+
+	public void setAdvanceAmount(int advanceAmount) {
+		this.advanceAmount = advanceAmount;
+	}
+
+	public int getPayableAmount() {
+		return payableAmount;
+	}
+
+	public void setPayableAmount(int payableAmount) {
+		this.payableAmount = payableAmount;
+	}
+
 	@SerializedName("advance_amount")
 	private int advanceAmount;
 

@@ -175,6 +175,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             public void onItemClick(View view, final int position) {
                 Intent intent = new Intent(mContext, InventoryDetails.class);
                 intent.putExtra("ClickedMaterialName", materialListItems.get(position).getMaterialName());
+                intent.putExtra("id",materialListItems.get(position).getId());
 //                intent.putExtra("Array", strMaterialName);
                 startActivity(intent);
             }
