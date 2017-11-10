@@ -40,13 +40,17 @@ import timber.log.Timber;
  * Created by Sharvari on 23/8/17.
  */
 public class MaterialListFragment extends Fragment implements FragmentInterface {
+
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
+
     private MaterialListAdapter materialListAdapter;
     private View mParentView;
     private Context mContext;
     private Realm realm;
     private RealmResults<MaterialListItem> materialListItems;
+    private int pageNumber = 0;
+    private int oldPageNumber;
 
     public MaterialListFragment() {
         // Required empty public constructor
@@ -58,14 +62,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         fragment.setArguments(args);
         return fragment;
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mContext = getActivity();
-        setHasOptionsMenu(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,6 +69,12 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         ButterKnife.bind(this, mParentView);
         setAdapterForMaterialList();
         return mParentView;
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = getActivity();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -93,18 +95,16 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     private void functionForGettingData() {
         if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestInventoryResponse();
+            requestInventoryResponse(pageNumber);
         } else {
-            //Get data from local DB
             setAdapterForMaterialList();
         }
     }
 
-    private void requestInventoryResponse() {
+    private void requestInventoryResponse(int pageId) {
         JSONObject params = new JSONObject();
         try {
-            params.put("page_id", 0);
+            params.put("page_id", pageId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -117,30 +117,25 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                 .setTag("requestInventoryData")
                 .setPriority(Priority.MEDIUM)
                 .build()
-               /* .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError,"requestInventoryData");
-                    }
-                });*/
                 .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
                     @Override
                     public void onResponse(final InventoryResponse response) {
+                        if (!response.getPageid().equalsIgnoreCase("")) {
+                            pageNumber = Integer.parseInt(response.getPageid());
+                        }
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    Timber.d("Execute");
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestInventoryResponse(pageNumber);
+                                    }
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -176,7 +171,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                 Intent intent = new Intent(mContext, InventoryDetails.class);
                 intent.putExtra("ClickedMaterialName", materialListItems.get(position).getMaterialName());
                 intent.putExtra("id",materialListItems.get(position).getId());
-//                intent.putExtra("Array", strMaterialName);
                 startActivity(intent);
             }
 

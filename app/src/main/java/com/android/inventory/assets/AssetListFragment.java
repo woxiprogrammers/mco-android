@@ -35,12 +35,15 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class AssetListFragment extends Fragment implements FragmentInterface {
+
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     private Unbinder unbinder;
     private Context mContext;
     private View mParentView;
     private Realm realm;
+    private int pageNumber = 0;
+    private int oldPageNumber;
 
     public AssetListFragment() {
         // Required empty public constructor
@@ -89,7 +92,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class)/*.equalTo("isDiesel", true)*/.findAll();
+        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).findAll();
         Timber.d(String.valueOf(assetsListItems));
         AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -132,17 +135,17 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     private void functionForGettingData() {
         if (AppUtils.getInstance().checkNetworkState()) {
             //Get data from Server
-            requestAssetListOnline();
+            requestAssetListOnline(pageNumber);
         } else {
             //Get data from local DB
 //            setUpAssetListAdapter();
         }
     }
 
-    private void requestAssetListOnline() {
-        JSONObject params = new JSONObject();
+    private void requestAssetListOnline(int pageId) {
+        final JSONObject params = new JSONObject();
         try {
-            params.put("page", 0);
+            params.put("page", pageId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -157,6 +160,9 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 .getAsObject(AssetListResponse.class, new ParsedRequestListener<AssetListResponse>() {
                     @Override
                     public void onResponse(final AssetListResponse response) {
+                        if (!response.getPageid().equalsIgnoreCase("")) {
+                            pageNumber = Integer.parseInt(response.getPageid());
+                        }
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -167,8 +173,10 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    Timber.d(String.valueOf(response));
-                                    Timber.d("hello");
+                                    if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestAssetListOnline(pageNumber);
+                                    }
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
