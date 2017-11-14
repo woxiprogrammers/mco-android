@@ -17,7 +17,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_label_material_asset"
+                android:id="@+id/textViewMaterialNameSelected"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Material Name:"
@@ -45,7 +45,7 @@
                     android:textSize="@dimen/text_14sp"/>
 
                 <EditText
-                    android:id="@+id/editText_quantity_material_asset"
+                    android:id="@+id/editTextMatQuantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
@@ -69,31 +69,19 @@
                     android:textSize="@dimen/text_14sp"/>
 
                 <EditText
-                    android:id="@+id/edittext_unit"
+                    android:id="@+id/edittextMatUnit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:visibility="visible"/>
 
-                <FrameLayout
-                    android:id="@+id/frameLayoutSpinnerUnitDialog"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background"
-                    android:inputType="text"
-                    android:visibility="gone">
 
-                    <Spinner
-                        android:id="@+id/spinner_select_units"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
-                </FrameLayout>
             </LinearLayout>
         </LinearLayout>
 
 
         <TextView
-            android:id="@+id/TextViewExceedQuantity"
+            android:id="@+id/TextViewRemainingQuantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimen_8dp"
@@ -106,7 +94,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button_approve"
+                android:id="@+id/buttonToOk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

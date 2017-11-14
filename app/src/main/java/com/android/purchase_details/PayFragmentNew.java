@@ -1,5 +1,6 @@
 package com.android.purchase_details;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -55,6 +56,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
@@ -119,7 +121,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private File currentImageFile;
     private JSONArray jsonImageNameArray = new JSONArray();
     private String strChallanNumber, strVehicleNumber, strInTime, strOutTime, strInDate, strOutDate;
-
+    private TextView textViewEdit;
+    private AlertDialog alertDialog;
+    private RealmList<MaterialUnitsData> materialUnitsData;
 
     public PayFragmentNew() {
         // Required empty public constructor
@@ -218,7 +222,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
     }
 
-    private void validateEntries(){
+    private void validateEntries() {
         strChallanNumber = editTextBillumber.getText().toString();
         strVehicleNumber = editTextVehNum.getText().toString();
         strInTime = editTextInTime.getText().toString();
@@ -285,6 +289,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextOutTime.requestFocus();
         }
     }
+
     //////////////API Calls///////////////////
     private void requestForMaterialNames() {
         JSONObject params = new JSONObject();
@@ -405,14 +410,21 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         materialNamesItems = realm.where(MaterialNamesItem.class).findAll();
         View inflatedView = null;
         for (int i = 0; i < materialNamesItems.size(); i++) {
-            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, linearLayoutInflateNames, false);
+            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);
             inflatedView.setId(i);
             CheckBox checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
-            TextView textViewEdit = inflatedView.findViewById(R.id.textViewEdit);
+            textViewEdit = inflatedView.findViewById(R.id.textViewEdit);
             checkBox.setText(materialNamesItems.get(i).getMaterialName());
             linearLayoutInflateNames.addView(inflatedView);
         }
-
+        final View finalInflatedView = inflatedView;
+        inflatedView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext, "" + finalInflatedView.getId(), Toast.LENGTH_SHORT).show();
+//                openDialog(1);
+            }
+        });
     }
 
     private void setInOutTime(final EditText currentEditText) {
@@ -460,7 +472,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         editTextUpdateDate.setError(null);
     }
 
-
     private void captureImage() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
         Params params = new Params();
@@ -483,6 +494,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         intent.putExtra(Constants.KEY_PARAMS, params);
         startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
     }
+
     private void addImages(ArrayList<Image> imagesList, LinearLayout layout) {
         layout.removeAllViews();
         arrayImageFileList = new ArrayList<File>();
@@ -505,6 +517,28 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 });
             }
         }
+    }
+
+    private void openDialog(int id) {
+        realm = Realm.getDefaultInstance();
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_purchase_order_for_material, null);
+        alertDialogBuilder.setView(dialogView);
+        EditText edittextMatUnit = dialogView.findViewById(R.id.edittextMatUnit);
+        EditText editTextMatQuantity = dialogView.findViewById(R.id.editTextMatQuantity);
+        TextView textViewMaterialNameSelected = dialogView.findViewById(R.id.textViewMaterialNameSelected);
+        Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
+       /* MaterialUnitsItem materialUnitsItem=realm.where(MaterialUnitsItem.class).equalTo("unitId",id).findFirstAsync();
+        edittextMatUnit.setText(materialUnitsItem.getUnit());*/
+        buttonToOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
     }
 
     private void uploadImages_addItemToLocal(final String strTag, final String imageFor) {
@@ -535,7 +569,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                                 e.printStackTrace();
                             }
                             arrayImageFileList.remove(0);
-                            uploadImages_addItemToLocal(strTag,imageFor);
+                            uploadImages_addItemToLocal(strTag, imageFor);
                         }
 
                         @Override
@@ -551,6 +585,5 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             }
         }
     }
-
 
 }
