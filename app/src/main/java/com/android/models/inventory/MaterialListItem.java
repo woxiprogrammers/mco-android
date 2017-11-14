@@ -13,6 +13,10 @@ public class MaterialListItem extends RealmObject {
     @PrimaryKey
     @SerializedName("id")
     private int id;
+    /*@SerializedName("unit_id")
+    private int unitId;
+    @SerializedName("unit_name")
+    private String unitName;*/
     @SerializedName("quantity_in")
     private String quantityIn;
     @SerializedName("material_name")
