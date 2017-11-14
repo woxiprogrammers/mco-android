@@ -54,4 +54,5 @@ public class AppURL {
     public static final String API_GET_SYSTEM_SITES = BASE_URL + "system-project-sites";
     public static final String API_SYSTEM_UNITS = BASE_URL + "system-units";
     public static final String API_INVENTORY_CHECK_AVAILABLE_FOR_UNITS =BASE_URL + "inventory/material/check-availability?token=";
+    public static final String API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY = BASE_URL + "";
 }

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_8dp"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dimen_16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Vendor Name:-"
+                android:textColor="@color/colorTextLight"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:textColor="@color/colorTextLight"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Materials"
+                android:textColor="@color/colorTextLight"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutInflateNames"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_5dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/radioButtonUploadBills"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Bill"/>
+
+            <RadioButton
+                android:id="@+id/radioButtonCreateAmmetments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Amendment"/>
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Bill Number:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editTextBillumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutMatImg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewCaptureMatImg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:drawableTop="@android:drawable/ic_menu_camera"
+                android:gravity="center_horizontal"
+                android:text="Capture Images"/>
+
+            <View
+                android:layout_width="@dimen/dimen_20dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/textViewPickMatImg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:drawableTop="@android:drawable/ic_menu_gallery"
+                android:gravity="center_horizontal"
+                android:onClick="onViewClicked"
+                android:text="Choose Images"/>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:fadeScrollbars="false">
+
+            <LinearLayout
+                android:id="@+id/llAddMatImg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <Button
+            android:id="@+id/buttonActionGenerateGrn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:text="Generate GRN"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutToVisible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="Vehicle Number:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editTextVehNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="In Date:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextInDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"
+                        android:inputType="date"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="In Time:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextInTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"
+                        android:inputType="time"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="Out Date:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextOutDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"
+                        android:inputType="date"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="Out Time:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextOutTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"
+                        android:inputType="time"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="Bill Amount:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editTextBillAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:inputType="number"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutGrnNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="GRN Number:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editTextGrnNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutTransImg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_16dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/textViewCaptureTransImg"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:drawableTop="@android:drawable/ic_menu_camera"
+                    android:gravity="center_horizontal"
+                    android:text="Capture Images"/>
+
+                <View
+                    android:layout_width="@dimen/dimen_20dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/textViewPickTransImg"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:drawableTop="@android:drawable/ic_menu_gallery"
+                    android:gravity="center_horizontal"
+                    android:onClick="onViewClicked"
+                    android:text="Choose Images"/>
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_4dp"
+                android:fadeScrollbars="false">
+
+                <LinearLayout
+                    android:id="@+id/ll_PaymentImageLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/editextTransRemark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFD740"
+                    android:hint="@string/tap_too_add_note"
+                    android:onClick="addNote"
+                    android:padding="@dimen/dimen_16dp"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_16dp"/>
+            </android.support.v7.widget.CardView>
+
+            <Button
+                android:id="@+id/buttonActionSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="@dimen/dimen_5dp"
+                android:text="Submit"
+                android:visibility="visible"/>
+
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -28,8 +28,6 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
