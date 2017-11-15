@@ -1057,14 +1057,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     try {
-                                        if (isApprove) {
+                                        /*if (isApprove) {
                                             linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                                             buttonMoveToIndent.setVisibility(View.VISIBLE);
                                         }
                                         if (isMoveIndent) {
                                             buttonMoveToIndent.setVisibility(View.INVISIBLE);
                                             linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-                                        }
+                                        }*/
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -1402,6 +1402,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             Button buttonMoveToIndent;
             @BindView(R.id.textview_Date)
             TextView textViewDate;
+            @BindView(R.id.textviewApprovedBy)
+            TextView textviewApprovedBy;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
@@ -1448,9 +1450,23 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.buttonMoveToIndent.setVisibility(View.GONE);
             holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
             if (purchaseMaterialListItem.getHave_access() != null) {
-                if (((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin)))) && !(strStatus.equalsIgnoreCase("in-indent"))) {
+                if(!purchaseMaterialListItem.getApprovedBy().isEmpty()){
+                    holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
+                }
+
+            }
+            if (purchaseMaterialListItem.getHave_access() != null) {
+                /*if (((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))))*//* && !(strStatus.equalsIgnoreCase("in-indent"))*//*) {
+                    Log.i("@@",purchaseMaterialListItem.getHave_access());
+                    Log.i("@@strStatus",strStatus);
+                    Log.i("@@strUserRole",strUserRole);
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                 } else {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                }*/
+                if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")){
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                }else {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
             }

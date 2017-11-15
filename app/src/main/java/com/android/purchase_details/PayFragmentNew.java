@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -121,9 +122,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private File currentImageFile;
     private JSONArray jsonImageNameArray = new JSONArray();
     private String strChallanNumber, strVehicleNumber, strInTime, strOutTime, strInDate, strOutDate;
-    private TextView textViewEdit;
+    private TextView textViewIdDummy;
+    private FrameLayout frameLayoutEdit;
     private AlertDialog alertDialog;
     private RealmList<MaterialUnitsData> materialUnitsData;
+    private View inflatedView = null;
 
     public PayFragmentNew() {
         // Required empty public constructor
@@ -345,7 +348,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void requestToGenerateGrn() {
         JSONObject params = new JSONObject();
         try {
-            params.put("", "");
+            params.put("purchase_order_component_id", "");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -408,23 +411,25 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void inflateViews() {
         realm = Realm.getDefaultInstance();
         materialNamesItems = realm.where(MaterialNamesItem.class).findAll();
-        View inflatedView = null;
         for (int i = 0; i < materialNamesItems.size(); i++) {
             inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);
             inflatedView.setId(i);
             CheckBox checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
-            textViewEdit = inflatedView.findViewById(R.id.textViewEdit);
+            frameLayoutEdit = inflatedView.findViewById(R.id.frameLayoutEdit);
+            textViewIdDummy = inflatedView.findViewById(R.id.textViewIdDummy);
+            textViewIdDummy.setText(String.valueOf(i));
             checkBox.setText(materialNamesItems.get(i).getMaterialName());
             linearLayoutInflateNames.addView(inflatedView);
+            frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView textViewId = view.findViewById(R.id.textViewIdDummy);
+                    int intTemp = Integer.parseInt(textViewId.getText().toString());
+                    Toast.makeText(mContext, "" + materialNamesItems.get(intTemp).getId(), Toast.LENGTH_SHORT).show();
+                    openDialog(Integer.parseInt(textViewId.getText().toString()));
+                }
+            });
         }
-        final View finalInflatedView = inflatedView;
-        inflatedView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext, "" + finalInflatedView.getId(), Toast.LENGTH_SHORT).show();
-//                openDialog(1);
-            }
-        });
     }
 
     private void setInOutTime(final EditText currentEditText) {
@@ -528,8 +533,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         EditText editTextMatQuantity = dialogView.findViewById(R.id.editTextMatQuantity);
         TextView textViewMaterialNameSelected = dialogView.findViewById(R.id.textViewMaterialNameSelected);
         Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
-       /* MaterialUnitsItem materialUnitsItem=realm.where(MaterialUnitsItem.class).equalTo("unitId",id).findFirstAsync();
-        edittextMatUnit.setText(materialUnitsItem.getUnit());*/
+        MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", id).findFirst();
+        if (materialNamesItem != null) {
+            Timber.d(String.valueOf(materialNamesItem));
+        }
+//        edittextMatUnit.setText(materialNamesItem.getMaterialUnits().get(0).getUnit());
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

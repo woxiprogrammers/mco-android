@@ -46,6 +46,17 @@ public class PurchaseMaterialListItem extends RealmObject {
     @SerializedName("have_access")
     private String have_access;
 
+    @SerializedName("approved_by")
+    private String approvedBy;
+
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
     public void setHave_access(String have_access) {
         this.have_access = have_access;
     }
