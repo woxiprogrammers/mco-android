@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -113,6 +114,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     EditText editextTransRemark;
     @BindView(R.id.buttonActionSubmit)
     Button buttonActionSubmit;
+
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
+
+    @BindView(R.id.textViewVendor)
+    TextView textViewVendor;
     @BindView(R.id.linearLayoutToVisible)
     LinearLayout linearLayoutToVisible;
     @BindView(R.id.linearLayoutInflateNames)
@@ -139,18 +146,21 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private PurchaseBillListItem purchaseBIllDetailsItems;
     private int getId;
     private boolean isCheckedMaterial;
+    private CheckBox checkBox;
+    private static String strVendorName;
 
     public PayFragmentNew() {
         // Required empty public constructor
     }
 
-    public static PayFragmentNew newInstance(int purchaseOrderId) {
+    public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor) {
 
         Bundle args = new Bundle();
 
         PayFragmentNew fragment = new PayFragmentNew();
         fragment.setArguments(args);
         orderId = purchaseOrderId;
+        strVendorName = strVendor;
         return fragment;
     }
 
@@ -161,6 +171,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
         requestForMaterialNames();
+        if (strVendorName != null) {
+            textViewVendor.setText("Vendor Name : - " + strVendorName);
+        }
         return view;
     }
 
@@ -214,6 +227,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 pickImage();
                 break;
             case R.id.buttonActionSubmit:
+                validateEntries();
                 break;
         }
     }
@@ -273,6 +287,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextInDate.setFocusableInTouchMode(true);
             editTextInDate.requestFocus();
             editTextInDate.setError(getString(R.string.please_enter) + " " + "Date");
+            return;
         } else {
             editTextInDate.setError(null);
             editTextInDate.clearFocus();
@@ -307,6 +322,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextOutTime.setError(null);
             editTextOutTime.requestFocus();
         }
+        uploadImages_addItemToLocal("requestToPayment", "");
     }
 
     //////////////API Calls///////////////////
@@ -363,11 +379,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     private void requestToGenerateGrn() {
 
-        if(!isCheckedMaterial){
-            Toast.makeText(mContext, "Please Select at least one material", Toast.LENGTH_LONG).show();
+        if (!isCheckedMaterial) {
+            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
             return;
         }
-        if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
@@ -402,7 +418,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             e.printStackTrace();
         }
         Timber.d(String.valueOf(jsonArray));
-        //ToDO Add API URL.................
         AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToGenerateGrn")
                 .addJSONObjectBody(params)
@@ -414,10 +429,15 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            JSONObject jsonObject=response.getJSONObject("data");
-                            String grnNUm=jsonObject.getString("grn");
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            String grnNUm = jsonObject.getString("grn");
                             editTextGrnNum.setText(grnNUm);
+                            buttonActionGenerateGrn.setVisibility(View.GONE);
                             linearLayoutToVisible.setVisibility(View.VISIBLE);
+                            checkBox.setEnabled(false);
+                            linearLayoutInflateNames.setEnabled(false);
+                            frameLayoutEdit.setEnabled(false);
+                            linearLayoutMatImg.setVisibility(View.GONE);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -431,28 +451,24 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToPayment() {
-        /*vehicle_number => MH12 1656
-        in_time => 2017-11-05 11:09:58
-        out_time => 2017-11-05 15:09:58
-        bill_amount => 20000
-        remark => test bill and moved to inventoryy
-        type => upload-bill
-        bill_number => 3333
-        grn => GRN20171146*/
         JSONObject params = new JSONObject();
         try {
             params.put("vehicle_number", strVehicleNumber);
             params.put("in_time", strInDate + " " + strInTime);
             params.put("out_time", strOutDate + " " + strOutTime);
-            params.put("bill_amount", editTextBillAmount.getText().toString());
+            if (!editTextBillAmount.getText().toString().isEmpty()) {
+                params.put("bill_amount", editTextBillAmount.getText().toString());
+
+            }
             params.put("remark", editextTransRemark.getText().toString());
             params.put("bill_number", strChallanNumber);
+            params.put("type", "upload-bill");
             params.put("grn", editTextGrnNum.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         //ToDO Add API URL.................
-        AndroidNetworking.post(AppURL.API_PURCHAE_ORDER_BILL_PAYMENT + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_PAYMENT_URL + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToPayment")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -463,6 +479,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            ((PayAndBillsActivity) mContext).moveFragments(true);
+                            clearData();
+                            nestedScrollView.setVisibility(View.GONE);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -483,16 +503,35 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             final MaterialNamesItem materialNamesItem = materialNamesItems.get(i);
             inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);
             inflatedView.setId(i);
-            CheckBox checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
+            checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
                     if (b) {
-                        isCheckedMaterial=true;
+                        isCheckedMaterial = true;
                         arrayList.add(materialNamesItem.getId());
+                        frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+//                                if (checkBox.isChecked()) {
+                                TextView textViewId = view.findViewById(R.id.textViewIdDummy);
+                                int intTemp = Integer.parseInt(textViewId.getText().toString());
+                                openDialog(intTemp);
+//                                } else {
+//                                    Toast.makeText(mContext, "Please select material first", Toast.LENGTH_LONG).show();
+//                                }
+                            }
+                        });
                     } else {
-                        isCheckedMaterial=false;
+                        isCheckedMaterial = false;
+                        frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Please select material first", Toast.LENGTH_LONG).show();
+
+                            }
+                        });
                         try {
                             arrayList.remove(materialNamesItem.getId());
                         } catch (Exception e) {
@@ -501,19 +540,13 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     }
                 }
             });
+            checkBox.setChecked(false);
             frameLayoutEdit = inflatedView.findViewById(R.id.frameLayoutEdit);
             textViewIdDummy = inflatedView.findViewById(R.id.textViewIdDummy);
             textViewIdDummy.setText(materialNamesItem.getId() + "");
             checkBox.setText(materialNamesItem.getMaterialName());
             linearLayoutInflateNames.addView(inflatedView);
-            frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    TextView textViewId = view.findViewById(R.id.textViewIdDummy);
-                    int intTemp = Integer.parseInt(textViewId.getText().toString());
-                    openDialog(intTemp);
-                }
-            });
+
         }
     }
 
@@ -612,6 +645,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void openDialog(int id) {
         getId = id;
         realm = Realm.getDefaultInstance();
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_purchase_order_for_material, null);
         alertDialogBuilder.setView(dialogView);
@@ -619,9 +653,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         final EditText editTextMatQuantity = dialogView.findViewById(R.id.editTextMatQuantity);
         TextView textViewMaterialNameSelected = dialogView.findViewById(R.id.textViewMaterialNameSelected);
         Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
-        RealmResults<MaterialNamesItem> materialNamesItems = realm.where(MaterialNamesItem.class).findAll();
-        Log.i("@@Realm", materialNamesItems.toString());
-
         MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
         if (materialNamesItem != null) {
             Timber.d(String.valueOf(materialNamesItem));
@@ -753,6 +784,16 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextBillAmount.setEnabled(true);
             editTextGrnNum.setEnabled(false);
         }
+    }
+
+    private void clearData() {
+        editTextBillumber.setText("");
+        editTextVehNum.setText("");
+        editTextInTime.setText("");
+        editTextOutTime.setText("");
+        editTextBillAmount.setText("");
+        editTextInDate.setText("");
+        editTextOutDate.setText("");
     }
 
 }
