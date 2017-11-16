@@ -511,27 +511,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     if (b) {
                         isCheckedMaterial = true;
                         arrayList.add(materialNamesItem.getId());
-                        frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-//                                if (checkBox.isChecked()) {
-                                TextView textViewId = view.findViewById(R.id.textViewIdDummy);
-                                int intTemp = Integer.parseInt(textViewId.getText().toString());
-                                openDialog(intTemp);
-//                                } else {
-//                                    Toast.makeText(mContext, "Please select material first", Toast.LENGTH_LONG).show();
-//                                }
-                            }
-                        });
                     } else {
                         isCheckedMaterial = false;
-                        frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Please select material first", Toast.LENGTH_LONG).show();
-
-                            }
-                        });
                         try {
                             arrayList.remove(materialNamesItem.getId());
                         } catch (Exception e) {
@@ -545,6 +526,23 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             textViewIdDummy = inflatedView.findViewById(R.id.textViewIdDummy);
             textViewIdDummy.setText(materialNamesItem.getId() + "");
             checkBox.setText(materialNamesItem.getMaterialName());
+            frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    TextView textViewId = view.findViewById(R.id.textViewIdDummy);
+                    int intTemp = Integer.parseInt(textViewId.getText().toString());
+                    MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", intTemp).findFirst();
+                    int index = materialNamesItems.indexOf(materialNamesItem);
+                    View currentView = linearLayoutInflateNames.findViewById(index);
+                    CheckBox currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
+                    if (currentCheckbox.isChecked()) {
+                        openDialog(intTemp);
+                    } else {
+                        Toast.makeText(getActivity(), "Please Select Material", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
             linearLayoutInflateNames.addView(inflatedView);
 
         }
