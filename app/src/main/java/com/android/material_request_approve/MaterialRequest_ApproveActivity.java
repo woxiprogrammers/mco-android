@@ -1470,7 +1470,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
             }
-            if (strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) {
+            if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) && purchaseMaterialListItem.getHave_access().contains("approve") ) {
 //                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                 holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
             } else {

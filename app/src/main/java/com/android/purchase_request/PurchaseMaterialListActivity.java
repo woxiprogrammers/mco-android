@@ -131,7 +131,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         deleteExistingItemEntries();
-//        requestUsersWithApproveAcl();
+        requestUsersWithApproveAcl();
 //        setUpUsersSpinnerValueChangeListener();
         setUpMaterialListAdapter();
 //        setUpCurrentMaterialListAdapter();
