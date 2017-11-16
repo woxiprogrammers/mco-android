@@ -21,6 +21,7 @@ public class MaterialNamesItem extends RealmObject {
     private int materialRequestComponentId;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
+    private int quantity;
     public int getMaterialRequestComponentId() {
         return materialRequestComponentId;
     }
@@ -43,6 +44,14 @@ public class MaterialNamesItem extends RealmObject {
 
     public void setMaterialImages(RealmList<MaterialImagesItem> materialImages) {
         this.materialImages = materialImages;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public int getId() {

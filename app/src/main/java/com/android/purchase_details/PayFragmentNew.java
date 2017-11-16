@@ -28,6 +28,10 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.material_request_approve.MaterialSearchResponse;
+import com.android.material_request_approve.MaterialSearchResponseData;
+import com.android.material_request_approve.SearchMaterialListItem;
+import com.android.material_request_approve.UnitQuantityItem;
 import com.android.models.purchase_bill.*;
 import com.android.models.purchase_bill.PurchaseBillListItem;
 import com.android.utils.AppConstants;
@@ -133,6 +137,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private RealmList<MaterialUnitsData> materialUnitsData;
     private View inflatedView = null;
     private PurchaseBillListItem purchaseBIllDetailsItems;
+    private int getId;
+    private boolean isCheckedMaterial;
 
     public PayFragmentNew() {
         // Required empty public constructor
@@ -357,23 +363,43 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     private void requestToGenerateGrn() {
 
-        JSONArray jsonArray=new JSONArray();
+        if(!isCheckedMaterial){
+            Toast.makeText(mContext, "Please Select at least one material", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         JSONObject params = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
         for (int intKey : arrayList) {
-            for (MaterialNamesItem mItem :
-                    materialNamesItems) {
+            for (MaterialNamesItem mItem : materialNamesItems) {
                 if (mItem.getId() == intKey) {
                     try {
-                        params.put("purchase_order_component_id", mItem.getId());
-                        params.put("unit_id", mItem.getMaterialUnits().get(0).getUnitId());
-                        params.put("images", jsonImageNameArray);
-                        jsonArray.put(params);
+                        JSONObject jsonObject = new JSONObject();
+                        if (mItem.getQuantity() == 0) {
+                            Toast.makeText(mContext, "Please add Quantity for selected material", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        jsonObject.put("purchase_order_component_id", mItem.getId());
+                        jsonObject.put("quantity", mItem.getQuantity());
+                        jsonObject.put("unit_id", mItem.getMaterialUnits().get(0).getUnitId());
+                        jsonArray.put(jsonObject);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
+        }
+
+        try {
+            params.put("images", jsonImageNameArray);
+            params.put("item_list", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         Timber.d(String.valueOf(jsonArray));
         //ToDO Add API URL.................
@@ -388,6 +414,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            JSONObject jsonObject=response.getJSONObject("data");
+                            String grnNUm=jsonObject.getString("grn");
+                            editTextGrnNum.setText(grnNUm);
                             linearLayoutToVisible.setVisibility(View.VISIBLE);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -402,14 +431,28 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToPayment() {
+        /*vehicle_number => MH12 1656
+        in_time => 2017-11-05 11:09:58
+        out_time => 2017-11-05 15:09:58
+        bill_amount => 20000
+        remark => test bill and moved to inventoryy
+        type => upload-bill
+        bill_number => 3333
+        grn => GRN20171146*/
         JSONObject params = new JSONObject();
         try {
-            params.put("", "");
+            params.put("vehicle_number", strVehicleNumber);
+            params.put("in_time", strInDate + " " + strInTime);
+            params.put("out_time", strOutDate + " " + strOutTime);
+            params.put("bill_amount", editTextBillAmount.getText().toString());
+            params.put("remark", editextTransRemark.getText().toString());
+            params.put("bill_number", strChallanNumber);
+            params.put("grn", editTextGrnNum.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         //ToDO Add API URL.................
-        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_PAYMENT_URL + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_PURCHAE_ORDER_BILL_PAYMENT + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToPayment")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -444,9 +487,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
                     if (b) {
+                        isCheckedMaterial=true;
                         arrayList.add(materialNamesItem.getId());
                     } else {
+                        isCheckedMaterial=false;
                         try {
                             arrayList.remove(materialNamesItem.getId());
                         } catch (Exception e) {
@@ -564,18 +610,19 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void openDialog(int id) {
+        getId = id;
         realm = Realm.getDefaultInstance();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_purchase_order_for_material, null);
         alertDialogBuilder.setView(dialogView);
         EditText edittextMatUnit = dialogView.findViewById(R.id.edittextMatUnit);
-        EditText editTextMatQuantity = dialogView.findViewById(R.id.editTextMatQuantity);
+        final EditText editTextMatQuantity = dialogView.findViewById(R.id.editTextMatQuantity);
         TextView textViewMaterialNameSelected = dialogView.findViewById(R.id.textViewMaterialNameSelected);
         Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
         RealmResults<MaterialNamesItem> materialNamesItems = realm.where(MaterialNamesItem.class).findAll();
         Log.i("@@Realm", materialNamesItems.toString());
 
-        MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", id).findFirst();
+        MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
         if (materialNamesItem != null) {
             Timber.d(String.valueOf(materialNamesItem));
             edittextMatUnit.setText(materialNamesItem.getMaterialUnits().get(0).getUnit());
@@ -586,7 +633,32 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertDialog.dismiss();
+                realm = Realm.getDefaultInstance();
+                try {
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
+                            materialNamesItem.setQuantity(Integer.parseInt(editTextMatQuantity.getText().toString()));
+                            realm.copyToRealmOrUpdate(materialNamesItem);
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            Timber.d("Realm Execution Successful");
+                            alertDialog.dismiss();
+                        }
+                    }, new Realm.Transaction.OnError() {
+                        @Override
+                        public void onError(Throwable error) {
+                            AppUtils.getInstance().logRealmExecutionError(error);
+                        }
+                    });
+                } finally {
+                    if (realm != null) {
+                        realm.close();
+                    }
+                }
             }
         });
         alertDialog = alertDialogBuilder.create();

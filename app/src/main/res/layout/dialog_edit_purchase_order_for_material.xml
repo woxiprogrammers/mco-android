@@ -86,6 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimen_8dp"
             android:text="Remaining Quantity"
+            android:visibility="gone"
             android:textColor="@color/colorAccent"/>
 
         <RelativeLayout
