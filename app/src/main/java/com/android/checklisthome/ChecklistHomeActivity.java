@@ -1,4 +1,4 @@
-package com.android.dummy;
+package com.android.checklisthome;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.android.constro360.R;
 
-public class TestChecklistActivity extends AppCompatActivity {
+public class ChecklistHomeActivity extends AppCompatActivity {
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -33,7 +33,7 @@ public class TestChecklistActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_activity_checklist);
+        setContentView(R.layout.activity_checklist_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.title_activity_checklist);
@@ -50,7 +50,7 @@ public class TestChecklistActivity extends AppCompatActivity {
     }
 
     public void onViewClicked(View view) {
-        startActivity(new Intent(this, TestChecklistActionActivity.class));
+        startActivity(new Intent(this, CheckListActionActivity.class));
     }
 
     /*@Override

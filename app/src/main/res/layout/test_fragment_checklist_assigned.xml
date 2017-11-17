@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:background="@color/colorWhite"
               android:orientation="vertical"
-              tools:context="com.android.dummy.TestChecklistActivity$PlaceholderFragment">
+              tools:context="com.android.checklisthome.ChecklistHomeActivity$PlaceholderFragment">
 
     <Button
         android:onClick="onViewClicked"
