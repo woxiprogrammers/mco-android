@@ -21,6 +21,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -70,6 +71,7 @@
         <activity android:name="com.android.peticash.AutoSuggestEmployee">
         </activity>
         <activity android:name="com.android.peticash.PeticashFormActivity">
+
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -84,5 +86,8 @@
         <activity android:name="com.android.inventory.assets.AssetSummaryActivity"/>
         <activity android:name="com.android.peticash.ActivityEmpSalaryTransactionDetails">
         </activity>
+        <activity android:name="com.android.checklisthome.CheckListActionActivity">
+        </activity>
     </application>
+
 </manifest>
