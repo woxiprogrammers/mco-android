@@ -199,8 +199,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
     public void onAddClicked() {
-        setUpUsersSpinnerValueChangeListener();
-        requestUsersWithApproveAcl(getString(R.string.approve_material_request));
+//        setUpUsersSpinnerValueChangeListener();
+//        requestUsersWithApproveAcl(getString(R.string.approve_material_request));
         setUpCurrentMaterialListAdapter();
         linerLayoutItemForMaterialRequest.setVisibility(View.VISIBLE);
         mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.GONE);
@@ -241,14 +241,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(materialListRealmResults_New);
         JSONObject params = new JSONObject();
-        int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
+        /*int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId;
         if (availableUserArray != null && !availableUserArray.isEmpty()) {
             userId = availableUserArray.get(index).getId();
         } else {
             Toast.makeText(mContext, "Please wait, getting users", Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
         JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
         JSONObject currentJonObject;
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_New) {
@@ -267,7 +267,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             params.put("item_list", jsonArrayPurchaseMaterialListItems);
             params.put("is_material_request", true);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("assigned_to", userId);
+//            params.put("assigned_to", userId);
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
@@ -1470,7 +1470,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
             }
-            if (strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) {
+            if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) && purchaseMaterialListItem.getHave_access().contains("approve") ) {
 //                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                 holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
             } else {

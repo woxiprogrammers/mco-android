@@ -132,7 +132,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         }
         deleteExistingItemEntries();
         requestUsersWithApproveAcl();
-        setUpUsersSpinnerValueChangeListener();
+//        setUpUsersSpinnerValueChangeListener();
         setUpMaterialListAdapter();
 //        setUpCurrentMaterialListAdapter();
         createAlertDialog();
@@ -290,14 +290,14 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_prAssigned = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAll();
         List<PurchaseMaterialListItem> purchaseMaterialListItems_prAssigned = realm.copyFromRealm(purchaseMaterialListRealmResult_prAssigned);
         JSONObject params = new JSONObject();
-        int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
+        /*int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId;
         if (availableUserArray != null && !availableUserArray.isEmpty()) {
             userId = availableUserArray.get(index).getId();
         } else {
             Toast.makeText(mContext, "Please wait, getting users", Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
         JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
         JSONObject currentJonObject;
         JSONArray jsonArrayMaterialRequestCompoId = new JSONArray();
@@ -319,7 +319,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         try {
             params.put("item_list", jsonArrayPurchaseMaterialListItems);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("assigned_to", userId);
+//            params.put("assigned_to", userId);
             if (jsonArrayMaterialRequestCompoId.length() > 0) {
                 params.put("material_request_component_id", jsonArrayMaterialRequestCompoId);
             }
@@ -352,7 +352,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
+                        AppUtils.getInstance().logApiError(anError,     "submitPurchaseRequest");
                     }
                 });
     }

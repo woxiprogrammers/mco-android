@@ -194,11 +194,12 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     public void onItemClick(View view, final int position) {
                         PayAndBillsActivity.isForViewOnly = true;
                         PayAndBillsActivity.idForBillItem = purchaseBillListItems.get(position).getPurchaseBillGrn();
-                        if(!isFromPurchaseRequestHome) {
+                        /*if(!isFromPurchaseRequestHome) {
                             ((PayAndBillsActivity) mContext).moveFragments(false);
                         }
-                        /*Intent intent=new Intent(mContext,PayAndBillsActivity.class);
-                        startActivity(intent);*/
+                        Intent intent=new Intent(mContext,PayAndBillsActivity.class);
+                        startActivity(intent);
+                        */
                     }
 
                     @Override
