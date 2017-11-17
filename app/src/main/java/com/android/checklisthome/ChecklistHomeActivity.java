@@ -99,8 +99,7 @@ public class ChecklistHomeActivity extends AppCompatActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.test_fragment_checklist_assigned, container, false);
             //////////////////////
             return rootView;

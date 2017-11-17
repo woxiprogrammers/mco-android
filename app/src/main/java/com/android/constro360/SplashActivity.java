@@ -3,6 +3,7 @@ package com.android.constro360;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -45,7 +46,7 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
-                if (isLoggedIn) {
+                if (isLoggedIn && !TextUtils.isEmpty(AppUtils.getInstance().getCurrentToken())) {
                     requestLatestAcl();
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
