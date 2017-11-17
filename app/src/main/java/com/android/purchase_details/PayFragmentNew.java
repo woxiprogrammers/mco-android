@@ -322,7 +322,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextOutTime.setError(null);
             editTextOutTime.requestFocus();
         }
-        uploadImages_addItemToLocal("requestToPayment", "");
+        uploadImages_addItemToLocal("requestToPayment", "post_grn_bill_transaction");
     }
 
     //////////////API Calls///////////////////
@@ -458,12 +458,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             params.put("out_time", strOutDate + " " + strOutTime);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
                 params.put("bill_amount", editTextBillAmount.getText().toString());
-
             }
             params.put("remark", editextTransRemark.getText().toString());
             params.put("bill_number", strChallanNumber);
             params.put("type", "upload-bill");
             params.put("grn", editTextGrnNum.getText().toString());
+            params.put("images",jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
