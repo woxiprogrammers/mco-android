@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.android.checklisthome.ChecklistHomeActivity;
 import com.android.dashboard.DashBoardActivity;
 import com.android.inventory.InventoryHomeActivity;
 import com.android.login_mvp.LoginActivity;
@@ -75,7 +76,7 @@ public class SplashActivity extends BaseActivity {
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-maintainance", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-maintainance", ChecklistHomeActivity.class.getName());
         aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("inventory-history", InventoryHomeActivity.class.getName());
         //

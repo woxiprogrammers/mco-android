@@ -20,7 +20,7 @@ public class ChecklistList_ReviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_checklist_list__review, container, false);
+        return inflater.inflate(R.layout.fragment_checklist_list_review, container, false);
     }
 
     public static ChecklistList_ReviewFragment newInstance() {

@@ -20,7 +20,7 @@ public class ChecklistList_CompleteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_checklist_list__complete, container, false);
+        return inflater.inflate(R.layout.fragment_checklist_list_complete, container, false);
     }
 
     public static ChecklistList_CompleteFragment newInstance() {
