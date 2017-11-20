@@ -8,17 +8,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.android.checklisthome.ChecklistHomeActivity">
-    <!--<com.github.lzyzsd.circleprogress.CircleProgress
-        xmlns:custom="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/circle_progress"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        custom:circle_finished_color="@color/colorAccent"
-        custom:circle_progress="100"
-        custom:circle_text_color="@color/colorWhite"
-        custom:circle_text_size="25sp"
-        custom:circle_unfinished_color="@color/colorTextLight"/>-->
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
