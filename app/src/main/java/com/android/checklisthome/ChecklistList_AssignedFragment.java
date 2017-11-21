@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.constro360.R;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,9 +58,19 @@ public class ChecklistList_AssignedFragment extends Fragment {
 
     @OnClick(R.id.btn_checkList_assignNew)
     public void onViewClicked() {
-        AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = new AssignNewCheckListDialogFragment();
+        AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = AssignNewCheckListDialogFragment.newInstance();
+        assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
+            @Override
+            public void onAssignClickListener(ArrayList<String> values) {
+                Toast.makeText(mContext, values.toString(), Toast.LENGTH_LONG).show();
+                getLatestAssignedCheckLists();
+            }
+        });
         assignNewCheckListDialogFragment.show(getActivity().getSupportFragmentManager(), "assignNewCheckListDialogFragment");
 //        startActivity(new Intent(mContext, CheckListActionActivity.class));
 //        ((ChecklistHomeActivity) getActivity()).moveToScreenNumber(1);
+    }
+
+    private void getLatestAssignedCheckLists() {
     }
 }
