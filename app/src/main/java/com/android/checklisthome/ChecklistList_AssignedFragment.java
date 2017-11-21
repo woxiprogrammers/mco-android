@@ -101,7 +101,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
         mRecyclerViewCheckListAssigned.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 mRecyclerViewCheckListAssigned, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, final int position) {
+            public void onItemClick(View view, int position) {
                 startActivity(new Intent(mContext, CheckListActionActivity.class));
             }
 
