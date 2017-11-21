@@ -1,9 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_settings"
+    <!--<item
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Manage Usage"
         app:showAsAction="never"/>
+    <item
+        android:orderInCategory="100"
+        android:title="Request Maintenance"
+        app:showAsAction="never"/>-->
+    <item
+        android:orderInCategory="100"
+        android:title="Starting Point"
+        android:visible="false"
+        app:showAsAction="never"/>
+    <item
+        android:orderInCategory="100"
+        android:title="Top Up"
+        android:visible="false"
+        app:showAsAction="never"/>
+    <item
+        android:orderInCategory="100"
+        android:title="Stopping Point"
+        android:visible="false"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_request_maintaianance"
+        android:orderInCategory="100"
+        android:title="Request Maintainance"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_move_in_out"
+        app:showAsAction="never"
+        android:title="Move In/Out"
+          />
 </menu>

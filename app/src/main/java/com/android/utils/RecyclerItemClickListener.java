@@ -15,12 +15,6 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
     private OnItemClickListener mListener;
     private GestureDetector mGestureDetector;
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-
-        void onLongItemClick(View view, int position);
-    }
-
     public RecyclerItemClickListener(Context context, final RecyclerView recyclerView, OnItemClickListener listener) {
         mListener = listener;
         mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
@@ -55,6 +49,12 @@ public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListen
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+
+        void onLongItemClick(View view, int position);
     }
 }
 /*//TODO Implementation

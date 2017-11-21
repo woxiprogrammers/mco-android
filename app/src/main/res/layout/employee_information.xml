@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_8dp">
+
+            <LinearLayout
+                android:id="@+id/linerLayoutSelectedNames"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Employee Id/Name :"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/edit_text_emp_id_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:focusable="false"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linearLayoutEmployeInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Employee Info :"
+                    android:textColor="@color/colorTextLight"/>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:background="@android:drawable/editbox_background">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/dimen_8dp"
+                        android:weightSum="1">
+
+                        <ImageView
+                            android:id="@+id/imageViewProfilePicture"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.1"
+                            android:background="@drawable/ic_action_more_vert"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/dimen_18dp"
+                            android:layout_weight="0.8"
+                            android:orientation="vertical">
+
+
+                            <TextView
+                                android:id="@+id/textViewEmployeeName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Employee Name"/>
+
+                            <TextView
+                                android:id="@+id/textViewEployeeId"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Employee ID"/>
+
+                            <TextView
+                                android:id="@+id/textViewBalance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bank Balance"/>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/imageviewEmpTransactions"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="0.1"
+                            android:background="@drawable/ic_arrow_right_black"
+                            />
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/date"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_salary_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:focusable="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutForSalary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="Wedges:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edittextWeihges"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:digits="0123456789"
+                        android:enabled="false"
+                        android:inputType="number"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="Days:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edittextDay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:digits="0123456789."
+                        android:inputType="number"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amount"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/edit_text_salary_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearPayableAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/payableAmount"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/edittextPayableAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView_captureSalaryImage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:drawableTop="@android:drawable/ic_menu_camera"
+                    android:gravity="center_horizontal"
+                    android:text="Capture Images"/>
+
+                <View
+                    android:layout_width="@dimen/dimen_20dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:id="@+id/textView_pickSalaryImage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:drawableTop="@android:drawable/ic_menu_gallery"
+                    android:gravity="center_horizontal"
+                    android:onClick="onViewClicked"
+                    android:text="Choose Images"/>
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_4dp"
+                android:fadeScrollbars="false">
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutUploadImageSalary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                >
+
+                <EditText
+                    android:id="@+id/editText_addtonoteforsalary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFD740"
+                    android:hint="@string/tap_too_add_note"
+                    android:padding="@dimen/dimen_16dp"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_16dp"/>
+            </android.support.v7.widget.CardView>
+
+            <Button
+                android:id="@+id/button_salary_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="@dimen/dimen_8dp"
+                android:padding="@dimen/dimen_8dp"
+                android:visibility="gone"
+                android:text="@string/paywithpeticash"/>
+
+            <TextView
+                android:id="@+id/textViewDenyTransaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Please Complete Previous Transaction"
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

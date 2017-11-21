@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:focusableInTouchMode="true"
+             android:orientation="vertical"
+             tools:context="com.android.login_mvp.LoginActivity">
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/img_login_back"/>
+
+    <LinearLayout
+        android:layout_width="@dimen/dimen_300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_30dp"
+            android:gravity="center_horizontal"
+            android:text="Manisha \nConstruction"
+            android:textColor="@color/colorWhite"
+            android:textSize="40sp"
+            android:textStyle="bold"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp"
+            android:textColorHint="@color/colorDivider"
+            app:hintTextAppearance="@style/MyTextInputLayoutHintStyle">
+
+            <EditText
+                android:id="@+id/mobileNumber"
+                style="@style/StyledTilEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="0123456789"
+                android:gravity="left"
+                android:text="111111111"
+                android:hint="@string/prompt_mobile_number"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="10"
+                android:paddingLeft="@dimen/dimen_40dp"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp"
+            android:textColorHint="@color/colorDivider"
+            app:hintTextAppearance="@style/MyTextInputLayoutHintStyle">
+
+            <EditText
+                android:id="@+id/password"
+                style="@style/StyledTilEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:hint="@string/prompt_password"
+                android:text="123456"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:paddingLeft="@dimen/dimen_40dp"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_8dp"
+            android:background="@drawable/background_button_normal"
+            android:text="SIGN IN"
+            android:textColor="@color/colorText"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/dimen_8dp"
+            android:text="Forgot Password?"
+            android:textColor="@color/colorDivider"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+    </LinearLayout>
+</FrameLayout>

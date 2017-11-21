@@ -1,25 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.android.constro360">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
-        android:name=".BaseActivity"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:supportsRtl">
         <activity
-            android:name=".DashBoardActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.login_mvp.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name="com.android.dashboard.DashBoardActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name="com.android.peticash.PetiCashListActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.android.dummy.NewActivity"/>
+        <activity
+            android:name="com.android.purchase_request.PurchaseHomeActivity"
+            android:parentActivityName="com.android.dashboard.DashBoardActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name="com.android.inventory.InventoryDetails">
+        </activity>
+        <activity android:name="com.android.inventory.InventoryHomeActivity"/>
+        <activity android:name="com.android.inventory.assets.ActivityRequestMaintanance">
+        </activity>
+        <activity
+            android:name="com.android.purchase_request.PurchaseMaterialListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name="com.android.inventory.assets.AssetDetailsActivity"
+            android:label="@string/title_activity_asset_details">
+        </activity>
+        <activity android:name="com.android.inventory.assets.ActivityAssetsReadings">
+        </activity>
+        <activity android:name="com.android.purchase_details.PurchaseRequestDetailsHomeActivity">
+        </activity>
+        <activity
+            android:name="com.android.purchase_details.PayAndBillsActivity"
+            android:label="@string/title_activity_pay_and_bills">
+        </activity>
+        <activity
+            android:name="com.android.material_request_approve.MaterialRequest_ApproveActivity"
+            android:label="@string/title_activity_material_request"
+            android:parentActivityName="com.android.dashboard.DashBoardActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.android.material_request_approve.AutoSuggestActivity">
+        </activity>
+        <activity android:name="com.android.peticash.AutoSuggestEmployee">
+        </activity>
+        <activity android:name="com.android.peticash.PeticashFormActivity">
+
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            -->
+        </activity>
+        <activity android:name="com.android.inventory.assets.ActivityAssetMoveInOutTransfer">
+        </activity>
+        <activity android:name="com.android.peticash.ViewPeticashTransactions">
+        </activity>
+        <activity android:name="com.android.inventory.assets.AssetSummaryActivity"/>
+        <activity android:name="com.android.peticash.ActivityEmpSalaryTransactionDetails">
+        </activity>
+        <activity android:name="com.android.checklisthome.CheckListActionActivity">
+        </activity>
+        <activity android:name="com.android.awareness.AwarenessHomeActivity">
         </activity>
     </application>
 
