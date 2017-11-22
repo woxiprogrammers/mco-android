@@ -1,8 +1,10 @@
 package com.android.awareness;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,16 +19,24 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.inventory.assets.ActivityAssetMoveInOutTransfer;
+import com.android.inventory.assets.AssetDetailsActivity;
+import com.android.inventory.assets.AssetsListAdapter;
 import com.android.inventory.assets.AssetsListItem;
 import com.android.models.awarenessmodels.AwarenesFileDetailsResponse;
 import com.android.models.awarenessmodels.AwarenessMainCategoryResponse;
+import com.android.models.awarenessmodels.FileDetailsItem;
 import com.android.models.awarenessmodels.MainCategoriesData;
 import com.android.models.awarenessmodels.MainCategoriesItem;
 import com.android.models.awarenessmodels.SubCatedata;
 import com.android.models.awarenessmodels.SubCategoriesItem;
 import com.android.models.awarenessmodels.SubCategoriesResponse;
+import com.android.purchase_details.PayAndBillsActivity;
+import com.android.purchase_request.PurchaseOrdermaterialDetailFragment;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.RecyclerItemClickListener;
+import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -337,18 +347,34 @@ public class AwarenessHomeActivity extends BaseActivity {
     }
 
     private void setUpFileAdapter(){
+        realm = Realm.getDefaultInstance();
+        final RealmResults<FileDetailsItem> fileDetailsItemRealmResults = realm.where(FileDetailsItem.class).findAll();
+        RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if(view.getId() == R.id.imageviewDownload){
+
+                }
+
+            }
+        };
+        AwarenesListAdapter awarenesListAdapter = new AwarenesListAdapter(fileDetailsItemRealmResults, true, true,recyclerItemClickListener);
+        rvFiles.setLayoutManager(new LinearLayoutManager(mContext));
+        rvFiles.setHasFixedSize(true);
+        rvFiles.setAdapter(awarenesListAdapter);
 
     }
 
     //ToDo Add item class
-    public class AwarenesListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, AwarenesListAdapter.MyViewHolder> {
-        private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
-        private AssetsListItem assetsListItem;
+    public class AwarenesListAdapter extends RealmRecyclerViewAdapter<FileDetailsItem, AwarenesListAdapter.MyViewHolder> {
+        private OrderedRealmCollection<FileDetailsItem> detailsItemOrderedRealmCollection;
+        private FileDetailsItem fileDetailsItem;
+        RecyclerViewClickListener recyclerViewClickListener;
 
-        public AwarenesListAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        public AwarenesListAdapter(@Nullable OrderedRealmCollection<FileDetailsItem> data, boolean autoUpdate, boolean updateOnModification,RecyclerViewClickListener recyclerViewClickListener) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
-            assetsListItemCollection = data;
+            detailsItemOrderedRealmCollection = data;
         }
 
         @Override
@@ -359,21 +385,34 @@ public class AwarenessHomeActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            assetsListItem = assetsListItemCollection.get(position);
+            fileDetailsItem = detailsItemOrderedRealmCollection.get(position);
+            String currentString=fileDetailsItem.getName();
+            String[] separatedString=currentString.split("#");
+            holder.textviewFileName.setText(separatedString[0]);
+
+            if(fileDetailsItem.getExtension().equalsIgnoreCase(".jpg")){
+                holder.textviewFileType.setText("JPG");
+            }else if(fileDetailsItem.getExtension().equalsIgnoreCase(".png")){
+                holder.textviewFileType.setText("PNG");
+            }else if(fileDetailsItem.getExtension().equalsIgnoreCase(".pdf")){
+                holder.textviewFileType.setText("PDF");
+            }else if(fileDetailsItem.getExtension().equalsIgnoreCase(".mp4")){
+                holder.textviewFileType.setText("Video");
+            }
 
         }
 
         @Override
         public long getItemId(int index) {
-            return assetsListItemCollection.get(index).getId();
+            return detailsItemOrderedRealmCollection.get(index).getId();
         }
 
         @Override
         public int getItemCount() {
-            return assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+            return detailsItemOrderedRealmCollection == null ? 0 : detailsItemOrderedRealmCollection.size();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
+        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
             @BindView(R.id.textviewFileName)
             TextView textviewFileName;
@@ -384,6 +423,12 @@ public class AwarenessHomeActivity extends BaseActivity {
             private MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+            }
+
+            @Override
+            public void onClick(View view) {
+
+                recyclerViewClickListener.onItemClick(view, getAdapterPosition());
             }
         }
     }

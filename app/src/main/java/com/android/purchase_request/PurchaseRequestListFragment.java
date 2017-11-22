@@ -9,10 +9,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.BuildConfig;
@@ -364,6 +366,18 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
+            if (purchaseRequestListItem.getApprovedBy().equalsIgnoreCase("")) {
+                holder.linearLayoutToHideApproved.setVisibility(View.GONE);
+            } else {
+                holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
+                if (purchaseRequestListItem.getStatus().equalsIgnoreCase("p-r-manager-approved") || purchaseRequestListItem.getStatus().equalsIgnoreCase("p-r-admin-approved")) {
+                    holder.textViewApproved.setText("Approved By : - " + purchaseRequestListItem.getApprovedBy());
+                } else if (purchaseRequestListItem.getStatus().equalsIgnoreCase("p-r-manager-disapproved") || purchaseRequestListItem.getStatus().equalsIgnoreCase("p-r-admin-disapproved")) {
+                    holder.textViewApproved.setText("Disapproved By : - " + purchaseRequestListItem.getApprovedBy());
+                }
+
+            }
+
         }
 
         @Override
@@ -385,6 +399,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             TextView textViewPurchaseRequestDate;
             @BindView(R.id.textView_purchase_request_materials)
             TextView textViewPurchaseRequestMaterials;
+            @BindView(R.id.textViewApproved)
+            TextView textViewApproved;
+            @BindView(R.id.linearLayoutToHideApproved)
+            LinearLayout linearLayoutToHideApproved;
 
             MyViewHolder(View itemView) {
                 super(itemView);

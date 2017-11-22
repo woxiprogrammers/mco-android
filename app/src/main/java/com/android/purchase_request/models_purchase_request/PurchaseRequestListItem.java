@@ -20,8 +20,30 @@ public class PurchaseRequestListItem extends RealmObject {
     private String status;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
+    @SerializedName("have_access")
+    private String haveAccess;
+
+    @SerializedName("approved_by")
+    private String approvedBy;
+
     public int getId() {
         return id;
+    }
+
+    public String getHaveAccess() {
+        return haveAccess;
+    }
+
+    public void setHaveAccess(String haveAccess) {
+        this.haveAccess = haveAccess;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
     }
 
     public void setId(int id) {

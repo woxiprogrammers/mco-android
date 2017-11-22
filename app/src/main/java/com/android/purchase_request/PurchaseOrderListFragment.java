@@ -281,6 +281,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
         @OnClick(R.id.textViewdetails)
         public void onViewClicked() {
+
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

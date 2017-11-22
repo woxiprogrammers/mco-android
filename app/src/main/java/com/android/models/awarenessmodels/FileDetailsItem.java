@@ -2,6 +2,7 @@ package com.android.models.awarenessmodels;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class FileDetailsItem extends RealmObject{
 
@@ -10,6 +11,18 @@ public class FileDetailsItem extends RealmObject{
 
 	@SerializedName("name")
 	private String name;
+
+	@PrimaryKey
+	@SerializedName("id")
+	private int id;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public void setExtension(String extension){
 		this.extension = extension;

@@ -84,5 +84,20 @@
                 android:visibility="gone"
                 android:textSize="@dimen/text_14sp"/>
         </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayoutToHideApproved"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewApproved"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:text="Approved By : -"
+            android:textColor="@color/colorTextLight"
+            android:textSize="@dimen/text_14sp"/>
+    </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
