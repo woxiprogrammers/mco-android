@@ -2,16 +2,23 @@ package com.android.awareness;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.inventory.assets.AssetsListItem;
+import com.android.models.awarenessmodels.AwarenesFileDetailsResponse;
 import com.android.models.awarenessmodels.AwarenessMainCategoryResponse;
 import com.android.models.awarenessmodels.MainCategoriesData;
 import com.android.models.awarenessmodels.MainCategoriesItem;
@@ -33,8 +40,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
@@ -180,7 +189,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                                 public void onSuccess() {
                                     Timber.d("Success");
                                     linearLayoutSubCategory.setVisibility(View.VISIBLE);
-                                    setUpUsersSubCatSpinnerValueChangeListener(mainCategoryId);
+                                    setUpUsersSubCatSpinnerValueChangeListener();
 
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -203,7 +212,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                 });
     }
 
-    private void requestToGetFiles(int subCatId){
+    private void requestToGetFiles(int subCatId) {
         JSONObject params = new JSONObject();
         try {
             params.put("sub_category_id", subCatId);
@@ -216,9 +225,9 @@ public class AwarenessHomeActivity extends BaseActivity {
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("requestToGetSubCatData")
                 .build()
-                .getAsObject(SubCategoriesResponse.class, new ParsedRequestListener<SubCategoriesResponse>() {
+                .getAsObject(AwarenesFileDetailsResponse.class, new ParsedRequestListener<AwarenesFileDetailsResponse>() {
                     @Override
-                    public void onResponse(final SubCategoriesResponse response) {
+                    public void onResponse(final AwarenesFileDetailsResponse response) {
                         Timber.i(String.valueOf(response));
                         realm = Realm.getDefaultInstance();
                         try {
@@ -283,7 +292,7 @@ public class AwarenessHomeActivity extends BaseActivity {
         spinnerAwarenesCategory.setAdapter(arrayAdapter);
     }
 
-    private void setUpUsersSubCatSpinnerValueChangeListener(int id) {
+    private void setUpUsersSubCatSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         RealmResults<SubCategoriesItem> mainCategoriesItemRealmResults = realm.where(SubCategoriesItem.class).findAll();
         setUpSubCatSpinnerAdapter(mainCategoriesItemRealmResults);
@@ -309,5 +318,53 @@ public class AwarenessHomeActivity extends BaseActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerAwarenesSubcategory.setAdapter(arrayAdapter);
+    }
+
+    //ToDo Add item class
+    public class AwarenesListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, AwarenesListAdapter.MyViewHolder> {
+        private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
+        private AssetsListItem assetsListItem;
+
+        public AwarenesListAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            Timber.d(String.valueOf(data));
+            assetsListItemCollection = data;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_for_awareness_files, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            assetsListItem = assetsListItemCollection.get(position);
+
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return assetsListItemCollection.get(index).getId();
+        }
+
+        @Override
+        public int getItemCount() {
+            return assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+
+            @BindView(R.id.textviewFileName)
+            TextView textviewFileName;
+            @BindView(R.id.textviewFileType)
+            TextView textviewFileType;
+            @BindView(R.id.imageviewDownload)
+            ImageView imageviewDownload;
+            private MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
     }
 }
