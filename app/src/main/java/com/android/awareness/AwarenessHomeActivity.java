@@ -60,6 +60,7 @@ public class AwarenessHomeActivity extends BaseActivity {
     private Realm realm;
     private Context mContext;
     RealmResults<MainCategoriesItem> mainCategoriesItems;
+    RealmResults<SubCategoriesItem> subCategoriesItems;
 
     private List<MainCategoriesItem> categoryList;
 
@@ -83,6 +84,21 @@ public class AwarenessHomeActivity extends BaseActivity {
                 realm = Realm.getDefaultInstance();
                 mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
                 requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
+
+        spinnerAwarenesSubcategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
+                realm = Realm.getDefaultInstance();
+                subCategoriesItems = realm.where(SubCategoriesItem.class).findAll();
+                requestToGetFiles(subCategoriesItems.get(selectedItemIndex).getId());
 
             }
 
@@ -223,7 +239,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("requestToGetSubCatData")
+                .setTag("requestToGetFiles")
                 .build()
                 .getAsObject(AwarenesFileDetailsResponse.class, new ParsedRequestListener<AwarenesFileDetailsResponse>() {
                     @Override
@@ -257,7 +273,7 @@ public class AwarenessHomeActivity extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
+                        AppUtils.getInstance().logApiError(anError, "requestToGetFiles");
                     }
                 });
 
@@ -318,6 +334,10 @@ public class AwarenessHomeActivity extends BaseActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerAwarenesSubcategory.setAdapter(arrayAdapter);
+    }
+
+    private void setUpFileAdapter(){
+
     }
 
     //ToDo Add item class
