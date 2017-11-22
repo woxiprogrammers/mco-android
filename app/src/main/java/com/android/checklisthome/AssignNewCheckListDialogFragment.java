@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -17,10 +18,21 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.models.inventory.InventoryResponse;
+import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.xeoh.android.checkboxgroup.CheckBoxGroup;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import io.realm.Realm;
 
 /**
  * <b></b>
@@ -145,5 +157,36 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         });
         builder.setView(dialogView);
         return builder.create();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getCategory_SubCategoryListings();
+    }
+
+    private void getCategory_SubCategoryListings() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_CATEGORY_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getCategory_SubCategoryListings")
+                .build()
+                .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
+                    @Override
+                    public void onResponse(final InventoryResponse response) {
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getCategory_SubCategoryListings");
+                    }
+                });
     }
 }
