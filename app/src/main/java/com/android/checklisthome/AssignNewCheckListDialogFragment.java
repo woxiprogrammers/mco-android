@@ -4,12 +4,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.checklisthome.checklist_model.checklist_categories.CategoriesItem;
+import com.android.checklisthome.checklist_model.checklist_categories.ChecklistCategoryResponse;
+import com.android.checklisthome.checklist_model.checklist_categories.SubCategoriesItem;
 import com.android.constro360.R;
-import com.android.models.inventory.InventoryResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -32,7 +34,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import io.realm.Realm;
+import io.realm.RealmList;
+import timber.log.Timber;
 
 /**
  * <b></b>
@@ -56,6 +59,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
     private ArrayList<String> arrChecklistTitle;
     private ArrayList<String> arrChecklistDescription;
     private CheckBoxGroup<String> checkBoxGroup;
+    private ChecklistCategoryResponse receiverCategoryResponse;
 
     interface AssignmentDialogListener {
         void onAssignClickListener(ArrayList<String> values);
@@ -102,6 +106,17 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         ArrayAdapter<String> arrayCategoryAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistCategories);
         arrayCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerChecklistCategories.setAdapter(arrayCategoryAdapter);
+        mSpinnerChecklistCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mSpinnerChecklistSubCategories.setAdapter(getSubCategoryArrayAdapter(receiverCategoryResponse.getChecklistCategoryData().getCategories().get(i).getSubCategories()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                mSpinnerChecklistSubCategories.setAdapter(getSubCategoryArrayAdapter(receiverCategoryResponse.getChecklistCategoryData().getCategories().get(mSpinnerChecklistSubCategories.getSelectedItemPosition()).getSubCategories()));
+            }
+        });
         //
         arrChecklistSubCategories = new ArrayList<>();
         arrChecklistSubCategories.add("Select Sub-Category");
@@ -155,20 +170,27 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
+        getCategory_SubCategoryListings();
         builder.setView(dialogView);
         return builder.create();
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getCategory_SubCategoryListings();
+    private ArrayAdapter<String> getSubCategoryArrayAdapter(RealmList<SubCategoriesItem> subCategories) {
+        ArrayList<String> stringSubCategoryArrayList = new ArrayList<String>();
+        for (SubCategoriesItem subCategoriesItem : subCategories) {
+            String categoryName = subCategoriesItem.getSubCategoryName();
+            stringSubCategoryArrayList.add(categoryName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringSubCategoryArrayList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
     }
 
     private void getCategory_SubCategoryListings() {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -177,10 +199,15 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("getCategory_SubCategoryListings")
                 .build()
-                .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
+                .getAsObject(ChecklistCategoryResponse.class, new ParsedRequestListener<ChecklistCategoryResponse>() {
                     @Override
-                    public void onResponse(final InventoryResponse response) {
-
+                    public void onResponse(ChecklistCategoryResponse response) {
+                        receiverCategoryResponse = new ChecklistCategoryResponse();
+                        receiverCategoryResponse = response;
+                        Timber.d(String.valueOf(receiverCategoryResponse));
+                        if (response.getChecklistCategoryData() != null && response.getChecklistCategoryData().getCategories() != null) {
+                            mSpinnerChecklistCategories.setAdapter(getCategoryArrayAdapter(response.getChecklistCategoryData().getCategories()));
+                        }
                     }
 
                     @Override
@@ -188,5 +215,16 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                         AppUtils.getInstance().logApiError(anError, "getCategory_SubCategoryListings");
                     }
                 });
+    }
+
+    private ArrayAdapter<String> getCategoryArrayAdapter(RealmList<CategoriesItem> categoriesItems) {
+        ArrayList<String> stringCategoryArrayList = new ArrayList<String>();
+        for (CategoriesItem categoriesItem : categoriesItems) {
+            String categoryName = categoriesItem.getCategoryName();
+            stringCategoryArrayList.add(categoryName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringCategoryArrayList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
     }
 }

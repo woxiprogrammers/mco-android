@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 
 public class ChecklistCategoryResponse extends RealmObject {
-    @SerializedName("checklist_category_data")
+    @SerializedName("data")
     private ChecklistCategoryData checklistCategoryData;
     @SerializedName("message")
     private String message;
