@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class AwarenesFileDetailsResponse extends RealmObject{
+public class AwarenessFileDetailsResponse extends RealmObject{
 
 	@SerializedName("data")
 	private AwarenesListData awarenesListData;

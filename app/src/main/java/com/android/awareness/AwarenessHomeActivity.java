@@ -1,8 +1,11 @@
 package com.android.awareness;
 
+import android.app.DownloadManager;
 import android.content.Context;
-import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,14 +19,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.inventory.assets.ActivityAssetMoveInOutTransfer;
-import com.android.inventory.assets.AssetDetailsActivity;
-import com.android.inventory.assets.AssetsListAdapter;
-import com.android.inventory.assets.AssetsListItem;
-import com.android.models.awarenessmodels.AwarenesFileDetailsResponse;
+import com.android.models.awarenessmodels.AwarenessFileDetailsResponse;
 import com.android.models.awarenessmodels.AwarenessMainCategoryResponse;
 import com.android.models.awarenessmodels.FileDetailsItem;
 import com.android.models.awarenessmodels.MainCategoriesData;
@@ -31,11 +31,9 @@ import com.android.models.awarenessmodels.MainCategoriesItem;
 import com.android.models.awarenessmodels.SubCatedata;
 import com.android.models.awarenessmodels.SubCategoriesItem;
 import com.android.models.awarenessmodels.SubCategoriesResponse;
-import com.android.purchase_details.PayAndBillsActivity;
-import com.android.purchase_request.PurchaseOrdermaterialDetailFragment;
+import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.RecyclerItemClickListener;
 import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -45,6 +43,7 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +74,8 @@ public class AwarenessHomeActivity extends BaseActivity {
     private List<MainCategoriesItem> categoryList;
 
     private List<SubCategoriesItem> subCategoryList;
+    private DownloadManager downloadManager;
+    private String getPath="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,6 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
 
         spinnerAwarenesSubcategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -238,7 +238,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                 });
     }
 
-    private void requestToGetFiles(int subCatId) {
+    private void requestToGetFiles(final int subCatId) {
         JSONObject params = new JSONObject();
         try {
             params.put("sub_category_id", subCatId);
@@ -251,9 +251,14 @@ public class AwarenessHomeActivity extends BaseActivity {
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("requestToGetFiles")
                 .build()
-                .getAsObject(AwarenesFileDetailsResponse.class, new ParsedRequestListener<AwarenesFileDetailsResponse>() {
+                .getAsObject(AwarenessFileDetailsResponse.class, new ParsedRequestListener<AwarenessFileDetailsResponse>() {
                     @Override
-                    public void onResponse(final AwarenesFileDetailsResponse response) {
+                    public void onResponse(final AwarenessFileDetailsResponse response) {
+                        if (response.getAwarenesListData().getFileDetails() != null) {
+                            for (FileDetailsItem fileDetailsItem : response.getAwarenesListData().getFileDetails()) {
+                                fileDetailsItem.setSubCatId(subCatId);
+                            }
+                        }
                         Timber.i(String.valueOf(response));
                         realm = Realm.getDefaultInstance();
                         try {
@@ -266,7 +271,8 @@ public class AwarenessHomeActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d("Success");
-
+                                    getPath=response.getAwarenesListData().getPath();
+                                    setUpFileAdapter(subCatId);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -346,35 +352,35 @@ public class AwarenessHomeActivity extends BaseActivity {
         spinnerAwarenesSubcategory.setAdapter(arrayAdapter);
     }
 
-    private void setUpFileAdapter(){
+    private void setUpFileAdapter(int subCatId) {
         realm = Realm.getDefaultInstance();
-        final RealmResults<FileDetailsItem> fileDetailsItemRealmResults = realm.where(FileDetailsItem.class).findAll();
+        final RealmResults<FileDetailsItem> fileDetailsItemRealmResults = realm.where(FileDetailsItem.class).equalTo("subCatId", subCatId).findAll();
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if(view.getId() == R.id.imageviewDownload){
-
+                if (view.getId() == R.id.imageviewDownload) {
+                    Toast.makeText(mContext, "Hiiiii", Toast.LENGTH_SHORT).show();
+                    downloadFile("http://test.mconstruction.co.in/" + getPath + "/" +fileDetailsItemRealmResults.get(position).getName());
                 }
-
             }
         };
-        AwarenesListAdapter awarenesListAdapter = new AwarenesListAdapter(fileDetailsItemRealmResults, true, true,recyclerItemClickListener);
+        AwarenessListAdapter awarenessListAdapter = new AwarenessListAdapter(fileDetailsItemRealmResults, true, true, recyclerItemClickListener);
         rvFiles.setLayoutManager(new LinearLayoutManager(mContext));
         rvFiles.setHasFixedSize(true);
-        rvFiles.setAdapter(awarenesListAdapter);
-
+        rvFiles.setAdapter(awarenessListAdapter);
     }
 
     //ToDo Add item class
-    public class AwarenesListAdapter extends RealmRecyclerViewAdapter<FileDetailsItem, AwarenesListAdapter.MyViewHolder> {
+    public class AwarenessListAdapter extends RealmRecyclerViewAdapter<FileDetailsItem, AwarenessListAdapter.MyViewHolder> {
         private OrderedRealmCollection<FileDetailsItem> detailsItemOrderedRealmCollection;
         private FileDetailsItem fileDetailsItem;
         RecyclerViewClickListener recyclerViewClickListener;
 
-        public AwarenesListAdapter(@Nullable OrderedRealmCollection<FileDetailsItem> data, boolean autoUpdate, boolean updateOnModification,RecyclerViewClickListener recyclerViewClickListener) {
+        public AwarenessListAdapter(@Nullable OrderedRealmCollection<FileDetailsItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
             detailsItemOrderedRealmCollection = data;
+            this.recyclerViewClickListener=recyclerViewClickListener;
         }
 
         @Override
@@ -386,18 +392,21 @@ public class AwarenessHomeActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             fileDetailsItem = detailsItemOrderedRealmCollection.get(position);
-            String currentString=fileDetailsItem.getName();
-            String[] separatedString=currentString.split("#");
-            holder.textviewFileName.setText(separatedString[0]);
-
-            if(fileDetailsItem.getExtension().equalsIgnoreCase(".jpg")){
-                holder.textviewFileType.setText("JPG");
-            }else if(fileDetailsItem.getExtension().equalsIgnoreCase(".png")){
-                holder.textviewFileType.setText("PNG");
-            }else if(fileDetailsItem.getExtension().equalsIgnoreCase(".pdf")){
-                holder.textviewFileType.setText("PDF");
-            }else if(fileDetailsItem.getExtension().equalsIgnoreCase(".mp4")){
-                holder.textviewFileType.setText("Video");
+            try {
+                String result = java.net.URLDecoder.decode(fileDetailsItem.getName(), "UTF-8");
+                String[] separatedString = result.split("#");
+                holder.textviewFileName.setText(separatedString[0]);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            if (fileDetailsItem.getExtension().equalsIgnoreCase("jpg")) {
+                holder.textviewFileType.setText("Format : JPG");
+            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("png")) {
+                holder.textviewFileType.setText("Format : PNG");
+            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("pdf")) {
+                holder.textviewFileType.setText("Format : PDF");
+            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("mp4")) {
+                holder.textviewFileType.setText("Format : Video");
             }
 
         }
@@ -420,16 +429,31 @@ public class AwarenessHomeActivity extends BaseActivity {
             TextView textviewFileType;
             @BindView(R.id.imageviewDownload)
             ImageView imageviewDownload;
+
             private MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+                imageviewDownload.setOnClickListener(this);
             }
 
             @Override
             public void onClick(View view) {
-
                 recyclerViewClickListener.onItemClick(view, getAdapterPosition());
             }
         }
+    }
+
+    private void downloadFile(String url){
+        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+//        Uri Download_Uri = Uri.parse(url);
+        Uri Download_Uri = Uri.parse("http://test.mconstruction.co.in/uploads/awareness/356a192b7913b04c54574d18c28d46e6395428ab/356a192b7913b04c54574d18c28d46e6395428ab/763611170e5a158bc915934dd6765f9880f621ee21337b721.png");
+        DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        request.setAllowedOverRoaming(false);
+        request.setTitle("GadgetSaint Downloading ");
+        request.setDescription("Downloading ");
+        request.setVisibleInDownloadsUi(true);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Constro/");
+        downloadManager.enqueue(request);
     }
 }
