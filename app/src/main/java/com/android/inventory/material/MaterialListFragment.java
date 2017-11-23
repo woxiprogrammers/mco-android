@@ -157,7 +157,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
-        materialListItems = realm.where(MaterialListItem.class).findAllAsync();
+        materialListItems = realm.where(MaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
         materialListAdapter = new MaterialListAdapter(materialListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

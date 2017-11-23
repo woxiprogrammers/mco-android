@@ -2,8 +2,10 @@ package com.android.purchase_details;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DummyBillResponse {
-    @SerializedName("BillRespData")
+import io.realm.RealmObject;
+
+public class DummyBillResponse extends RealmObject {
+    @SerializedName("data")
     private BillRespData billRespData;
     @SerializedName("next_url")
     private String nextUrl;

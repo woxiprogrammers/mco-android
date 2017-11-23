@@ -1,8 +1,10 @@
 package com.android.models.purchase_bill;
 
+import com.android.purchase_details.ImageItem;
 import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -31,6 +33,15 @@ public class PurchaseBillListItem extends RealmObject {
     private String billNumber;
     @SerializedName("vehicle_number")
     private String vehicleNumber;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     @PrimaryKey
     @SerializedName("purchase_bill_grn")
     private String purchaseBillGrn;
@@ -40,10 +51,23 @@ public class PurchaseBillListItem extends RealmObject {
     private String outTime;
     @SerializedName("bill_amount")
     private String billAmount;
+    @SerializedName("remark")
+    private String remark;
+
+    public RealmList<ImageItem> getListOfImages() {
+        return listOfImages;
+    }
+
+    public void setListOfImages(RealmList<ImageItem> listOfImages) {
+        this.listOfImages = listOfImages;
+    }
+
     @SerializedName("vendor_name")
     private String vendor;
     @SerializedName("status")
     private String status;
+    @SerializedName("images")
+    private RealmList<ImageItem> listOfImages;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getDate() {

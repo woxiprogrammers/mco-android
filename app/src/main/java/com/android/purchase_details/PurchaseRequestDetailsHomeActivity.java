@@ -144,7 +144,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         realm = Realm.getDefaultInstance();
         PurchaseRequestListItem purchaseRequestListItem = realm.where(PurchaseRequestListItem.class).equalTo("id", mPurchaseRequestId).findFirst();
-        if (purchaseRequestListItem.getStatus().equalsIgnoreCase("p-r-manager-approved")) {
+        if (!purchaseRequestListItem.getStatus().equalsIgnoreCase("purchase-requested")) {
             menu.findItem(R.id.action_approve).setVisible(false);
         }
         return super.onPrepareOptionsMenu(menu);

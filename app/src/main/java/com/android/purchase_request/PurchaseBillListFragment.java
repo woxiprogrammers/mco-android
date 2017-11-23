@@ -1,11 +1,9 @@
 package com.android.purchase_request;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.dummy.BillDataItem;
+import com.android.dummy.DummyCheckResponse;
+import com.android.dummy.DummyCheckdata;
+import com.android.dummy.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
-import com.android.models.purchase_bill.PurchaseBillListItem;
-import com.android.models.purchase_bill.PurchaseBillResponse;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -52,7 +52,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
-    private RealmResults<PurchaseBillListItem> purchaseBillListItems;
+    private RealmResults<PurchaseOrderBillListingItem> purchaseBillListItems;
     private boolean isFromPurchaseRequestHome;
     private int intPrimaryKey;
 
@@ -100,9 +100,10 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("purchase_order_id", intPrimaryKey);
-            params.put("page",0);
+            params.put("page", 0);
+            Log.i("@@Params", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -112,14 +113,18 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPrListOnline")
                 .build()
-                .getAsObject(PurchaseBillResponse.class, new ParsedRequestListener<PurchaseBillResponse>() {
+                .getAsObject(DummyCheckResponse.class, new ParsedRequestListener<DummyCheckResponse>() {
                     @Override
-                    public void onResponse(final PurchaseBillResponse response) {
+                    public void onResponse(final DummyCheckResponse response) {
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(DummyCheckResponse.class);
+                                    realm.delete(DummyCheckdata.class);
+                                    realm.delete(BillDataItem.class);
+                                    realm.delete(PurchaseOrderBillListingItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -151,12 +156,12 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     @Override
     public void onResume() {
         super.onResume();
-        if (getUserVisibleHint()) {
+        /*if (getUserVisibleHint()) {
             ActionBar actionBar = ((PurchaseHomeActivity) mContext).getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setTitle(getString(R.string.app_name));
             }
-        }
+        }*/
     }
 
     @Override
@@ -182,7 +187,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseBillListItems = realm.where(PurchaseBillListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        purchaseBillListItems = realm.where(PurchaseOrderBillListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
         PurchaseBillRvAdapter purchaseBillRvAdapter = new PurchaseBillRvAdapter(purchaseBillListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
@@ -193,13 +198,13 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     @Override
                     public void onItemClick(View view, final int position) {
                         PayAndBillsActivity.isForViewOnly = true;
-                        PayAndBillsActivity.idForBillItem = purchaseBillListItems.get(position).getPurchaseBillGrn();
-                        /*if(!isFromPurchaseRequestHome) {
+                        PayAndBillsActivity.idForBillItem = String.valueOf(purchaseBillListItems.get(position).getGrn());
+                        PayAndBillsActivity.id = position;
+                        if (!isFromPurchaseRequestHome) {
                             ((PayAndBillsActivity) mContext).moveFragments(false);
                         }
-                        Intent intent=new Intent(mContext,PayAndBillsActivity.class);
-                        startActivity(intent);
-                        */
+                        /*Intent intent=new Intent(mContext,PayAndBillsActivity.class);
+                        startActivity(intent);*/
                     }
 
                     @Override
@@ -207,9 +212,9 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     }
                 }));
         if (purchaseBillListItems != null) {
-            purchaseBillListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseBillListItem>>() {
+            purchaseBillListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderBillListingItem>>() {
                 @Override
-                public void onChange(RealmResults<PurchaseBillListItem> purchaseBillListItems) {
+                public void onChange(RealmResults<PurchaseOrderBillListingItem> purchaseBillListItems) {
                 }
             });
         } else {
@@ -228,10 +233,10 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     }
 
     @SuppressWarnings("WeakerAccess")
-    protected class PurchaseBillRvAdapter extends RealmRecyclerViewAdapter<PurchaseBillListItem, PurchaseBillRvAdapter.MyViewHolder> {
-        private OrderedRealmCollection<PurchaseBillListItem> arrPurchaseBillListItems;
+    protected class PurchaseBillRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderBillListingItem, PurchaseBillRvAdapter.MyViewHolder> {
+        private OrderedRealmCollection<PurchaseOrderBillListingItem> arrPurchaseBillListItems;
 
-        PurchaseBillRvAdapter(@Nullable OrderedRealmCollection<PurchaseBillListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        PurchaseBillRvAdapter(@Nullable OrderedRealmCollection<PurchaseOrderBillListingItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             arrPurchaseBillListItems = data;
         }
@@ -244,7 +249,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            PurchaseBillListItem purchaseBillListItem = arrPurchaseBillListItems.get(position);
+            BillDataItem purchaseBillListItem = arrPurchaseBillListItems.get(position).getBillData().get(0);
             holder.textViewPurchaseGrn.setText(purchaseBillListItem.getPurchaseBillGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseBillListItem.getDate());
@@ -253,7 +258,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
 
         @Override
         public long getItemId(int index) {
-            return arrPurchaseBillListItems.get(index).getId();
+            return arrPurchaseBillListItems.get(index).getBillData().get(0).getId();
         }
 
         @Override

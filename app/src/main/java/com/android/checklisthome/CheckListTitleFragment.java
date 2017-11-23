@@ -1,17 +1,23 @@
-package com.android.inventory.assets;
+package com.android.checklisthome;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 
 import com.android.constro360.R;
-import com.android.interfaces.FragmentInterface;
+import com.android.inventory.assets.ActivityAssetMoveInOutTransfer;
+import com.android.inventory.assets.AssetDetailsActivity;
+import com.android.inventory.assets.AssetListResponse;
+import com.android.inventory.assets.AssetsListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -25,81 +31,67 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
+import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AssetListFragment extends Fragment implements FragmentInterface {
+public class CheckListTitleFragment extends Fragment {
 
-    @BindView(R.id.rv_material_list)
-    RecyclerView rvMaterialList;
-    private Unbinder unbinder;
-    private Context mContext;
-    private View mParentView;
+    @BindView(R.id.rv_checklist_title)
+    RecyclerView rvChecklistTitle;
+    Unbinder unbinder;
+    @BindView(R.id.ok)
+    Button ok;
     private Realm realm;
-    private int pageNumber = 0;
-    private int oldPageNumber;
+    private Context mContext;
 
-    public AssetListFragment() {
+    public CheckListTitleFragment() {
         // Required empty public constructor
     }
 
-    public static AssetListFragment newInstance() {
+    public static CheckListTitleFragment newInstance() {
+
         Bundle args = new Bundle();
-        AssetListFragment fragment = new AssetListFragment();
+        CheckListTitleFragment fragment = new CheckListTitleFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void fragmentBecameVisible() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);//Make sure you have this line of code.
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
-        unbinder = ButterKnife.bind(this, mParentView);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_recyclerview_for_checklist_title, container, false);
+        unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
-        setUpAssetListAdapter();
-        functionForGettingData();
-        return mParentView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+        return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        if (realm != null) {
-            realm.close();
-        }
     }
 
-    private void setUpAssetListAdapter() {
+    private void setUpAdapter() {
         realm = Realm.getDefaultInstance();
+        //ToDo Sharvari Item Class POJO AssetsListItem
+
         final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).findAll();
         Timber.d(String.valueOf(assetsListItems));
-        AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
-        rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
-        rvMaterialList.setHasFixedSize(true);
-        rvMaterialList.setAdapter(purchaseRequestRvAdapter);
-        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                rvMaterialList,
+        CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(assetsListItems, true, true);
+        rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
+        rvChecklistTitle.setHasFixedSize(true);
+        rvChecklistTitle.setAdapter(checkListTitleAdapter);
+        rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                rvChecklistTitle,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
@@ -124,43 +116,33 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         if (assetsListItems != null) {
             assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsListItem>>() {
                 @Override
-                public void onChange(RealmResults<AssetsListItem> assetsListItemRealmResults) {
+                public void onChange(RealmResults<AssetsListItem> purchaseRequestListItems) {
                 }
             });
         } else {
-            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
+            AppUtils.getInstance().showOfflineMessage("CheckListTitleFragment");
         }
     }
 
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestAssetListOnline(pageNumber);
-        } else {
-            //Get data from local DB
-//            setUpAssetListAdapter();
-        }
-    }
-
-    private void requestAssetListOnline(int pageId) {
+    private void requestToGetCheckpoints() {
         final JSONObject params = new JSONObject();
         try {
-            params.put("page", pageId);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Timber.d(AppURL.API_ASSETS_DATA_URL + AppUtils.getInstance().getCurrentToken());
-        AndroidNetworking.post(AppURL.API_ASSETS_DATA_URL + AppUtils.getInstance().getCurrentToken())
+        //ToDo Sharvari ADD URL,Response Class
+        AndroidNetworking.post(AppURL.API_GET_CHECKPOINTS_URL + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("requestAssetListOnline")
+                .setTag("API_GET_CHECKPOINTS_URL")
                 .build()
                 .getAsObject(AssetListResponse.class, new ParsedRequestListener<AssetListResponse>() {
                     @Override
                     public void onResponse(final AssetListResponse response) {
-                        if (!response.getPageid().equalsIgnoreCase("")) {
+                        //ToDo Sharvari Lazy Loading
+                        /*if (!response.getPageid().equalsIgnoreCase("")) {
                             pageNumber = Integer.parseInt(response.getPageid());
                         }
                         realm = Realm.getDefaultInstance();
@@ -188,7 +170,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                             if (realm != null) {
                                 realm.close();
                             }
-                        }
+                        }*/
                     }
 
                     @Override
@@ -196,5 +178,55 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                         AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
                     }
                 });
+    }
+
+    @OnClick(R.id.ok)
+    public void onViewClicked() {
+        ((CheckListActionActivity)mContext).getChckListVerificationFragment();
+
+    }
+
+    ////////ToDo Sharvari Add Item Class POJO
+    public class CheckListTitleAdapter extends RealmRecyclerViewAdapter<AssetsListItem, CheckListTitleAdapter.MyViewHolder> {
+        private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
+        private AssetsListItem assetsListItem;
+
+        public CheckListTitleAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            Timber.d(String.valueOf(data));
+            assetsListItemCollection = data;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_checklist_title, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            assetsListItem = assetsListItemCollection.get(position);
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return assetsListItemCollection.get(index).getId();
+        }
+
+        @Override
+        public int getItemCount() {
+            return assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+
+            @BindView(R.id.checkboxChecklistTitles)
+            CheckBox checkboxChecklistTitles;
+
+            private MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
     }
 }

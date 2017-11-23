@@ -22,7 +22,7 @@ import com.android.models.purchase_order.PurchaseOrderResponse;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.RecyclerItemClickListener;
+import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
@@ -107,7 +108,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 //        getActivity().getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
         MenuItem item = menu.findItem(R.id.action_approve);
-        if (item!=null) {
+        if (item != null) {
             item.setVisible(false);
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -127,26 +128,40 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
-        PurchaseOrderRvAdapter purchaseOrderRvAdapter = new PurchaseOrderRvAdapter(purchaseOrderListItems, true, true);
+        RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (view.getId() == R.id.textViewdetails) {
+                    PurchaseOrdermaterialDetailFragment purchaseOrdermaterialDetailFragment = new PurchaseOrdermaterialDetailFragment();
+                    Bundle bundleArgs = new Bundle();
+                    bundleArgs.putInt("purchase_order_id", purchaseOrderListItems.get(position).getId());
+                    purchaseOrdermaterialDetailFragment.setArguments(bundleArgs);
+                    purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
+                } else {
+                    Intent intent = new Intent(mContext, PayAndBillsActivity.class);
+                    intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
+                    intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
+                    startActivity(intent);
+                }
+            }
+        };
+        PurchaseOrderRvAdapter purchaseOrderRvAdapter = new PurchaseOrderRvAdapter(purchaseOrderListItems, true, true, recyclerItemClickListener);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
         recyclerView_commonListingView.setAdapter(purchaseOrderRvAdapter);
-        recyclerView_commonListingView.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+        /*recyclerView_commonListingView.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 recyclerView_commonListingView,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
                         Timber.d(String.valueOf(purchaseOrderListItems));
-                        Intent intent = new Intent(mContext, PayAndBillsActivity.class);
-                        intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
-                        intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
-                        startActivity(intent);
+
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
-                }));
+                }));*/
         /*if (purchaseOrderListItems != null) {
             purchaseOrderListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderListItem>>() {
                 @Override
@@ -221,10 +236,12 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {
         private OrderedRealmCollection<PurchaseOrderListItem> arrPurchaseOrderListItems;
+        RecyclerViewClickListener recyclerViewClickListener;
 
-        PurchaseOrderRvAdapter(@Nullable OrderedRealmCollection<PurchaseOrderListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        PurchaseOrderRvAdapter(@Nullable OrderedRealmCollection<PurchaseOrderListItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
             super(data, autoUpdate, updateOnModification);
             arrPurchaseOrderListItems = data;
+            this.recyclerViewClickListener = recyclerViewClickListener;
         }
 
         @Override
@@ -240,6 +257,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
             holder.textViewPurchaseRequestStatus.setText(purchaseOrderListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseOrderListItem.getDate());
+            holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
         }
 
@@ -253,7 +271,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             return arrPurchaseOrderListItems == null ? 0 : arrPurchaseOrderListItems.size();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
+        @OnClick(R.id.textViewdetails)
+        public void onViewClicked() {
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             @BindView(R.id.textView_purchase_request_id)
             TextView textViewPurchaseRequestId;
             @BindView(R.id.textView_purchase_request_status)
@@ -264,10 +286,19 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             TextView textViewPurchaseRequestMaterials;
             @BindView(R.id.textview_client_name)
             TextView textviewClientName;
+            @BindView(R.id.textViewdetails)
+            TextView textViewdetails;
 
             MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+                itemView.setOnClickListener(this);
+                textViewdetails.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View view) {
+                recyclerViewClickListener.onItemClick(view, getAdapterPosition());
             }
         }
     }

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,13 +29,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.dummy.BillDataItem;
+import com.android.dummy.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
-import com.android.material_request_approve.MaterialSearchResponse;
-import com.android.material_request_approve.MaterialSearchResponseData;
-import com.android.material_request_approve.SearchMaterialListItem;
-import com.android.material_request_approve.UnitQuantityItem;
-import com.android.models.purchase_bill.*;
-import com.android.models.purchase_bill.PurchaseBillListItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -43,6 +40,8 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
@@ -73,7 +72,6 @@ import timber.log.Timber;
 import static android.app.Activity.RESULT_OK;
 
 public class PayFragmentNew extends Fragment implements FragmentInterface {
-
     @BindView(R.id.editTextBillumber)
     EditText editTextBillumber;
     @BindView(R.id.textViewCaptureMatImg)
@@ -114,18 +112,45 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     EditText editextTransRemark;
     @BindView(R.id.buttonActionSubmit)
     Button buttonActionSubmit;
-
     @BindView(R.id.nestedScrollView)
     NestedScrollView nestedScrollView;
-
     @BindView(R.id.textViewVendor)
     TextView textViewVendor;
     @BindView(R.id.linearLayoutToVisible)
     LinearLayout linearLayoutToVisible;
     @BindView(R.id.linearLayoutInflateNames)
     LinearLayout linearLayoutInflateNames;
+    @BindView(R.id.textViewSetVendor)
+    TextView textViewSetVendor;
+    @BindView(R.id.linearLayoutSetInflateNames)
+    LinearLayout linearLayoutSetInflateNames;
+    @BindView(R.id.llSetMatImg)
+    LinearLayout llSetMatImg;
+    @BindView(R.id.editTextSetGrnNum)
+    EditText editTextSetGrnNum;
+    @BindView(R.id.linearLayoutSetGrnNum)
+    LinearLayout linearLayoutSetGrnNum;
+    @BindView(R.id.editTextSetBillumber)
+    EditText editTextSetBillumber;
+    @BindView(R.id.editTextSetVehNum)
+    EditText editTextSetVehNum;
+    @BindView(R.id.editTextSetInTime)
+    EditText editTextSetInTime;
+    @BindView(R.id.editTextSetOutTime)
+    EditText editTextSetOutTime;
+    @BindView(R.id.editTextSetBillAmount)
+    EditText editTextSetBillAmount;
+    @BindView(R.id.linearLayoutSetBillAmount)
+    LinearLayout linearLayoutSetBillAmount;
+    @BindView(R.id.linearLayoutSetPaymentImageLayout)
+    LinearLayout linearLayoutSetPaymentImageLayout;
+    @BindView(R.id.editextSetTransRemark)
+    EditText editextSetTransRemark;
+    @BindView(R.id.cardViewTransRemark)
+    CardView cardViewTransRemark;
+    @BindView(R.id.linearLayoutFirstLayout)
+    LinearLayout linearLayoutFirstLayout;
     private ArrayList<Integer> arrayList;
-
     Unbinder unbinder;
     private static int orderId;
     private ArrayList<File> arrayImageFileList;
@@ -133,30 +158,32 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private Context mContext;
     private DatePickerDialog.OnDateSetListener date;
     private RealmResults<MaterialNamesItem> materialNamesItems;
+    private RealmResults<BillDataItem> billDataItemRealmResults;
     private Calendar myCalendar;
     private boolean isForImage;
     private File currentImageFile;
     private JSONArray jsonImageNameArray = new JSONArray();
     private String strChallanNumber, strVehicleNumber, strInTime, strOutTime, strInDate, strOutDate;
     private TextView textViewIdDummy;
+    private TextView textViewIdDummyView;
     private FrameLayout frameLayoutEdit;
     private AlertDialog alertDialog;
     private RealmList<MaterialUnitsData> materialUnitsData;
     private View inflatedView = null;
-    private PurchaseBillListItem purchaseBIllDetailsItems;
+    private View viewData;
+    private PurchaseOrderBillListingItem purchaseBIllDetailsItems;
     private int getId;
     private boolean isCheckedMaterial;
     private CheckBox checkBox;
     private static String strVendorName;
+    View layout;
 
     public PayFragmentNew() {
         // Required empty public constructor
     }
 
     public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor) {
-
         Bundle args = new Bundle();
-
         PayFragmentNew fragment = new PayFragmentNew();
         fragment.setArguments(args);
         orderId = purchaseOrderId;
@@ -169,6 +196,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pay_new_design, container, false);
         unbinder = ButterKnife.bind(this, view);
+        layout = view.findViewById(R.id.layoutView);
         mContext = getActivity();
         requestForMaterialNames();
         if (strVendorName != null) {
@@ -260,7 +288,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         strVehicleNumber = editTextVehNum.getText().toString();
         strInTime = editTextInTime.getText().toString();
         strOutTime = editTextOutTime.getText().toString();
-
         //For Bill Number
         if (TextUtils.isEmpty(strChallanNumber)) {
             editTextBillumber.setFocusableInTouchMode(true);
@@ -322,6 +349,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextOutTime.setError(null);
             editTextOutTime.requestFocus();
         }
+        if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            return;
+        }
         uploadImages_addItemToLocal("requestToPayment", "post_grn_bill_transaction");
     }
 
@@ -378,7 +409,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToGenerateGrn() {
-
         if (!isCheckedMaterial) {
             Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
             return;
@@ -387,10 +417,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();
-
         for (int intKey : arrayList) {
             for (MaterialNamesItem mItem : materialNamesItems) {
                 if (mItem.getId() == intKey) {
@@ -410,7 +438,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 }
             }
         }
-
         try {
             params.put("images", jsonImageNameArray);
             params.put("item_list", jsonArray);
@@ -463,11 +490,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             params.put("bill_number", strChallanNumber);
             params.put("type", "upload-bill");
             params.put("grn", editTextGrnNum.getText().toString());
-            params.put("images",jsonImageNameArray);
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //ToDO Add API URL.................
+        Log.i("@@Check", params.toString());
         AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_PAYMENT_URL + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToPayment")
                 .addJSONObjectBody(params)
@@ -482,7 +509,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             ((PayAndBillsActivity) mContext).moveFragments(true);
                             clearData();
                             nestedScrollView.setVisibility(View.GONE);
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -493,59 +519,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
-    }
-
-    private void inflateViews() {
-        realm = Realm.getDefaultInstance();
-        arrayList = new ArrayList<>();
-        materialNamesItems = realm.where(MaterialNamesItem.class).findAll();
-        for (int i = 0; i < materialNamesItems.size(); i++) {
-            final MaterialNamesItem materialNamesItem = materialNamesItems.get(i);
-            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);
-            inflatedView.setId(i);
-            checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                    if (b) {
-                        isCheckedMaterial = true;
-                        arrayList.add(materialNamesItem.getId());
-                    } else {
-                        isCheckedMaterial = false;
-                        try {
-                            arrayList.remove(materialNamesItem.getId());
-                        } catch (Exception e) {
-                            Log.i("PayFragmentNew", "onCheckedChanged: key does not exist");
-                        }
-                    }
-                }
-            });
-            checkBox.setChecked(false);
-            frameLayoutEdit = inflatedView.findViewById(R.id.frameLayoutEdit);
-            textViewIdDummy = inflatedView.findViewById(R.id.textViewIdDummy);
-            textViewIdDummy.setText(materialNamesItem.getId() + "");
-            checkBox.setText(materialNamesItem.getMaterialName());
-            frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    TextView textViewId = view.findViewById(R.id.textViewIdDummy);
-                    int intTemp = Integer.parseInt(textViewId.getText().toString());
-                    MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", intTemp).findFirst();
-                    int index = materialNamesItems.indexOf(materialNamesItem);
-                    View currentView = linearLayoutInflateNames.findViewById(index);
-                    CheckBox currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
-                    if (currentCheckbox.isChecked()) {
-                        openDialog(intTemp);
-                    } else {
-                        Toast.makeText(getActivity(), "Please Select Material", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            linearLayoutInflateNames.addView(inflatedView);
-
-        }
     }
 
     private void setInOutTime(final EditText currentEditText) {
@@ -640,10 +613,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
     }
 
-    private void openDialog(int id) {
+    private void openDialog(int id, final boolean isForEdit) {
         getId = id;
         realm = Realm.getDefaultInstance();
-
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_purchase_order_for_material, null);
         alertDialogBuilder.setView(dialogView);
@@ -652,47 +624,62 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         TextView textViewMaterialNameSelected = dialogView.findViewById(R.id.textViewMaterialNameSelected);
         Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
         MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
-        if (materialNamesItem != null) {
-            Timber.d(String.valueOf(materialNamesItem));
-            edittextMatUnit.setText(materialNamesItem.getMaterialUnits().get(0).getUnit());
-            textViewMaterialNameSelected.setText(materialNamesItem.getMaterialName());
+        if (isForEdit) {
+            if (materialNamesItem != null) {
+                Timber.d(String.valueOf(materialNamesItem));
+                edittextMatUnit.setText(materialNamesItem.getMaterialUnits().get(0).getUnit());
+                textViewMaterialNameSelected.setText(materialNamesItem.getMaterialName());
+                edittextMatUnit.setEnabled(false);
+            }
+        } else {
+            BillDataItem billDataItem = realm.where(BillDataItem.class).equalTo("id", getId).findFirst();
+            editTextMatQuantity.setText(billDataItem.getMaterialQuantity());
+            editTextMatQuantity.setEnabled(false);
+            edittextMatUnit.setText(billDataItem.getUnitName());
             edittextMatUnit.setEnabled(false);
-
+            textViewMaterialNameSelected.setText(billDataItem.getMaterialName());
+            LinearLayout linearLayout = dialogView.findViewById(R.id.llAddQuoImg);
+            for (int i = 0; i < billDataItem.getImages().size(); i++) {
+                loadImage(billDataItem.getImages().get(i).getImageUrl(), linearLayout);
+            }
         }
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                realm = Realm.getDefaultInstance();
-                try {
-                    realm.executeTransactionAsync(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
-                            materialNamesItem.setQuantity(Integer.parseInt(editTextMatQuantity.getText().toString()));
-                            realm.copyToRealmOrUpdate(materialNamesItem);
+                if (isForEdit) {
+                    realm = Realm.getDefaultInstance();
+                    try {
+                        realm.executeTransactionAsync(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
+                                materialNamesItem.setQuantity(Integer.parseInt(editTextMatQuantity.getText().toString()));
+                                realm.copyToRealmOrUpdate(materialNamesItem);
+                            }
+                        }, new Realm.Transaction.OnSuccess() {
+                            @Override
+                            public void onSuccess() {
+                                Timber.d("Realm Execution Successful");
+                                alertDialog.dismiss();
+                            }
+                        }, new Realm.Transaction.OnError() {
+                            @Override
+                            public void onError(Throwable error) {
+                                AppUtils.getInstance().logRealmExecutionError(error);
+                            }
+                        });
+                    } finally {
+                        if (realm != null) {
+                            realm.close();
                         }
-                    }, new Realm.Transaction.OnSuccess() {
-                        @Override
-                        public void onSuccess() {
-                            Timber.d("Realm Execution Successful");
-                            alertDialog.dismiss();
-                        }
-                    }, new Realm.Transaction.OnError() {
-                        @Override
-                        public void onError(Throwable error) {
-                            AppUtils.getInstance().logRealmExecutionError(error);
-                        }
-                    });
-                } finally {
-                    if (realm != null) {
-                        realm.close();
                     }
+                } else {
+                    alertDialog.dismiss();
                 }
             }
         });
         alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-
     }
 
     //    bill_transaction
@@ -743,44 +730,37 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     private void setData(boolean isFromClick) {
         if (isFromClick) {
+            linearLayoutFirstLayout.setVisibility(View.GONE);
+            layout.setVisibility(View.VISIBLE);
             realm = Realm.getDefaultInstance();
-            linearLayoutToVisible.setVisibility(View.VISIBLE);
-            //Non Editable Fields
-            editTextBillumber.setEnabled(false);
-            editTextVehNum.setEnabled(false);
-            editTextInTime.setEnabled(false);
-            editTextOutTime.setEnabled(false);
-            editTextBillAmount.setEnabled(false);
-            editTextGrnNum.setEnabled(false);
-            editTextInDate.setEnabled(false);
-            editTextOutDate.setEnabled(false);
-            realm = Realm.getDefaultInstance();
-            buttonActionSubmit.setVisibility(View.GONE);
-            buttonActionGenerateGrn.setVisibility(View.GONE);
-            purchaseBIllDetailsItems = realm.where(com.android.models.purchase_bill.PurchaseBillListItem.class).equalTo("purchaseBillGrn", PayAndBillsActivity.idForBillItem).findFirst();
+            purchaseBIllDetailsItems = realm.where(PurchaseOrderBillListingItem.class).equalTo("grn", PayAndBillsActivity.idForBillItem).findFirst();
             if (purchaseBIllDetailsItems != null) {
-//                edittextSetNameOfMaterial.setText(purchaseBIllDetailsItems.getMaterialName());
-//                edittextSetUnit.setText(purchaseBIllDetailsItems.getMaterialUnit());
-//                edittextQuantity.setText(purchaseBIllDetailsItems.getMaterialQuantity());
-                editTextBillumber.setText(purchaseBIllDetailsItems.getBillNumber());
-                editTextVehNum.setText(purchaseBIllDetailsItems.getVehicleNumber());
-                editTextOutTime.setText(purchaseBIllDetailsItems.getOutTime());
-                editTextBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
-                editTextGrnNum.setText(purchaseBIllDetailsItems.getPurchaseBillGrn());
-                editTextOutTime.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "HH:mm:ss", purchaseBIllDetailsItems.getOutTime()));
-                editTextOutDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBIllDetailsItems.getOutTime()));
-                editTextInTime.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "HH:mm:ss", purchaseBIllDetailsItems.getInTime()));
-                editTextInDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBIllDetailsItems.getInTime()));
-            }
-        } else {
-            linearLayoutToVisible.setVisibility(View.GONE);
-            //Visible
+//              textViewSetVendor.setText("Vendor Name :- " + purchaseBIllDetailsItems.getVendor());
+                editTextSetBillumber.setText(purchaseBIllDetailsItems.getBillData().get(0).getBillNumber());
+                editTextSetVehNum.setText(purchaseBIllDetailsItems.getBillData().get(0).getVehicleNumber());
+                editTextSetOutTime.setText(purchaseBIllDetailsItems.getBillData().get(0).getOutTime());
+                editTextSetBillAmount.setText(purchaseBIllDetailsItems.getBillData().get(0).getBillAmount());
+                editTextSetGrnNum.setText(purchaseBIllDetailsItems.getBillData().get(0).getPurchaseBillGrn());
+                editTextSetInTime.setText(purchaseBIllDetailsItems.getBillData().get(0).getInTime());
+                editextSetTransRemark.setText(purchaseBIllDetailsItems.getBillData().get(0).getRemark());
+                llSetMatImg.removeAllViews();
+                setViewData();
+                /*if (purchaseBIllDetailsItems.getBillData().get(0).getImages().size() > 0) {
+                    for (int index = 0; index < purchaseBIllDetailsItems.getBillData().get(0).getImages().size(); index++) {
+                        loadImage(purchaseBIllDetailsItems.getBillData().get(0).getImages().get(index).getImageUrl(),llSetMatImg);
+                    }
+                }*/
+            } else {
+                linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+                layout.setVisibility(View.GONE);
+           /* linearLayoutToVisible.setVisibility(View.GONE);
             editTextBillumber.setEnabled(true);
             editTextVehNum.setEnabled(true);
             editTextInTime.setEnabled(true);
             editTextOutTime.setEnabled(true);
             editTextBillAmount.setEnabled(true);
-            editTextGrnNum.setEnabled(false);
+            editTextGrnNum.setEnabled(false);*/
+            }
         }
     }
 
@@ -794,4 +774,93 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         editTextOutDate.setText("");
     }
 
+    private void loadImage(String strUrl, LinearLayout linearLayout) {
+        ImageView imageView = new ImageView(mContext);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(150, 150);
+        layoutParams.setMargins(10, 10, 10, 10);
+        imageView.setLayoutParams(layoutParams);
+        linearLayout.addView(imageView);
+        Glide.with(mContext).load("http://test.mconstruction.co.in" + strUrl)
+                .thumbnail(0.1f)
+                .crossFade()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageView);
+    }
+
+    private void inflateViews() {
+        realm = Realm.getDefaultInstance();
+        arrayList = new ArrayList<>();
+        materialNamesItems = realm.where(MaterialNamesItem.class).findAll();
+        for (int i = 0; i < materialNamesItems.size(); i++) {
+            final MaterialNamesItem materialNamesItem = materialNamesItems.get(i);
+            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);
+            inflatedView.setId(i);
+            checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (b) {
+                        isCheckedMaterial = true;
+                        arrayList.add(materialNamesItem.getId());
+                    } else {
+                        isCheckedMaterial = false;
+                        try {
+                            arrayList.remove(materialNamesItem.getId());
+                        } catch (Exception e) {
+                            Log.i("PayFragmentNew", "onCheckedChanged: key does not exist");
+                        }
+                    }
+                }
+            });
+            checkBox.setChecked(false);
+            frameLayoutEdit = inflatedView.findViewById(R.id.frameLayoutEdit);
+            textViewIdDummy = inflatedView.findViewById(R.id.textViewIdDummy);
+            textViewIdDummy.setText(materialNamesItem.getId() + "");
+            checkBox.setText(materialNamesItem.getMaterialName());
+            frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView textViewId = view.findViewById(R.id.textViewIdDummy);
+                    int intTemp = Integer.parseInt(textViewId.getText().toString());
+                    MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", intTemp).findFirst();
+                    int index = materialNamesItems.indexOf(materialNamesItem);
+                    View currentView = linearLayoutInflateNames.findViewById(index);
+                    CheckBox currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
+                    if (currentCheckbox.isChecked()) {
+                        openDialog(intTemp, true);
+                    } else {
+                        Toast.makeText(getActivity(), "Please Select Material", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            linearLayoutInflateNames.addView(inflatedView);
+        }
+    }
+
+    private void setViewData() {
+        realm = Realm.getDefaultInstance();
+        arrayList = new ArrayList<>();
+        billDataItemRealmResults = realm.where(BillDataItem.class).equalTo("purchaseBillGrn", PayAndBillsActivity.idForBillItem).findAll();
+        linearLayoutSetInflateNames.removeAllViews();
+        for (int i = 0; i < billDataItemRealmResults.size(); i++) {
+            final BillDataItem billDataItem = billDataItemRealmResults.get(i);
+            viewData = getActivity().getLayoutInflater().inflate(R.layout.linear_view_multiple_material_purchase_order, null, false);
+            viewData.setId(i);
+            TextView name = viewData.findViewById(R.id.name);
+            name.setText(billDataItem.getMaterialName());
+            FrameLayout frameLayoutView = viewData.findViewById(R.id.frameLayoutView);
+            textViewIdDummyView = viewData.findViewById(R.id.textViewIdDummyView);
+            textViewIdDummyView.setText(billDataItem.getId() + "");
+            frameLayoutView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView textViewId = view.findViewById(R.id.textViewIdDummyView);
+                    int intTemp = Integer.parseInt(textViewId.getText().toString());
+                    openDialog(intTemp, false);
+                }
+            });
+            linearLayoutSetInflateNames.addView(viewData);
+        }
+    }
 }

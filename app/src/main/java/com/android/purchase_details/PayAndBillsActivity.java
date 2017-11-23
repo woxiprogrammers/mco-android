@@ -30,6 +30,7 @@ import timber.log.Timber;
 public class PayAndBillsActivity extends BaseActivity {
     public static boolean isForViewOnly;
     public static String idForBillItem;
+    public static int id;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.bottom_navigationPay)

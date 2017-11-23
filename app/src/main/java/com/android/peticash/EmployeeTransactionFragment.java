@@ -53,7 +53,6 @@ public class EmployeeTransactionFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialog = inflater.inflate(R.layout.layout_recyclerview_for_emp_transaction, null);
         builder.setView(dialog);
@@ -64,7 +63,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
         buttonOk = dialog.findViewById(R.id.btnOk);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
-        textViewNoTransactions=dialog.findViewById(R.id.textViewNoTransactions);
+        textViewNoTransactions = dialog.findViewById(R.id.textViewNoTransactions);
         requestForEmpTransactions();
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,10 +113,10 @@ public class EmployeeTransactionFragment extends DialogFragment {
                                 @Override
                                 public void onSuccess() {
                                     progressBar.setVisibility(View.GONE);
-                                    if(response.getTransactionsData().getEmployeeTransactions().size() > 0){
+                                    if (response.getTransactionsData().getEmployeeTransactions().size() > 0) {
                                         setUpAdapter();
                                         textViewNoTransactions.setVisibility(View.GONE);
-                                    }else {
+                                    } else {
                                         textViewNoTransactions.setVisibility(View.VISIBLE);
                                     }
                                     Timber.d("hello");
@@ -203,10 +202,8 @@ public class EmployeeTransactionFragment extends DialogFragment {
             TextView textviewSiteNameOfEmp;
             @BindView(R.id.linearLayoutSetEmpSalAmount)
             LinearLayout linearLayoutSetEmpSalAmount;
-
             @BindView(R.id.textview)
             TextView textview;
-
             @BindView(R.id.linearLayoutSetPayAmount)
             LinearLayout mLinearLayoutSetPayAmount;
             @BindView(R.id.textviewEmpAdvAmount)

@@ -53,8 +53,14 @@ public class AppURL {
     public static final String API_PETICASH_BILL_PAYMENT = BASE_URL + "peticash/purchase/bill-payment?token=";
     public static final String API_GET_SYSTEM_SITES = BASE_URL + "system-project-sites";
     public static final String API_SYSTEM_UNITS = BASE_URL + "system-units";
+    public static final String API_CHECKLIST_CATEGORY_LIST = BASE_URL + "checklist/category?token=";
     public static final String API_INVENTORY_CHECK_AVAILABLE_FOR_UNITS = BASE_URL + "inventory/material/check-availability?token=";
     public static final String API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY = BASE_URL + "purchase/purchase-order/generate-grn?token=";
     public static final String API_PURCHASE_ORDER_PAYMENT_URL = BASE_URL + "purchase/purchase-order/bill-transaction?token=";
-    public static final String API_CHECKLIST_CATEGORY_LIST = BASE_URL + "checklist/category?token=";
+    public static final String API_GET_CHECKPOINTS_URL = BASE_URL + "";
+    public static final String API_CHECKLIST_SUBMIT_CHECKPOINT_STATUS = BASE_URL + "";
+    public static final String API_PURCHASE_ORDER_MATERIAL_DETAIL = BASE_URL + "purchase/purchase-order/detail?token=";
+    public static final String API_AWARENES_CATEGORY_DATA = BASE_URL + "awareness/get-main-categories?token=";
+    public static final String API_AWARENES_SUB_CATEGORY_DATA = BASE_URL + "awareness/get-sub-categories?token=";
+    public static final String API_AWARENES_LISTING = BASE_URL + "awareness/listing?token=";
 }

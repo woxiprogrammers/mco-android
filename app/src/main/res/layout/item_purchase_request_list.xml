@@ -32,6 +32,7 @@
                 android:id="@+id/textView_purchase_request_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="ksdksdksdksdksdks"
                 android:textColor="@color/colorAccentLight"
                 android:textSize="@dimen/text_14sp"/>
         </LinearLayout>
@@ -40,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/textview_client_name"
                 android:layout_width="match_parent"
@@ -54,11 +56,48 @@
             android:textColor="@color/colorTextLight"
             android:textSize="@dimen/text_14sp"/>
 
-        <TextView
-            android:id="@+id/textView_purchase_request_materials"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTextLight"
-            android:textSize="@dimen/text_14sp"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView_purchase_request_materials"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:text="cement"
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/text_14sp"/>
+
+
+            <TextView
+                android:id="@+id/textViewdetails"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:background="@drawable/background_button_pressed"
+                android:gravity="center"
+                android:padding="@dimen/dimen_5dp"
+                android:text="Details"
+                android:visibility="gone"
+                android:textSize="@dimen/text_14sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayoutToHideApproved"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textViewApproved"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:text="Approved By : -"
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/text_14sp"/>
+        </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
