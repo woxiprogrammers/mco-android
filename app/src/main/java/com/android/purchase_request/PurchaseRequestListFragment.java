@@ -166,7 +166,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             String accessPermission = permissionsItem.getCanAccess();
             if (accessPermission.equalsIgnoreCase(getString(R.string.create_purchase_request))) {
                 floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
-            }//ToDO Sharvari
+            }//TODO Sharvari
             /*else if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
                 floatingCreatePurchaseRequest.setVisibility(View.GONE);
             }*/
