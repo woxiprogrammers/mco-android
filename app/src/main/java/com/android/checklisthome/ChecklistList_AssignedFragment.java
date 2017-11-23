@@ -133,7 +133,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
 
         @Override
         public long getItemId(int index) {
-            return assignedChecklistListItems.get(index).getId();
+            return assignedChecklistListItems.get(index).getProjectSiteUserChecklistAssignmentId();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {

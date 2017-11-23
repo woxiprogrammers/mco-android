@@ -12,7 +12,7 @@ public class AssignedChecklistResponse extends RealmObject {
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("page_id")
     private int pageId;
-    @SerializedName("assignedChecklistData")
+    @SerializedName("data")
     private AssignedChecklistData assignedChecklistData;
     @SerializedName("message")
     private String message;
