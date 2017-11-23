@@ -7,28 +7,40 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class AssignedChecklistListItem extends RealmObject {
-    @PrimaryKey
-    @SerializedName("id")
-    private int id;
+
+
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("floor_name")
     private String floorName;
     @SerializedName("assigned_on")
     private String assignedOn;
-    @SerializedName("sub_category")
-    private String subCategory;
-    @SerializedName("checklist_id")
-    private String checklistId;
+    @SerializedName("sub_category_name")
+    private String subCategoryName;
+    @SerializedName("project_site_checklist_id")
+    private String projectSiteChecklistId;
     @SerializedName("description")
     private String description;
-    @SerializedName("category")
-    private String category;
+    @SerializedName("category_name")
+    private String categoryName;
     @SerializedName("title")
     private String title;
-    @SerializedName("total_checkpounts")
+    @SerializedName("total_checkpoints")
     private int totalCheckpounts;
-    @SerializedName("assigned_to")
-    private String assignedTo;
+    @SerializedName("assigned_user_name")
+    private String assignedUserName;
+
+    @PrimaryKey
+    @SerializedName("project_site_user_checklist_assignment_id")
+    private int projectSiteUserChecklistAssignmentId;
+
+    @SerializedName("category_id")
+    private int categoryId;
+
+    @SerializedName("sub_category_id")
+    private int subCategoryId;
+
+    @SerializedName("assigned_user")
+    private int assignedUserId;
 
     public void setFloorName(String floorName) {
         this.floorName = floorName;
@@ -46,20 +58,20 @@ public class AssignedChecklistListItem extends RealmObject {
         return assignedOn;
     }
 
-    public void setSubCategory(String subCategory) {
-        this.subCategory = subCategory;
+    public void setSubCategoryName(String subCategoryName) {
+        this.subCategoryName = subCategoryName;
     }
 
-    public String getSubCategory() {
-        return subCategory;
+    public String getSubCategoryName() {
+        return subCategoryName;
     }
 
-    public void setChecklistId(String checklistId) {
-        this.checklistId = checklistId;
+    public void setProjectSiteChecklistId(String projectSiteChecklistId) {
+        this.projectSiteChecklistId = projectSiteChecklistId;
     }
 
-    public String getChecklistId() {
-        return checklistId;
+    public String getProjectSiteChecklistId() {
+        return projectSiteChecklistId;
     }
 
     public void setDescription(String description) {
@@ -69,21 +81,12 @@ public class AssignedChecklistListItem extends RealmObject {
     public String getDescription() {
         return description;
     }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getCategory() {
-        return category;
+    public String getCategoryName() {
+        return categoryName;
     }
 
     public void setTitle(String title) {
@@ -102,11 +105,45 @@ public class AssignedChecklistListItem extends RealmObject {
         return totalCheckpounts;
     }
 
-    public void setAssignedTo(String assignedTo) {
-        this.assignedTo = assignedTo;
+    public void setAssignedUserName(String assignedUserName) {
+        this.assignedUserName = assignedUserName;
     }
 
-    public String getAssignedTo() {
-        return assignedTo;
+    public String getAssignedUserName() {
+        return assignedUserName;
     }
+
+
+    public int getProjectSiteUserChecklistAssignmentId() {
+        return projectSiteUserChecklistAssignmentId;
+    }
+
+    public void setProjectSiteUserChecklistAssignmentId(int projectSiteUserChecklistAssignmentId) {
+        this.projectSiteUserChecklistAssignmentId = projectSiteUserChecklistAssignmentId;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public int getSubCategoryId() {
+        return subCategoryId;
+    }
+
+    public void setSubCategoryId(int subCategoryId) {
+        this.subCategoryId = subCategoryId;
+    }
+
+    public int getAssignedUserId() {
+        return assignedUserId;
+    }
+
+    public void setAssignedUserId(int assignedUserId) {
+        this.assignedUserId = assignedUserId;
+    }
+
 }
