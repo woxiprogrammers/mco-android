@@ -86,14 +86,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     Button buttonActionGenerateGrn;
     @BindView(R.id.editTextVehNum)
     EditText editTextVehNum;
-    @BindView(R.id.editTextInDate)
-    EditText editTextInDate;
     @BindView(R.id.editTextInTime)
     EditText editTextInTime;
-    @BindView(R.id.editTextOutDate)
-    EditText editTextOutDate;
-    @BindView(R.id.editTextOutTime)
-    EditText editTextOutTime;
     @BindView(R.id.editTextBillAmount)
     EditText editTextBillAmount;
     @BindView(R.id.editTextGrnNum)
@@ -163,7 +157,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private boolean isForImage;
     private File currentImageFile;
     private JSONArray jsonImageNameArray = new JSONArray();
-    private String strChallanNumber, strVehicleNumber, strInTime, strOutTime, strInDate, strOutDate;
+    private String strChallanNumber, strVehicleNumber;
     private TextView textViewIdDummy;
     private TextView textViewIdDummyView;
     private FrameLayout frameLayoutEdit;
@@ -220,7 +214,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
     }
 
-    @OnClick({R.id.textViewCaptureMatImg, R.id.textViewPickMatImg, R.id.buttonActionGenerateGrn, R.id.editTextInDate, R.id.editTextInTime, R.id.editTextOutDate, R.id.editTextOutTime, R.id.textViewCaptureTransImg, R.id.textViewPickTransImg, R.id.buttonActionSubmit})
+    @OnClick({R.id.textViewCaptureMatImg, R.id.textViewPickMatImg, R.id.buttonActionGenerateGrn, R.id.editTextInTime, R.id.textViewCaptureTransImg, R.id.textViewPickTransImg, R.id.buttonActionSubmit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCaptureMatImg:
@@ -233,18 +227,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionGenerateGrn:
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
-                break;
-            case R.id.editTextInDate:
-                setInOutDate(editTextInDate);
-                break;
-            case R.id.editTextInTime:
-                setInOutTime(editTextInTime);
-                break;
-            case R.id.editTextOutDate:
-                setInOutDate(editTextOutDate);
-                break;
-            case R.id.editTextOutTime:
-                setInOutTime(editTextOutTime);
                 break;
             case R.id.textViewCaptureTransImg:
                 isForImage = false;
@@ -286,8 +268,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void validateEntries() {
         strChallanNumber = editTextBillumber.getText().toString();
         strVehicleNumber = editTextVehNum.getText().toString();
-        strInTime = editTextInTime.getText().toString();
-        strOutTime = editTextOutTime.getText().toString();
+
         //For Bill Number
         if (TextUtils.isEmpty(strChallanNumber)) {
             editTextBillumber.setFocusableInTouchMode(true);
@@ -308,47 +289,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextVehNum.setError(null);
             editTextVehNum.requestFocus();
         }
-        //For In Date
-        strInDate = editTextInDate.getText().toString();
-        if (TextUtils.isEmpty(strInDate)) {
-            editTextInDate.setFocusableInTouchMode(true);
-            editTextInDate.requestFocus();
-            editTextInDate.setError(getString(R.string.please_enter) + " " + "Date");
-            return;
-        } else {
-            editTextInDate.setError(null);
-            editTextInDate.clearFocus();
-        }
-        //For In Time
-        if (TextUtils.isEmpty(strInTime)) {
-            editTextInTime.setFocusableInTouchMode(true);
-            editTextInTime.requestFocus();
-            editTextInTime.setError(getString(R.string.please_enter) + " " + getString(R.string.in_time));
-            return;
-        } else {
-            editTextInTime.setError(null);
-            editTextInTime.requestFocus();
-        }
-        //For Out Date
-        strOutDate = editTextOutDate.getText().toString();
-        if (TextUtils.isEmpty(strOutDate)) {
-            editTextOutDate.setFocusableInTouchMode(true);
-            editTextOutDate.requestFocus();
-            editTextOutDate.setError(getString(R.string.please_enter) + " " + " Out Date");
-        } else {
-            editTextOutDate.setError(null);
-            editTextOutDate.clearFocus();
-        }
-        //For Out Time
-        if (TextUtils.isEmpty(strOutTime)) {
-            editTextOutTime.setFocusableInTouchMode(true);
-            editTextOutTime.requestFocus();
-            editTextOutTime.setError(getString(R.string.please_enter) + " " + getString(R.string.out_time));
-            return;
-        } else {
-            editTextOutTime.setError(null);
-            editTextOutTime.requestFocus();
-        }
+
         if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
@@ -481,8 +422,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         JSONObject params = new JSONObject();
         try {
             params.put("vehicle_number", strVehicleNumber);
-            params.put("in_time", strInDate + " " + strInTime);
-            params.put("out_time", strOutDate + " " + strOutTime);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
                 params.put("bill_amount", editTextBillAmount.getText().toString());
             }
@@ -521,50 +460,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 });
     }
 
-    private void setInOutTime(final EditText currentEditText) {
-        final Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = mcurrentTime.get(Calendar.MINUTE);
-        final int seconds = mcurrentTime.get(Calendar.SECOND);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.SECOND, seconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
 
-    private void setInOutDate(final EditText editext_updateDate) {
-        myCalendar = Calendar.getInstance();
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText(editext_updateDate);
-            }
-        };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
-    }
 
-    private void updateEditText(EditText editTextUpdateDate) {
-        String myFormat = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
-        editTextUpdateDate.setError(null);
-    }
 
     private void captureImage() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
@@ -768,10 +665,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         editTextBillumber.setText("");
         editTextVehNum.setText("");
         editTextInTime.setText("");
-        editTextOutTime.setText("");
         editTextBillAmount.setText("");
-        editTextInDate.setText("");
-        editTextOutDate.setText("");
     }
 
     private void loadImage(String strUrl, LinearLayout linearLayout) {
