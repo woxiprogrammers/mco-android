@@ -78,8 +78,8 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-maintainance", ChecklistHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-management", AwarenessHomeActivity.class.getName());
-        aclKeyValuePair.put("inventory-history", AwarenessHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-management", ChecklistHomeActivity.class.getName());
+        aclKeyValuePair.put("inventory-history", ChecklistHomeActivity.class.getName());
         //
 //        aclKeyValuePair.put("master-peticash-account", InventoryHomeActivity.class.getName());
 //        aclKeyValuePair.put("sitewise-peticash-account", InventoryHomeActivity.class.getName());

@@ -11,7 +11,7 @@ public class AssignedChecklistData extends RealmObject {
     @PrimaryKey
     private int primaryKey = 0;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
-    @SerializedName("assigned_checklist_list")
+    @SerializedName("checklist_data")
     private RealmList<AssignedChecklistListItem> assignedChecklistList;
 
     public void setAssignedChecklistList(RealmList<AssignedChecklistListItem> assignedChecklistList) {

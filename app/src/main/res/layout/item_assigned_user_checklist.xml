@@ -21,6 +21,7 @@
                 android:padding="@dimen/dimen_10dp">
 
                 <TextView
+                    android:id="@+id/textViewAssignedUserName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Rohit Sharma"
@@ -28,11 +29,13 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/textviewFloorName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="1st Floor"/>
 
                 <TextView
+                    android:id="@+id/textviewSubCategoryName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Main Columns"
