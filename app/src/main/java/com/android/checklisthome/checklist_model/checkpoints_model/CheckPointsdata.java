@@ -1,18 +1,19 @@
 package com.android.checklisthome.checklist_model.checkpoints_model;
-
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class CheckPointsdata{
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
+public class CheckPointsdata extends RealmObject{
 
 	@SerializedName("check_points")
-	private List<CheckPointsItem> checkPoints;
+	private RealmList<CheckPointsItem> checkPoints;
 
-	public void setCheckPoints(List<CheckPointsItem> checkPoints){
+	public void setCheckPoints(RealmList<CheckPointsItem> checkPoints){
 		this.checkPoints = checkPoints;
 	}
 
-	public List<CheckPointsItem> getCheckPoints(){
+	public RealmList<CheckPointsItem> getCheckPoints(){
 		return checkPoints;
 	}
 }

@@ -3,12 +3,14 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class CheckPointsItem extends RealmObject{
 
 	@SerializedName("project_site_user_checkpoint_images")
 	private RealmList<ProjectSiteUserCheckpointImagesItem> projectSiteUserCheckpointImages;
 
+	@PrimaryKey
 	@SerializedName("project_site_user_checkpoint_id")
 	private int projectSiteUserCheckpointId;
 

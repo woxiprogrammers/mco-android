@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
+import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
 import com.android.constro360.R;
 import com.android.inventory.assets.ActivityAssetMoveInOutTransfer;
 import com.android.inventory.assets.AssetDetailsActivity;
@@ -71,6 +73,8 @@ public class CheckListTitleFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recyclerview_for_checklist_title, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
+        requestToGetCheckpoints();
+        setUpAdapter();
         return view;
     }
 
@@ -84,9 +88,9 @@ public class CheckListTitleFragment extends Fragment {
         realm = Realm.getDefaultInstance();
         //ToDo Sharvari Item Class POJO AssetsListItem
 
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).findAll();
-        Timber.d(String.valueOf(assetsListItems));
-        CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(assetsListItems, true, true);
+        final RealmResults<CheckPointsItem> checkPointsItemRealmResults = realm.where(CheckPointsItem.class).findAll();
+        Timber.d(String.valueOf(checkPointsItemRealmResults));
+        CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(checkPointsItemRealmResults, true, true);
         rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
         rvChecklistTitle.setHasFixedSize(true);
         rvChecklistTitle.setAdapter(checkListTitleAdapter);
@@ -95,28 +99,17 @@ public class CheckListTitleFragment extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        if (assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
-                            Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
-                            startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
-                            startActivity(startIntent);
-                        } else {
-                            Intent intent = new Intent(mContext, AssetDetailsActivity.class);
-                            intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
-                            intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
-                            intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
-                            intent.putExtra("component_type_slug", assetsListItems.get(position).getSlug());
-                            startActivity(intent);
-                        }
+
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (assetsListItems != null) {
-            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsListItem>>() {
+        if (checkPointsItemRealmResults != null) {
+            checkPointsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<CheckPointsItem>>() {
                 @Override
-                public void onChange(RealmResults<AssetsListItem> purchaseRequestListItems) {
+                public void onChange(RealmResults<CheckPointsItem> checkPointsItems) {
                 }
             });
         } else {
@@ -127,24 +120,23 @@ public class CheckListTitleFragment extends Fragment {
     private void requestToGetCheckpoints() {
         final JSONObject params = new JSONObject();
         try {
-            params.put("", AppUtils.getInstance().getCurrentSiteId());
+            params.put("project_site_user_checklist_assignment_id", 1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //ToDo Sharvari ADD URL,Response Class
         AndroidNetworking.post(AppURL.API_GET_CHECKPOINTS_URL + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("API_GET_CHECKPOINTS_URL")
                 .build()
-                .getAsObject(AssetListResponse.class, new ParsedRequestListener<AssetListResponse>() {
+                .getAsObject(CheckPointsResponse.class, new ParsedRequestListener<CheckPointsResponse>() {
                     @Override
-                    public void onResponse(final AssetListResponse response) {
+                    public void onResponse(final CheckPointsResponse response) {
                         //ToDo Sharvari Lazy Loading
-                        /*if (!response.getPageid().equalsIgnoreCase("")) {
+                       /* if (!response.getPageid().equalsIgnoreCase("")) {
                             pageNumber = Integer.parseInt(response.getPageid());
-                        }
+                        }*/
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -155,10 +147,10 @@ public class CheckListTitleFragment extends Fragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    if (oldPageNumber != pageNumber) {
+                                    /*if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
                                         requestAssetListOnline(pageNumber);
-                                    }
+                                    }*/
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -170,7 +162,7 @@ public class CheckListTitleFragment extends Fragment {
                             if (realm != null) {
                                 realm.close();
                             }
-                        }*/
+                        }
                     }
 
                     @Override
@@ -186,15 +178,14 @@ public class CheckListTitleFragment extends Fragment {
 
     }
 
-    ////////ToDo Sharvari Add Item Class POJO
-    public class CheckListTitleAdapter extends RealmRecyclerViewAdapter<AssetsListItem, CheckListTitleAdapter.MyViewHolder> {
-        private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
-        private AssetsListItem assetsListItem;
+    public class CheckListTitleAdapter extends RealmRecyclerViewAdapter<CheckPointsItem, CheckListTitleAdapter.MyViewHolder> {
+        private OrderedRealmCollection<CheckPointsItem> checkPointsItemOrderedRealmCollection;
+        private CheckPointsItem checkPointsItem;
 
-        public CheckListTitleAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        public CheckListTitleAdapter(@Nullable OrderedRealmCollection<CheckPointsItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
-            assetsListItemCollection = data;
+            checkPointsItemOrderedRealmCollection = data;
         }
 
         @Override
@@ -205,17 +196,18 @@ public class CheckListTitleFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            assetsListItem = assetsListItemCollection.get(position);
+            checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
+            holder.checkboxChecklistTitles.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         }
 
         @Override
         public long getItemId(int index) {
-            return assetsListItemCollection.get(index).getId();
+            return checkPointsItemOrderedRealmCollection.get(index).getProjectSiteUserCheckpointId();
         }
 
         @Override
         public int getItemCount() {
-            return assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+            return checkPointsItemOrderedRealmCollection == null ? 0 : checkPointsItemOrderedRealmCollection.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {

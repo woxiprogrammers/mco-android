@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.android.awareness.AwarenessHomeActivity;
+import com.android.checklisthome.CheckListActionActivity;
 import com.android.checklisthome.ChecklistHomeActivity;
 import com.android.dashboard.DashBoardActivity;
 import com.android.inventory.InventoryHomeActivity;
@@ -79,7 +80,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-maintainance", ChecklistHomeActivity.class.getName());
         aclKeyValuePair.put("asset-management", ChecklistHomeActivity.class.getName());
-        aclKeyValuePair.put("inventory-history", ChecklistHomeActivity.class.getName());
+        aclKeyValuePair.put("inventory-history", CheckListActionActivity.class.getName());
         //
 //        aclKeyValuePair.put("master-peticash-account", InventoryHomeActivity.class.getName());
 //        aclKeyValuePair.put("sitewise-peticash-account", InventoryHomeActivity.class.getName());

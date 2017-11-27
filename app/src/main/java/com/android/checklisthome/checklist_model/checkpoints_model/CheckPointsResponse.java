@@ -5,7 +5,7 @@ import io.realm.RealmObject;
 
 public class CheckPointsResponse extends RealmObject{
 
-	@SerializedName("check_pointsdata")
+	@SerializedName("data")
 	private CheckPointsdata checkPointsdata;
 
 	@SerializedName("message")
