@@ -86,8 +86,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     Button buttonActionGenerateGrn;
     @BindView(R.id.editTextVehNum)
     EditText editTextVehNum;
-    @BindView(R.id.editTextInTime)
-    EditText editTextInTime;
     @BindView(R.id.editTextBillAmount)
     EditText editTextBillAmount;
     @BindView(R.id.editTextGrnNum)
@@ -192,7 +190,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         unbinder = ButterKnife.bind(this, view);
         layout = view.findViewById(R.id.layoutView);
         mContext = getActivity();
-        requestForMaterialNames();
         if (strVendorName != null) {
             textViewVendor.setText("Vendor Name : - " + strVendorName);
         }
@@ -214,7 +211,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
     }
 
-    @OnClick({R.id.textViewCaptureMatImg, R.id.textViewPickMatImg, R.id.buttonActionGenerateGrn, R.id.editTextInTime, R.id.textViewCaptureTransImg, R.id.textViewPickTransImg, R.id.buttonActionSubmit})
+    @OnClick({R.id.textViewCaptureMatImg, R.id.textViewPickMatImg, R.id.buttonActionGenerateGrn, R.id.textViewCaptureTransImg, R.id.textViewPickTransImg, R.id.buttonActionSubmit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCaptureMatImg:
@@ -227,6 +224,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionGenerateGrn:
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
+
                 break;
             case R.id.textViewCaptureTransImg:
                 isForImage = false;
@@ -396,6 +394,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            requestForMaterialNames();
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             JSONObject jsonObject = response.getJSONObject("data");
                             String grnNUm = jsonObject.getString("grn");
@@ -543,6 +542,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(TextUtils.isEmpty(editTextMatQuantity.getText().toString())){
+                    editTextMatQuantity.setError("Please Enter Quantity");
+                    return;
+                }
                 if (isForEdit) {
                     realm = Realm.getDefaultInstance();
                     try {
@@ -664,7 +667,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void clearData() {
         editTextBillumber.setText("");
         editTextVehNum.setText("");
-        editTextInTime.setText("");
         editTextBillAmount.setText("");
     }
 

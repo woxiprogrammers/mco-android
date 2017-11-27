@@ -52,14 +52,6 @@
                     android:textColor="@color/colorTextLight"/>
             </LinearLayout>
             <LinearLayout
-                android:id="@+id/linearLayoutInflateNames"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-            </LinearLayout>
-            <LinearLayout
                 android:id="@+id/linearLayoutMatImg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,6 +108,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutInflateNames"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_5dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+                </LinearLayout>
                 <LinearLayout
                     android:id="@+id/linearLayoutGrnNum"
                     android:layout_width="match_parent"
