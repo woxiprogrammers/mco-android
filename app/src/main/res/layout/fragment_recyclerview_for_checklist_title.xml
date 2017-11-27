@@ -12,9 +12,4 @@
         android:orientation="vertical"
         android:padding="@dimen/dimen_4dp"/>
 
-    <Button
-        android:id="@+id/ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ok"/>
 </LinearLayout>

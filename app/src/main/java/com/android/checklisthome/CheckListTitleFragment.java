@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
@@ -50,8 +51,6 @@ public class CheckListTitleFragment extends Fragment {
     @BindView(R.id.rv_checklist_title)
     RecyclerView rvChecklistTitle;
     Unbinder unbinder;
-    @BindView(R.id.ok)
-    Button ok;
     private Realm realm;
     private Context mContext;
 
@@ -86,7 +85,6 @@ public class CheckListTitleFragment extends Fragment {
 
     private void setUpAdapter() {
         realm = Realm.getDefaultInstance();
-        //ToDo Sharvari Item Class POJO AssetsListItem
 
         final RealmResults<CheckPointsItem> checkPointsItemRealmResults = realm.where(CheckPointsItem.class).findAll();
         Timber.d(String.valueOf(checkPointsItemRealmResults));
@@ -99,6 +97,7 @@ public class CheckListTitleFragment extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        ((CheckListActionActivity)mContext).getChckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
 
                     }
 
@@ -172,11 +171,6 @@ public class CheckListTitleFragment extends Fragment {
                 });
     }
 
-    @OnClick(R.id.ok)
-    public void onViewClicked() {
-        ((CheckListActionActivity)mContext).getChckListVerificationFragment();
-
-    }
 
     public class CheckListTitleAdapter extends RealmRecyclerViewAdapter<CheckPointsItem, CheckListTitleAdapter.MyViewHolder> {
         private OrderedRealmCollection<CheckPointsItem> checkPointsItemOrderedRealmCollection;
@@ -197,7 +191,7 @@ public class CheckListTitleFragment extends Fragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
-            holder.checkboxChecklistTitles.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
+            holder.textviewDescription.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         }
 
         @Override
@@ -214,6 +208,8 @@ public class CheckListTitleFragment extends Fragment {
 
             @BindView(R.id.checkboxChecklistTitles)
             CheckBox checkboxChecklistTitles;
+            @BindView(R.id.textviewDescription)
+            TextView textviewDescription;
 
             private MyViewHolder(View itemView) {
                 super(itemView);
