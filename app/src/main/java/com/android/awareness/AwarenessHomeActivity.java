@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.models.awarenessmodels.AwarenesListData;
 import com.android.models.awarenessmodels.AwarenessFileDetailsResponse;
 import com.android.models.awarenessmodels.AwarenessMainCategoryResponse;
 import com.android.models.awarenessmodels.AwarenessSubCategoriesItem;
@@ -82,8 +83,9 @@ public class AwarenessHomeActivity extends BaseActivity {
 
     private List<AwarenessSubCategoriesItem> subCategoryList;
     private DownloadManager downloadManager;
-    private String getPath="";
+    private String getPath = "";
     private boolean isGrant;
+    private String encodedString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,13 +278,16 @@ public class AwarenessHomeActivity extends BaseActivity {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(AwarenessFileDetailsResponse.class);
+                                    realm.delete(AwarenesListData.class);
+                                    realm.delete(FileDetailsItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d("Success");
-                                    getPath=response.getAwarenesListData().getPath();
+                                    getPath = response.getAwarenesListData().getPath();
                                     setUpFileAdapter(subCatId);
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -370,13 +375,19 @@ public class AwarenessHomeActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 if (view.getId() == R.id.imageviewDownload) {
-                    Toast.makeText(mContext, "Hiiiii", Toast.LENGTH_SHORT).show();
 
                     if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        isGrant=true;
+                        isGrant = true;
                         ActivityCompat.requestPermissions(AwarenessHomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
-                    }else {
-                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" +fileDetailsItemRealmResults.get(position).getName());
+                    } else {
+                        try {
+                            encodedString = java.net.URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
+
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" + encodedString);
                     }
 
                 }
@@ -388,7 +399,6 @@ public class AwarenessHomeActivity extends BaseActivity {
         rvFiles.setAdapter(awarenessListAdapter);
     }
 
-    //ToDo Add item class
     public class AwarenessListAdapter extends RealmRecyclerViewAdapter<FileDetailsItem, AwarenessListAdapter.MyViewHolder> {
         private OrderedRealmCollection<FileDetailsItem> detailsItemOrderedRealmCollection;
         private FileDetailsItem fileDetailsItem;
@@ -398,7 +408,7 @@ public class AwarenessHomeActivity extends BaseActivity {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
             detailsItemOrderedRealmCollection = data;
-            this.recyclerViewClickListener=recyclerViewClickListener;
+            this.recyclerViewClickListener = recyclerViewClickListener;
         }
 
         @Override
@@ -410,13 +420,10 @@ public class AwarenessHomeActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             fileDetailsItem = detailsItemOrderedRealmCollection.get(position);
-            try {
-                String result = java.net.URLDecoder.decode(fileDetailsItem.getName(), "UTF-8");
-                separatedString = result.split("#");
-                holder.textviewFileName.setText(separatedString[0]);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+
+            separatedString = fileDetailsItem.getName().split("#");
+            holder.textviewFileName.setText(separatedString[0]);
+
             if (fileDetailsItem.getExtension().equalsIgnoreCase("jpg")) {
                 holder.textviewFileType.setText("Format : JPG");
             } else if (fileDetailsItem.getExtension().equalsIgnoreCase("png")) {
@@ -461,10 +468,10 @@ public class AwarenessHomeActivity extends BaseActivity {
         }
     }
 
-    private void downloadFile(String url){
+    private void downloadFile(String url) {
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-//        Uri Download_Uri = Uri.parse(url);
-        Uri Download_Uri = Uri.parse("http://test.mconstruction.co.in/uploads/awareness/356a192b7913b04c54574d18c28d46e6395428ab/356a192b7913b04c54574d18c28d46e6395428ab/763611170e5a158bc915934dd6765f9880f621ee21337b721.png");
+        Uri Download_Uri = Uri.parse(url);
+//        Uri Download_Uri = Uri.parse("http://test.mconstruction.co.in/uploads/awareness/356a192b7913b04c54574d18c28d46e6395428ab/356a192b7913b04c54574d18c28d46e6395428ab/763611170e5a158bc915934dd6765f9880f621ee21337b721.png");
         DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         request.setAllowedOverRoaming(false);
@@ -480,7 +487,7 @@ public class AwarenessHomeActivity extends BaseActivity {
         int i[] = grantResults;
         if (grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if(isGrant){
+                if (isGrant) {
                     downloadFile("");
                 }
 

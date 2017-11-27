@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,7 +110,7 @@ public class FragmentCheckListVerification extends Fragment {
         CheckPointsItem checkPointsItem=realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId",intCheckPointId).findFirst();
         textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         size=checkPointsItem.getProjectSiteUserCheckpointImages().size();
-        Log.i("@@S", String.valueOf(size));
+        addCaptions();
         return view;
     }
 
@@ -256,6 +259,4 @@ public class FragmentCheckListVerification extends Fragment {
             linearLayoutChecklistImg.addView(inflatedView);
         }
     }
-
-
 }
