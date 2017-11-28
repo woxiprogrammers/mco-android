@@ -78,9 +78,7 @@ public class AwarenessHomeActivity extends BaseActivity {
     RealmResults<MainCategoriesItem> mainCategoriesItems;
     RealmResults<AwarenessSubCategoriesItem> subCategoriesItems;
     private String[] separatedString;
-
     private List<MainCategoriesItem> categoryList;
-
     private List<AwarenessSubCategoriesItem> subCategoryList;
     private DownloadManager downloadManager;
     private String getPath = "";
@@ -330,7 +328,6 @@ public class AwarenessHomeActivity extends BaseActivity {
     private void setUpSpinnerAdapter(RealmResults<MainCategoriesItem> mainCategoriesItems) {
         categoryList = realm.copyFromRealm(mainCategoriesItems);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
-        //ToDo
         for (MainCategoriesItem currentUser : categoryList) {
             String strUserName = currentUser.getName();
             arrayOfUsers.add(strUserName);
