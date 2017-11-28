@@ -195,7 +195,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             textViewVendor.setText("Vendor Name : - " + strVendorName);
         }
 
-        PurchaseOrderListItem purchaseOrderListItem=realm.where(PurchaseOrderListItem.class).equalTo("",orderId).findFirst();
+        realm=Realm.getDefaultInstance();
+        PurchaseOrderListItem purchaseOrderListItem=realm.where(PurchaseOrderListItem.class).equalTo("id",orderId).findFirst();
         if(!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())){
 
         }
