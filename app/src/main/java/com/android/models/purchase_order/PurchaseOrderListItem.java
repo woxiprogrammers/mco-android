@@ -46,10 +46,20 @@ public class PurchaseOrderListItem extends RealmObject {
     private String materials;
     @SerializedName("status")
     private String status;
+    @SerializedName("grn_generated")
+    private String grnGenerated;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getDate() {
         return date;
+    }
+
+    public String getGrnGenerated() {
+        return grnGenerated;
+    }
+
+    public void setGrnGenerated(String grnGenerated) {
+        this.grnGenerated = grnGenerated;
     }
 
     public void setDate(String date) {

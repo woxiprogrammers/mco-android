@@ -32,6 +32,7 @@ import com.android.constro360.R;
 import com.android.dummy.BillDataItem;
 import com.android.dummy.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.purchase_order.PurchaseOrderListItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -193,6 +194,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         if (strVendorName != null) {
             textViewVendor.setText("Vendor Name : - " + strVendorName);
         }
+
+        PurchaseOrderListItem purchaseOrderListItem=realm.where(PurchaseOrderListItem.class).equalTo("",orderId).findFirst();
+        if(!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())){
+
+        }
         return view;
     }
 
@@ -348,14 +354,58 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToGenerateGrn() {
-        if (!isCheckedMaterial) {
-            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
-            return;
-        }
+
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        JSONObject params = new JSONObject();
+        /**/
+        try {
+            params.put("purchase_order_id",orderId);
+            params.put("images", jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToGenerateGrn")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            requestForMaterialNames();
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            String grnNUm = jsonObject.getString("grn");
+                            editTextGrnNum.setText(grnNUm);
+                            buttonActionGenerateGrn.setVisibility(View.GONE);
+                            linearLayoutToVisible.setVisibility(View.VISIBLE);
+//                            checkBox.setEnabled(false);
+//                            linearLayoutInflateNames.setEnabled(false);
+//                            frameLayoutEdit.setEnabled(false);
+                            linearLayoutMatImg.setVisibility(View.GONE);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    private void requestToPayment() {
+        if (!isCheckedMaterial) {
+            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (int intKey : arrayList) {
@@ -378,57 +428,15 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             }
         }
         try {
-            params.put("images", jsonImageNameArray);
-            params.put("item_list", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Timber.d(String.valueOf(jsonArray));
-        AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToGenerateGrn")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            requestForMaterialNames();
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            JSONObject jsonObject = response.getJSONObject("data");
-                            String grnNUm = jsonObject.getString("grn");
-                            editTextGrnNum.setText(grnNUm);
-                            buttonActionGenerateGrn.setVisibility(View.GONE);
-                            linearLayoutToVisible.setVisibility(View.VISIBLE);
-                            checkBox.setEnabled(false);
-                            linearLayoutInflateNames.setEnabled(false);
-                            frameLayoutEdit.setEnabled(false);
-                            linearLayoutMatImg.setVisibility(View.GONE);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
-    }
-
-    private void requestToPayment() {
-        JSONObject params = new JSONObject();
-        try {
             params.put("vehicle_number", strVehicleNumber);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
                 params.put("bill_amount", editTextBillAmount.getText().toString());
             }
             params.put("remark", editextTransRemark.getText().toString());
             params.put("bill_number", strChallanNumber);
-            params.put("type", "upload-bill");
             params.put("grn", editTextGrnNum.getText().toString());
             params.put("images", jsonImageNameArray);
+            params.put("item_list",jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
