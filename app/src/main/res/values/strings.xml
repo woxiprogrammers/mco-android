@@ -84,8 +84,8 @@
     <string name="tag_asset">asset</string>
     <string name="tag_p_r_assigned">p-r-assigned</string>
     <string name="title_activity_pay_and_bills">PayAndBillsActivity</string>
-    <string name="text_pay">Pay</string>
-    <string name="text_bills">Bills</string>
+    <string name="text_pay">Received</string>
+    <string name="text_bills">Transaction</string>
     <string name="title_activity_material_request">Material Request</string>
     <string name="tag_in_indent">in-indent</string>
     <string name="add_as_new_item">Add %s as new item</string>

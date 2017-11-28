@@ -51,7 +51,7 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 holder.llImage.addView(imageView);
-                glideRequestManager.load(itemListItem.getListOfImages().get(index).getImageUrl())
+                glideRequestManager.load("http://test.mconstruction.co.in" + itemListItem.getListOfImages().get(index).getImageUrl())
                         .thumbnail(0.1f)
                         .crossFade()
                         .skipMemoryCache(true)

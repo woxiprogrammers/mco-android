@@ -6,10 +6,24 @@
     android:elevation="@dimen/dimen_2dp"
     android:layout_margin="@dimen/dimen_8dp">
 
-    <CheckBox
-        android:id="@+id/checkboxChecklistTitles"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lap Length"
-        android:textSize="@dimen/text_16sp"/>
+        android:padding="@dimen/dimen_8dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkboxChecklistTitles"
+            android:layout_width="0dp"
+            android:layout_weight="0.1"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_16sp"/>
+
+        <TextView
+            android:id="@+id/textviewDescription"
+            android:layout_width="0dp"
+            android:singleLine="true"
+            android:layout_weight="0.6"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 </android.support.v7.widget.CardView>

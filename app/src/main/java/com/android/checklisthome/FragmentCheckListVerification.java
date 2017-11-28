@@ -6,6 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +17,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.constro360.R;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppConstants;
@@ -44,6 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import id.zelory.compressor.Compressor;
+import io.realm.Realm;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -55,8 +61,6 @@ public class FragmentCheckListVerification extends Fragment {
 
     @BindView(R.id.textViewChecklistTitle)
     TextView textViewChecklistTitle;
-    @BindView(R.id.textViewChecklistDescription)
-    TextView textViewChecklistDescription;
     @BindView(R.id.textViewCaptureChecklist)
     TextView textViewCaptureChecklist;
     @BindView(R.id.linearLayoutChecklistImg)
@@ -78,11 +82,17 @@ public class FragmentCheckListVerification extends Fragment {
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
+    private Realm realm;
+    private static int intCheckPointId;
+    private View inflatedView = null;
+    int size;
+    private TextView capture;
 
-    public static FragmentCheckListVerification newInstance() {
+    public static FragmentCheckListVerification newInstance(int chekpointId) {
         Bundle args = new Bundle();
         FragmentCheckListVerification fragment = new FragmentCheckListVerification();
         fragment.setArguments(args);
+        intCheckPointId=chekpointId;
         return fragment;
     }
 
@@ -96,6 +106,11 @@ public class FragmentCheckListVerification extends Fragment {
         View view = inflater.inflate(R.layout.fragment_checkpoint_verification, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
+        realm=Realm.getDefaultInstance();
+        CheckPointsItem checkPointsItem=realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId",intCheckPointId).findFirst();
+        textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
+        size=checkPointsItem.getProjectSiteUserCheckpointImages().size();
+        addCaptions();
         return view;
     }
 
@@ -236,5 +251,12 @@ public class FragmentCheckListVerification extends Fragment {
         }
     }
 
-
+    private void addCaptions(){
+        for(int i=0;i < size ; i++){
+            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null, false);
+            inflatedView.setId(i);
+            capture=inflatedView.findViewById(R.id.capture);
+            linearLayoutChecklistImg.addView(inflatedView);
+        }
+    }
 }

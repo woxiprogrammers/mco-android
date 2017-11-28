@@ -1,8 +1,10 @@
 package com.android.models.purchase_order;
 
+import com.android.purchase_details.ImageItem;
 import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -46,10 +48,23 @@ public class PurchaseOrderListItem extends RealmObject {
     private String materials;
     @SerializedName("status")
     private String status;
+    @SerializedName("grn_generated")
+    private String grnGenerated;
+
+    @SerializedName("images")
+    private RealmList<ImageItem> listOfImages;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public String getDate() {
         return date;
+    }
+
+    public String getGrnGenerated() {
+        return grnGenerated;
+    }
+
+    public void setGrnGenerated(String grnGenerated) {
+        this.grnGenerated = grnGenerated;
     }
 
     public void setDate(String date) {
@@ -134,5 +149,13 @@ public class PurchaseOrderListItem extends RealmObject {
 
     public void setVendorName(String vendorName) {
         this.vendorName = vendorName;
+    }
+
+    public RealmList<ImageItem> getListOfImages() {
+        return listOfImages;
+    }
+
+    public void setListOfImages(RealmList<ImageItem> listOfImages) {
+        this.listOfImages = listOfImages;
     }
 }

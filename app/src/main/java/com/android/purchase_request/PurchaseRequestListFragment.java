@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.BuildConfig;
@@ -364,6 +365,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
+            holder.textViewApproved.setText("Approved By : - " + purchaseRequestListItem.getApprovedBy());
+            holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -383,8 +386,12 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             TextView textViewPurchaseRequestStatus;
             @BindView(R.id.textView_purchase_request_date)
             TextView textViewPurchaseRequestDate;
+            @BindView(R.id.textViewApproved)
+            TextView textViewApproved;
             @BindView(R.id.textView_purchase_request_materials)
             TextView textViewPurchaseRequestMaterials;
+            @BindView(R.id.linearLayoutToHideApproved)
+            LinearLayout linearLayoutToHideApproved;
 
             MyViewHolder(View itemView) {
                 super(itemView);

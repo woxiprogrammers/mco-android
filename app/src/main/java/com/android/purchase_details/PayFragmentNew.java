@@ -2,7 +2,6 @@ package com.android.purchase_details;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,19 +18,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.dummy.BillDataItem;
 import com.android.dummy.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.purchase_order.PurchaseOrderListItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -54,10 +52,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,14 +82,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     Button buttonActionGenerateGrn;
     @BindView(R.id.editTextVehNum)
     EditText editTextVehNum;
-    @BindView(R.id.editTextInDate)
-    EditText editTextInDate;
-    @BindView(R.id.editTextInTime)
-    EditText editTextInTime;
-    @BindView(R.id.editTextOutDate)
-    EditText editTextOutDate;
-    @BindView(R.id.editTextOutTime)
-    EditText editTextOutTime;
     @BindView(R.id.editTextBillAmount)
     EditText editTextBillAmount;
     @BindView(R.id.editTextGrnNum)
@@ -150,6 +138,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     CardView cardViewTransRemark;
     @BindView(R.id.linearLayoutFirstLayout)
     LinearLayout linearLayoutFirstLayout;
+    @BindView(R.id.showImg)
+    LinearLayout linearLayoutShowImg;
     private ArrayList<Integer> arrayList;
     Unbinder unbinder;
     private static int orderId;
@@ -163,7 +153,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private boolean isForImage;
     private File currentImageFile;
     private JSONArray jsonImageNameArray = new JSONArray();
-    private String strChallanNumber, strVehicleNumber, strInTime, strOutTime, strInDate, strOutDate;
+    private String strChallanNumber, strVehicleNumber;
     private TextView textViewIdDummy;
     private TextView textViewIdDummyView;
     private FrameLayout frameLayoutEdit;
@@ -198,9 +188,36 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         unbinder = ButterKnife.bind(this, view);
         layout = view.findViewById(R.id.layoutView);
         mContext = getActivity();
-        requestForMaterialNames();
         if (strVendorName != null) {
             textViewVendor.setText("Vendor Name : - " + strVendorName);
+        }
+        Log.i("@@id", String.valueOf(orderId));
+        realm = Realm.getDefaultInstance();
+        PurchaseOrderListItem purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
+        if (!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())) {
+            linearLayoutToVisible.setVisibility(View.VISIBLE);
+            linearLayoutFirstLayout.setVisibility(View.GONE);
+            editTextGrnNum.setText(purchaseOrderListItem.getGrnGenerated());
+            requestForMaterialNames();
+        } else {
+
+            linearLayoutToVisible.setVisibility(View.GONE);
+            linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+        }
+        if (purchaseOrderListItem.getListOfImages().size() > 0) {
+            for (int index = 0; index < purchaseOrderListItem.getListOfImages().size(); index++) {
+                ImageView imageView = new ImageView(getActivity());
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                linearLayoutShowImg.addView(imageView);
+                Glide.with(getActivity()).load("http://test.mconstruction.co.in" + purchaseOrderListItem.getListOfImages().get(index).getImageUrl())
+                        .thumbnail(0.1f)
+                        .crossFade()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(imageView);
+            }
         }
         return view;
     }
@@ -220,7 +237,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
     }
 
-    @OnClick({R.id.textViewCaptureMatImg, R.id.textViewPickMatImg, R.id.buttonActionGenerateGrn, R.id.editTextInDate, R.id.editTextInTime, R.id.editTextOutDate, R.id.editTextOutTime, R.id.textViewCaptureTransImg, R.id.textViewPickTransImg, R.id.buttonActionSubmit})
+    @OnClick({R.id.textViewCaptureMatImg, R.id.textViewPickMatImg, R.id.buttonActionGenerateGrn, R.id.textViewCaptureTransImg, R.id.textViewPickTransImg, R.id.buttonActionSubmit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCaptureMatImg:
@@ -233,18 +250,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionGenerateGrn:
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
-                break;
-            case R.id.editTextInDate:
-                setInOutDate(editTextInDate);
-                break;
-            case R.id.editTextInTime:
-                setInOutTime(editTextInTime);
-                break;
-            case R.id.editTextOutDate:
-                setInOutDate(editTextOutDate);
-                break;
-            case R.id.editTextOutTime:
-                setInOutTime(editTextOutTime);
+
                 break;
             case R.id.textViewCaptureTransImg:
                 isForImage = false;
@@ -286,8 +292,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void validateEntries() {
         strChallanNumber = editTextBillumber.getText().toString();
         strVehicleNumber = editTextVehNum.getText().toString();
-        strInTime = editTextInTime.getText().toString();
-        strOutTime = editTextOutTime.getText().toString();
+
         //For Bill Number
         if (TextUtils.isEmpty(strChallanNumber)) {
             editTextBillumber.setFocusableInTouchMode(true);
@@ -308,47 +313,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextVehNum.setError(null);
             editTextVehNum.requestFocus();
         }
-        //For In Date
-        strInDate = editTextInDate.getText().toString();
-        if (TextUtils.isEmpty(strInDate)) {
-            editTextInDate.setFocusableInTouchMode(true);
-            editTextInDate.requestFocus();
-            editTextInDate.setError(getString(R.string.please_enter) + " " + "Date");
-            return;
-        } else {
-            editTextInDate.setError(null);
-            editTextInDate.clearFocus();
-        }
-        //For In Time
-        if (TextUtils.isEmpty(strInTime)) {
-            editTextInTime.setFocusableInTouchMode(true);
-            editTextInTime.requestFocus();
-            editTextInTime.setError(getString(R.string.please_enter) + " " + getString(R.string.in_time));
-            return;
-        } else {
-            editTextInTime.setError(null);
-            editTextInTime.requestFocus();
-        }
-        //For Out Date
-        strOutDate = editTextOutDate.getText().toString();
-        if (TextUtils.isEmpty(strOutDate)) {
-            editTextOutDate.setFocusableInTouchMode(true);
-            editTextOutDate.requestFocus();
-            editTextOutDate.setError(getString(R.string.please_enter) + " " + " Out Date");
-        } else {
-            editTextOutDate.setError(null);
-            editTextOutDate.clearFocus();
-        }
-        //For Out Time
-        if (TextUtils.isEmpty(strOutTime)) {
-            editTextOutTime.setFocusableInTouchMode(true);
-            editTextOutTime.requestFocus();
-            editTextOutTime.setError(getString(R.string.please_enter) + " " + getString(R.string.out_time));
-            return;
-        } else {
-            editTextOutTime.setError(null);
-            editTextOutTime.requestFocus();
-        }
+
         if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
@@ -409,14 +374,58 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToGenerateGrn() {
-        if (!isCheckedMaterial) {
-            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
-            return;
-        }
+
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        JSONObject params = new JSONObject();
+        /**/
+        try {
+            params.put("purchase_order_id", orderId);
+            params.put("images", jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToGenerateGrn")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            requestForMaterialNames();
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            String grnNUm = jsonObject.getString("grn");
+                            editTextGrnNum.setText(grnNUm);
+                            buttonActionGenerateGrn.setVisibility(View.GONE);
+                            linearLayoutToVisible.setVisibility(View.VISIBLE);
+//                            checkBox.setEnabled(false);
+//                            linearLayoutInflateNames.setEnabled(false);
+//                            frameLayoutEdit.setEnabled(false);
+                            linearLayoutMatImg.setVisibility(View.GONE);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    private void requestToPayment() {
+        if (!isCheckedMaterial) {
+            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (int intKey : arrayList) {
@@ -439,58 +448,15 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             }
         }
         try {
-            params.put("images", jsonImageNameArray);
-            params.put("item_list", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Timber.d(String.valueOf(jsonArray));
-        AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToGenerateGrn")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            JSONObject jsonObject = response.getJSONObject("data");
-                            String grnNUm = jsonObject.getString("grn");
-                            editTextGrnNum.setText(grnNUm);
-                            buttonActionGenerateGrn.setVisibility(View.GONE);
-                            linearLayoutToVisible.setVisibility(View.VISIBLE);
-                            checkBox.setEnabled(false);
-                            linearLayoutInflateNames.setEnabled(false);
-                            frameLayoutEdit.setEnabled(false);
-                            linearLayoutMatImg.setVisibility(View.GONE);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
-    }
-
-    private void requestToPayment() {
-        JSONObject params = new JSONObject();
-        try {
             params.put("vehicle_number", strVehicleNumber);
-            params.put("in_time", strInDate + " " + strInTime);
-            params.put("out_time", strOutDate + " " + strOutTime);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
                 params.put("bill_amount", editTextBillAmount.getText().toString());
             }
             params.put("remark", editextTransRemark.getText().toString());
             params.put("bill_number", strChallanNumber);
-            params.put("type", "upload-bill");
             params.put("grn", editTextGrnNum.getText().toString());
             params.put("images", jsonImageNameArray);
+            params.put("item_list", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -519,51 +485,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
-    }
-
-    private void setInOutTime(final EditText currentEditText) {
-        final Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = mcurrentTime.get(Calendar.MINUTE);
-        final int seconds = mcurrentTime.get(Calendar.SECOND);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.SECOND, seconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
-
-    private void setInOutDate(final EditText editext_updateDate) {
-        myCalendar = Calendar.getInstance();
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText(editext_updateDate);
-            }
-        };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
-    }
-
-    private void updateEditText(EditText editTextUpdateDate) {
-        String myFormat = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
-        editTextUpdateDate.setError(null);
     }
 
     private void captureImage() {
@@ -646,6 +567,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (TextUtils.isEmpty(editTextMatQuantity.getText().toString())) {
+                    editTextMatQuantity.setError("Please Enter Quantity");
+                    return;
+                }
                 if (isForEdit) {
                     realm = Realm.getDefaultInstance();
                     try {
@@ -767,11 +692,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void clearData() {
         editTextBillumber.setText("");
         editTextVehNum.setText("");
-        editTextInTime.setText("");
-        editTextOutTime.setText("");
         editTextBillAmount.setText("");
-        editTextInDate.setText("");
-        editTextOutDate.setText("");
     }
 
     private void loadImage(String strUrl, LinearLayout linearLayout) {

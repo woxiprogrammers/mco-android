@@ -15,19 +15,11 @@
             android:id="@+id/textViewChecklistTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/text_20sp"
             android:layout_marginLeft="@dimen/dimen_3dp"
             android:text="Top and Bottom Reinforcement"
             android:textColor="@color/black"/>
 
-
-        <TextView
-            android:id="@+id/textViewChecklistDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_3dp"
-            android:layout_marginTop="@dimen/dimen_8dp"
-            android:text="Top and Bottom Reinforcement"
-            android:textColor="@color/colorTextLight"/>
 
         <LinearLayout
             android:id="@+id/linearLayoutChecklistImg"
@@ -45,6 +37,7 @@
                 android:layout_weight="1"
                 android:drawableTop="@android:drawable/ic_menu_camera"
                 android:gravity="center_horizontal"
+                android:visibility="gone"
                 android:text="Capture Images"/>
         </LinearLayout>
 
