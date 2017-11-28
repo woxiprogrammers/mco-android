@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 
 /**
- * Created by woxi-007 on 13/9/17.
+ * Created by Sharvari on 13/9/17.
  */
 public class ImageItem extends RealmObject {
     @SerializedName("image_url")

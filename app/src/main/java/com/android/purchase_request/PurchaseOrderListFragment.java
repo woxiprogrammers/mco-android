@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -189,6 +190,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("purchase_request_id", purchaseRequestId);
             params.put("page", 0);
+            Log.i("@@idr",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

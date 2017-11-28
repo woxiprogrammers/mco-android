@@ -2,7 +2,6 @@ package com.android.purchase_details;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,13 +18,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.constro360.R;
@@ -55,10 +52,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -143,6 +138,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     CardView cardViewTransRemark;
     @BindView(R.id.linearLayoutFirstLayout)
     LinearLayout linearLayoutFirstLayout;
+    @BindView(R.id.showImg)
+    LinearLayout linearLayoutShowImg;
     private ArrayList<Integer> arrayList;
     Unbinder unbinder;
     private static int orderId;
@@ -194,11 +191,33 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         if (strVendorName != null) {
             textViewVendor.setText("Vendor Name : - " + strVendorName);
         }
+        Log.i("@@id", String.valueOf(orderId));
+        realm = Realm.getDefaultInstance();
+        PurchaseOrderListItem purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
+        if (!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())) {
+            linearLayoutToVisible.setVisibility(View.VISIBLE);
+            linearLayoutFirstLayout.setVisibility(View.GONE);
+            editTextGrnNum.setText(purchaseOrderListItem.getGrnGenerated());
+            requestForMaterialNames();
+        } else {
 
-        realm=Realm.getDefaultInstance();
-        PurchaseOrderListItem purchaseOrderListItem=realm.where(PurchaseOrderListItem.class).equalTo("id",orderId).findFirst();
-        if(!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())){
-
+            linearLayoutToVisible.setVisibility(View.GONE);
+            linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+        }
+        if (purchaseOrderListItem.getListOfImages().size() > 0) {
+            for (int index = 0; index < purchaseOrderListItem.getListOfImages().size(); index++) {
+                ImageView imageView = new ImageView(getActivity());
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                linearLayoutShowImg.addView(imageView);
+                Glide.with(getActivity()).load("http://test.mconstruction.co.in" + purchaseOrderListItem.getListOfImages().get(index).getImageUrl())
+                        .thumbnail(0.1f)
+                        .crossFade()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(imageView);
+            }
         }
         return view;
     }
@@ -363,7 +382,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         JSONObject params = new JSONObject();
         /**/
         try {
-            params.put("purchase_order_id",orderId);
+            params.put("purchase_order_id", orderId);
             params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -437,7 +456,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             params.put("bill_number", strChallanNumber);
             params.put("grn", editTextGrnNum.getText().toString());
             params.put("images", jsonImageNameArray);
-            params.put("item_list",jsonArray);
+            params.put("item_list", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -467,9 +486,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     }
                 });
     }
-
-
-
 
     private void captureImage() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
@@ -551,7 +567,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(editTextMatQuantity.getText().toString())){
+                if (TextUtils.isEmpty(editTextMatQuantity.getText().toString())) {
                     editTextMatQuantity.setError("Please Enter Quantity");
                     return;
                 }
