@@ -15,11 +15,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.checklist_categories.CategoriesItem;
 import com.android.checklisthome.checklist_model.checklist_categories.ChecklistCategoryResponse;
 import com.android.checklisthome.checklist_model.checklist_categories.SubCategoriesItem;
+import com.android.checklisthome.checklist_model.checklist_floor.ChecklistFloorResponse;
+import com.android.checklisthome.checklist_model.checklist_floor.FloorListItem;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -59,7 +62,8 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
     private ArrayList<String> arrChecklistTitle;
     private ArrayList<String> arrChecklistDescription;
     private CheckBoxGroup<String> checkBoxGroup;
-    private ChecklistCategoryResponse receiverCategoryResponse;
+    private ChecklistCategoryResponse receivedCategoryResponse;
+    private ChecklistFloorResponse receivedFloorResponse;
 
     interface AssignmentDialogListener {
         void onAssignClickListener(ArrayList<String> values);
@@ -109,12 +113,16 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         mSpinnerChecklistCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSpinnerChecklistSubCategories.setAdapter(getSubCategoryArrayAdapter(receiverCategoryResponse.getChecklistCategoryData().getCategories().get(i).getSubCategories()));
+                if (!receivedCategoryResponse.getChecklistCategoryData().getCategories().isEmpty()) {
+                    mSpinnerChecklistSubCategories.setAdapter(getSubCategoryArrayAdapter(receivedCategoryResponse.getChecklistCategoryData().getCategories().get(i).getSubCategories()));
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                mSpinnerChecklistSubCategories.setAdapter(getSubCategoryArrayAdapter(receiverCategoryResponse.getChecklistCategoryData().getCategories().get(mSpinnerChecklistSubCategories.getSelectedItemPosition()).getSubCategories()));
+                /*if (!receivedCategoryResponse.getChecklistCategoryData().getCategories().isEmpty()) {
+                    mSpinnerChecklistSubCategories.setAdapter(getSubCategoryArrayAdapter(receivedCategoryResponse.getChecklistCategoryData().getCategories().get(mSpinnerChecklistCategories.getSelectedItemPosition()).getSubCategories()));
+                }*/
             }
         });
         //
@@ -123,12 +131,37 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         ArrayAdapter<String> arraySubCategoryAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistSubCategories);
         arraySubCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerChecklistSubCategories.setAdapter(arraySubCategoryAdapter);
+        mSpinnerChecklistSubCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!receivedCategoryResponse.getChecklistCategoryData().getCategories().isEmpty() && !receivedCategoryResponse.getChecklistCategoryData().getCategories().get(mSpinnerChecklistCategories.getSelectedItemPosition()).getSubCategories().isEmpty()) {
+                    getFloorListings();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
         //
         arrChecklistFloorName = new ArrayList<>();
         arrChecklistFloorName.add("Select Floor");
         ArrayAdapter<String> arrayFloorNameAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistFloorName);
         arrayFloorNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerChecklistFloorName.setAdapter(arrayFloorNameAdapter);
+        mSpinnerChecklistFloorName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!mSpinnerChecklistFloorName.getSelectedItem().toString().equalsIgnoreCase("select floor")) {
+                    FloorListItem floorListItem = receivedFloorResponse.getChecklistFloorData().getFloorList().get(i);
+                    Timber.d(String.valueOf(floorListItem.getQuotationFloorId()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
         //
         arrChecklistTitle = new ArrayList<>();
         arrChecklistTitle.add("Select Category");
@@ -202,10 +235,10 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                 .getAsObject(ChecklistCategoryResponse.class, new ParsedRequestListener<ChecklistCategoryResponse>() {
                     @Override
                     public void onResponse(ChecklistCategoryResponse response) {
-                        receiverCategoryResponse = new ChecklistCategoryResponse();
-                        receiverCategoryResponse = response;
-                        Timber.d(String.valueOf(receiverCategoryResponse));
-                        if (response.getChecklistCategoryData() != null && response.getChecklistCategoryData().getCategories() != null) {
+                        receivedCategoryResponse = new ChecklistCategoryResponse();
+                        receivedCategoryResponse = response;
+                        Timber.d(String.valueOf(receivedCategoryResponse));
+                        if (response.getChecklistCategoryData() != null && !response.getChecklistCategoryData().getCategories().isEmpty()) {
                             mSpinnerChecklistCategories.setAdapter(getCategoryArrayAdapter(response.getChecklistCategoryData().getCategories()));
                         }
                     }
@@ -215,6 +248,59 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                         AppUtils.getInstance().logApiError(anError, "getCategory_SubCategoryListings");
                     }
                 });
+    }
+
+    private void getFloorListings() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_FLOOR_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getFloorListings")
+                .build()
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getFloorListings");
+                    }
+                });*/
+                .getAsObject(ChecklistFloorResponse.class, new ParsedRequestListener<ChecklistFloorResponse>() {
+                    @Override
+                    public void onResponse(ChecklistFloorResponse response) {
+                        receivedFloorResponse = new ChecklistFloorResponse();
+                        receivedFloorResponse = response;
+                        Timber.d(String.valueOf(receivedFloorResponse));
+                        if (response.getChecklistFloorData() != null && !response.getChecklistFloorData().getFloorList().isEmpty()) {
+                            mSpinnerChecklistFloorName.setAdapter(getFloorArrayAdapter(response.getChecklistFloorData().getFloorList()));
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getFloorListings");
+                    }
+                });
+    }
+
+    private SpinnerAdapter getFloorArrayAdapter(RealmList<FloorListItem> floorList) {
+        ArrayList<String> stringArrayList = new ArrayList<String>();
+        for (FloorListItem floorListItem : floorList) {
+            String categoryName = floorListItem.getQuotationFloorName();
+            stringArrayList.add(categoryName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringArrayList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
     }
 
     private ArrayAdapter<String> getCategoryArrayAdapter(RealmList<CategoriesItem> categoriesItems) {
