@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -23,6 +23,9 @@ import com.android.models.awarenessmodels.MainCategoriesData;
 import com.android.models.awarenessmodels.MainCategoriesItem;
 import com.android.models.awarenessmodels.SubCatedata;
 import com.android.models.awarenessmodels.SubCategoriesResponse;
+import com.android.models.drawing.DrawingImagesResponse;
+import com.android.models.drawing.ImageListDrawing;
+import com.android.models.drawing.ImagesListDrawingItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -30,6 +33,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +57,8 @@ public class DrawingHomeActivity extends BaseActivity {
     Spinner spinnerDrawingCategories;
     @BindView(R.id.rv_subcatdrawing_list)
     RecyclerView rvSubcatdrawingList;
+    @BindView(R.id.rv_image_list)
+    RecyclerView rvImageList;
 
     private Realm realm;
     private Context mContext;
@@ -74,7 +81,8 @@ public class DrawingHomeActivity extends BaseActivity {
                 realm = Realm.getDefaultInstance();
                 mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
                 requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
-
+                rvSubcatdrawingList.setVisibility(View.VISIBLE);
+                rvImageList.setVisibility(View.GONE);
             }
 
             @Override
@@ -201,6 +209,55 @@ public class DrawingHomeActivity extends BaseActivity {
                 });
     }
 
+    private void requestToGetImageData() {
+        AndroidNetworking.get(AppURL.API_IMAGE_LIST_DRAWING)
+                .setTag("requestToGetImageData")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsObject(DrawingImagesResponse.class, new ParsedRequestListener<DrawingImagesResponse>() {
+                    @Override
+                    public void onResponse(final DrawingImagesResponse response) {
+                        Timber.i(String.valueOf(response));
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(DrawingImagesResponse.class);
+                                    realm.delete(ImageListDrawing.class);
+                                    realm.delete(ImagesListDrawingItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    rvSubcatdrawingList.setVisibility(View.GONE);
+                                    rvImageList.setVisibility(View.VISIBLE);
+                                    setUpSubImageListAdapter();
+
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
+                    }
+                });
+
+    }
+
     private void setUpUsersSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         RealmResults<MainCategoriesItem> mainCategoriesItemRealmResults = realm.where(MainCategoriesItem.class).findAll();
@@ -228,13 +285,12 @@ public class DrawingHomeActivity extends BaseActivity {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDrawingCategories.setAdapter(arrayAdapter);
     }
-
     private void setUpSubCatListAdapter() {
         realm = Realm.getDefaultInstance();
         final RealmResults<AwarenessSubCategoriesItem> assetsListItems = realm.where(AwarenessSubCategoriesItem.class).findAll();
         Timber.d(String.valueOf(assetsListItems));
         SubCategoryAdapter subCategoryAdapter = new SubCategoryAdapter(assetsListItems, true, true);
-        rvSubcatdrawingList.setLayoutManager(new GridLayoutManager(mContext,2));
+        rvSubcatdrawingList.setLayoutManager(new GridLayoutManager(mContext, 2));
         rvSubcatdrawingList.setHasFixedSize(true);
         rvSubcatdrawingList.setAdapter(subCategoryAdapter);
         rvSubcatdrawingList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
@@ -242,6 +298,7 @@ public class DrawingHomeActivity extends BaseActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        requestToGetImageData();
 
                     }
 
@@ -259,7 +316,36 @@ public class DrawingHomeActivity extends BaseActivity {
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
         }
     }
+    private void setUpSubImageListAdapter() {
+        realm = Realm.getDefaultInstance();
+        final RealmResults<ImagesListDrawingItem> assetsListItems = realm.where(ImagesListDrawingItem.class).findAll();
+        Timber.d(String.valueOf(assetsListItems));
+        ImageListAdapter subCategoryAdapter = new ImageListAdapter(assetsListItems, true, true);
+        rvImageList.setLayoutManager(new GridLayoutManager(mContext, 2));
+        rvImageList.setHasFixedSize(true);
+        rvImageList.setAdapter(subCategoryAdapter);
+        rvImageList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                rvImageList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
 
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+        if (assetsListItems != null) {
+            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<ImagesListDrawingItem>>() {
+                @Override
+                public void onChange(RealmResults<ImagesListDrawingItem> assetsListItemRealmResults) {
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
+        }
+    }
     public class SubCategoryAdapter extends RealmRecyclerViewAdapter<AwarenessSubCategoriesItem, SubCategoryAdapter.MyViewHolder> {
         private OrderedRealmCollection<AwarenessSubCategoriesItem> awarenessSubCategoriesItemOrderedRealmCollection;
         private AwarenessSubCategoriesItem awarenessSubCategoriesItem;
@@ -304,4 +390,56 @@ public class DrawingHomeActivity extends BaseActivity {
             }
         }
     }
+
+    public class ImageListAdapter extends RealmRecyclerViewAdapter<ImagesListDrawingItem, ImageListAdapter.MyViewHolder> {
+        private OrderedRealmCollection<ImagesListDrawingItem> imagesListDrawingItemOrderedRealmCollection;
+        private ImagesListDrawingItem imagesListDrawingItem;
+
+        public ImageListAdapter(@Nullable OrderedRealmCollection<ImagesListDrawingItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            Timber.d(String.valueOf(data));
+            imagesListDrawingItemOrderedRealmCollection = data;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_drawing_images, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            imagesListDrawingItem = imagesListDrawingItemOrderedRealmCollection.get(position);
+            Glide.with(mContext).load(imagesListDrawingItem.getImageUrl())
+                    .thumbnail(0.1f)
+                    .crossFade()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.imageViewDrawing);
+
+
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return imagesListDrawingItemOrderedRealmCollection.get(index).getId();
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return imagesListDrawingItemOrderedRealmCollection == null ? 0 : imagesListDrawingItemOrderedRealmCollection.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+
+            @BindView(R.id.imageViewDrawing)
+            ImageView imageViewDrawing;
+            private MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
+    }
+
 }

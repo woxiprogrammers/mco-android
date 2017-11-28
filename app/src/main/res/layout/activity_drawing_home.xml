@@ -37,10 +37,19 @@
         android:paddingRight="@dimen/margin_10">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_subcatdrawing_list"
+        android:id="@+id/rv_subcatdrawing_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:padding="@dimen/dimen_4dp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_image_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:visibility="gone"
             android:padding="@dimen/dimen_4dp"/>
 
     </LinearLayout>
