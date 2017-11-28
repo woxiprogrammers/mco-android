@@ -22,6 +22,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -88,5 +89,8 @@
         </activity>
         <activity android:name="com.android.awareness.AwarenessHomeActivity">
         </activity>
+        <activity android:name="com.android.drawings.DrawingHomeActivity">
+        </activity>
     </application>
+
 </manifest>
