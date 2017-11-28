@@ -71,4 +71,5 @@ public class AppURL {
     //////Drawing
 
     public static final String API_DRAWING_CATEGORY_DATA = BASE_URL + "";
+    public static final String API_IMAGE_LIST_DRAWING="http://www.mocky.io/v2/5a1d49d82e0000262848b756";
 }

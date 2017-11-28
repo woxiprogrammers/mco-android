@@ -11,6 +11,7 @@ import com.android.awareness.AwarenessHomeActivity;
 import com.android.checklisthome.CheckListActionActivity;
 import com.android.checklisthome.ChecklistHomeActivity;
 import com.android.dashboard.DashBoardActivity;
+import com.android.drawings.DrawingHomeActivity;
 import com.android.inventory.InventoryHomeActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.material_request_approve.MaterialRequest_ApproveActivity;
@@ -80,7 +81,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-maintainance", ChecklistHomeActivity.class.getName());
         aclKeyValuePair.put("asset-management", ChecklistHomeActivity.class.getName());
-        aclKeyValuePair.put("inventory-history", CheckListActionActivity.class.getName());
+        aclKeyValuePair.put("inventory-history", DrawingHomeActivity.class.getName());
         //
 //        aclKeyValuePair.put("master-peticash-account", InventoryHomeActivity.class.getName());
 //        aclKeyValuePair.put("sitewise-peticash-account", InventoryHomeActivity.class.getName());

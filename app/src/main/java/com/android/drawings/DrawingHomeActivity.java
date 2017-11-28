@@ -3,25 +3,29 @@ package com.android.drawings;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.inventory.assets.AssetsListAdapter;
-import com.android.inventory.assets.AssetsListItem;
 import com.android.models.awarenessmodels.AwarenessMainCategoryResponse;
+import com.android.models.awarenessmodels.AwarenessSubCategoriesItem;
 import com.android.models.awarenessmodels.MainCategoriesData;
 import com.android.models.awarenessmodels.MainCategoriesItem;
+import com.android.models.awarenessmodels.SubCatedata;
+import com.android.models.awarenessmodels.SubCategoriesResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -52,6 +56,7 @@ public class DrawingHomeActivity extends BaseActivity {
     private Realm realm;
     private Context mContext;
     private List<MainCategoriesItem> categoryList;
+    RealmResults<MainCategoriesItem> mainCategoriesItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,20 @@ public class DrawingHomeActivity extends BaseActivity {
             getSupportActionBar().setTitle("Drawings Management");
         }
         mContext = DrawingHomeActivity.this;
+        spinnerDrawingCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
+                realm = Realm.getDefaultInstance();
+                mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
+                requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        requestToGetCategoryData();
     }
 
     @Override
@@ -77,11 +96,11 @@ public class DrawingHomeActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("page", 0);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+//            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_DRAWING_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_AWARENES_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -106,6 +125,60 @@ public class DrawingHomeActivity extends BaseActivity {
                                 public void onSuccess() {
                                     Timber.d("Success");
                                     setUpUsersSpinnerValueChangeListener();
+
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
+                    }
+                });
+    }
+
+    private void requestToGetSubCatData(final int mainCategoryId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("page", 0);
+            params.put("main_category_id", mainCategoryId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_AWARENES_SUB_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("requestToGetSubCatData")
+                .build()
+                .getAsObject(SubCategoriesResponse.class, new ParsedRequestListener<SubCategoriesResponse>() {
+                    @Override
+                    public void onResponse(final SubCategoriesResponse response) {
+                        Timber.i(String.valueOf(response));
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(SubCategoriesResponse.class);
+                                    realm.delete(SubCatedata.class);
+                                    realm.delete(AwarenessSubCategoriesItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    setUpSubCatListAdapter();
 
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -156,40 +229,74 @@ public class DrawingHomeActivity extends BaseActivity {
         spinnerDrawingCategories.setAdapter(arrayAdapter);
     }
 
-    public class SubCategoryAdapter extends RealmRecyclerViewAdapter<AssetsListItem, SubCategoryAdapter.MyViewHolder> {
-        private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
-        private AssetsListItem assetsListItem;
+    private void setUpSubCatListAdapter() {
+        realm = Realm.getDefaultInstance();
+        final RealmResults<AwarenessSubCategoriesItem> assetsListItems = realm.where(AwarenessSubCategoriesItem.class).findAll();
+        Timber.d(String.valueOf(assetsListItems));
+        SubCategoryAdapter subCategoryAdapter = new SubCategoryAdapter(assetsListItems, true, true);
+        rvSubcatdrawingList.setLayoutManager(new GridLayoutManager(mContext,2));
+        rvSubcatdrawingList.setHasFixedSize(true);
+        rvSubcatdrawingList.setAdapter(subCategoryAdapter);
+        rvSubcatdrawingList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                rvSubcatdrawingList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
 
-        public SubCategoryAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+        if (assetsListItems != null) {
+            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AwarenessSubCategoriesItem>>() {
+                @Override
+                public void onChange(RealmResults<AwarenessSubCategoriesItem> assetsListItemRealmResults) {
+                }
+            });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
+        }
+    }
+
+    public class SubCategoryAdapter extends RealmRecyclerViewAdapter<AwarenessSubCategoriesItem, SubCategoryAdapter.MyViewHolder> {
+        private OrderedRealmCollection<AwarenessSubCategoriesItem> awarenessSubCategoriesItemOrderedRealmCollection;
+        private AwarenessSubCategoriesItem awarenessSubCategoriesItem;
+
+        public SubCategoryAdapter(@Nullable OrderedRealmCollection<AwarenessSubCategoriesItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
-            assetsListItemCollection = data;
+            awarenessSubCategoriesItemOrderedRealmCollection = data;
         }
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_assets_list, parent, false);
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_drawing_sub_cat_list, parent, false);
             return new MyViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            assetsListItem = assetsListItemCollection.get(position);
+            awarenessSubCategoriesItem = awarenessSubCategoriesItemOrderedRealmCollection.get(position);
+            holder.textviewSubCatName.setText(awarenessSubCategoriesItem.getName());
 
         }
 
         @Override
         public long getItemId(int index) {
-            return assetsListItemCollection.get(index).getId();
+            return awarenessSubCategoriesItemOrderedRealmCollection.get(index).getId();
+
         }
 
         @Override
         public int getItemCount() {
-            return assetsListItemCollection == null ? 0 : assetsListItemCollection.size();
+            return awarenessSubCategoriesItemOrderedRealmCollection == null ? 0 : awarenessSubCategoriesItemOrderedRealmCollection.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-
+            @BindView(R.id.textviewSubCatName)
+            TextView textviewSubCatName;
 
             private MyViewHolder(View itemView) {
                 super(itemView);
