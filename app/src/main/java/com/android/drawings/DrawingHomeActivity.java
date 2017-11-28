@@ -210,6 +210,13 @@ public class DrawingHomeActivity extends BaseActivity {
     }
 
     private void requestToGetImageData() {
+        //ToDo API Url change, post data, add params
+        JSONObject params=new JSONObject();
+        try {
+            params.put("","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         AndroidNetworking.get(AppURL.API_IMAGE_LIST_DRAWING)
                 .setTag("requestToGetImageData")
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -346,6 +353,7 @@ public class DrawingHomeActivity extends BaseActivity {
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
         }
     }
+
     public class SubCategoryAdapter extends RealmRecyclerViewAdapter<AwarenessSubCategoriesItem, SubCategoryAdapter.MyViewHolder> {
         private OrderedRealmCollection<AwarenessSubCategoriesItem> awarenessSubCategoriesItemOrderedRealmCollection;
         private AwarenessSubCategoriesItem awarenessSubCategoriesItem;
