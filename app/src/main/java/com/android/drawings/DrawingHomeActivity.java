@@ -1,6 +1,7 @@
 package com.android.drawings;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -332,17 +333,20 @@ public class DrawingHomeActivity extends BaseActivity {
 
     private void setUpSubImageListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<ImagesListDrawingItem> assetsListItems = realm.where(ImagesListDrawingItem.class).findAll();
-        Timber.d(String.valueOf(assetsListItems));
-        ImageListAdapter subCategoryAdapter = new ImageListAdapter(assetsListItems, true, true);
+        final RealmResults<ImagesListDrawingItem> imagesListDrawingItems = realm.where(ImagesListDrawingItem.class).findAll();
+        Timber.d(String.valueOf(imagesListDrawingItems));
+        ImageListAdapter imageListAdapter = new ImageListAdapter(imagesListDrawingItems, true, true);
         rvImageList.setLayoutManager(new GridLayoutManager(mContext, 2));
         rvImageList.setHasFixedSize(true);
-        rvImageList.setAdapter(subCategoryAdapter);
+        rvImageList.setAdapter(imageListAdapter);
         rvImageList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 rvImageList,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        Intent intent=new Intent(DrawingHomeActivity.this,DrawingDetailsActivity.class);
+                        intent.putExtra("url",imagesListDrawingItems.get(position).getImageUrl());
+                        startActivity(intent);
 
                     }
 
@@ -350,8 +354,8 @@ public class DrawingHomeActivity extends BaseActivity {
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (assetsListItems != null) {
-            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<ImagesListDrawingItem>>() {
+        if (imagesListDrawingItems != null) {
+            imagesListDrawingItems.addChangeListener(new RealmChangeListener<RealmResults<ImagesListDrawingItem>>() {
                 @Override
                 public void onChange(RealmResults<ImagesListDrawingItem> assetsListItemRealmResults) {
                 }
