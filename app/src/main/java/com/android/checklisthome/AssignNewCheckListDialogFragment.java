@@ -31,9 +31,11 @@ import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.xeoh.android.checkboxgroup.CheckBoxGroup;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,7 +52,7 @@ import timber.log.Timber;
  */
 public class AssignNewCheckListDialogFragment extends DialogFragment {
     private AssignmentDialogListener assignmentDialogListener;
-    private Context mContext;
+    private Context mContext;/**/
     private Spinner mSpinnerChecklistCategories;
     private Spinner mSpinnerChecklistSubCategories;
     private Spinner mSpinnerChecklistFloorName;
@@ -63,14 +65,15 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
     private ArrayList<String> arrChecklistSubCategories;
     private ArrayList<String> arrChecklistFloorName;
     private ArrayList<String> arrChecklistTitle;
-    private ArrayList<String> arrChecklistDescription;
+    //    private ArrayList<String> arrChecklistDescription;
     private CheckBoxGroup<String> checkBoxGroup;
     private ChecklistCategoryResponse receivedCategoryResponse;
     private ChecklistFloorResponse receivedFloorResponse;
     private ChecklistTitlesResponse receivedTitlesResponse;
+    private int intProjectSiteChecklistId;
 
     interface AssignmentDialogListener {
-        void onAssignClickListener(ArrayList<String> values);
+        void onAssignClickListener();
     }
 
     public void setUpAssignmentDialogListener(AssignmentDialogListener assignmentDialogListener) {
@@ -178,6 +181,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                 if (!mSpinnerChecklistTitles.getSelectedItem().toString().equalsIgnoreCase("select category")) {
                     TitleListItem titleListItem = receivedTitlesResponse.getChecklistTitlesData().getTitleList().get(i);
                     String strDescription = titleListItem.getDetail();
+                    intProjectSiteChecklistId = titleListItem.getProjectSiteChecklistId();
                     mTextViewChecklistDescription.setVisibility(View.VISIBLE);
                     mTextViewChecklistDescription.setText(strDescription);
                 } else mTextViewChecklistDescription.setVisibility(View.GONE);
@@ -206,7 +210,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         checkBoxGroup = new CheckBoxGroup<>(checkBoxMap, new CheckBoxGroup.CheckedChangeListener<String>() {
             @Override
             public void onCheckedChange(ArrayList<String> arrayList) {
-                Toast.makeText(mContext, arrayList.toString(), Toast.LENGTH_LONG).show();
             }
         });
         mButtonDismissAssignChecklistDialog.setOnClickListener(new View.OnClickListener() {
@@ -218,13 +221,56 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         mButtonAssignChecklistDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                assignmentDialogListener.onAssignClickListener(checkBoxGroup.getValues());
-                dismiss();
+                submitChecklistAssignmentRequest(checkBoxGroup.getValues());
             }
         });
         getCategory_SubCategoryListings();
         builder.setView(dialogView);
         return builder.create();
+    }
+
+    private void submitChecklistAssignmentRequest(ArrayList<String> values) {
+        JSONObject params = new JSONObject();
+        JSONArray jsonArrayAssignedUser;
+        if (values.isEmpty()) {
+            Toast.makeText(mContext, "Please select at lest one user.", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            jsonArrayAssignedUser = new JSONArray(values);
+        }
+        try {
+            if (intProjectSiteChecklistId != 0) {
+                params.put("project_site_checklist_id", intProjectSiteChecklistId);
+            } else {
+                return;
+            }
+            params.put("assigned_to", jsonArrayAssignedUser);
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_SUBMIT_REQUEST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("submitChecklistAssignmentRequest")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //{"message":"Checklist Assigned Successfully"}
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            assignmentDialogListener.onAssignClickListener();
+                            dismiss();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                    }
+                });
     }
 
     private void getTitleListings(int quotationFloorId) {

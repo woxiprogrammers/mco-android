@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.AssignedChecklistListItem;
 import com.android.checklisthome.checklist_model.AssignedChecklistResponse;
@@ -27,8 +26,6 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,8 +90,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
         AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = AssignNewCheckListDialogFragment.newInstance();
         assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
             @Override
-            public void onAssignClickListener(ArrayList<String> values) {
-                Toast.makeText(mContext, values.toString(), Toast.LENGTH_LONG).show();
+            public void onAssignClickListener() {
                 getLatestAssignedCheckLists();
             }
         });
@@ -195,6 +191,9 @@ public class ChecklistList_AssignedFragment extends Fragment {
             holder.textViewAssignedUserName.setText(assignedChecklistListItem.getAssignedUserName());
             holder.textviewFloorName.setText(assignedChecklistListItem.getFloorName());
             holder.textviewSubCategoryName.setText(assignedChecklistListItem.getSubCategoryName());
+            holder.mTextviewCategoryName.setText(assignedChecklistListItem.getCategoryName());
+            holder.mTextviewTitle.setText(assignedChecklistListItem.getTitle());
+            holder.mTextviewDescription.setText(assignedChecklistListItem.getDescription());
         }
 
         @Override
@@ -209,12 +208,16 @@ public class ChecklistList_AssignedFragment extends Fragment {
             TextView textviewFloorName;
             @BindView(R.id.textviewSubCategoryName)
             TextView textviewSubCategoryName;
-//            private Context context;
+            @BindView(R.id.textviewCategoryName)
+            TextView mTextviewCategoryName;
+            @BindView(R.id.textviewTitle)
+            TextView mTextviewTitle;
+            @BindView(R.id.textviewDescription)
+            TextView mTextviewDescription;
 
             private MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
-//                context = itemView.getContext();
             }
         }
     }

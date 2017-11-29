@@ -67,4 +67,5 @@ public class AppURL {
     public static final String API_CHECKLIST_ASSIGNED_LIST = BASE_URL + "checklist/listing?token=";
     public static final String API_CHECKLIST_FLOOR_LIST = BASE_URL + "checklist/floor?token=";
     public static final String API_CHECKLIST_TITLE_LIST = BASE_URL + "checklist/title?token=";
+    public static final String API_CHECKLIST_SUBMIT_REQUEST = BASE_URL + "checklist/assign?token=";
 }

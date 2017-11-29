@@ -7,8 +7,6 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class AssignedChecklistListItem extends RealmObject {
-
-
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("floor_name")
     private String floorName;
@@ -28,17 +26,13 @@ public class AssignedChecklistListItem extends RealmObject {
     private int totalCheckpounts;
     @SerializedName("assigned_user_name")
     private String assignedUserName;
-
     @PrimaryKey
     @SerializedName("project_site_user_checklist_assignment_id")
     private int projectSiteUserChecklistAssignmentId;
-
     @SerializedName("category_id")
     private int categoryId;
-
     @SerializedName("sub_category_id")
     private int subCategoryId;
-
     @SerializedName("assigned_user")
     private int assignedUserId;
 
@@ -81,6 +75,7 @@ public class AssignedChecklistListItem extends RealmObject {
     public String getDescription() {
         return description;
     }
+
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
@@ -113,7 +108,6 @@ public class AssignedChecklistListItem extends RealmObject {
         return assignedUserName;
     }
 
-
     public int getProjectSiteUserChecklistAssignmentId() {
         return projectSiteUserChecklistAssignmentId;
     }
@@ -145,5 +139,4 @@ public class AssignedChecklistListItem extends RealmObject {
     public void setAssignedUserId(int assignedUserId) {
         this.assignedUserId = assignedUserId;
     }
-
 }
