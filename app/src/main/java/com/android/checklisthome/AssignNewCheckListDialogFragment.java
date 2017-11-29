@@ -257,7 +257,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        //{"message":"Checklist Assigned Successfully"}
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             assignmentDialogListener.onAssignClickListener();

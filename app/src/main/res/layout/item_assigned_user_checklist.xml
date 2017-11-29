@@ -57,6 +57,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dimen_8dp"
             custom:circle_finished_color="@color/colorAccent"
             custom:circle_text_color="@color/colorWhite"
             custom:circle_text_size="25sp"
