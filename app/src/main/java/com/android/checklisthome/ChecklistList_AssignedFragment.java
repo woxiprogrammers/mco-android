@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.android.checklisthome.checklist_model.AssignedChecklistListItem;
 import com.android.checklisthome.checklist_model.AssignedChecklistResponse;
 import com.android.constro360.R;
-import com.android.inventory.assets.AssetListResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -25,9 +24,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -104,7 +100,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
 //        ((ChecklistHomeActivity) getActivity()).moveToScreenNumber(1);
     }
 
-    private void requestToGetAssignCheckedListData(){
+    private void requestToGetAssignCheckedListData() {
        /* final JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -122,7 +118,6 @@ public class ChecklistList_AssignedFragment extends Fragment {
                 .getAsObject(AssignedChecklistResponse.class, new ParsedRequestListener<AssignedChecklistResponse>() {
                     @Override
                     public void onResponse(final AssignedChecklistResponse response) {
-
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -133,7 +128,6 @@ public class ChecklistList_AssignedFragment extends Fragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -154,6 +148,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
                     }
                 });
     }
+
     private void getLatestAssignedCheckLists() {
         realm = Realm.getDefaultInstance();
         assignedChecklistItemResults = realm.where(AssignedChecklistListItem.class).findAllAsync();
