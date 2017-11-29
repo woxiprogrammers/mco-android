@@ -293,6 +293,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         strChallanNumber = editTextBillumber.getText().toString();
         strVehicleNumber = editTextVehNum.getText().toString();
 
+        if (!isCheckedMaterial) {
+            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
+            return;
+        }
         //For Bill Number
         if (TextUtils.isEmpty(strChallanNumber)) {
             editTextBillumber.setFocusableInTouchMode(true);
@@ -315,7 +319,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
 
         if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
-            Toast.makeText(mContext, "Please add at least activity_drawing_home image", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
         uploadImages_addItemToLocal("requestToPayment", "post_grn_bill_transaction");
@@ -421,10 +425,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToPayment() {
-        if (!isCheckedMaterial) {
-            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
-            return;
-        }
+
 
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();

@@ -94,10 +94,10 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         realm = Realm.getDefaultInstance();
         final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).findAll();
         Timber.d(String.valueOf(assetsListItems));
-        AssetsListAdapter purchaseRequestRvAdapter = new AssetsListAdapter(assetsListItems, true, true);
+        AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
-        rvMaterialList.setAdapter(purchaseRequestRvAdapter);
+        rvMaterialList.setAdapter(assetsListAdapter);
         rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 rvMaterialList,
                 new RecyclerItemClickListener.OnItemClickListener() {

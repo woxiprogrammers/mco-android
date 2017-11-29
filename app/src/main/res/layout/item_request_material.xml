@@ -83,13 +83,7 @@
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/text_14sp"/>
 
-                    <TextView
-                        android:id="@+id/textviewApprovedBy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dimen_5dp"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/text_14sp"/>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -123,11 +117,19 @@
                     android:gravity="center"
                     android:paddingLeft="@dimen/dimen_4dp"
                     android:paddingRight="@dimen/dimen_4dp"
-                    android:textSize="@dimen/text_12sp"
                     android:text="Move To \nIndent"
+                    android:textSize="@dimen/text_12sp"
                     android:visibility="gone"/>
-
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/textviewApprovedBy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/text_14sp"
+                android:visibility="gone"/>
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"

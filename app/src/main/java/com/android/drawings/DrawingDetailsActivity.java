@@ -111,7 +111,6 @@ public class DrawingDetailsActivity extends BaseActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, drawingCommentFragment, "Fragment");
         fragmentTransaction.commit();
-        fragmentTransaction.addToBackStack("drawingCommentFragment");
 
     }
 
@@ -120,7 +119,6 @@ public class DrawingDetailsActivity extends BaseActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, drawingVersionsFragment, "Fragment");
         fragmentTransaction.commit();
-        fragmentTransaction.addToBackStack("drawingVersionsFragment");
 
     }
 }

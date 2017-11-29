@@ -122,7 +122,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
      */
     private void initializeViews() {
         mContext = getActivity();
-        functionForGettingData();
+        setUpPrAdapter();
     }
 
     private void setUpPrAdapter() {
@@ -174,15 +174,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         }*/
     }
 
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestPrListOnline();
-        } else {
-            //Get data from local DB
-            setUpPrAdapter();
-        }
-    }
 
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
@@ -233,6 +224,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                         AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
                     }
                 });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getUserVisibleHint()){
+            requestPrListOnline();
+        }
     }
 
     @SuppressWarnings("WeakerAccess")
