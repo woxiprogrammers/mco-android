@@ -25,6 +25,9 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -101,19 +104,19 @@ public class ChecklistList_AssignedFragment extends Fragment {
     }
 
     private void requestToGetAssignCheckedListData() {
-       /* final JSONObject params = new JSONObject();
+        JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("checklist_status_slug","");
+            params.put("checklist_status_slug", "assigned");
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
+        }
         Timber.d(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken());
-        AndroidNetworking.post(AppURL.API_ASSETS_DATA_URL /*+ AppUtils.getInstance().getCurrentToken()*/)
-//                .addJSONObjectBody(params)
-//                .addHeaders(AppUtils.getInstance().getApiHeaders())
+        AndroidNetworking.post(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("requestAssetListOnline")
+                .setTag("requestToGetAssignCheckedListData")
                 .build()
                 .getAsObject(AssignedChecklistResponse.class, new ParsedRequestListener<AssignedChecklistResponse>() {
                     @Override
@@ -128,6 +131,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    getLatestAssignedCheckLists();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -144,7 +148,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
+                        AppUtils.getInstance().logApiError(anError, "requestToGetAssignCheckedListData");
                     }
                 });
     }
@@ -205,12 +209,12 @@ public class ChecklistList_AssignedFragment extends Fragment {
             TextView textviewFloorName;
             @BindView(R.id.textviewSubCategoryName)
             TextView textviewSubCategoryName;
-            private Context context;
+//            private Context context;
 
             private MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
-                context = itemView.getContext();
+//                context = itemView.getContext();
             }
         }
     }
