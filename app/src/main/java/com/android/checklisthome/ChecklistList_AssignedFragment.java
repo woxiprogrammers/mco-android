@@ -23,6 +23,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.github.lzyzsd.circleprogress.CircleProgress;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -194,6 +195,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
             holder.mTextviewCategoryName.setText(assignedChecklistListItem.getCategoryName());
             holder.mTextviewTitle.setText(assignedChecklistListItem.getTitle());
             holder.mTextviewDescription.setText(assignedChecklistListItem.getDescription());
+            holder.mCircleProgressChecklistAssigned.setProgress(0);
         }
 
         @Override
@@ -214,6 +216,8 @@ public class ChecklistList_AssignedFragment extends Fragment {
             TextView mTextviewTitle;
             @BindView(R.id.textviewDescription)
             TextView mTextviewDescription;
+            @BindView(R.id.circle_progress_checklist_assigned)
+            CircleProgress mCircleProgressChecklistAssigned;
 
             private MyViewHolder(View itemView) {
                 super(itemView);

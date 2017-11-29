@@ -8,39 +8,58 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#eeeeee"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:padding="@dimen/dimen_8dp">
 
-        <TextView
-            android:id="@+id/textViewAssignedUserName"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_18"
-            android:textStyle="bold"/>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textviewCategoryName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/textViewAssignedUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_18"
+                android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/textviewSubCategoryName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/textviewCategoryName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/textviewFloorName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/textviewSubCategoryName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/textviewTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/textviewFloorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/textviewDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/textviewTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/textviewDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <com.github.lzyzsd.circleprogress.CircleProgress
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/circle_progress_checklist_assigned"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical"
+            custom:circle_finished_color="@color/colorAccent"
+            custom:circle_text_color="@color/colorWhite"
+            custom:circle_text_size="25sp"
+            custom:circle_unfinished_color="@color/colorTextLight"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>
