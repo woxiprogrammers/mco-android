@@ -91,6 +91,8 @@
         </activity>
         <activity android:name="com.android.drawings.DrawingHomeActivity">
         </activity>
+        <activity android:name="com.android.drawings.DrawingDetailsActivity">
+        </activity>
     </application>
 
 </manifest>

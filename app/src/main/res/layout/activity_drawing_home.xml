@@ -36,21 +36,29 @@
         android:paddingLeft="@dimen/margin_10"
         android:paddingRight="@dimen/margin_10">
 
+        <TextView
+            android:id="@+id/textviewSetSubCat"
+            android:layout_width="match_parent"
+            android:text="Sub Cate"
+            android:padding="@dimen/dimen_4dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
         <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_subcatdrawing_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:padding="@dimen/dimen_4dp"/>
+            android:id="@+id/rv_subcatdrawing_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_4dp"
+            android:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_image_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone"
-            android:padding="@dimen/dimen_4dp"/>
+            android:padding="@dimen/dimen_4dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
