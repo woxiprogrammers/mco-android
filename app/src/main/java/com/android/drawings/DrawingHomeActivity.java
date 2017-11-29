@@ -107,12 +107,12 @@ public class DrawingHomeActivity extends BaseActivity {
     private void requestToGetCategoryData() {
         JSONObject params = new JSONObject();
         try {
-            params.put("page", 0);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
 //            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_AWARENES_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_DRAWING_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -167,7 +167,7 @@ public class DrawingHomeActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_AWARENES_SUB_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_DRAWING_SUB_CAT_DATA + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())

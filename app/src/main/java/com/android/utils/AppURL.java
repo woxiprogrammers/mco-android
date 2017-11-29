@@ -70,6 +70,8 @@ public class AppURL {
 
     //////Drawing
 
-    public static final String API_DRAWING_CATEGORY_DATA = BASE_URL + "";
+    public static final String API_DRAWING_CATEGORY_DATA = BASE_URL + "drawing/get-main-categories?token=";
+    public static final String API_DRAWING_SUB_CAT_DATA=BASE_URL + "drawing/get-sub-categories?token=";
     public static final String API_IMAGE_LIST_DRAWING="http://www.mocky.io/v2/5a1d49d82e0000262848b756";
+    public static final String API_DRAWING_COMMENTS_LIST="http://www.mocky.io/v2/5a1e8d002f0000b622ee2e0a";
 }
