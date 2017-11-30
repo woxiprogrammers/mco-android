@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.models.purchase_order.MaterialsItem;
+import com.android.models.purchase_order.PurchaseOrderDetailData;
 import com.android.models.purchase_order.PurchaseOrderMaterialDetailResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -97,7 +98,9 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(PurchaseOrderMaterialDetailResponse.class);
                                     realm.delete(MaterialsItem.class);
+                                    realm.delete(PurchaseOrderDetailData.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -135,7 +138,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
     private void setUpAdapter() {
         realm = Realm.getDefaultInstance();
         final RealmResults<MaterialsItem> materialsItemRealmResults = realm.where(MaterialsItem.class).findAllAsync();
-        PurchaseOrdermaterialDetailAdapter purchaseOrdermaterialDetailAdapter = new PurchaseOrdermaterialDetailAdapter(materialsItemRealmResults, true, true);
+        final RealmResults<PurchaseOrderDetailData> purchaseOrderDetailData=realm.where(PurchaseOrderDetailData.class).findAllAsync();
+        PurchaseOrdermaterialDetailAdapter purchaseOrdermaterialDetailAdapter = new PurchaseOrdermaterialDetailAdapter(materialsItemRealmResults, true, true,purchaseOrderDetailData);
         recyclerviewTransaction.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerviewTransaction.setHasFixedSize(true);
         recyclerviewTransaction.setAdapter(purchaseOrdermaterialDetailAdapter);
@@ -144,11 +148,14 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
     public class PurchaseOrdermaterialDetailAdapter extends RealmRecyclerViewAdapter<MaterialsItem, PurchaseOrdermaterialDetailAdapter.MyViewHolder> {
         private OrderedRealmCollection<MaterialsItem> materialsItemOrderedRealmCollection;
         private MaterialsItem materialsItem;
+        private OrderedRealmCollection<PurchaseOrderDetailData> purchaseOrderDetailData;
+        private PurchaseOrderDetailData detailData;
 
-        public PurchaseOrdermaterialDetailAdapter(@Nullable OrderedRealmCollection<MaterialsItem> data, boolean autoUpdate, boolean updateOnModification) {
+        public PurchaseOrdermaterialDetailAdapter(@Nullable OrderedRealmCollection<MaterialsItem> data, boolean autoUpdate, boolean updateOnModification,OrderedRealmCollection<PurchaseOrderDetailData> data1) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
             materialsItemOrderedRealmCollection = data;
+            purchaseOrderDetailData=data1;
         }
 
         @Override
@@ -160,11 +167,15 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             materialsItem = materialsItemOrderedRealmCollection.get(position);
+            detailData=purchaseOrderDetailData.get(position);
             holder.textviewMatDetailName.setText(materialsItem.getName());
             holder.textviewQuantity.setText(materialsItem.getQuantity());
             holder.textviewUnitName.setText(materialsItem.getUnitName());
             holder.linearLayoutQuoImg.removeAllViews();
             holder.textviewRatePerUnit.setText(materialsItem.getRatePerUnit());
+            holder.textviewVendorName.setText(detailData.getVendorName());
+            holder.textviewVendorMobile.setText(detailData.getVendorMobile());
+
 
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {

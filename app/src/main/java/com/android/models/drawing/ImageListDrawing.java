@@ -6,7 +6,7 @@ import io.realm.RealmObject;
 
 public class ImageListDrawing extends RealmObject{
 
-	@SerializedName("images_list_drawing")
+	@SerializedName("images")
 	private RealmList<ImagesListDrawingItem> imagesListDrawing;
 
 	public void setImagesListDrawing(RealmList<ImagesListDrawingItem> imagesListDrawing){

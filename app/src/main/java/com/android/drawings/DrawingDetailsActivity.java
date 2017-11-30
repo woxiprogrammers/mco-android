@@ -51,7 +51,7 @@ public class DrawingDetailsActivity extends BaseActivity {
         if (bundle != null) {
             imageUrl = bundle.getString("url");
         }
-        AppUtils.getInstance().loadImageViaGlide(imageUrl, imageViewPreview,mContext);
+        AppUtils.getInstance().loadImageViaGlide("http://test.mconstruction.co.in" +imageUrl, imageViewPreview,mContext);
 
     }
 

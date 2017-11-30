@@ -6,7 +6,7 @@ import io.realm.RealmObject;
 
 public class DrawingImagesResponse extends RealmObject{
 
-	@SerializedName("ImageListDrawing")
+	@SerializedName("data")
 	private ImageListDrawing imageListDrawing;
 
 	@SerializedName("message")

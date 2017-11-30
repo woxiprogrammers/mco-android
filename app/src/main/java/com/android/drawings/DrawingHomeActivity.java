@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -217,12 +218,15 @@ public class DrawingHomeActivity extends BaseActivity {
         //ToDo API Url change, post data, add params
         JSONObject params = new JSONObject();
         try {
-            params.put("", "");
+            params.put("sub_category_id", 10);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("page", 0);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.get(AppURL.API_IMAGE_LIST_DRAWING)
+        AndroidNetworking.post(AppURL.API_IMAGE_LIST_DRAWING + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToGetImageData")
+                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -344,8 +348,8 @@ public class DrawingHomeActivity extends BaseActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        Intent intent=new Intent(DrawingHomeActivity.this,DrawingDetailsActivity.class);
-                        intent.putExtra("url",imagesListDrawingItems.get(position).getImageUrl());
+                        Intent intent = new Intent(DrawingHomeActivity.this, DrawingDetailsActivity.class);
+                        intent.putExtra("url", imagesListDrawingItems.get(position).getImageUrl());
                         startActivity(intent);
 
                     }
@@ -429,7 +433,9 @@ public class DrawingHomeActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             imagesListDrawingItem = imagesListDrawingItemOrderedRealmCollection.get(position);
-            Glide.with(mContext).load(imagesListDrawingItem.getImageUrl())
+            holder.textviewImageTitle.setText(imagesListDrawingItem.getTitle());
+            Log.i("@S",imagesListDrawingItem.getImageUrl());
+            Glide.with(mContext).load("http://test.mconstruction.co.in"+ imagesListDrawingItem.getImageUrl())
                     .thumbnail(0.1f)
                     .crossFade()
                     .skipMemoryCache(true)
@@ -453,6 +459,8 @@ public class DrawingHomeActivity extends BaseActivity {
 
             @BindView(R.id.imageViewDrawing)
             ImageView imageViewDrawing;
+            @BindView(R.id.textviewImageTitle)
+            TextView textviewImageTitle;
 
             private MyViewHolder(View itemView) {
                 super(itemView);
