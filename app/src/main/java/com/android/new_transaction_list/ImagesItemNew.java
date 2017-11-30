@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class ImagesItem extends RealmObject{
+public class ImagesItemNew extends RealmObject{
 
 	@SerializedName("image_url")
 	private String imageUrl;

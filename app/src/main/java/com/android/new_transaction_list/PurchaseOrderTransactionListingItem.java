@@ -14,7 +14,7 @@ public class PurchaseOrderTransactionListingItem extends RealmObject{
 	private String grn;
 
 	@SerializedName("images")
-	private RealmList<ImagesItem> images;
+	private RealmList<ImagesItemNew> images;
 
 	@SerializedName("bill_amount")
 	private String billAmount;
@@ -68,11 +68,11 @@ public class PurchaseOrderTransactionListingItem extends RealmObject{
 		return grn;
 	}
 
-	public void setImages(RealmList<ImagesItem> images){
+	public void setImages(RealmList<ImagesItemNew> images){
 		this.images = images;
 	}
 
-	public RealmList<ImagesItem> getImages(){
+	public RealmList<ImagesItemNew> getImages(){
 		return images;
 	}
 

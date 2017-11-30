@@ -74,4 +74,5 @@ public class AppURL {
     public static final String API_DRAWING_SUB_CAT_DATA=BASE_URL + "drawing/get-sub-categories?token=";
     public static final String API_IMAGE_LIST_DRAWING=BASE_URL + "drawing/get-current-version-images?token=";
     public static final String API_DRAWING_COMMENTS_LIST="http://www.mocky.io/v2/5a1e8d002f0000b622ee2e0a";
+    public static final String API_DRAWING_ADD_COMMENT=BASE_URL + "drawing/add-comment?token=";
 }

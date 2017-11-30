@@ -8,7 +8,7 @@ public class DSPurchaseOrderTransactionResponse extends RealmObject{
 	@SerializedName("page_id")
 	private String pageId;
 
-	@SerializedName("purchaseOrderTransactionDSdata")
+	@SerializedName("data")
 	private PurchaseOrderTransactionDSdata purchaseOrderTransactionDSdata;
 
 	@SerializedName("message")
