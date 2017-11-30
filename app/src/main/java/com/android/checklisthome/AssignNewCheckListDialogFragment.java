@@ -26,6 +26,8 @@ import com.android.checklisthome.checklist_model.checklist_floor.ChecklistFloorR
 import com.android.checklisthome.checklist_model.checklist_floor.FloorListItem;
 import com.android.checklisthome.checklist_model.checklist_titles.ChecklistTitlesResponse;
 import com.android.checklisthome.checklist_model.checklist_titles.TitleListItem;
+import com.android.checklisthome.checklist_model.checklist_users.ChecklistAclUsersResponse;
+import com.android.checklisthome.checklist_model.checklist_users.UsersItem;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -71,6 +73,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
     private ChecklistFloorResponse receivedFloorResponse;
     private ChecklistTitlesResponse receivedTitlesResponse;
     private int intProjectSiteChecklistId;
+    private HashMap<CheckBox, String> checkBoxMap;
 
     interface AssignmentDialogListener {
         void onAssignClickListener();
@@ -101,7 +104,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-//        Calendar cal = Calendar.getInstance();
         View dialogView = inflater.inflate(R.layout.dialog_add_new_checklist, null);
         mSpinnerChecklistCategories = dialogView.findViewById(R.id.spinner_checklist_categories);
         mSpinnerChecklistSubCategories = dialogView.findViewById(R.id.spinner_checklist_sub_categories);
@@ -120,7 +122,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         mSpinnerChecklistCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!receivedCategoryResponse.getChecklistCategoryData().getCategories().isEmpty()) {
+                if (receivedCategoryResponse != null && !receivedCategoryResponse.getChecklistCategoryData().getCategories().isEmpty()) {
                     mSpinnerChecklistSubCategories.setAdapter(getSubCategoryArrayAdapter(receivedCategoryResponse.getChecklistCategoryData().getCategories().get(i).getSubCategories()));
                 }
             }
@@ -141,7 +143,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         mSpinnerChecklistSubCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!receivedCategoryResponse.getChecklistCategoryData().getCategories().isEmpty() && !receivedCategoryResponse.getChecklistCategoryData().getCategories().get(mSpinnerChecklistCategories.getSelectedItemPosition()).getSubCategories().isEmpty()) {
+                if (receivedCategoryResponse != null && !receivedCategoryResponse.getChecklistCategoryData().getCategories().isEmpty() && !receivedCategoryResponse.getChecklistCategoryData().getCategories().get(mSpinnerChecklistCategories.getSelectedItemPosition()).getSubCategories().isEmpty()) {
                     getFloorListings();
                 }
             }
@@ -159,7 +161,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         mSpinnerChecklistFloorName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!mSpinnerChecklistFloorName.getSelectedItem().toString().equalsIgnoreCase("select floor")) {
+                if (mSpinnerChecklistFloorName != null && !mSpinnerChecklistFloorName.getSelectedItem().toString().equalsIgnoreCase("select floor")) {
                     FloorListItem floorListItem = receivedFloorResponse.getChecklistFloorData().getFloorList().get(i);
                     getTitleListings(floorListItem.getQuotationFloorId());
                 }
@@ -178,12 +180,13 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         mSpinnerChecklistTitles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!mSpinnerChecklistTitles.getSelectedItem().toString().equalsIgnoreCase("select category")) {
+                if (receivedTitlesResponse != null && !mSpinnerChecklistTitles.getSelectedItem().toString().equalsIgnoreCase("select category")) {
                     TitleListItem titleListItem = receivedTitlesResponse.getChecklistTitlesData().getTitleList().get(i);
                     String strDescription = titleListItem.getDetail();
                     intProjectSiteChecklistId = titleListItem.getProjectSiteChecklistId();
                     mTextViewChecklistDescription.setVisibility(View.VISIBLE);
                     mTextViewChecklistDescription.setText(strDescription);
+                    getUsersWithChecklistAssignAcl();
                 } else mTextViewChecklistDescription.setVisibility(View.GONE);
             }
 
@@ -198,20 +201,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         arrayDescriptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerChecklistDescription.setAdapter(arrayDescriptionAdapter);*/
         //
-        HashMap<CheckBox, String> checkBoxMap = new HashMap<>();
-        for (int i = 0; i < 5; i++) {
-            CheckBox checkBox = new CheckBox(mContext);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            checkBox.setLayoutParams(layoutParams);
-            checkBox.setId(i);
-            mLinearLayoutChecklistAssignTo.addView(checkBox);
-            checkBoxMap.put(checkBox, String.valueOf(i));
-        }
-        checkBoxGroup = new CheckBoxGroup<>(checkBoxMap, new CheckBoxGroup.CheckedChangeListener<String>() {
-            @Override
-            public void onCheckedChange(ArrayList<String> arrayList) {
-            }
-        });
         mButtonDismissAssignChecklistDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -221,12 +210,72 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         mButtonAssignChecklistDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                submitChecklistAssignmentRequest(checkBoxGroup.getValues());
+                if (checkBoxGroup != null) {
+                    submitChecklistAssignmentRequest(checkBoxGroup.getValues());
+                } else Toast.makeText(mContext, "Failed to load Users", Toast.LENGTH_SHORT).show();
             }
         });
         getCategory_SubCategoryListings();
         builder.setView(dialogView);
         return builder.create();
+    }
+
+    private void getUsersWithChecklistAssignAcl() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_USERS_WITH_ACL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getUsersWithChecklistAssignAcl")
+                .build()
+                /*.getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getUsersWithChecklistAssignAcl");
+                    }
+                });*/
+                .getAsObject(ChecklistAclUsersResponse.class, new ParsedRequestListener<ChecklistAclUsersResponse>() {
+                    @Override
+                    public void onResponse(ChecklistAclUsersResponse response) {
+                        Timber.d(String.valueOf(response));
+                        if (response.getChecklistAclUsersData() != null && !response.getChecklistAclUsersData().getUsers().isEmpty()) {
+                            RealmList<UsersItem> usersItemRealmList = response.getChecklistAclUsersData().getUsers();
+                            checkBoxMap = new HashMap<>();
+                            mLinearLayoutChecklistAssignTo.removeAllViews();
+                            for (int i = 0; i < usersItemRealmList.size(); i++) {
+                                UsersItem currentUsersItem = usersItemRealmList.get(i);
+                                CheckBox checkBox = new CheckBox(mContext);
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                checkBox.setLayoutParams(layoutParams);
+                                checkBox.setId(currentUsersItem.getUserId());
+                                checkBox.setText(currentUsersItem.getFirstName() + " " + currentUsersItem.getLastName());
+                                mLinearLayoutChecklistAssignTo.addView(checkBox);
+                                checkBoxMap.put(checkBox, String.valueOf(currentUsersItem.getUserId()));
+                            }
+                            checkBoxGroup = new CheckBoxGroup<>(checkBoxMap, new CheckBoxGroup.CheckedChangeListener<String>() {
+                                @Override
+                                public void onCheckedChange(ArrayList<String> arrayList) {
+                                }
+                            });
+                        } else
+                            Toast.makeText(mContext, "Failed to load Users", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getUsersWithChecklistAssignAcl");
+                    }
+                });
     }
 
     private void submitChecklistAssignmentRequest(ArrayList<String> values) {

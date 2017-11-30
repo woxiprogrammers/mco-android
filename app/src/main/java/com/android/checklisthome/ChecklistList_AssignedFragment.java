@@ -92,7 +92,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
         assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
             @Override
             public void onAssignClickListener() {
-                getLatestAssignedCheckLists();
+                requestToGetAssignCheckedListData();
             }
         });
         assignNewCheckListDialogFragment.show(getActivity().getSupportFragmentManager(), "assignNewCheckListDialogFragment");

@@ -15,7 +15,6 @@ import com.android.inventory.InventoryHomeActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.material_request_approve.MaterialRequest_ApproveActivity;
 import com.android.models.login_acl.LoginResponse;
-import com.android.peticash.PetiCashListActivity;
 import com.android.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -78,13 +77,16 @@ public class SplashActivity extends BaseActivity {
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-maintainance", ChecklistHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-management", ChecklistHomeActivity.class.getName());
-        aclKeyValuePair.put("inventory-history", CheckListActionActivity.class.getName());
+        aclKeyValuePair.put("asset-maintainance", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("inventory-history", InventoryHomeActivity.class.getName());
         //
-//        aclKeyValuePair.put("master-peticash-account", InventoryHomeActivity.class.getName());
-//        aclKeyValuePair.put("sitewise-peticash-account", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("peticash-management", AwarenessHomeActivity.class.getName());
+        //
+        aclKeyValuePair.put("checklist-user-assignment", ChecklistHomeActivity.class.getName());
+        aclKeyValuePair.put("checklist-recheck", ChecklistHomeActivity.class.getName());
+        aclKeyValuePair.put("checklist-management", CheckListActionActivity.class.getName());
+        //
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
