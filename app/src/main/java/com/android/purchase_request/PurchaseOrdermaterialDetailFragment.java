@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -45,12 +46,14 @@ import timber.log.Timber;
 
 public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
 
+    Unbinder unbinder;
     private AlertDialog alertDialog;
     private Realm realm;
     private RecyclerView recyclerviewTransaction;
     private ProgressBar progressBar;
     private Button buttonOk;
     private int purchaseOrderId;
+    private TextView textViewVenName,mob;
 
     @NonNull
     @Override
@@ -63,9 +66,12 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         if (bundle != null) {
             purchaseOrderId = bundle.getInt("purchase_order_id");
         }
+
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
         buttonOk = dialog.findViewById(R.id.btnOk);
+        textViewVenName=dialog.findViewById(R.id.textViewVenName);
+        mob=dialog.findViewById(R.id.mob);
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,6 +115,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                                     progressBar.setVisibility(View.GONE);
                                     if (response.getPurchaseOrderDetailData().getMaterials().size() > 0) {
                                         setUpAdapter();
+                                        mob.setText("Vendor Name:- " +response.getPurchaseOrderDetailData().getVendorName());
+                                        textViewVenName.setText("Mobile Number:- "+ response.getPurchaseOrderDetailData().getVendorMobile());
 //                                        textViewNoTransactions.setVisibility(View.GONE);
                                     }
                                     /*else {
@@ -138,24 +146,35 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
     private void setUpAdapter() {
         realm = Realm.getDefaultInstance();
         final RealmResults<MaterialsItem> materialsItemRealmResults = realm.where(MaterialsItem.class).findAllAsync();
-        final RealmResults<PurchaseOrderDetailData> purchaseOrderDetailData=realm.where(PurchaseOrderDetailData.class).findAllAsync();
-        PurchaseOrdermaterialDetailAdapter purchaseOrdermaterialDetailAdapter = new PurchaseOrdermaterialDetailAdapter(materialsItemRealmResults, true, true,purchaseOrderDetailData);
+        final RealmResults<PurchaseOrderDetailData> purchaseOrderDetailData = realm.where(PurchaseOrderDetailData.class).findAllAsync();
+        PurchaseOrdermaterialDetailAdapter purchaseOrdermaterialDetailAdapter = new PurchaseOrdermaterialDetailAdapter(materialsItemRealmResults, true, true);
         recyclerviewTransaction.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerviewTransaction.setHasFixedSize(true);
         recyclerviewTransaction.setAdapter(purchaseOrdermaterialDetailAdapter);
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
     public class PurchaseOrdermaterialDetailAdapter extends RealmRecyclerViewAdapter<MaterialsItem, PurchaseOrdermaterialDetailAdapter.MyViewHolder> {
         private OrderedRealmCollection<MaterialsItem> materialsItemOrderedRealmCollection;
         private MaterialsItem materialsItem;
-        private OrderedRealmCollection<PurchaseOrderDetailData> purchaseOrderDetailData;
-        private PurchaseOrderDetailData detailData;
 
-        public PurchaseOrdermaterialDetailAdapter(@Nullable OrderedRealmCollection<MaterialsItem> data, boolean autoUpdate, boolean updateOnModification,OrderedRealmCollection<PurchaseOrderDetailData> data1) {
+        public PurchaseOrdermaterialDetailAdapter(@Nullable OrderedRealmCollection<MaterialsItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
             materialsItemOrderedRealmCollection = data;
-            purchaseOrderDetailData=data1;
         }
 
         @Override
@@ -167,15 +186,13 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             materialsItem = materialsItemOrderedRealmCollection.get(position);
-            detailData=purchaseOrderDetailData.get(position);
             holder.textviewMatDetailName.setText(materialsItem.getName());
             holder.textviewQuantity.setText(materialsItem.getQuantity());
             holder.textviewUnitName.setText(materialsItem.getUnitName());
             holder.linearLayoutQuoImg.removeAllViews();
             holder.textviewRatePerUnit.setText(materialsItem.getRatePerUnit());
-            holder.textviewVendorName.setText(detailData.getVendorName());
-            holder.textviewVendorMobile.setText(detailData.getVendorMobile());
-
+            /*holder.textviewVendorName.setText(detailData.getVendorName());
+            holder.textviewVendorMobile.setText(detailData.getVendorMobile());*/
 
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {
@@ -226,10 +243,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             LinearLayout linearLayoutClientImg;
             @BindView(R.id.textviewRatePerUnit)
             TextView textviewRatePerUnit;
-            @BindView(R.id.textviewVendorName)
-            TextView textviewVendorName;
-            @BindView(R.id.textviewVendorMobile)
-            TextView textviewVendorMobile;
 
             private MyViewHolder(View itemView) {
                 super(itemView);

@@ -88,7 +88,6 @@ public class DrawingHomeActivity extends BaseActivity {
         spinnerDrawingCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
-                Toast.makeText(mContext, "onItemSelected", Toast.LENGTH_LONG).show();
                 rvSubcatdrawingList.setVisibility(View.VISIBLE);
                 rvImageList.setVisibility(View.GONE);
                 textviewSetSubCat.setVisibility(View.GONE);
@@ -97,7 +96,6 @@ public class DrawingHomeActivity extends BaseActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                Toast.makeText(mContext, "onNothingSelected", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -255,7 +253,7 @@ public class DrawingHomeActivity extends BaseActivity {
                                     textviewSetSubCat.setVisibility(View.VISIBLE);
                                     if (response.getImageListDrawing().getImagesListDrawing().size() > 0) {
                                         textViewNoResultFound.setVisibility(View.GONE);
-                                        textviewSetSubCat.setText(str);
+                                        textviewSetSubCat.setText("Selected Sub Category:- " +str);
                                         setUpSubImageListAdapter();
                                     } else {
                                         textViewNoResultFound.setVisibility(View.VISIBLE);
