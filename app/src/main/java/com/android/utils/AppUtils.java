@@ -223,7 +223,7 @@ public class AppUtils {
         Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
     }
 
-    public void loadImageViaGlide(String strUrl, ImageView imageView){
+    public void loadImageViaGlide(String strUrl, ImageView imageView,Context mContext){
         //ToDo Imp Sharvari unComment
         Glide.with(mContext).load(/*"http://test.mconstruction.co.in" + */strUrl)
                 .thumbnail(0.1f)

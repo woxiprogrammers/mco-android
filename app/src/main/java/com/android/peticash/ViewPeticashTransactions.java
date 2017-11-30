@@ -210,7 +210,7 @@ public class ViewPeticashTransactions extends BaseActivity {
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutSetUploadImage.addView(imageView);
-                AppUtils.getInstance().loadImageViaGlide(strMaterialImageUrl,imageView);
+                AppUtils.getInstance().loadImageViaGlide(strMaterialImageUrl,imageView,mContext);
 
 
             }

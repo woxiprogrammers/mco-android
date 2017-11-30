@@ -27,6 +27,9 @@ public class MaterialsItem extends RealmObject {
 	@SerializedName("material_request_component_id")
 	private int materialRequestComponentId;
 
+	@SerializedName("rate_per_unit")
+	private String ratePerUnit;
+
 	public int getMaterialRequestComponentId() {
 		return materialRequestComponentId;
 	}
@@ -37,6 +40,14 @@ public class MaterialsItem extends RealmObject {
 
 	public void setUnitName(String unitName){
 		this.unitName = unitName;
+	}
+
+	public String getRatePerUnit() {
+		return ratePerUnit;
+	}
+
+	public void setRatePerUnit(String ratePerUnit) {
+		this.ratePerUnit = ratePerUnit;
 	}
 
 	public String getUnitName(){

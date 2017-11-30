@@ -51,7 +51,7 @@ public class DrawingDetailsActivity extends BaseActivity {
         if (bundle != null) {
             imageUrl = bundle.getString("url");
         }
-        AppUtils.getInstance().loadImageViaGlide(imageUrl, imageViewPreview);
+        AppUtils.getInstance().loadImageViaGlide(imageUrl, imageViewPreview,mContext);
 
     }
 
@@ -119,6 +119,10 @@ public class DrawingDetailsActivity extends BaseActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, drawingVersionsFragment, "Fragment");
         fragmentTransaction.commit();
+
+    }
+
+    private void requestToAddComment(){
 
     }
 }

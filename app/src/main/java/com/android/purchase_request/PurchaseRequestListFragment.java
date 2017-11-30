@@ -161,7 +161,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
      */
     private void initializeViews() {
         mContext = getActivity();
-        floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
         functionForGettingData();
         PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
         for (PermissionsItem permissionsItem : permissionsItems) {

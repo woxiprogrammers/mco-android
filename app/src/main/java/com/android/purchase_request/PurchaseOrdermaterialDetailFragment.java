@@ -20,16 +20,12 @@ import android.widget.TextView;
 import com.android.constro360.R;
 import com.android.models.purchase_order.MaterialsItem;
 import com.android.models.purchase_order.PurchaseOrderMaterialDetailResponse;
-import com.android.peticash.EmployeeTransactionFragment;
-import com.android.peticashautosearchemployee.EmployeeTransactionsItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,8 +59,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         View dialog = inflater.inflate(R.layout.layout_recyclerview_for_emp_transaction, null);
         builder.setView(dialog);
         Bundle bundle = getArguments();
-        if(bundle != null){
-            purchaseOrderId=  bundle.getInt("purchase_order_id");
+        if (bundle != null) {
+            purchaseOrderId = bundle.getInt("purchase_order_id");
         }
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
@@ -168,6 +164,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             holder.textviewQuantity.setText(materialsItem.getQuantity());
             holder.textviewUnitName.setText(materialsItem.getUnitName());
             holder.linearLayoutQuoImg.removeAllViews();
+            holder.textviewRatePerUnit.setText(materialsItem.getRatePerUnit());
+
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {
                     ImageView imageView = new ImageView(getActivity());
@@ -175,12 +173,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
                     holder.linearLayoutQuoImg.addView(imageView);
-                    Glide.with(getActivity()).load("http://test.mconstruction.co.in" + materialsItem.getQuotationImages().get(index).getImageUrl())
-                            .thumbnail(0.1f)
-                            .crossFade()
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(imageView);
+                    AppUtils.getInstance().loadImageViaGlide(materialsItem.getQuotationImages().get(index).getImageUrl(), imageView, getActivity());
+
                 }
             }
             holder.linearLayoutClientImg.removeAllViews();
@@ -191,12 +185,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
                     holder.linearLayoutClientImg.addView(imageView);
-                    Glide.with(getActivity()).load("http://test.mconstruction.co.in" + materialsItem.getClientApprovalImages().get(index).getImageUrl())
-                            .thumbnail(0.1f)
-                            .crossFade()
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(imageView);
+                    AppUtils.getInstance().loadImageViaGlide(materialsItem.getClientApprovalImages().get(index).getImageUrl(), imageView, getActivity());
+
                 }
             }
         }
@@ -223,6 +213,13 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             LinearLayout linearLayoutQuoImg;
             @BindView(R.id.linearLayoutClientImg)
             LinearLayout linearLayoutClientImg;
+            @BindView(R.id.textviewRatePerUnit)
+            TextView textviewRatePerUnit;
+            @BindView(R.id.textviewVendorName)
+            TextView textviewVendorName;
+            @BindView(R.id.textviewVendorMobile)
+            TextView textviewVendorMobile;
+
             private MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);

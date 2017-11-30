@@ -91,7 +91,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         unbinder = ButterKnife.bind(this, mParentView);
         //Initialize Views
         initializeViews();
+        requestPrListOnline();
         setUpPrAdapter();
+
         return mParentView;
     }
 
@@ -128,7 +130,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        if(isFromPurchaseRequest){
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+
+        }else {
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+
+        }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -139,10 +147,12 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     purchaseOrdermaterialDetailFragment.setArguments(bundleArgs);
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
                 } else {
-                    Intent intent = new Intent(mContext, PayAndBillsActivity.class);
-                    intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
-                    intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
-                    startActivity(intent);
+                    if(isFromPurchaseRequest){
+                        Intent intent = new Intent(mContext, PayAndBillsActivity.class);
+                        intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
+                        intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
+                        startActivity(intent);
+                    }
                 }
             }
         };
@@ -150,38 +160,19 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
         recyclerView_commonListingView.setAdapter(purchaseOrderRvAdapter);
-        /*recyclerView_commonListingView.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                recyclerView_commonListingView,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, final int position) {
-                        Timber.d(String.valueOf(purchaseOrderListItems));
-
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                }));*/
-        /*if (purchaseOrderListItems != null) {
-            purchaseOrderListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseOrderListItem> purchaseOrderListItems) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
-        }*/
     }
 
 
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("purchase_request_id", purchaseRequestId);
+            if(isFromPurchaseRequest){
+                params.put("purchase_request_id", purchaseRequestId);
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            }else {
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            }
             params.put("page", 0);
-            Log.i("@@idr",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
