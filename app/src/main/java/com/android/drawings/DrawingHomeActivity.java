@@ -63,6 +63,8 @@ public class DrawingHomeActivity extends BaseActivity {
     RecyclerView rvImageList;
     @BindView(R.id.textviewSetSubCat)
     TextView textviewSetSubCat;
+    @BindView(R.id.textViewNoResultFound)
+    TextView textViewNoResultFound;
 
     private Realm realm;
     private Context mContext;
@@ -214,11 +216,10 @@ public class DrawingHomeActivity extends BaseActivity {
                 });
     }
 
-    private void requestToGetImageData(final String str) {
-        //ToDo API Url change, post data, add params
+    private void requestToGetImageData(final String str, final int subCatId) {
         JSONObject params = new JSONObject();
         try {
-            params.put("sub_category_id", 10);
+            params.put("sub_category_id", subCatId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("page", 0);
         } catch (JSONException e) {
@@ -250,8 +251,13 @@ public class DrawingHomeActivity extends BaseActivity {
                                     rvSubcatdrawingList.setVisibility(View.GONE);
                                     rvImageList.setVisibility(View.VISIBLE);
                                     textviewSetSubCat.setVisibility(View.VISIBLE);
-                                    textviewSetSubCat.setText(str);
-                                    setUpSubImageListAdapter();
+                                    if(response.getImageListDrawing().getImagesListDrawing().size() > 0){
+                                        textViewNoResultFound.setVisibility(View.GONE);
+                                        textviewSetSubCat.setText(str);
+                                        setUpSubImageListAdapter();
+                                    }else {
+                                        textViewNoResultFound.setVisibility(View.VISIBLE);
+                                    }
 
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -305,9 +311,9 @@ public class DrawingHomeActivity extends BaseActivity {
 
     private void setUpSubCatListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AwarenessSubCategoriesItem> assetsListItems = realm.where(AwarenessSubCategoriesItem.class).findAll();
-        Timber.d(String.valueOf(assetsListItems));
-        SubCategoryAdapter subCategoryAdapter = new SubCategoryAdapter(assetsListItems, true, true);
+        final RealmResults<AwarenessSubCategoriesItem> awarenessSubCategoriesItems = realm.where(AwarenessSubCategoriesItem.class).findAll();
+        Timber.d(String.valueOf(awarenessSubCategoriesItems));
+        SubCategoryAdapter subCategoryAdapter = new SubCategoryAdapter(awarenessSubCategoriesItems, true, true);
         rvSubcatdrawingList.setLayoutManager(new GridLayoutManager(mContext, 2));
         rvSubcatdrawingList.setHasFixedSize(true);
         rvSubcatdrawingList.setAdapter(subCategoryAdapter);
@@ -316,7 +322,8 @@ public class DrawingHomeActivity extends BaseActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        requestToGetImageData(assetsListItems.get(position).getName());
+
+                        requestToGetImageData(awarenessSubCategoriesItems.get(position).getName(), awarenessSubCategoriesItems.get(position).getId());
 
                     }
 
@@ -324,8 +331,8 @@ public class DrawingHomeActivity extends BaseActivity {
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (assetsListItems != null) {
-            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AwarenessSubCategoriesItem>>() {
+        if (awarenessSubCategoriesItems != null) {
+            awarenessSubCategoriesItems.addChangeListener(new RealmChangeListener<RealmResults<AwarenessSubCategoriesItem>>() {
                 @Override
                 public void onChange(RealmResults<AwarenessSubCategoriesItem> assetsListItemRealmResults) {
                 }
@@ -433,9 +440,10 @@ public class DrawingHomeActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             imagesListDrawingItem = imagesListDrawingItemOrderedRealmCollection.get(position);
+
             holder.textviewImageTitle.setText(imagesListDrawingItem.getTitle());
-            Log.i("@S",imagesListDrawingItem.getImageUrl());
-            Glide.with(mContext).load("http://test.mconstruction.co.in"+ imagesListDrawingItem.getImageUrl())
+            Log.i("@S", imagesListDrawingItem.getImageUrl());
+            Glide.with(mContext).load("http://test.mconstruction.co.in" + imagesListDrawingItem.getImageUrl())
                     .thumbnail(0.1f)
                     .crossFade()
                     .skipMemoryCache(true)
