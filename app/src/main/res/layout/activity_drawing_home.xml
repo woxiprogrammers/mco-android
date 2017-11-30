@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:background="@android:drawable/editbox_background">
 
-            <Spinner
+            <com.android.utils.MySpinner
                 android:id="@+id/spinner_drawing_categories"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>

@@ -13,9 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
@@ -30,6 +32,7 @@ import com.android.models.drawing.ImageListDrawing;
 import com.android.models.drawing.ImagesListDrawingItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.MySpinner;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -56,7 +59,7 @@ import timber.log.Timber;
 public class DrawingHomeActivity extends BaseActivity {
 
     @BindView(R.id.spinner_drawing_categories)
-    Spinner spinnerDrawingCategories;
+    MySpinner spinnerDrawingCategories;
     @BindView(R.id.rv_subcatdrawing_list)
     RecyclerView rvSubcatdrawingList;
     @BindView(R.id.rv_image_list)
@@ -81,22 +84,22 @@ public class DrawingHomeActivity extends BaseActivity {
             getSupportActionBar().setTitle("Drawings Management");
         }
         mContext = DrawingHomeActivity.this;
+        requestToGetCategoryData();
         spinnerDrawingCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
-                realm = Realm.getDefaultInstance();
-                mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
-                requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
+                Toast.makeText(mContext, "onItemSelected", Toast.LENGTH_LONG).show();
                 rvSubcatdrawingList.setVisibility(View.VISIBLE);
                 rvImageList.setVisibility(View.GONE);
                 textviewSetSubCat.setVisibility(View.GONE);
+                requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+                Toast.makeText(mContext, "onNothingSelected", Toast.LENGTH_LONG).show();
             }
         });
-        requestToGetCategoryData();
     }
 
     @Override
@@ -111,7 +114,6 @@ public class DrawingHomeActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-//            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -251,11 +253,11 @@ public class DrawingHomeActivity extends BaseActivity {
                                     rvSubcatdrawingList.setVisibility(View.GONE);
                                     rvImageList.setVisibility(View.VISIBLE);
                                     textviewSetSubCat.setVisibility(View.VISIBLE);
-                                    if(response.getImageListDrawing().getImagesListDrawing().size() > 0){
+                                    if (response.getImageListDrawing().getImagesListDrawing().size() > 0) {
                                         textViewNoResultFound.setVisibility(View.GONE);
                                         textviewSetSubCat.setText(str);
                                         setUpSubImageListAdapter();
-                                    }else {
+                                    } else {
                                         textViewNoResultFound.setVisibility(View.VISIBLE);
                                     }
 
@@ -283,10 +285,10 @@ public class DrawingHomeActivity extends BaseActivity {
 
     private void setUpUsersSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
-        RealmResults<MainCategoriesItem> mainCategoriesItemRealmResults = realm.where(MainCategoriesItem.class).findAll();
-        setUpSpinnerAdapter(mainCategoriesItemRealmResults);
-        if (mainCategoriesItemRealmResults != null) {
-            mainCategoriesItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<MainCategoriesItem>>() {
+        mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
+        setUpSpinnerAdapter(mainCategoriesItems);
+        if (mainCategoriesItems != null) {
+            mainCategoriesItems.addChangeListener(new RealmChangeListener<RealmResults<MainCategoriesItem>>() {
                 @Override
                 public void onChange(RealmResults<MainCategoriesItem> availableUsersItems) {
                     setUpSpinnerAdapter(availableUsersItems);

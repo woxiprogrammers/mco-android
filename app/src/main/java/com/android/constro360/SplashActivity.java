@@ -81,11 +81,12 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-maintainance", ChecklistHomeActivity.class.getName());
         aclKeyValuePair.put("asset-management", ChecklistHomeActivity.class.getName());
-        aclKeyValuePair.put("inventory-history", DrawingHomeActivity.class.getName());
+        aclKeyValuePair.put("inventory-history", InventoryHomeActivity.class.getName());
         //
 //        aclKeyValuePair.put("master-peticash-account", InventoryHomeActivity.class.getName());
 //        aclKeyValuePair.put("sitewise-peticash-account", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("peticash-management", AwarenessHomeActivity.class.getName());
+        aclKeyValuePair.put("manage-drawing", DrawingHomeActivity.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
