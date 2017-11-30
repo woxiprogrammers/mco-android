@@ -195,12 +195,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
             }
         });
         //
-        /*arrChecklistDescription = new ArrayList<>();
-        arrChecklistDescription.add("Select Description");
-        ArrayAdapter<String> arrayDescriptionAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistDescription);
-        arrayDescriptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerChecklistDescription.setAdapter(arrayDescriptionAdapter);*/
-        //
         mButtonDismissAssignChecklistDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -233,17 +227,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("getUsersWithChecklistAssignAcl")
                 .build()
-                /*.getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getUsersWithChecklistAssignAcl");
-                    }
-                });*/
                 .getAsObject(ChecklistAclUsersResponse.class, new ParsedRequestListener<ChecklistAclUsersResponse>() {
                     @Override
                     public void onResponse(ChecklistAclUsersResponse response) {
