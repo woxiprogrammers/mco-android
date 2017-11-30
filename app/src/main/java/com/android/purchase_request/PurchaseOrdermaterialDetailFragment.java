@@ -115,8 +115,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                                     progressBar.setVisibility(View.GONE);
                                     if (response.getPurchaseOrderDetailData().getMaterials().size() > 0) {
                                         setUpAdapter();
-                                        mob.setText("Vendor Name:- " +response.getPurchaseOrderDetailData().getVendorName());
-                                        textViewVenName.setText("Mobile Number:- "+ response.getPurchaseOrderDetailData().getVendorMobile());
+                                        mob.setText("Mobile Number:- " +response.getPurchaseOrderDetailData().getVendorMobile());
+                                        textViewVenName.setText("Vendor Name:- "+ response.getPurchaseOrderDetailData().getVendorName());
 //                                        textViewNoTransactions.setVisibility(View.GONE);
                                     }
                                     /*else {

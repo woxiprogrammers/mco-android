@@ -2,7 +2,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="8dp">
 
     <ProgressBar
         android:id="@+id/progressBarTrans"
@@ -17,39 +18,40 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_18dp"
         android:layout_marginBottom="@dimen/dimen_18dp"
+        android:layout_marginTop="@dimen/dimen_18dp"
         android:text="Ok"/>
+
     <TextView
         android:id="@+id/textViewVenName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_4dp"
-        android:text="Vendor Name"/>
+        android:padding="@dimen/dimen_4dp"/>
+
     <TextView
         android:id="@+id/mob"
-        android:layout_below="@id/textViewVenName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_4dp"
-        android:text="Mobile Number"/>
+        android:layout_below="@id/textViewVenName"
+        android:padding="@dimen/dimen_4dp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerviewTransaction"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/mob"
         android:layout_above="@id/btnOk"
+        android:layout_below="@id/mob"
         android:orientation="vertical"
         android:padding="@dimen/dimen_4dp"/>
+
     <TextView
         android:id="@+id/textViewNoTransactions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No Transactions Found"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
         android:layout_above="@id/progressBarTrans"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:gravity="center"
+        android:text="No Transactions Found"
         android:visibility="gone"/>
 </RelativeLayout>
