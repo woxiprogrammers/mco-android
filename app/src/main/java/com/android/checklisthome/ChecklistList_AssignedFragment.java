@@ -48,7 +48,6 @@ public class ChecklistList_AssignedFragment extends Fragment {
     Button mBtnCheckListAssignNew;
     @BindView(R.id.recyclerView_checkList_assigned)
     RecyclerView mRecyclerViewCheckListAssigned;
-    private RealmResults<AssignedChecklistListItem> assignedChecklistItemResults;
     Unbinder unbinder;
 
     public ChecklistList_AssignedFragment() {
@@ -153,7 +152,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
 
     private void getLatestAssignedCheckLists() {
         realm = Realm.getDefaultInstance();
-        assignedChecklistItemResults = realm.where(AssignedChecklistListItem.class).findAllAsync();
+        RealmResults<AssignedChecklistListItem> assignedChecklistItemResults = realm.where(AssignedChecklistListItem.class).findAllAsync();
         AssignedChecklistListAdapter assignedChecklistListAdapter = new AssignedChecklistListAdapter(assignedChecklistItemResults, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

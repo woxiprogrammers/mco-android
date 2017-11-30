@@ -58,7 +58,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     @BindView(R.id.appBarLayout)
     AppBarLayout appBarLayout;
     @BindView(R.id.rv_task_selection)
-    RecyclerView rvTaskSelection;
+    RecyclerView mRvTaskSelection;
     @BindView(R.id.nav_view)
     NavigationView navView;
     @BindView(R.id.drawer_layout)
@@ -108,7 +108,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
      */
     private void initializeViews() {
         mContext = DashBoardActivity.this;
-        RecyclerView mRvTaskSelection = (RecyclerView) findViewById(R.id.rv_task_selection);
         View headerLayout = navView.inflateHeaderView(R.layout.nav_header_dash_board);
         projectSpinner = headerLayout.findViewById(R.id.project_spinner);
         userName = headerLayout.findViewById(R.id.userName);

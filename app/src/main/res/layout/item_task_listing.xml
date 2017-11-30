@@ -49,7 +49,6 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/dimen_18dp"/>
-
                 <!--<TextView
                     android:id="@+id/tv_Description"
                     android:layout_width="match_parent"
