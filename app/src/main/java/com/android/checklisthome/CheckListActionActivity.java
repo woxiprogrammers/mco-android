@@ -43,10 +43,10 @@ public class CheckListActionActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getCheckListVerificationFragment(int id) {
-        FragmentCheckListVerification fragmentCheckListVerification = FragmentCheckListVerification.newInstance(id);
+    public void getCheckListVerificationFragment(int projectSiteUserCheckpointId) {
+        FragmentCheckListVerification fragmentCheckListVerification = FragmentCheckListVerification.newInstance(projectSiteUserCheckpointId);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayoutChecklistAction, fragmentCheckListVerification, "FragmentCheckListVerification");
+        fragmentTransaction.replace(R.id.frameLayoutChecklistAction, fragmentCheckListVerification, "fragmentCheckListVerification");
         fragmentTransaction.addToBackStack("checkListTitleFragment");
         fragmentTransaction.commit();
     }

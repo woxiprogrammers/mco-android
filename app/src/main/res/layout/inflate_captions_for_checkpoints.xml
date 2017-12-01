@@ -4,9 +4,9 @@
     android:id="@+id/capture"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:layout_margin="@dimen/dimen_8dp"
-    android:padding="@dimen/dimen_8dp"
     android:layout_gravity="center"
+    android:layout_margin="@dimen/dimen_8dp"
+    android:layout_weight="1"
     android:drawableTop="@android:drawable/ic_menu_camera"
+    android:padding="@dimen/dimen_8dp"
     android:text="Capture Images"/>

@@ -15,11 +15,10 @@
             android:id="@+id/textViewChecklistTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_20sp"
             android:layout_marginLeft="@dimen/dimen_3dp"
             android:text="Top and Bottom Reinforcement"
-            android:textColor="@color/black"/>
-
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_20sp"/>
 
         <LinearLayout
             android:id="@+id/linearLayoutChecklistImg"
@@ -27,18 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimen_16dp"
             android:layout_marginTop="@dimen/dimen_8dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textViewCaptureChecklist"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:drawableTop="@android:drawable/ic_menu_camera"
-                android:gravity="center_horizontal"
-                android:visibility="gone"
-                android:text="Capture Images"/>
+            android:orientation="vertical">
         </LinearLayout>
 
         <HorizontalScrollView
@@ -55,6 +43,7 @@
                 android:orientation="horizontal">
             </LinearLayout>
         </HorizontalScrollView>
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,30 +74,26 @@
                 android:id="@+id/checkBoxOk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_8dp"
                 android:text="Ok"
-                android:textSize="@dimen/text_20sp"
-                android:padding="@dimen/dimen_8dp"/>
-
+                android:textSize="@dimen/text_20sp"/>
 
             <CheckBox
                 android:id="@+id/checkBoxNotOk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_20sp"
-                android:text="Not Ok"/>
+                android:text="Not Ok"
+                android:textSize="@dimen/text_20sp"/>
         </LinearLayout>
-
     </LinearLayout>
-
 
     <Button
         android:id="@+id/buttonSubmitChecklist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_margin="@dimen/dimen_8dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/dimen_8dp"
+        android:text="Submit"
         android:visibility="visible"/>
-
 </RelativeLayout>

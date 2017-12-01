@@ -6,9 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +14,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.constro360.R;
-import com.android.purchase_details.PayAndBillsActivity;
-import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -58,11 +52,8 @@ import static android.app.Activity.RESULT_OK;
  * A simple {@link Fragment} subclass.
  */
 public class FragmentCheckListVerification extends Fragment {
-
     @BindView(R.id.textViewChecklistTitle)
     TextView textViewChecklistTitle;
-    @BindView(R.id.textViewCaptureChecklist)
-    TextView textViewCaptureChecklist;
     @BindView(R.id.linearLayoutChecklistImg)
     LinearLayout linearLayoutChecklistImg;
     @BindView(R.id.editextChecklistRemark)
@@ -83,16 +74,16 @@ public class FragmentCheckListVerification extends Fragment {
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
-    private static int intCheckPointId;
+    private int intCheckPointId;
     private View inflatedView = null;
-    int size;
+    int intNumberOfImages;
     private TextView capture;
 
-    public static FragmentCheckListVerification newInstance(int chekpointId) {
+    public static FragmentCheckListVerification newInstance(int checkPointId) {
         Bundle args = new Bundle();
+        args.putInt("checkPointId", checkPointId);
         FragmentCheckListVerification fragment = new FragmentCheckListVerification();
         fragment.setArguments(args);
-        intCheckPointId=chekpointId;
         return fragment;
     }
 
@@ -106,11 +97,19 @@ public class FragmentCheckListVerification extends Fragment {
         View view = inflater.inflate(R.layout.fragment_checkpoint_verification, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
-        realm=Realm.getDefaultInstance();
-        CheckPointsItem checkPointsItem=realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId",intCheckPointId).findFirst();
+        Bundle bundleArgs = getArguments();
+        if (bundleArgs != null) {
+            intCheckPointId = bundleArgs.getInt("checkPointId");
+        }
+        realm = Realm.getDefaultInstance();
+        CheckPointsItem checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", intCheckPointId).findFirst();
         textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
-        size=checkPointsItem.getProjectSiteUserCheckpointImages().size();
-        addCaptions();
+        intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
+        if (intNumberOfImages > 0) {
+            addCaptions();
+        } else {
+            linearLayoutChecklistImg.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -120,23 +119,22 @@ public class FragmentCheckListVerification extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.buttonSubmitChecklist, R.id.textViewCaptureChecklist})
+    @OnClick({R.id.buttonSubmitChecklist/*, R.id.textViewCaptureChecklist*/})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.buttonSubmitChecklist:
+                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.textViewCaptureChecklist:
+            /*case R.id.textViewCaptureChecklist:
                 captureImage();
-                break;
-
+                break;*/
         }
-
     }
 
     private void captureImage() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
         Params params = new Params();
-        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setCaptureLimit(1);
         params.setToolbarColor(R.color.colorPrimaryLight);
         params.setActionButtonColor(R.color.colorAccentDark);
         params.setButtonTextColor(R.color.colorWhite);
@@ -178,12 +176,12 @@ public class FragmentCheckListVerification extends Fragment {
     }
 
     private void requestToSubmit() {
-        JSONObject params=new JSONObject();
+        JSONObject params = new JSONObject();
         try {
             //ToDo Add Params keys........................
-            params.put("","");
-            params.put("","");
-            params.put("","");
+            params.put("", "");
+            params.put("", "");
+            params.put("", "");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -210,6 +208,7 @@ public class FragmentCheckListVerification extends Fragment {
                     }
                 });
     }
+
     private void uploadImages_addItemToLocal() {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
@@ -251,11 +250,18 @@ public class FragmentCheckListVerification extends Fragment {
         }
     }
 
-    private void addCaptions(){
-        for(int i=0;i < size ; i++){
-            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null, false);
+    private void addCaptions() {
+        linearLayoutChecklistImg.removeAllViews();
+        for (int i = 1; i < intNumberOfImages; i++) {
+            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null);
             inflatedView.setId(i);
-            capture=inflatedView.findViewById(R.id.capture);
+            capture = (TextView) inflatedView;
+            capture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    captureImage();
+                }
+            });
             linearLayoutChecklistImg.addView(inflatedView);
         }
     }
