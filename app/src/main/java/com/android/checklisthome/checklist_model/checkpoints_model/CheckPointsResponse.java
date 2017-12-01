@@ -6,16 +6,16 @@ import io.realm.RealmObject;
 public class CheckPointsResponse extends RealmObject{
 
 	@SerializedName("data")
-	private CheckPointsdata checkPointsdata;
+	private CheckPointsData checkPointsdata;
 
 	@SerializedName("message")
 	private String message;
 
-	public void setCheckPointsdata(CheckPointsdata checkPointsdata){
+	public void setCheckPointsdata(CheckPointsData checkPointsdata){
 		this.checkPointsdata = checkPointsdata;
 	}
 
-	public CheckPointsdata getCheckPointsdata(){
+	public CheckPointsData getCheckPointsdata(){
 		return checkPointsdata;
 	}
 

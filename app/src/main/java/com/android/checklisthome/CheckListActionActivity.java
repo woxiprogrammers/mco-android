@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 public class CheckListActionActivity extends BaseActivity {
     @BindView(R.id.frameLayoutChecklistAction)
     FrameLayout frameLayoutChecklistAction;
+    private int projectSiteUserChecklistAssignmentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,14 @@ public class CheckListActionActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Checklist Details");
         }
-        getCHeckListFragment();
+        Bundle bundleExtras = getIntent().getExtras();
+        if (bundleExtras != null) {
+            projectSiteUserChecklistAssignmentId = bundleExtras.getInt("projectSiteUserChecklistAssignmentId");
+        }
+        CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.frameLayoutChecklistAction, checkListTitleFragment, "checkListTitleFragment");
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -35,14 +43,7 @@ public class CheckListActionActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getCHeckListFragment() {
-        CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.frameLayoutChecklistAction, checkListTitleFragment, "checkListTitleFragment");
-        fragmentTransaction.commit();
-    }
-
-    public void getChckListVerificationFragment(int id) {
+    public void getCheckListVerificationFragment(int id) {
         FragmentCheckListVerification fragmentCheckListVerification = FragmentCheckListVerification.newInstance(id);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayoutChecklistAction, fragmentCheckListVerification, "FragmentCheckListVerification");

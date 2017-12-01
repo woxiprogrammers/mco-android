@@ -48,6 +48,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
     Button mBtnCheckListAssignNew;
     @BindView(R.id.recyclerView_checkList_assigned)
     RecyclerView mRecyclerViewCheckListAssigned;
+    private RealmResults<AssignedChecklistListItem> assignedChecklistItemResults;
     Unbinder unbinder;
 
     public ChecklistList_AssignedFragment() {
@@ -117,6 +118,9 @@ public class ChecklistList_AssignedFragment extends Fragment {
                 .getAsObject(AssignedChecklistResponse.class, new ParsedRequestListener<AssignedChecklistResponse>() {
                     @Override
                     public void onResponse(final AssignedChecklistResponse response) {
+                       /* if (!response.getPageid().equalsIgnoreCase("")) {
+                            pageNumber = Integer.parseInt(response.getPageid());
+                        }*/
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -128,6 +132,10 @@ public class ChecklistList_AssignedFragment extends Fragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    /*if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestAssetListOnline(pageNumber);
+                                    }*/
                                     getLatestAssignedCheckLists();
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -152,7 +160,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
 
     private void getLatestAssignedCheckLists() {
         realm = Realm.getDefaultInstance();
-        RealmResults<AssignedChecklistListItem> assignedChecklistItemResults = realm.where(AssignedChecklistListItem.class).findAllAsync();
+        assignedChecklistItemResults = realm.where(AssignedChecklistListItem.class).findAllAsync();
         AssignedChecklistListAdapter assignedChecklistListAdapter = new AssignedChecklistListAdapter(assignedChecklistItemResults, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -162,7 +170,9 @@ public class ChecklistList_AssignedFragment extends Fragment {
                 mRecyclerViewCheckListAssigned, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                startActivity(new Intent(mContext, CheckListActionActivity.class));
+                Intent intentAction = new Intent(mContext, CheckListActionActivity.class);
+                intentAction.putExtra("projectSiteUserChecklistAssignmentId", assignedChecklistItemResults.get(position).getProjectSiteUserChecklistAssignmentId());
+                startActivity(intentAction);
             }
 
             @Override
@@ -171,7 +181,8 @@ public class ChecklistList_AssignedFragment extends Fragment {
         }));
     }
 
-    public class AssignedChecklistListAdapter extends RealmRecyclerViewAdapter<AssignedChecklistListItem, AssignedChecklistListAdapter.MyViewHolder> {
+    public class AssignedChecklistListAdapter extends RealmRecyclerViewAdapter<AssignedChecklistListItem,
+            AssignedChecklistListAdapter.MyViewHolder> {
         private OrderedRealmCollection<AssignedChecklistListItem> assignedChecklistListItems;
 
         AssignedChecklistListAdapter(@Nullable OrderedRealmCollection<AssignedChecklistListItem> data, boolean autoUpdate, boolean updateOnModification) {

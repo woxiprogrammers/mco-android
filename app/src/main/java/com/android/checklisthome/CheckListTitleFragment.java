@@ -1,7 +1,6 @@
 package com.android.checklisthome;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,17 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
 import com.android.constro360.R;
-import com.android.inventory.assets.ActivityAssetMoveInOutTransfer;
-import com.android.inventory.assets.AssetDetailsActivity;
-import com.android.inventory.assets.AssetListResponse;
-import com.android.inventory.assets.AssetsListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -34,11 +28,9 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -47,33 +39,36 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class CheckListTitleFragment extends Fragment {
-
     @BindView(R.id.rv_checklist_title)
     RecyclerView rvChecklistTitle;
     Unbinder unbinder;
     private Realm realm;
     private Context mContext;
+    private int projectSiteUserChecklistAssignmentId;
+    private RealmResults<CheckPointsItem> checkPointsItemRealmResults;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
     }
 
-    public static CheckListTitleFragment newInstance() {
-
+    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId) {
         Bundle args = new Bundle();
+        args.putInt("projectSiteUserChecklistAssignmentId", projectSiteUserChecklistAssignmentId);
         CheckListTitleFragment fragment = new CheckListTitleFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recyclerview_for_checklist_title, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
+        Bundle bundleArgs = getArguments();
+        if (bundleArgs != null) {
+            projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
+        }
         requestToGetCheckpoints();
-        setUpAdapter();
         return view;
     }
 
@@ -85,9 +80,7 @@ public class CheckListTitleFragment extends Fragment {
 
     private void setUpAdapter() {
         realm = Realm.getDefaultInstance();
-
-        final RealmResults<CheckPointsItem> checkPointsItemRealmResults = realm.where(CheckPointsItem.class).findAll();
-        Timber.d(String.valueOf(checkPointsItemRealmResults));
+        checkPointsItemRealmResults = realm.where(CheckPointsItem.class).findAll();
         CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(checkPointsItemRealmResults, true, true);
         rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
         rvChecklistTitle.setHasFixedSize(true);
@@ -97,29 +90,20 @@ public class CheckListTitleFragment extends Fragment {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        ((CheckListActionActivity)mContext).getChckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
-
+                        ((CheckListActionActivity) mContext).getCheckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (checkPointsItemRealmResults != null) {
-            checkPointsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<CheckPointsItem>>() {
-                @Override
-                public void onChange(RealmResults<CheckPointsItem> checkPointsItems) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("CheckListTitleFragment");
-        }
     }
 
     private void requestToGetCheckpoints() {
-        final JSONObject params = new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("project_site_user_checklist_assignment_id", 1);
+            params.put("project_site_user_checklist_assignment_id", projectSiteUserChecklistAssignmentId);
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -127,15 +111,11 @@ public class CheckListTitleFragment extends Fragment {
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("API_GET_CHECKPOINTS_URL")
+                .setTag("requestToGetCheckpoints")
                 .build()
                 .getAsObject(CheckPointsResponse.class, new ParsedRequestListener<CheckPointsResponse>() {
                     @Override
                     public void onResponse(final CheckPointsResponse response) {
-                        //ToDo Sharvari Lazy Loading
-                       /* if (!response.getPageid().equalsIgnoreCase("")) {
-                            pageNumber = Integer.parseInt(response.getPageid());
-                        }*/
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -146,10 +126,7 @@ public class CheckListTitleFragment extends Fragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    /*if (oldPageNumber != pageNumber) {
-                                        oldPageNumber = pageNumber;
-                                        requestAssetListOnline(pageNumber);
-                                    }*/
+                                    setUpAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -166,17 +143,16 @@ public class CheckListTitleFragment extends Fragment {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
+                        AppUtils.getInstance().logApiError(anError, "requestToGetCheckpoints");
                     }
                 });
     }
-
 
     public class CheckListTitleAdapter extends RealmRecyclerViewAdapter<CheckPointsItem, CheckListTitleAdapter.MyViewHolder> {
         private OrderedRealmCollection<CheckPointsItem> checkPointsItemOrderedRealmCollection;
         private CheckPointsItem checkPointsItem;
 
-        public CheckListTitleAdapter(@Nullable OrderedRealmCollection<CheckPointsItem> data, boolean autoUpdate, boolean updateOnModification) {
+        CheckListTitleAdapter(@Nullable OrderedRealmCollection<CheckPointsItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
             checkPointsItemOrderedRealmCollection = data;
@@ -205,7 +181,6 @@ public class CheckListTitleFragment extends Fragment {
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-
             @BindView(R.id.checkboxChecklistTitles)
             CheckBox checkboxChecklistTitles;
             @BindView(R.id.textviewDescription)
