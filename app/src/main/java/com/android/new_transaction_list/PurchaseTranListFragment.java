@@ -81,7 +81,13 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class)/*.equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())*/.findAll();
+        if(isFromPurchaseRequestHome){
+            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
+
+        }else {
+            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("purchaseOrderId", intPrimaryKey).findAll();
+
+        }
         PurchaseTransAdapter purchaseBillRvAdapter = new PurchaseTransAdapter(purchaseBillListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
@@ -117,8 +123,13 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("purchase_order_id", intPrimaryKey);
+            if(isFromPurchaseRequestHome){
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+
+            }else {
+                params.put("purchase_order_id", intPrimaryKey);
+
+            }
             params.put("page", 0);
         } catch (JSONException e) {
             e.printStackTrace();

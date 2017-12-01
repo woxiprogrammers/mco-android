@@ -160,7 +160,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private TextView textViewIdDummyView;
     private FrameLayout frameLayoutEdit;
     private AlertDialog alertDialog;
-    private RealmList<MaterialUnitsData> materialUnitsData;
     private View inflatedView = null;
     private View viewData;
     private PurchaseOrderTransactionListingItem purchaseBIllDetailsItems;
@@ -656,7 +655,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             realm = Realm.getDefaultInstance();
             purchaseBIllDetailsItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("grn", PayAndBillsActivity.idForBillItem).findFirst();
             if (purchaseBIllDetailsItems != null) {
-//              textViewSetVendor.setText("Vendor Name :- " + purchaseBIllDetailsItems.getVendor());
                 editTextSetBillumber.setText(purchaseBIllDetailsItems.getBillNumber());
                 editTextSetVehNum.setText(purchaseBIllDetailsItems.getVehicleNumber());
                 editTextSetOutTime.setText(purchaseBIllDetailsItems.getOutTime());
@@ -666,7 +664,13 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 editextSetTransRemark.setText(purchaseBIllDetailsItems.getRemark());
                 llSetMatImg.removeAllViews();
                 for (int i = 0; i < purchaseBIllDetailsItems.getImages().size(); i++) {
-                    loadImage(purchaseBIllDetailsItems.getImages().get(i).getImageUrl(), llSetMatImg);
+                    if(purchaseBIllDetailsItems.getImages().get(i).getImage_status().equalsIgnoreCase("Pre-GRN")){
+                        loadImage(purchaseBIllDetailsItems.getImages().get(i).getImageUrl(), llSetMatImg);
+
+                    }else {
+                        loadImage(purchaseBIllDetailsItems.getImages().get(i).getImageUrl(), linearLayoutSetPaymentImageLayout);
+
+                    }
                 }
                 setViewData();
                 /*if (purchaseBIllDetailsItems.getBillData().get(0).getImages().size() > 0) {

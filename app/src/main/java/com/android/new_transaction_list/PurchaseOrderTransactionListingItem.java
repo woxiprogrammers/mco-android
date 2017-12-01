@@ -1,5 +1,6 @@
 package com.android.new_transaction_list;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -53,6 +54,8 @@ public class PurchaseOrderTransactionListingItem extends RealmObject{
 
 	@SerializedName("material_name")
 	private String materialName;
+
+	private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
 	public void setOutTime(String outTime){
 		this.outTime = outTime;
