@@ -519,16 +519,10 @@ public class PeticashFormActivity extends BaseActivity {
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
             intAdvanceAmount = employeesearchdataItem.getAdvanceAmount();
-
-//
-
             edittextWeihges.setText("" + getPerWeges);
-            Glide.with(mContext).load("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture())
-                    .thumbnail(0.1f)
-                    .crossFade()
-                    .skipMemoryCache(true)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(imageViewProfilePicture);
+
+            AppUtils.getInstance().loadImageViaGlide(employeesearchdataItem.getEmployeeProfilePicture(), imageViewProfilePicture,mContext);
+
         }
     }
 

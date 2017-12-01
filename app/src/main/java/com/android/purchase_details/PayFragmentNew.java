@@ -211,12 +211,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutShowImg.addView(imageView);
-                Glide.with(getActivity()).load("http://test.mconstruction.co.in" + purchaseOrderListItem.getListOfImages().get(index).getImageUrl())
-                        .thumbnail(0.1f)
-                        .crossFade()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(imageView);
+                AppUtils.getInstance().loadImageViaGlide(purchaseOrderListItem.getListOfImages().get(index).getImageUrl(), imageView,mContext);
+
             }
         }
         return view;
@@ -293,6 +289,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         strChallanNumber = editTextBillumber.getText().toString();
         strVehicleNumber = editTextVehNum.getText().toString();
 
+        if (!isCheckedMaterial) {
+            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
+            return;
+        }
         //For Bill Number
         if (TextUtils.isEmpty(strChallanNumber)) {
             editTextBillumber.setFocusableInTouchMode(true);
@@ -376,7 +376,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void requestToGenerateGrn() {
 
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
-            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Please add at least activity_drawing_home image", Toast.LENGTH_LONG).show();
             return;
         }
         JSONObject params = new JSONObject();
@@ -421,10 +421,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToPayment() {
-        if (!isCheckedMaterial) {
-            Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
-            return;
-        }
+
 
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -701,12 +698,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         layoutParams.setMargins(10, 10, 10, 10);
         imageView.setLayoutParams(layoutParams);
         linearLayout.addView(imageView);
-        Glide.with(mContext).load("http://test.mconstruction.co.in" + strUrl)
-                .thumbnail(0.1f)
-                .crossFade()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageView);
+        AppUtils.getInstance().loadImageViaGlide(strUrl, imageView,mContext);
+
     }
 
     private void inflateViews() {

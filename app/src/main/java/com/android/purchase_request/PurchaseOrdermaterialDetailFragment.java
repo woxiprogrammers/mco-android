@@ -19,23 +19,21 @@ import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.models.purchase_order.MaterialsItem;
+import com.android.models.purchase_order.PurchaseOrderDetailData;
 import com.android.models.purchase_order.PurchaseOrderMaterialDetailResponse;
-import com.android.peticash.EmployeeTransactionFragment;
-import com.android.peticashautosearchemployee.EmployeeTransactionsItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -48,12 +46,14 @@ import timber.log.Timber;
 
 public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
 
+    Unbinder unbinder;
     private AlertDialog alertDialog;
     private Realm realm;
     private RecyclerView recyclerviewTransaction;
     private ProgressBar progressBar;
     private Button buttonOk;
     private int purchaseOrderId;
+    private TextView textViewVenName,mob;
 
     @NonNull
     @Override
@@ -63,12 +63,15 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         View dialog = inflater.inflate(R.layout.layout_recyclerview_for_emp_transaction, null);
         builder.setView(dialog);
         Bundle bundle = getArguments();
-        if(bundle != null){
-            purchaseOrderId=  bundle.getInt("purchase_order_id");
+        if (bundle != null) {
+            purchaseOrderId = bundle.getInt("purchase_order_id");
         }
+
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
         buttonOk = dialog.findViewById(R.id.btnOk);
+        textViewVenName=dialog.findViewById(R.id.textViewVenName);
+        mob=dialog.findViewById(R.id.mob);
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,7 +104,9 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(PurchaseOrderMaterialDetailResponse.class);
                                     realm.delete(MaterialsItem.class);
+                                    realm.delete(PurchaseOrderDetailData.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -110,6 +115,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                                     progressBar.setVisibility(View.GONE);
                                     if (response.getPurchaseOrderDetailData().getMaterials().size() > 0) {
                                         setUpAdapter();
+                                        mob.setText("Mobile Number:- " +response.getPurchaseOrderDetailData().getVendorMobile());
+                                        textViewVenName.setText("Vendor Name:- "+ response.getPurchaseOrderDetailData().getVendorName());
 //                                        textViewNoTransactions.setVisibility(View.GONE);
                                     }
                                     /*else {
@@ -139,10 +146,25 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
     private void setUpAdapter() {
         realm = Realm.getDefaultInstance();
         final RealmResults<MaterialsItem> materialsItemRealmResults = realm.where(MaterialsItem.class).findAllAsync();
+        final RealmResults<PurchaseOrderDetailData> purchaseOrderDetailData = realm.where(PurchaseOrderDetailData.class).findAllAsync();
         PurchaseOrdermaterialDetailAdapter purchaseOrdermaterialDetailAdapter = new PurchaseOrdermaterialDetailAdapter(materialsItemRealmResults, true, true);
         recyclerviewTransaction.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerviewTransaction.setHasFixedSize(true);
         recyclerviewTransaction.setAdapter(purchaseOrdermaterialDetailAdapter);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     public class PurchaseOrdermaterialDetailAdapter extends RealmRecyclerViewAdapter<MaterialsItem, PurchaseOrdermaterialDetailAdapter.MyViewHolder> {
@@ -168,6 +190,10 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             holder.textviewQuantity.setText(materialsItem.getQuantity());
             holder.textviewUnitName.setText(materialsItem.getUnitName());
             holder.linearLayoutQuoImg.removeAllViews();
+            holder.textviewRatePerUnit.setText(materialsItem.getRatePerUnit());
+            /*holder.textviewVendorName.setText(detailData.getVendorName());
+            holder.textviewVendorMobile.setText(detailData.getVendorMobile());*/
+
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {
                     ImageView imageView = new ImageView(getActivity());
@@ -175,12 +201,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
                     holder.linearLayoutQuoImg.addView(imageView);
-                    Glide.with(getActivity()).load("http://test.mconstruction.co.in" + materialsItem.getQuotationImages().get(index).getImageUrl())
-                            .thumbnail(0.1f)
-                            .crossFade()
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(imageView);
+                    AppUtils.getInstance().loadImageViaGlide(materialsItem.getQuotationImages().get(index).getImageUrl(), imageView, getActivity());
+
                 }
             }
             holder.linearLayoutClientImg.removeAllViews();
@@ -191,12 +213,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
                     holder.linearLayoutClientImg.addView(imageView);
-                    Glide.with(getActivity()).load("http://test.mconstruction.co.in" + materialsItem.getClientApprovalImages().get(index).getImageUrl())
-                            .thumbnail(0.1f)
-                            .crossFade()
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(imageView);
+                    AppUtils.getInstance().loadImageViaGlide(materialsItem.getClientApprovalImages().get(index).getImageUrl(), imageView, getActivity());
+
                 }
             }
         }
@@ -223,6 +241,9 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             LinearLayout linearLayoutQuoImg;
             @BindView(R.id.linearLayoutClientImg)
             LinearLayout linearLayoutClientImg;
+            @BindView(R.id.textviewRatePerUnit)
+            TextView textviewRatePerUnit;
+
             private MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);

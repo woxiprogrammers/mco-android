@@ -22,6 +22,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -32,7 +33,7 @@
             android:name="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name="com.android.peticash.PetiCashListActivity"
+            android:name="com.android.peticash.PetiCashHomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name="com.android.dummy.NewActivity"/>
         <activity
@@ -88,5 +89,10 @@
         </activity>
         <activity android:name="com.android.awareness.AwarenessHomeActivity">
         </activity>
+        <activity android:name="com.android.drawings.DrawingHomeActivity">
+        </activity>
+        <activity android:name="com.android.drawings.DrawingDetailsActivity">
+        </activity>
     </application>
+
 </manifest>

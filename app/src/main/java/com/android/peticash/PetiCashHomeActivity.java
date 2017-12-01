@@ -47,7 +47,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class PetiCashListActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
+public class PetiCashHomeActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
     @BindView(R.id.textView_peticashHome_appBarTitle)
     TextView mTextViewPeticashHomeAppBarTitle;
     @BindView(R.id.relative_layout_datePicker_peticash)
@@ -133,7 +133,7 @@ public class PetiCashListActivity extends BaseActivity implements DatePickerDial
      * Created by - Rohit
      */
     private void initializeViews() {
-        mContext = PetiCashListActivity.this;
+        mContext = PetiCashHomeActivity.this;
     }
 
     @Override

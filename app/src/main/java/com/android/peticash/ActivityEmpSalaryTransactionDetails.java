@@ -168,12 +168,9 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutSetImage.addView(imageView);
-                Glide.with(mContext).load("http://test.mconstruction.co.in" + empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl())
-                        .thumbnail(0.1f)
-                        .crossFade()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(imageView);
+                AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView,mContext);
+
+
             }
         }
     }

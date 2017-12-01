@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.new_transaction_list.PurchaseTranListFragment;
 
 import java.text.DateFormatSymbols;
 
@@ -24,7 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
 
-public class PurchaseHomeActivity extends BaseActivity {
+public class PurchaseHomeActivity extends BaseActivity implements FragmentInterface {
     //    public static int passYear, passMonth;
     @BindView(R.id.tavLayout)
     TabLayout mTabLayout_purchaseHome;
@@ -132,6 +133,11 @@ public class PurchaseHomeActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void fragmentBecameVisible() {
+
+    }
+
     class PurchaseHomeViewPagerAdapter extends FragmentStatePagerAdapter {
         private String[] arrTabTitles = {
                 "Purchase \nRequest", "Purchase \nOrder", "Purchase \nBill"
@@ -159,7 +165,7 @@ public class PurchaseHomeActivity extends BaseActivity {
                 case 1:
                     return PurchaseOrderListFragment.newInstance(0, false);
                 case 2:
-                    return PurchaseBillListFragment.newInstance(true, 1);
+                    return PurchaseTranListFragment.newInstance(true, 1);
                 default:
                     return null;
             }

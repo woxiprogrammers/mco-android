@@ -1030,7 +1030,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(final JSONObject response) {
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -1449,12 +1449,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             final String strUserRole = AppUtils.getInstance().getUserRole();
             holder.buttonMoveToIndent.setVisibility(View.GONE);
             holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-            if (purchaseMaterialListItem.getHave_access() != null) {
-                if(!purchaseMaterialListItem.getApprovedBy().isEmpty()){
+//            if (purchaseMaterialListItem.getHave_access() != null) {
+                if(!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())){
+                    holder.textviewApprovedBy.setVisibility(View.VISIBLE);
                     holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
                 }
 
-            }
+//            }
             if (purchaseMaterialListItem.getHave_access() != null) {
                 /*if (((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))))*//* && !(strStatus.equalsIgnoreCase("in-indent"))*//*) {
                     Log.i("@@",purchaseMaterialListItem.getHave_access());

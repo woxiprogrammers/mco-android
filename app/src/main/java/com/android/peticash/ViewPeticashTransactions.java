@@ -210,12 +210,9 @@ public class ViewPeticashTransactions extends BaseActivity {
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutSetUploadImage.addView(imageView);
-                Glide.with(mContext).load("http://test.mconstruction.co.in" + strMaterialImageUrl)
-                        .thumbnail(0.1f)
-                        .crossFade()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(imageView);
+                AppUtils.getInstance().loadImageViaGlide(strMaterialImageUrl,imageView,mContext);
+
+
             }
         }
 

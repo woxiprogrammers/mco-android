@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,7 +161,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
      */
     private void initializeViews() {
         mContext = getActivity();
-        floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
         functionForGettingData();
         PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
         for (PermissionsItem permissionsItem : permissionsItems) {
@@ -365,8 +365,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-            holder.textViewApproved.setText("Approved By : - " + purchaseRequestListItem.getApprovedBy());
-            holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
+            if(!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())){
+                holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
+                holder.textViewApproved.setText("Approved By : - " + purchaseRequestListItem.getApprovedBy());
+            }
         }
 
         @Override
