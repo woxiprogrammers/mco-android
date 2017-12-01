@@ -16,6 +16,7 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_order.PurchaseOrderListItem;
+import com.android.new_transaction_list.PurchaseTranListFragment;
 import com.android.purchase_request.PurchaseBillListFragment;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -165,7 +166,7 @@ public class PayAndBillsActivity extends BaseActivity {
                 case 0:
                     return PayFragmentNew.newInstance(primaryKey,strVendorName);
                 case 1:
-                    return PurchaseBillListFragment.newInstance(false, primaryKey);
+                    return PurchaseTranListFragment.newInstance(false, primaryKey);
                 default:
                     return null;
             }
