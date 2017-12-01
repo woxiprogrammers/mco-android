@@ -357,6 +357,7 @@ public class DrawingHomeActivity extends BaseActivity {
                     public void onItemClick(View view, final int position) {
                         Intent intent = new Intent(DrawingHomeActivity.this, DrawingDetailsActivity.class);
                         intent.putExtra("url", imagesListDrawingItems.get(position).getImageUrl());
+                        intent.putExtra("imageName",imagesListDrawingItems.get(position).getTitle());
                         intent.putExtra("getDrawingImageVersionId",imagesListDrawingItems.get(position).getDrawingImageVersionId());
                         startActivity(intent);
 

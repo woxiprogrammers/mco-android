@@ -56,7 +56,7 @@ public class AppURL {
     public static final String API_CHECKLIST_CATEGORY_LIST = BASE_URL + "checklist/category?token=";
     public static final String API_INVENTORY_CHECK_AVAILABLE_FOR_UNITS = BASE_URL + "inventory/material/check-availability?token=";
     public static final String API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY = BASE_URL + "purchase/purchase-order/generate-grn?token=";
-    public static final String API_PURCHASE_ORDER_PAYMENT_URL = BASE_URL + "purchase/purchase-order/bill-transaction?token=";
+    public static final String API_PURCHASE_ORDER_PAYMENT_URL = BASE_URL + "purchase/purchase-order/create-transaction?token=";
     public static final String API_GET_CHECKPOINTS_URL = BASE_URL + "checklist/checkpoint-listing?token=";
     public static final String API_CHECKLIST_SUBMIT_CHECKPOINT_STATUS = BASE_URL + "";
     public static final String API_PURCHASE_ORDER_MATERIAL_DETAIL = BASE_URL + "purchase/purchase-order/detail?token=";
@@ -75,4 +75,5 @@ public class AppURL {
     public static final String API_IMAGE_LIST_DRAWING = BASE_URL + "drawing/get-current-version-images?token=";
     public static final String API_DRAWING_COMMENTS_LIST = BASE_URL + "drawing/get-comments?token=";
     public static final String API_DRAWING_ADD_COMMENT = BASE_URL + "drawing/add-comment?token=";
+    public static final String API_DRAWING_VERSIONS_LIST = BASE_URL +"drawing/get-all-image-versions?token=";
 }

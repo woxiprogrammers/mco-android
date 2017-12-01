@@ -48,21 +48,23 @@ public class DrawingDetailsActivity extends BaseActivity {
     private Context mContext;
     private AlertDialog alert_Dialog;
     private int drawingVersionId;
+    private String imageName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_drawing_details);
         ButterKnife.bind(this);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Drawing Details");
-        }
         mContext = DrawingDetailsActivity.this;
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             imageUrl = bundle.getString("url");
             drawingVersionId = bundle.getInt("getDrawingImageVersionId");
+            imageName=bundle.getString("imageName");
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(imageName);
         }
         call(drawingVersionId, imageUrl, true);
 
@@ -127,7 +129,7 @@ public class DrawingDetailsActivity extends BaseActivity {
 
     private void call(int drawingId, String imageUrl, boolean isLoadImage) {
         if (isLoadImage) {
-            AppUtils.getInstance().loadImageViaGlide("http://test.mconstruction.co.in" + imageUrl, imageViewPreview, mContext);
+            AppUtils.getInstance().loadImageViaGlide(imageUrl, imageViewPreview, mContext);
         }
         getFragment(drawingId);
     }

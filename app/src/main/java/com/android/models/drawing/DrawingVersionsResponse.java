@@ -1,7 +1,9 @@
 package com.android.models.drawing;
 import com.google.gson.annotations.SerializedName;
 
-public class DrawingVersionsResponse{
+import io.realm.RealmObject;
+
+public class DrawingVersionsResponse extends RealmObject{
 
 	@SerializedName("data")
 	private Versionsdata versionsdata;

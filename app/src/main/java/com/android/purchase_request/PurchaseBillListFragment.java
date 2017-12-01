@@ -66,8 +66,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         args.putInt("primaryKey", primaryKey);
         args.putBoolean("isFromPurchaseHome", isFromPurchaseHome);
         fragment.setArguments(args);
-//        isFromPurchaseRequestHome=isFromPurchaseHome;
-//        intPrimaryKey=primaryKey;
         return fragment;
     }
 

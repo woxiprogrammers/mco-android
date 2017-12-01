@@ -6,20 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.constro360.R;
-import com.android.dummy.BillDataItem;
-import com.android.dummy.DummyCheckResponse;
-import com.android.dummy.DummyCheckdata;
-import com.android.dummy.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
 import com.android.purchase_details.PayAndBillsActivity;
-import com.android.purchase_request.PurchaseBillListFragment;
 import com.android.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -45,7 +39,7 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PurchaseTranListFragment extends Fragment implements FragmentInterface{
+public class PurchaseTranListFragment extends Fragment implements FragmentInterface {
 
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
@@ -63,8 +57,8 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     public static PurchaseTranListFragment newInstance(boolean isFromPurchaseHome, int primaryKey) {
         Bundle args = new Bundle();
         PurchaseTranListFragment fragment = new PurchaseTranListFragment();
-        args.putInt("primaryKey", primaryKey);
         args.putBoolean("isFromPurchaseHome", isFromPurchaseHome);
+        args.putInt("primaryKey", primaryKey);
         fragment.setArguments(args);
         return fragment;
     }
@@ -97,12 +91,12 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        /*PayAndBillsActivity.isForViewOnly = true;
+                        PayAndBillsActivity.isForViewOnly = true;
                         PayAndBillsActivity.idForBillItem = String.valueOf(purchaseBillListItems.get(position).getGrn());
                         PayAndBillsActivity.id = position;
                         if (!isFromPurchaseRequestHome) {
-                            ((PayAndBillsActivity) mContext).moveFragments(false);
-                        }*/
+                            ((PayAndBillsActivity) getActivity()).moveFragments(false);
+                        }
                     }
 
                     @Override
@@ -174,11 +168,23 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
 
     @Override
     public void fragmentBecameVisible() {
+        requestPrListOnline();
+
         if (!isFromPurchaseRequestHome) {
-            if (getUserVisibleHint()) {
+            if (getUserVisibleHint() && ((PurchaseHomeActivity) mContext) != null) {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        recyclerView_commonListingView.setAdapter(null);
+        if (realm != null) {
+            realm.close();
+        }
+        unbinder.unbind();
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -191,8 +197,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         }
 
         @Override
-        public 
-        MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_purchase_bill_list, parent, false);
             return new MyViewHolder(itemView);
         }
@@ -202,7 +207,13 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             PurchaseOrderTransactionListingItem purchaseBillListItem = purchaseOrderTransactionListingItemOrderedRealmCollection.get(position);
             holder.textViewPurchaseGrn.setText(purchaseBillListItem.getGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getPurchaseOrderTransactionStatus());
-//            holder.textViewPurchaseRequestDate.setText(purchaseBillListItem.get());
+            if (purchaseBillListItem.getPurchaseOrderTransactionStatus().equalsIgnoreCase("GRN Generated")) {
+                holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBillListItem.getInTime()));
+
+            } else {
+                holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBillListItem.getOutTime()));
+
+            }
             holder.textViewPurchaseRequestMaterials.setText(purchaseBillListItem.getMaterialName());
         }
 

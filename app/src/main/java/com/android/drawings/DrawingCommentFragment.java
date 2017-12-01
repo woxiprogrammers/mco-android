@@ -208,7 +208,7 @@ public class DrawingCommentFragment extends Fragment  implements FragmentInterfa
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             commentsListItem = commentsListItemOrderedRealmCollection.get(position);
-            holder.textViewCommentNo.setText(String.valueOf(counter=counter + 1));
+            holder.textViewCommentNo.setText(String.valueOf(counter=counter + 1) + ".");
             holder.textViewCommentList.setText(commentsListItem.getName());
 
         }
