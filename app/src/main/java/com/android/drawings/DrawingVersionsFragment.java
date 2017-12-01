@@ -21,14 +21,12 @@ public class DrawingVersionsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_drawing_comment, container, false);
+        return inflater.inflate(R.layout.fragment_version_comment, container, false);
 
     }
 
-    public static DrawingVersionsFragment newInstance() {
-
+    public static DrawingVersionsFragment newInstance(int drawingVersionId) {
         Bundle args = new Bundle();
-
         DrawingVersionsFragment fragment = new DrawingVersionsFragment();
         fragment.setArguments(args);
         return fragment;

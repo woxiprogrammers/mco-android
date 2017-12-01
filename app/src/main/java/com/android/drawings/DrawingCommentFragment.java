@@ -7,12 +7,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.interfaces.FragmentInterface;
 import com.android.inventory.assets.ActivityAssetMoveInOutTransfer;
 import com.android.inventory.assets.AssetDetailsActivity;
 import com.android.inventory.assets.AssetsListAdapter;
@@ -44,7 +46,7 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DrawingCommentFragment extends Fragment {
+public class DrawingCommentFragment extends Fragment  implements FragmentInterface{
 
     @BindView(R.id.rvCommonList)
     RecyclerView rvCommonList;
@@ -56,6 +58,14 @@ public class DrawingCommentFragment extends Fragment {
         // Required empty public constructor
     }
 
+
+    public static DrawingCommentFragment newInstance(int id) {
+        Bundle args = new Bundle();
+        DrawingCommentFragment fragment = new DrawingCommentFragment();
+        args.putInt("drawingVersionId",id);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,19 +73,12 @@ public class DrawingCommentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_drawing_comment, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext=getActivity();
-        requestToGetComments();
         Bundle bundle = getArguments();
         if (bundle != null) {
             drawingId = bundle.getInt("drawingVersionId");
         }
+        requestToGetComments();
         return view;
-    }
-
-    public static DrawingCommentFragment newInstance() {
-        Bundle args = new Bundle();
-        DrawingCommentFragment fragment = new DrawingCommentFragment();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -84,10 +87,22 @@ public class DrawingCommentFragment extends Fragment {
         unbinder.unbind();
     }
 
-    private void requestToGetComments() {
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            drawingId = bundle.getInt("drawingVersionId");
+        }
+    }
+
+    public void requestToGetComments() {
         final JSONObject params = new JSONObject();
         try {
             params.put("drawing_image_version_id", drawingId);
+            Log.i("@SP",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -166,6 +181,11 @@ public class DrawingCommentFragment extends Fragment {
         } else {
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
         }
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+
     }
 
     public class CommentListAdapter extends RealmRecyclerViewAdapter<CommentsListItem, CommentListAdapter.MyViewHolder> {

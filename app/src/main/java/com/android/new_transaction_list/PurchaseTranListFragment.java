@@ -20,6 +20,7 @@ import com.android.dummy.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.purchase_request.PurchaseBillListFragment;
+import com.android.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -173,7 +174,11 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
 
     @Override
     public void fragmentBecameVisible() {
-
+        if (!isFromPurchaseRequestHome) {
+            if (getUserVisibleHint()) {
+                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+            }
+        }
     }
 
     @SuppressWarnings("WeakerAccess")

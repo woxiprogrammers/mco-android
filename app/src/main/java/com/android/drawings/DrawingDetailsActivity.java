@@ -62,9 +62,9 @@ public class DrawingDetailsActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             imageUrl = bundle.getString("url");
-            drawingVersionId=bundle.getInt("getDrawingImageVersionId");
+            drawingVersionId = bundle.getInt("getDrawingImageVersionId");
         }
-        AppUtils.getInstance().loadImageViaGlide("http://test.mconstruction.co.in" +imageUrl, imageViewPreview,mContext);
+        call(drawingVersionId, imageUrl, true);
 
     }
 
@@ -85,7 +85,7 @@ public class DrawingDetailsActivity extends BaseActivity {
             case R.id.textviewComments:
                 textviewComments.setTextColor(getColor(R.color.colorAccent));
                 textviewVersions.setTextColor(getColor(R.color.black));
-                getFragment();
+                call(drawingVersionId, imageUrl, false);
                 break;
             case R.id.textviewVersions:
                 textviewVersions.setTextColor(getColor(R.color.colorAccent));
@@ -98,9 +98,9 @@ public class DrawingDetailsActivity extends BaseActivity {
     private void openDialogToAddComment() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_add_comment_for_image_drawing, null);
-        Button btnDismiss=dialogView.findViewById(R.id.button_dismiss_drawing_dialog);
-        Button btnAddComment=dialogView.findViewById(R.id.button_assign_drawing_dialog);
-        final EditText editTextAddComment=dialogView.findViewById(R.id.editTextAddComment);
+        Button btnDismiss = dialogView.findViewById(R.id.button_dismiss_drawing_dialog);
+        Button btnAddComment = dialogView.findViewById(R.id.button_assign_drawing_dialog);
+        final EditText editTextAddComment = dialogView.findViewById(R.id.editTextAddComment);
 
         btnDismiss.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,10 +111,10 @@ public class DrawingDetailsActivity extends BaseActivity {
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(editTextAddComment.getText().toString())){
+                if (TextUtils.isEmpty(editTextAddComment.getText().toString())) {
                     editTextAddComment.setError("Please add comment");
                     return;
-                }else {
+                } else {
                     requestToAddComment(editTextAddComment.getText().toString());
                     alert_Dialog.dismiss();
                 }
@@ -125,30 +125,34 @@ public class DrawingDetailsActivity extends BaseActivity {
         alert_Dialog.show();
     }
 
-    private void getFragment() {
-        DrawingCommentFragment drawingCommentFragment = DrawingCommentFragment.newInstance();
+    private void call(int drawingId, String imageUrl, boolean isLoadImage) {
+        if (isLoadImage) {
+            AppUtils.getInstance().loadImageViaGlide("http://test.mconstruction.co.in" + imageUrl, imageViewPreview, mContext);
+        }
+        getFragment(drawingId);
+    }
+
+    private void getFragment(int drawingVersionId) {
+        DrawingCommentFragment drawingCommentFragment = DrawingCommentFragment.newInstance(drawingVersionId);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        Bundle bundleArgs = new Bundle();
-        bundleArgs.putInt("drawingVersionId", drawingVersionId);
-        drawingCommentFragment.setArguments(bundleArgs);
-        fragmentTransaction.replace(R.id.frameLayout, drawingCommentFragment, "Fragment");
+        fragmentTransaction.replace(R.id.frameLayout, drawingCommentFragment, "drawingCommentFragment");
         fragmentTransaction.commit();
 
     }
 
     private void getFragmentVersions() {
-        DrawingVersionsFragment drawingVersionsFragment = DrawingVersionsFragment.newInstance();
+        DrawingVersionsFragment drawingVersionsFragment = DrawingVersionsFragment.newInstance(drawingVersionId);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, drawingVersionsFragment, "Fragment");
+        fragmentTransaction.replace(R.id.frameLayout, drawingVersionsFragment, "drawingVersionsFragment");
         fragmentTransaction.commit();
 
     }
 
-    private void requestToAddComment(String strComment){
-        JSONObject params=new JSONObject();
+    private void requestToAddComment(String strComment) {
+        JSONObject params = new JSONObject();
         try {
-            params.put("drawing_image_version_id",1);
-            params.put("comment",strComment);
+            params.put("drawing_image_version_id", drawingVersionId);
+            params.put("comment", strComment);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -163,6 +167,10 @@ public class DrawingDetailsActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            DrawingCommentFragment drawingCommentFragment = (DrawingCommentFragment) getSupportFragmentManager().findFragmentByTag("drawingCommentFragment");
+                            if (drawingCommentFragment != null) {
+                                drawingCommentFragment.requestToGetComments();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
