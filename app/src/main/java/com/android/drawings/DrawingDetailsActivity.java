@@ -47,6 +47,7 @@ public class DrawingDetailsActivity extends BaseActivity {
     private String imageUrl;
     private Context mContext;
     private AlertDialog alert_Dialog;
+    private int drawingVersionId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class DrawingDetailsActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             imageUrl = bundle.getString("url");
+            drawingVersionId=bundle.getInt("getDrawingImageVersionId");
         }
         AppUtils.getInstance().loadImageViaGlide("http://test.mconstruction.co.in" +imageUrl, imageViewPreview,mContext);
 
@@ -126,6 +128,9 @@ public class DrawingDetailsActivity extends BaseActivity {
     private void getFragment() {
         DrawingCommentFragment drawingCommentFragment = DrawingCommentFragment.newInstance();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        Bundle bundleArgs = new Bundle();
+        bundleArgs.putInt("drawingVersionId", drawingVersionId);
+        drawingCommentFragment.setArguments(bundleArgs);
         fragmentTransaction.replace(R.id.frameLayout, drawingCommentFragment, "Fragment");
         fragmentTransaction.commit();
 

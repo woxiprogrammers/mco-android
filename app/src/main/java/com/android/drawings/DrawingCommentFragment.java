@@ -28,6 +28,9 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -48,6 +51,7 @@ public class DrawingCommentFragment extends Fragment {
     private Unbinder unbinder;
     private Realm realm;
     private Context mContext;
+    private int drawingId;
     public DrawingCommentFragment() {
         // Required empty public constructor
     }
@@ -60,6 +64,10 @@ public class DrawingCommentFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         mContext=getActivity();
         requestToGetComments();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            drawingId = bundle.getInt("drawingVersionId");
+        }
         return view;
     }
 
@@ -77,16 +85,15 @@ public class DrawingCommentFragment extends Fragment {
     }
 
     private void requestToGetComments() {
-        /*final JSONObject params = new JSONObject();
+        final JSONObject params = new JSONObject();
         try {
-            params.put("page", pageId);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("drawing_image_version_id", drawingId);
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
-        AndroidNetworking.get(AppURL.API_DRAWING_COMMENTS_LIST/* + AppUtils.getInstance().getCurrentToken()*/)
-//                .addJSONObjectBody(params)
-//                .addHeaders(AppUtils.getInstance().getApiHeaders())
+        }
+        AndroidNetworking.post(AppURL.API_DRAWING_COMMENTS_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestToGetComments")
                 .build()

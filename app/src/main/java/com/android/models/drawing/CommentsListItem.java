@@ -5,7 +5,7 @@ import io.realm.RealmObject;
 
 public class CommentsListItem extends RealmObject{
 
-	@SerializedName("name")
+	@SerializedName("comment")
 	private String name;
 
 	@SerializedName("id")

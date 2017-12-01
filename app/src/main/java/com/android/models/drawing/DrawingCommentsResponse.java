@@ -9,7 +9,7 @@ public class DrawingCommentsResponse extends RealmObject{
 	@SerializedName("message")
 	private String message;
 
-	@SerializedName("commentsData")
+	@SerializedName("data")
 	private CommentsData commentsData;
 
 	public void setMessage(String message){

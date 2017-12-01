@@ -17,6 +17,7 @@ import com.android.dummy.BillDataItem;
 import com.android.dummy.DummyCheckResponse;
 import com.android.dummy.DummyCheckdata;
 import com.android.dummy.PurchaseOrderBillListingItem;
+import com.android.interfaces.FragmentInterface;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.purchase_request.PurchaseBillListFragment;
 import com.android.utils.AppURL;
@@ -43,7 +44,7 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PurchaseTranListFragment extends Fragment {
+public class PurchaseTranListFragment extends Fragment implements FragmentInterface{
 
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
@@ -170,6 +171,10 @@ public class PurchaseTranListFragment extends Fragment {
                 });
     }
 
+    @Override
+    public void fragmentBecameVisible() {
+
+    }
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseTransAdapter extends RealmRecyclerViewAdapter<PurchaseOrderTransactionListingItem, PurchaseTransAdapter.MyViewHolder> {
