@@ -23,6 +23,7 @@ import com.android.models.purchase_order.PurchaseOrderDetailData;
 import com.android.models.purchase_order.PurchaseOrderMaterialDetailResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -213,6 +214,13 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
                     holder.linearLayoutClientImg.addView(imageView);
+                    final int finalIndex = index;
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openImageZoomFragment("http://test.mconstruction.co.in"+materialsItem.getClientApprovalImages().get(finalIndex).getImageUrl());
+                        }
+                    });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getClientApprovalImages().get(index).getImageUrl(), imageView, getActivity());
 
                 }
@@ -251,4 +259,9 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         }
     }
 
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getActivity().getSupportFragmentManager(), "imageZoomDialogFragment");
+    }
 }

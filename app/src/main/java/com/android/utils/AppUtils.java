@@ -1,5 +1,6 @@
 package com.android.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -327,4 +328,6 @@ public class AppUtils {
         }
         return newDateStr;
     }
+
+
 }
