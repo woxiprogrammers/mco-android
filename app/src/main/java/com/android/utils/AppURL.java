@@ -58,7 +58,7 @@ public class AppURL {
     public static final String API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY = BASE_URL + "purchase/purchase-order/generate-grn?token=";
     public static final String API_PURCHASE_ORDER_PAYMENT_URL = BASE_URL + "purchase/purchase-order/bill-transaction?token=";
     public static final String API_GET_CHECKPOINTS_URL = BASE_URL + "checklist/checkpoint-listing?token=";
-    public static final String API_CHECKLIST_SUBMIT_CHECKPOINT_STATUS = BASE_URL + "";
+    public static final String API_CHECKLIST_SUBMIT_CHECKPOINT_STATUS = BASE_URL + "checklist/save-checkpoint-detail?token=";
     public static final String API_PURCHASE_ORDER_MATERIAL_DETAIL = BASE_URL + "purchase/purchase-order/detail?token=";
     public static final String API_AWARENES_CATEGORY_DATA = BASE_URL + "awareness/get-main-categories?token=";
     public static final String API_AWARENES_SUB_CATEGORY_DATA = BASE_URL + "awareness/get-sub-categories?token=";
@@ -75,4 +75,5 @@ public class AppURL {
     public static final String API_IMAGE_LIST_DRAWING = BASE_URL + "drawing/get-current-version-images?token=";
     public static final String API_DRAWING_COMMENTS_LIST = "http://www.mocky.io/v2/5a1e8d002f0000b622ee2e0a";
     public static final String API_DRAWING_ADD_COMMENT = BASE_URL + "drawing/add-comment?token=";
+    public static final String API_CHECKLIST_CHANGE_STATUS = BASE_URL + "checklist/change-status?token=";
 }

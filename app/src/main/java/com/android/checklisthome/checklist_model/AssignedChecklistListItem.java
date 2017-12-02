@@ -35,6 +35,8 @@ public class AssignedChecklistListItem extends RealmObject {
     private int subCategoryId;
     @SerializedName("assigned_user")
     private int assignedUserId;
+    @SerializedName("checklist_current_status")
+    private String checklistCurrentStatus;
 
     public void setFloorName(String floorName) {
         this.floorName = floorName;
@@ -138,5 +140,13 @@ public class AssignedChecklistListItem extends RealmObject {
 
     public void setAssignedUserId(int assignedUserId) {
         this.assignedUserId = assignedUserId;
+    }
+
+    public String getChecklistCurrentStatus() {
+        return checklistCurrentStatus;
+    }
+
+    public void setChecklistCurrentStatus(String checklistCurrentStatus) {
+        this.checklistCurrentStatus = checklistCurrentStatus;
     }
 }

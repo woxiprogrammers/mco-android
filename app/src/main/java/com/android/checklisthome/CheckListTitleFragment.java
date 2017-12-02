@@ -21,6 +21,7 @@ import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
@@ -46,6 +47,7 @@ public class CheckListTitleFragment extends Fragment {
     private Context mContext;
     private int projectSiteUserChecklistAssignmentId;
     private RealmResults<CheckPointsItem> checkPointsItemRealmResults;
+    public static boolean isCallChangeStatusApi;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -68,8 +70,16 @@ public class CheckListTitleFragment extends Fragment {
         if (bundleArgs != null) {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
         }
-        requestToGetCheckpoints();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        requestToGetCheckpoints();
+        if (isCallChangeStatusApi) {
+            requestToChangeChecklistStatus();
+        }
     }
 
     @Override
@@ -148,6 +158,33 @@ public class CheckListTitleFragment extends Fragment {
                 });
     }
 
+    private void requestToChangeChecklistStatus() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_user_checklist_assignment_id", projectSiteUserChecklistAssignmentId);
+            params.put("checklist_status_slug", "in-progress");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("requestToChangeChecklistStatus")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestToChangeChecklistStatus");
+                    }
+                });
+    }
+
     public class CheckListTitleAdapter extends RealmRecyclerViewAdapter<CheckPointsItem, CheckListTitleAdapter.MyViewHolder> {
         private OrderedRealmCollection<CheckPointsItem> checkPointsItemOrderedRealmCollection;
         private CheckPointsItem checkPointsItem;
@@ -167,6 +204,11 @@ public class CheckListTitleFragment extends Fragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
+            if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                holder.checkboxChecklistTitles.setChecked(true);
+            } else {
+                holder.checkboxChecklistTitles.setChecked(false);
+            }
             holder.textviewDescription.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         }
 

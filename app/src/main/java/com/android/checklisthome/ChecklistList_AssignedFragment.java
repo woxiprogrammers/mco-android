@@ -160,7 +160,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
 
     private void getLatestAssignedCheckLists() {
         realm = Realm.getDefaultInstance();
-        assignedChecklistItemResults = realm.where(AssignedChecklistListItem.class).findAllAsync();
+        assignedChecklistItemResults = realm.where(AssignedChecklistListItem.class).equalTo("checklistCurrentStatus", "assigned").findAllAsync();
         AssignedChecklistListAdapter assignedChecklistListAdapter = new AssignedChecklistListAdapter(assignedChecklistItemResults, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

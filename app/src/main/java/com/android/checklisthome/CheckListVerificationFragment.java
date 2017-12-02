@@ -6,14 +6,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,40 +53,41 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentCheckListVerification extends Fragment {
+public class CheckListVerificationFragment extends Fragment {
     @BindView(R.id.textViewChecklistTitle)
     TextView textViewChecklistTitle;
     @BindView(R.id.linearLayoutChecklistImg)
     LinearLayout linearLayoutChecklistImg;
     @BindView(R.id.editextChecklistRemark)
     EditText editextChecklistRemark;
-    @BindView(R.id.checkBoxOk)
-    CheckBox checkBoxOk;
-    @BindView(R.id.checkBoxNotOk)
-    CheckBox checkBoxNotOk;
-    @BindView(R.id.linearLayoutChecklistOk)
-    LinearLayout linearLayoutChecklistOk;
+    @BindView(R.id.radioButtonOk)
+    RadioButton radioButtonOk;
+    @BindView(R.id.radioButtonNotOk)
+    RadioButton radioButtonNotOk;
+    @BindView(R.id.radioGroupChecklistOk)
+    RadioGroup radioGroupChecklistOk;
     @BindView(R.id.buttonSubmitChecklist)
     Button buttonSubmitChecklist;
     Unbinder unbinder;
-    private File currentImageFile;
     private Context mContext;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
-    private int intCheckPointId;
+    private int projectSiteUserCheckpointId;
     private int intNumberOfImages;
     private ImageView imageViewCapturedImage;
     private String stringCaptionName;
+    private View inflatedView;
+    private boolean isUploadingImages;
 
-    public static FragmentCheckListVerification newInstance(int checkPointId) {
+    public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId) {
         Bundle args = new Bundle();
-        args.putInt("checkPointId", checkPointId);
-        FragmentCheckListVerification fragment = new FragmentCheckListVerification();
+        args.putInt("projectSiteUserCheckpointId", projectSiteUserCheckpointId);
+        CheckListVerificationFragment fragment = new CheckListVerificationFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public FragmentCheckListVerification() {
+    public CheckListVerificationFragment() {
         // Required empty public constructor
     }
 
@@ -96,10 +99,10 @@ public class FragmentCheckListVerification extends Fragment {
         mContext = getActivity();
         Bundle bundleArgs = getArguments();
         if (bundleArgs != null) {
-            intCheckPointId = bundleArgs.getInt("checkPointId");
+            projectSiteUserCheckpointId = bundleArgs.getInt("projectSiteUserCheckpointId");
         }
         realm = Realm.getDefaultInstance();
-        CheckPointsItem checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", intCheckPointId).findFirst();
+        CheckPointsItem checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
         textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
         if (intNumberOfImages > 0) {
@@ -116,17 +119,30 @@ public class FragmentCheckListVerification extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.buttonSubmitChecklist/*, R.id.textViewCaptureChecklist*/})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.buttonSubmitChecklist:
-//                requestToSubmit();
-                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
-                break;
+    private void addCaptionsTemplate(CheckPointsItem checkPointsItem) {
+        linearLayoutChecklistImg.removeAllViews();
+        for (int i = 0; i < intNumberOfImages; i++) {
+            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null);
+            inflatedView.setId(i);
+            TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
+            imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
+            textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
+            textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
+            inflatedView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView textView_captionName = view.findViewById(R.id.textView_captionName);
+                    stringCaptionName = textView_captionName.getHint().toString();
+                    ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
+                    imageViewCapturedImage.setTag(stringCaptionName);
+                    captureImage();
+                }
+            });
+            linearLayoutChecklistImg.addView(inflatedView);
         }
     }
 
-    private void captureImage(String stringCaptionName) {
+    private void captureImage() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
         Params params = new Params();
         params.setCaptureLimit(1);
@@ -134,7 +150,6 @@ public class FragmentCheckListVerification extends Fragment {
         params.setActionButtonColor(R.color.colorAccentDark);
         params.setButtonTextColor(R.color.colorWhite);
         intent.putExtra(Constants.KEY_PARAMS, params);
-        intent.putExtra("stringCaptionName", stringCaptionName);
         startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
@@ -146,21 +161,24 @@ public class FragmentCheckListVerification extends Fragment {
         switch (requestCode) {
             case Constants.TYPE_MULTI_CAPTURE:
                 ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                String stringCaptionName = intent.getStringExtra("stringCaptionName");
-                Timber.d(stringCaptionName);
                 for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
+                        File currentImageFile = new File(currentImage.imagePath);
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        if (imageViewCapturedImage != null) {
-                            imageViewCapturedImage.setImageBitmap(myBitmap);
-                            uploadImageFileToServer(currentImageFile);
-                            imageViewCapturedImage.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                        for (int i = 0; i < linearLayoutChecklistImg.getChildCount(); i++) {
+                            inflatedView = linearLayoutChecklistImg.getChildAt(i);
+                            imageViewCapturedImage = inflatedView.findViewWithTag(stringCaptionName);
+                            if (imageViewCapturedImage != null) {
+                                imageViewCapturedImage.setImageBitmap(myBitmap);
+                                uploadImageFileToServer(currentImageFile);
+                                imageViewCapturedImage.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                break;
+                            }
                         }
                     }
                 }
@@ -169,6 +187,7 @@ public class FragmentCheckListVerification extends Fragment {
     }
 
     private void uploadImageFileToServer(File currentImage) {
+        isUploadingImages = true;
         File compressedImageFile = currentImage;
         try {
             compressedImageFile = new Compressor(mContext).compressToFile(currentImage);
@@ -178,7 +197,7 @@ public class FragmentCheckListVerification extends Fragment {
         AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addMultipartFile("image", compressedImageFile)
-                .addMultipartParameter("image_for", "")
+                .addMultipartParameter("image_for", "checklist_checkpoint")
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("uploadImageFileToServer")
                 .setPercentageThresholdForCancelling(50)
@@ -186,9 +205,15 @@ public class FragmentCheckListVerification extends Fragment {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
                         try {
+                            isUploadingImages = false;
                             String fileName = response.getString("filename");
-                            jsonImageNameArray.put(fileName);
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("project_site_checklist_checkpoint_image_id", stringCaptionName);
+                            jsonObject.put("image", fileName);
+                            jsonImageNameArray.put(jsonObject);
+                            Timber.d(stringCaptionName);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -201,19 +226,46 @@ public class FragmentCheckListVerification extends Fragment {
                 });
     }
 
-    private void requestToSubmit() {
+    @OnClick({R.id.buttonSubmitChecklist})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.buttonSubmitChecklist:
+                submitCheckpointDetails();
+                break;
+        }
+    }
+
+    private void submitCheckpointDetails() {
+        if (isUploadingImages) {
+            Toast.makeText(mContext, "Please wait, uploading image.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (jsonImageNameArray.length() != intNumberOfImages) {
+            Toast.makeText(mContext, "Please upload all images", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        boolean isOk = false;
+        if (radioGroupChecklistOk.getCheckedRadioButtonId() == R.id.radioButtonOk) {
+            isOk = true;
+        } else if (radioGroupChecklistOk.getCheckedRadioButtonId() == R.id.radioButtonNotOk) {
+            isOk = false;
+        }
         JSONObject params = new JSONObject();
         try {
-            //ToDo Add Params keys........................
-            params.put("", "");
-            params.put("", "");
-            params.put("", "");
+            params.put("project_site_user_checkpoint_id", projectSiteUserCheckpointId);
+            params.put("is_ok", isOk);
+            if (TextUtils.isEmpty(editextChecklistRemark.getText())) {
+                params.put("remark", "");
+            } else {
+                params.put("remark", editextChecklistRemark.getText().toString());
+            }
+            params.put("images", jsonImageNameArray);
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //ToDo Add API URL...............................
         AndroidNetworking.post(AppURL.API_CHECKLIST_SUBMIT_CHECKPOINT_STATUS + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToSubmit")
+                .setTag("submitCheckpointDetails")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
@@ -221,8 +273,11 @@ public class FragmentCheckListVerification extends Fragment {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            CheckListTitleFragment.isCallChangeStatusApi = true;
+                            getActivity().onBackPressed();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -230,28 +285,8 @@ public class FragmentCheckListVerification extends Fragment {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
+                        AppUtils.getInstance().logApiError(anError, "submitCheckpointDetails");
                     }
                 });
-    }
-
-    private void addCaptionsTemplate(CheckPointsItem checkPointsItem) {
-        linearLayoutChecklistImg.removeAllViews();
-        for (int i = 0; i < intNumberOfImages; i++) {
-            View inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null);
-            inflatedView.setId(i);
-            TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
-            imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
-            stringCaptionName = checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption();
-            textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
-            textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
-            inflatedView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    captureImage(stringCaptionName);
-                }
-            });
-            linearLayoutChecklistImg.addView(inflatedView);
-        }
     }
 }
