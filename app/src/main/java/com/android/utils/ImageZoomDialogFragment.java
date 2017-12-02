@@ -96,8 +96,8 @@ public class ImageZoomDialogFragment extends DialogFragment {
                 .crossFade()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .placeholder(R.drawable.ic__arrow_down_24)
-//                .error(R.drawable.logo_agrosiaa)
+                .placeholder(R.mipmap.ic_launcher_round)
+                .error(R.mipmap.ic_launcher_round)
                 .into(mIvAccountImage);
         return mParentView;
     }

@@ -36,6 +36,7 @@ import com.android.peticashautosearchemployee.EmployeesearchdataItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -307,7 +308,7 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     //Purchase
-    @OnClick({R.id.button_generate_grn, R.id.button_pay_with_peticash})
+    @OnClick({R.id.button_generate_grn, R.id.button_pay_with_peticash,R.id.imageViewProfilePicture})
     public void onViewImageClicked(View view) {
         switch (view.getId()) {
             case R.id.button_generate_grn:
@@ -315,6 +316,9 @@ public class PeticashFormActivity extends BaseActivity {
                 break;
             case R.id.button_pay_with_peticash:
                 uploadImages_addItemToLocal("billPayment","peticash_purchase_payment_transaction");
+                break;
+            case R.id.imageViewProfilePicture:
+                openImageZoomFragment("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture());
                 break;
         }
     }
@@ -350,6 +354,11 @@ public class PeticashFormActivity extends BaseActivity {
         employeeTransactionFragment.show(getSupportFragmentManager(), "Transactions");
     }
 
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+    }
     private void initializeviews() {
         myCalendar = Calendar.getInstance();
 
