@@ -125,10 +125,8 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         try {
             if(isFromPurchaseRequestHome){
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-
             }else {
                 params.put("purchase_order_id", intPrimaryKey);
-
             }
             params.put("page", 0);
         } catch (JSONException e) {

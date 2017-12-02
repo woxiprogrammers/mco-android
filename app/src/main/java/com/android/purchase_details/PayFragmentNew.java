@@ -319,7 +319,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-        uploadImages_addItemToLocal("requestToPayment", "post_grn_bill_transaction");
+        uploadImages_addItemToLocal("requestToPayment", "bill_transaction");
     }
 
     //////////////API Calls///////////////////
@@ -651,7 +651,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void setData(boolean isFromClick) {
         if (isFromClick) {
             linearLayoutFirstLayout.setVisibility(View.GONE);
+            linearLayoutToVisible.setVisibility(View.GONE);
             layout.setVisibility(View.VISIBLE);
+            nestedScrollView.setVisibility(View.VISIBLE);
             realm = Realm.getDefaultInstance();
             purchaseBIllDetailsItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("grn", PayAndBillsActivity.idForBillItem).findFirst();
             if (purchaseBIllDetailsItems != null) {
@@ -663,6 +665,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 editTextSetInTime.setText(purchaseBIllDetailsItems.getInTime());
                 editextSetTransRemark.setText(purchaseBIllDetailsItems.getRemark());
                 llSetMatImg.removeAllViews();
+                linearLayoutSetPaymentImageLayout.removeAllViews();
                 for (int i = 0; i < purchaseBIllDetailsItems.getImages().size(); i++) {
                     if(purchaseBIllDetailsItems.getImages().get(i).getImage_status().equalsIgnoreCase("Pre-GRN")){
                         loadImage(purchaseBIllDetailsItems.getImages().get(i).getImageUrl(), llSetMatImg);
@@ -673,11 +676,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     }
                 }
                 setViewData();
-                /*if (purchaseBIllDetailsItems.getBillData().get(0).getImages().size() > 0) {
-                    for (int index = 0; index < purchaseBIllDetailsItems.getBillData().get(0).getImages().size(); index++) {
-                        loadImage(purchaseBIllDetailsItems.getBillData().get(0).getImages().get(index).getImageUrl(),llSetMatImg);
-                    }
-                }*/
             } else {
                 linearLayoutFirstLayout.setVisibility(View.VISIBLE);
                 layout.setVisibility(View.GONE);
