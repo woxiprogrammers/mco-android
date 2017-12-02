@@ -55,8 +55,8 @@
         <com.github.lzyzsd.circleprogress.CircleProgress
             xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/circle_progress_checklist_assigned"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dimen_8dp"
             custom:circle_finished_color="@color/colorAccent"

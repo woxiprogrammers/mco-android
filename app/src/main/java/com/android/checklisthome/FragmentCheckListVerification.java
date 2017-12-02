@@ -67,17 +67,14 @@ public class FragmentCheckListVerification extends Fragment {
     @BindView(R.id.buttonSubmitChecklist)
     Button buttonSubmitChecklist;
     Unbinder unbinder;
-    @BindView(R.id.linearlayoutCheckImage)
-    LinearLayout linearlayoutCheckImage;
     private File currentImageFile;
     private Context mContext;
-    private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
     private int intCheckPointId;
-    private View inflatedView = null;
-    int intNumberOfImages;
-    private TextView capture;
+    private int intNumberOfImages;
+    private ImageView imageViewCapturedImage;
+    private String stringCaptionName;
 
     public static FragmentCheckListVerification newInstance(int checkPointId) {
         Bundle args = new Bundle();
@@ -106,7 +103,7 @@ public class FragmentCheckListVerification extends Fragment {
         textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
         if (intNumberOfImages > 0) {
-            addCaptions();
+            addCaptionsTemplate(checkPointsItem);
         } else {
             linearLayoutChecklistImg.setVisibility(View.GONE);
         }
@@ -123,15 +120,13 @@ public class FragmentCheckListVerification extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.buttonSubmitChecklist:
+//                requestToSubmit();
                 Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
                 break;
-            /*case R.id.textViewCaptureChecklist:
-                captureImage();
-                break;*/
         }
     }
 
-    private void captureImage() {
+    private void captureImage(String stringCaptionName) {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
         Params params = new Params();
         params.setCaptureLimit(1);
@@ -139,6 +134,7 @@ public class FragmentCheckListVerification extends Fragment {
         params.setActionButtonColor(R.color.colorAccentDark);
         params.setButtonTextColor(R.color.colorWhite);
         intent.putExtra(Constants.KEY_PARAMS, params);
+        intent.putExtra("stringCaptionName", stringCaptionName);
         startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
@@ -150,29 +146,59 @@ public class FragmentCheckListVerification extends Fragment {
         switch (requestCode) {
             case Constants.TYPE_MULTI_CAPTURE:
                 ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                linearlayoutCheckImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
+                String stringCaptionName = intent.getStringExtra("stringCaptionName");
+                Timber.d(stringCaptionName);
                 for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        linearlayoutCheckImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        if (imageViewCapturedImage != null) {
+                            imageViewCapturedImage.setImageBitmap(myBitmap);
+                            uploadImageFileToServer(currentImageFile);
+                            imageViewCapturedImage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
                 }
                 break;
         }
+    }
+
+    private void uploadImageFileToServer(File currentImage) {
+        File compressedImageFile = currentImage;
+        try {
+            compressedImageFile = new Compressor(mContext).compressToFile(currentImage);
+        } catch (IOException e) {
+            Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+        }
+        AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addMultipartFile("image", compressedImageFile)
+                .addMultipartParameter("image_for", "")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("uploadImageFileToServer")
+                .setPercentageThresholdForCancelling(50)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String fileName = response.getString("filename");
+                            jsonImageNameArray.put(fileName);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "uploadImageFileToServer");
+                    }
+                });
     }
 
     private void requestToSubmit() {
@@ -209,57 +235,20 @@ public class FragmentCheckListVerification extends Fragment {
                 });
     }
 
-    private void uploadImages_addItemToLocal() {
-        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
-            File sendImageFile = arrayImageFileList.get(0);
-            File compressedImageFile = sendImageFile;
-            try {
-                compressedImageFile = new Compressor(mContext).compressToFile(sendImageFile);
-            } catch (IOException e) {
-                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
-            }
-            String strToken = AppUtils.getInstance().getCurrentToken();
-            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
-                    .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "")//ToDo Sharvari Add Image for
-                    .addHeaders(AppUtils.getInstance().getApiHeaders())
-                    .setTag("uploadImages_addItemToLocal")
-                    .setPercentageThresholdForCancelling(50)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                String fileName = response.getString("filename");
-                                jsonImageNameArray.put(fileName);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            arrayImageFileList.remove(0);
-                            uploadImages_addItemToLocal();
-                        }
-
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
-                        }
-                    });
-        } else {
-            requestToSubmit();
-        }
-    }
-
-    private void addCaptions() {
+    private void addCaptionsTemplate(CheckPointsItem checkPointsItem) {
         linearLayoutChecklistImg.removeAllViews();
-        for (int i = 1; i < intNumberOfImages; i++) {
-            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null);
+        for (int i = 0; i < intNumberOfImages; i++) {
+            View inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null);
             inflatedView.setId(i);
-            capture = (TextView) inflatedView;
-            capture.setOnClickListener(new View.OnClickListener() {
+            TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
+            imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
+            stringCaptionName = checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption();
+            textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
+            textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
+            inflatedView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    captureImage();
+                    captureImage(stringCaptionName);
                 }
             });
             linearLayoutChecklistImg.addView(inflatedView);
