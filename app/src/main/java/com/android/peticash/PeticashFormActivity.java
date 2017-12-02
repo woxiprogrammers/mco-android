@@ -131,17 +131,9 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.frameLayout_UnitSpinner)
     FrameLayout frameLayoutUnitSpinner;
 
-    @BindView(R.id.editText_Date)
-    EditText editTextDate;
 
-    @BindView(R.id.edit_text_inTime)
-    EditText editTextInTime;
 
-    @BindView(R.id.edit_text_outTime)
-    EditText editTextOutTime;
 
-    @BindView(R.id.ll_forSupplierInOutTime)
-    LinearLayout llForSupplierInOutTime;
 
     @BindView(R.id.edit_text_BillNumber)
     EditText editTextBillNumber;
@@ -188,9 +180,6 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.button_pay_with_peticash)
     Button buttonPayWithPeticash;
 
-    @BindView(R.id.editText_salary_date)
-    EditText editTextSalaryDate;
-
     @BindView(R.id.editText_addtonoteforsalary)
     EditText editTextAddtonoteforsalary;
 
@@ -206,8 +195,7 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.textView_captureSalaryImage)
     TextView textViewCaptureSalaryImage;
 
-    @BindView(R.id.textView_pickSalaryImage)
-    TextView textViewPickSalaryImage;
+
 
     @BindView(R.id.imageviewEmpTransactions)
     ImageView imageviewEmpTransactions;
@@ -215,8 +203,7 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.textViewCapturFirst)
     TextView textViewCapturFirst;
 
-    @BindView(R.id.textViewPickFirst)
-    TextView textViewPickFirst;
+
 
     @BindView(R.id.layout_capture)
     LinearLayout layoutCapture;
@@ -230,8 +217,7 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.textViewCapturSecond)
     TextView textViewCapturSecond;
 
-    @BindView(R.id.textViewPickSecond)
-    TextView textViewPickSecond;
+
 
     @BindView(R.id.linearLayoutUploadImage)
     LinearLayout linearLayoutUploadImage;
@@ -335,15 +321,6 @@ public class PeticashFormActivity extends BaseActivity {
         startActivityForResult(intent, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE);
     }
 
-    @OnClick(R.id.editText_salary_date)
-    public void selectSalaryDate() {
-        setInOutDate(editTextSalaryDate);
-    }
-
-    @OnClick(R.id.editText_Date)
-    public void dateForPurchaseCreate() {
-        setInOutDate(editTextDate);
-    }
 
     @OnClick(R.id.imageviewEmpTransactions)
     public void transactionClicked() {
@@ -422,7 +399,6 @@ public class PeticashFormActivity extends BaseActivity {
                     //For Client
                     case 0:
                         linerLayoutSelectedNames_PC.setVisibility(View.VISIBLE);
-                        llForSupplierInOutTime.setVisibility(View.GONE);
                         llForSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.client_name);
                         textViewSelectedName.setText(getString(R.string.client_name));
@@ -430,7 +406,6 @@ public class PeticashFormActivity extends BaseActivity {
                     //For By Hand
                     case 1:
                         linerLayoutSelectedNames_PC.setVisibility(View.VISIBLE);
-                        llForSupplierInOutTime.setVisibility(View.GONE);
                         llForSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.shop_name);
                         textViewSelectedName.setText(getString(R.string.shop_name));
@@ -438,13 +413,12 @@ public class PeticashFormActivity extends BaseActivity {
                     //For Office
                     case 2:
                         linerLayoutSelectedNames_PC.setVisibility(View.GONE);
-                        llForSupplierInOutTime.setVisibility(View.GONE);
                         llForSupplierVehicle.setVisibility(View.GONE);
                         break;
                     //For Supplier
                     case 3:
                         linerLayoutSelectedNames_PC.setVisibility(View.VISIBLE);
-                        llForSupplierInOutTime.setVisibility(View.VISIBLE);
+
                         llForSupplierVehicle.setVisibility(View.VISIBLE);
                         textViewSelectedName.setText(getString(R.string.supplier_name));
                         str = getString(R.string.supplier_name);
@@ -541,7 +515,6 @@ public class PeticashFormActivity extends BaseActivity {
         strItemQuantity = edittextQuantity.getText().toString();
         strBillNumber = editTextBillNumber.getText().toString();
         strBillAmount = editTextBillamount.getText().toString();
-        strDate = editTextDate.getText().toString();
         //For SelectedSourceName
         if (!(spinnerPeticashSource.getSelectedItemPosition() == 2)) {
             if (TextUtils.isEmpty(strSelectedSource)) {
@@ -575,15 +548,6 @@ public class PeticashFormActivity extends BaseActivity {
             edittextQuantity.setError(null);
             edittextQuantity.clearFocus();
         }
-        if (TextUtils.isEmpty(strDate)) {
-            editTextDate.setFocusableInTouchMode(true);
-            editTextDate.requestFocus();
-            editTextDate.setError(getString(R.string.please_enter) + getString(R.string.date));
-            return;
-        } else {
-            editTextDate.setError(null);
-            editTextDate.clearFocus();
-        }
         if (TextUtils.isEmpty(strBillNumber)) {
             editTextBillNumber.setFocusableInTouchMode(true);
             editTextBillNumber.requestFocus();
@@ -609,7 +573,6 @@ public class PeticashFormActivity extends BaseActivity {
     private void validationForSalaryAdvance() {
 //
         strEmployeeIDOrName = editTextEmpIdName.getText().toString();
-        strSalaryDate = editTextSalaryDate.getText().toString();
         strSalaryAmount = editTextSalaryAmount.getText().toString();
         strTotalDays = edittextDay.getText().toString();
         if (TextUtils.isEmpty(strEmployeeIDOrName)) {
@@ -620,15 +583,6 @@ public class PeticashFormActivity extends BaseActivity {
         } else {
             editTextEmpIdName.setError(null);
             editTextEmpIdName.clearFocus();
-        }
-        if (TextUtils.isEmpty(strSalaryDate)) {
-            editTextSalaryDate.setFocusableInTouchMode(true);
-            editTextSalaryDate.requestFocus();
-            editTextSalaryDate.setError(getString(R.string.please_enter) + " " + getString(R.string.date));
-            return;
-        } else {
-            editTextSalaryDate.setError(null);
-            editTextSalaryDate.clearFocus();
         }
         if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
             if (TextUtils.isEmpty(strTotalDays)) {
@@ -733,7 +687,8 @@ public class PeticashFormActivity extends BaseActivity {
         try {
             params.put("employee_id", primaryKey);
             params.put("type", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
-            params.put("date", editTextSalaryDate.getText().toString());
+            //ToDo Sharvari date
+//            params.put("date", editTextSalaryDate.getText().toString());
             params.put("amount", editTextSalaryAmount.getText().toString());
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
@@ -812,15 +767,17 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("component_type_id", searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
             }
 
-            params.put("date", editTextDate.getText().toString());
+            //ToDo Sharvari
+//            params.put("date", editTextDate.getText().toString());
             params.put("bill_number", editTextBillNumber.getText().toString());
             params.put("bill_amount", editTextBillamount.getText().toString());
 //            params.put("", editTextAddNote.getText().toString());
             params.put("images", jsonImageNameArray);
 
             if (spinnerPeticashSource.getSelectedItem().toString().equalsIgnoreCase("Supplier")) {
-                params.put("in_time", editTextDate.getText().toString() + " " + editTextInTime.getText().toString());
-                params.put("out_time", editTextDate.getText().toString() + " " + editTextOutTime.getText().toString());
+                //ToDo Sharvari
+//                params.put("in_time", editTextDate.getText().toString() + " " + editTextInTime.getText().toString());
+//                params.put("out_time", editTextDate.getText().toString() + " " + editTextOutTime.getText().toString());
                 params.put("vehicle_number", editTextVehicleNumber.getText().toString());
             }
 
@@ -898,45 +855,33 @@ public class PeticashFormActivity extends BaseActivity {
 
     /////////////////////////Images Part/////////////////////////////
 
-    @OnClick({R.id.textViewCapturFirst, R.id.textViewPickFirst})
+    @OnClick(R.id.textViewCapturFirst)
     public void onFirstCapClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCapturFirst:
                 flagForLayout = "firstcapture";
                 captureImage();
                 break;
-            case R.id.textViewPickFirst:
-                flagForLayout = "firstcapture";
-                pickImage();
-                break;
         }
     }
 
-    @OnClick({R.id.textViewCapturSecond, R.id.textViewPickSecond})
+    @OnClick(R.id.textViewCapturSecond)
     public void onSecondCaptureClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCapturSecond:
                 flagForLayout = "secondcapture";
                 captureImage();
                 break;
-            case R.id.textViewPickSecond:
-                flagForLayout = "secondcapture";
-                pickImage();
-                break;
         }
     }
 
-    @OnClick({R.id.textView_captureSalaryImage, R.id.textView_pickSalaryImage})
+    @OnClick(R.id.textView_captureSalaryImage)
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
             case R.id.textView_captureSalaryImage:
                 flagForLayout = "salarycapture";
                 captureImage();
-                break;
-            case R.id.textView_pickSalaryImage:
-                flagForLayout = "salarycapture";
-                pickImage();
                 break;
         }
     }
@@ -952,17 +897,6 @@ public class PeticashFormActivity extends BaseActivity {
         startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
-    private void pickImage() {
-        Intent intent1 = new Intent(mContext, GalleryActivity.class);
-        Params params1 = new Params();
-        params1.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params1.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params1.setToolbarColor(R.color.colorPrimaryLight);
-        params1.setActionButtonColor(R.color.colorAccentDark);
-        params1.setButtonTextColor(R.color.colorWhite);
-        intent1.putExtra(Constants.KEY_PARAMS, params1);
-        startActivityForResult(intent1, Constants.TYPE_MULTI_PICKER);
-    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -984,19 +918,7 @@ public class PeticashFormActivity extends BaseActivity {
 
                 }
                 break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                if (flagForLayout.equalsIgnoreCase("firstcapture")) {
-                    onActivityResultForImage(linearLayoutUploadImage, imagesList2);
 
-                } else if (flagForLayout.equalsIgnoreCase("secondcapture")) {
-                    onActivityResultForImage(linearLayoutUploadBillImage, imagesList2);
-
-                } else if (flagForLayout.equalsIgnoreCase("salarycapture")) {
-                    onActivityResultForImage(linearLayoutUploadImageSalary, imagesList2);
-
-                }
-                break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
                 functionToSetEmployeeInfo(intent);
                 break;
@@ -1124,33 +1046,19 @@ public class PeticashFormActivity extends BaseActivity {
         mTimePicker.show();
     }
 
-    @OnClick({R.id.edit_text_inTime, R.id.edit_text_outTime})
-    public void onViewClickediNoUTtIME(View view) {
-        switch (view.getId()) {
-            case R.id.edit_text_inTime:
-                setInOutTime(editTextInTime);
-                break;
-            case R.id.edit_text_outTime:
-                setInOutTime(editTextOutTime);
-                break;
-        }
-    }
+
 
     private void setEnabledFalse() {
         spinnerCategoryArray.setEnabled(false);
         spinnerMaterialOrAsset.setEnabled(false);
         spinnerPeticashSource.setEnabled(false);
-        editTextDate.setEnabled(false);
         edittextQuantity.setEnabled(false);
         spinnerSelectUnits.setEnabled(false);
         editTextBillamount.setEnabled(false);
         editTextBillNumber.setEnabled(false);
-        editTextInTime.setEnabled(false);
-        editTextOutTime.setEnabled(false);
         editTextVehicleNumber.setEnabled(false);
         editTextItemName.setEnabled(false);
         textViewCapturFirst.setEnabled(false);
-        textViewPickFirst.setEnabled(false);
         editTextAddNote.setEnabled(false);
 
         /////////////
