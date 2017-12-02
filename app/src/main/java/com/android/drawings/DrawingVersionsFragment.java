@@ -30,6 +30,8 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -88,6 +90,8 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
         final JSONObject params = new JSONObject();
         try {
             params.put("image_id", drawingId);
+            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
+            params.put("sub_category_id",10);
             Log.i("@SP", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -116,7 +120,6 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
                                 @Override
                                 public void onSuccess() {
                                     setUpVersionAdapter();
-
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -151,7 +154,14 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        String s="";
                         Toast.makeText(mContext,versionsItemRealmResults.get(position).getTitle(),Toast.LENGTH_LONG).show();
+                        try {
+                           s =java.net.URLEncoder.encode(versionsItemRealmResults.get(position).getName(), "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        ((DrawingDetailsActivity)mContext).call(versionsItemRealmResults.get(position).getId(),"http://test.mconstruction.co.in/uploads/admindata/drawing/da4b9237bacccdf19c0760cab7aec4a8359010b0/b1d5781111d84f7b3fe45a0852e59758cd7a87e5/"+s,true);
 
                     }
 

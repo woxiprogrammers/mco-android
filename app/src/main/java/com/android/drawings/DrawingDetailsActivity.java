@@ -21,6 +21,7 @@ import com.android.constro360.R;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -127,7 +128,7 @@ public class DrawingDetailsActivity extends BaseActivity {
         alert_Dialog.show();
     }
 
-    private void call(int drawingId, String imageUrl, boolean isLoadImage) {
+    public void call(int drawingId, String imageUrl, boolean isLoadImage) {
         if (isLoadImage) {
             AppUtils.getInstance().loadImageViaGlide(imageUrl, imageViewPreview, mContext);
         }
@@ -183,5 +184,12 @@ public class DrawingDetailsActivity extends BaseActivity {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
+    }
+
+
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
     }
 }
