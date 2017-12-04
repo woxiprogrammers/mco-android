@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.android.checklisthome.checklist_model.AssignedChecklistListItem;
 import com.android.checklisthome.checklist_model.AssignedChecklistResponse;
+import com.android.checklisthome.checklist_model.ChecklistListItem;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -48,7 +48,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
     Button mBtnCheckListAssignNew;
     @BindView(R.id.recyclerView_checkList_assigned)
     RecyclerView mRecyclerViewCheckListAssigned;
-    private RealmResults<AssignedChecklistListItem> assignedChecklistItemResults;
+    private RealmResults<ChecklistListItem> checklistItemResults;
     Unbinder unbinder;
 
     public ChecklistList_AssignedFragment() {
@@ -61,8 +61,12 @@ public class ChecklistList_AssignedFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_checklist_list_assigned, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
-        requestToGetAssignCheckedListData();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -84,20 +88,6 @@ public class ChecklistList_AssignedFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    @OnClick(R.id.btn_checkList_assignNew)
-    public void onViewClicked() {
-        AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = AssignNewCheckListDialogFragment.newInstance();
-        assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
-            @Override
-            public void onAssignClickListener() {
-                requestToGetAssignCheckedListData();
-            }
-        });
-        assignNewCheckListDialogFragment.show(getActivity().getSupportFragmentManager(), "assignNewCheckListDialogFragment");
-//        startActivity(new Intent(mContext, CheckListActionActivity.class));
-//        ((ChecklistHomeActivity) getActivity()).moveToScreenNumber(1);
     }
 
     private void requestToGetAssignCheckedListData() {
@@ -126,7 +116,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(AssignedChecklistListItem.class);
+                                    realm.delete(ChecklistListItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -160,8 +150,8 @@ public class ChecklistList_AssignedFragment extends Fragment {
 
     private void getLatestAssignedCheckLists() {
         realm = Realm.getDefaultInstance();
-        assignedChecklistItemResults = realm.where(AssignedChecklistListItem.class).equalTo("checklistCurrentStatus", "assigned").findAllAsync();
-        AssignedChecklistListAdapter assignedChecklistListAdapter = new AssignedChecklistListAdapter(assignedChecklistItemResults, true, true);
+        checklistItemResults = realm.where(ChecklistListItem.class).equalTo("checklistCurrentStatus", "assigned").findAllAsync();
+        AssignedChecklistListAdapter assignedChecklistListAdapter = new AssignedChecklistListAdapter(checklistItemResults, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerViewCheckListAssigned.setLayoutManager(linearLayoutManager);
@@ -171,7 +161,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intentAction = new Intent(mContext, CheckListActionActivity.class);
-                intentAction.putExtra("projectSiteUserChecklistAssignmentId", assignedChecklistItemResults.get(position).getProjectSiteUserChecklistAssignmentId());
+                intentAction.putExtra("projectSiteUserChecklistAssignmentId", checklistItemResults.get(position).getProjectSiteUserChecklistAssignmentId());
                 startActivity(intentAction);
             }
 
@@ -181,11 +171,11 @@ public class ChecklistList_AssignedFragment extends Fragment {
         }));
     }
 
-    public class AssignedChecklistListAdapter extends RealmRecyclerViewAdapter<AssignedChecklistListItem,
+    public class AssignedChecklistListAdapter extends RealmRecyclerViewAdapter<ChecklistListItem,
             AssignedChecklistListAdapter.MyViewHolder> {
-        private OrderedRealmCollection<AssignedChecklistListItem> assignedChecklistListItems;
+        private OrderedRealmCollection<ChecklistListItem> assignedChecklistListItems;
 
-        AssignedChecklistListAdapter(@Nullable OrderedRealmCollection<AssignedChecklistListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        AssignedChecklistListAdapter(@Nullable OrderedRealmCollection<ChecklistListItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             setHasStableIds(true);
             assignedChecklistListItems = data;
@@ -199,7 +189,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            AssignedChecklistListItem assignedChecklistListItem = assignedChecklistListItems.get(position);
+            ChecklistListItem assignedChecklistListItem = assignedChecklistListItems.get(position);
             holder.textViewAssignedUserName.setText(assignedChecklistListItem.getAssignedUserName());
             holder.textviewFloorName.setText(assignedChecklistListItem.getFloorName());
             holder.textviewSubCategoryName.setText(assignedChecklistListItem.getSubCategoryName());
@@ -235,5 +225,17 @@ public class ChecklistList_AssignedFragment extends Fragment {
                 ButterKnife.bind(this, itemView);
             }
         }
+    }
+
+    @OnClick(R.id.btn_checkList_assignNew)
+    public void onViewClicked() {
+        AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = AssignNewCheckListDialogFragment.newInstance();
+        assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
+            @Override
+            public void onAssignClickListener() {
+                requestToGetAssignCheckedListData();
+            }
+        });
+        assignNewCheckListDialogFragment.show(getActivity().getSupportFragmentManager(), "assignNewCheckListDialogFragment");
     }
 }

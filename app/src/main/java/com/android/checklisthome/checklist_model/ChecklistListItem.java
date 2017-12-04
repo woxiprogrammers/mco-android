@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class AssignedChecklistListItem extends RealmObject {
+public class ChecklistListItem extends RealmObject {
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("floor_name")
     private String floorName;
