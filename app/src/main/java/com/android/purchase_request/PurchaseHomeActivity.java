@@ -23,10 +23,8 @@ import java.text.DateFormatSymbols;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.Realm;
 
-public class PurchaseHomeActivity extends BaseActivity implements FragmentInterface {
-    //    public static int passYear, passMonth;
+public class PurchaseHomeActivity extends BaseActivity {
     @BindView(R.id.tavLayout)
     TabLayout mTabLayout_purchaseHome;
     @BindView(R.id.homeViewPager)
@@ -131,11 +129,6 @@ public class PurchaseHomeActivity extends BaseActivity implements FragmentInterf
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void fragmentBecameVisible() {
-
     }
 
     class PurchaseHomeViewPagerAdapter extends FragmentStatePagerAdapter {

@@ -16,6 +16,13 @@ public class ChecklistList_CompleteFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static ChecklistList_CompleteFragment newInstance() {
+        Bundle args = new Bundle();
+        ChecklistList_CompleteFragment fragment = new ChecklistList_CompleteFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -23,10 +30,10 @@ public class ChecklistList_CompleteFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_checklist_list_complete, container, false);
     }
 
-    public static ChecklistList_CompleteFragment newInstance() {
-        Bundle args = new Bundle();
-        ChecklistList_CompleteFragment fragment = new ChecklistList_CompleteFragment();
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+        }
     }
 }

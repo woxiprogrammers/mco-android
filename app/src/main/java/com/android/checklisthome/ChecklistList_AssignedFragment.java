@@ -64,9 +64,23 @@ public class ChecklistList_AssignedFragment extends Fragment {
         return view;
     }
 
+    private boolean notFirstTime;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && notFirstTime) {
+            requestToGetAssignCheckedListData();
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        notFirstTime = true;
+        if (getUserVisibleHint()) {
+            requestToGetAssignCheckedListData();
+        }
     }
 
     @Override
@@ -98,7 +112,6 @@ public class ChecklistList_AssignedFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Timber.d(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken());
         AndroidNetworking.post(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -117,6 +130,11 @@ public class ChecklistList_AssignedFragment extends Fragment {
                                 @Override
                                 public void execute(Realm realm) {
                                     realm.delete(ChecklistListItem.class);
+                                    try {
+                                        Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {

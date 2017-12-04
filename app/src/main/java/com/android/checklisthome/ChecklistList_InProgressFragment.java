@@ -57,8 +57,26 @@ public class ChecklistList_InProgressFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_checklist_list_in_progress, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
-        requestToGetInProgressCheckList();
         return view;
+    }
+
+    private boolean notFirstTime;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && notFirstTime) {
+            requestToGetInProgressCheckList();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        notFirstTime = true;
+        if (getUserVisibleHint()) {
+            requestToGetInProgressCheckList();
+        }
     }
 
     @Override
@@ -90,7 +108,6 @@ public class ChecklistList_InProgressFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Timber.d(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken());
         AndroidNetworking.post(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -109,6 +126,11 @@ public class ChecklistList_InProgressFragment extends Fragment {
                                 @Override
                                 public void execute(Realm realm) {
                                     realm.delete(ChecklistListItem.class);
+                                    try {
+                                        Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -118,7 +140,7 @@ public class ChecklistList_InProgressFragment extends Fragment {
                                         oldPageNumber = pageNumber;
                                         requestAssetListOnline(pageNumber);
                                     }*/
-                                    getLatestAssignedCheckLists();
+                                    getLatestCheckLists();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -140,14 +162,14 @@ public class ChecklistList_InProgressFragment extends Fragment {
                 });
     }
 
-    private void getLatestAssignedCheckLists() {
+    private void getLatestCheckLists() {
         realm = Realm.getDefaultInstance();
         checklistItemResults = realm.where(ChecklistListItem.class).equalTo("checklistCurrentStatus", "in-progress").findAllAsync();
-        AssignedChecklistListAdapter assignedChecklistListAdapter = new AssignedChecklistListAdapter(checklistItemResults, true, true);
+        ChecklistListAdapter checklistListAdapter = new ChecklistListAdapter(checklistItemResults, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerViewCheckListInProgress.setLayoutManager(linearLayoutManager);
-        mRecyclerViewCheckListInProgress.setAdapter(assignedChecklistListAdapter);
+        mRecyclerViewCheckListInProgress.setAdapter(checklistListAdapter);
         mRecyclerViewCheckListInProgress.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 mRecyclerViewCheckListInProgress, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
@@ -163,11 +185,11 @@ public class ChecklistList_InProgressFragment extends Fragment {
         }));
     }
 
-    public class AssignedChecklistListAdapter extends RealmRecyclerViewAdapter<ChecklistListItem,
-            AssignedChecklistListAdapter.MyViewHolder> {
+    public class ChecklistListAdapter extends RealmRecyclerViewAdapter<ChecklistListItem,
+            ChecklistListAdapter.MyViewHolder> {
         private OrderedRealmCollection<ChecklistListItem> assignedChecklistListItems;
 
-        AssignedChecklistListAdapter(OrderedRealmCollection<ChecklistListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        ChecklistListAdapter(OrderedRealmCollection<ChecklistListItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             setHasStableIds(true);
             assignedChecklistListItems = data;

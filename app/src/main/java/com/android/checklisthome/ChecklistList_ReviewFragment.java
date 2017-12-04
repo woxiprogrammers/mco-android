@@ -16,6 +16,13 @@ public class ChecklistList_ReviewFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static ChecklistList_ReviewFragment newInstance() {
+        Bundle args = new Bundle();
+        ChecklistList_ReviewFragment fragment = new ChecklistList_ReviewFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -23,10 +30,10 @@ public class ChecklistList_ReviewFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_checklist_list_review, container, false);
     }
 
-    public static ChecklistList_ReviewFragment newInstance() {
-        Bundle args = new Bundle();
-        ChecklistList_ReviewFragment fragment = new ChecklistList_ReviewFragment();
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+        }
     }
 }

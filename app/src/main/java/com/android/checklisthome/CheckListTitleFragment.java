@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
@@ -73,12 +74,28 @@ public class CheckListTitleFragment extends Fragment {
         return view;
     }
 
+    private boolean notFirstTime;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && notFirstTime) {
+            requestToGetCheckpoints();
+            if (isCallChangeStatusApi) {
+                requestToChangeChecklistStatus();
+            }
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        requestToGetCheckpoints();
-        if (isCallChangeStatusApi) {
-            requestToChangeChecklistStatus();
+        notFirstTime = true;
+        if (getUserVisibleHint()) {
+            requestToGetCheckpoints();
+            if (isCallChangeStatusApi) {
+                requestToChangeChecklistStatus();
+            }
         }
     }
 
@@ -176,6 +193,11 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
