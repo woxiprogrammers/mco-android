@@ -49,14 +49,16 @@ public class CheckListTitleFragment extends Fragment {
     private int projectSiteUserChecklistAssignmentId;
     private RealmResults<CheckPointsItem> checkPointsItemRealmResults;
     public static boolean isCallChangeStatusApi;
+    private String isFromState;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
     }
 
-    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId) {
+    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, String isFromState) {
         Bundle args = new Bundle();
         args.putInt("projectSiteUserChecklistAssignmentId", projectSiteUserChecklistAssignmentId);
+        args.putString("isFromState", isFromState);
         CheckListTitleFragment fragment = new CheckListTitleFragment();
         fragment.setArguments(args);
         return fragment;
@@ -70,6 +72,7 @@ public class CheckListTitleFragment extends Fragment {
         Bundle bundleArgs = getArguments();
         if (bundleArgs != null) {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
+            isFromState = bundleArgs.getString("isFromState");
         }
         return view;
     }

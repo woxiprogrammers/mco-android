@@ -58,7 +58,7 @@ public class AppURL {
     public static final String API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY = BASE_URL + "purchase/purchase-order/generate-grn?token=";
     public static final String API_PURCHASE_ORDER_PAYMENT_URL = BASE_URL + "purchase/purchase-order/bill-transaction?token=";
     public static final String API_GET_CHECKPOINTS_URL = BASE_URL + "checklist/checkpoint-listing?token=";
-    public static final String API_CHECKLIST_SUBMIT_CHECKPOINT_STATUS = BASE_URL + "checklist/save-checkpoint-detail?token=";
+    public static final String API_CHECKLIST_SUBMIT_CHECKPOINT_INFO = BASE_URL + "checklist/save-checkpoint-detail?token=";
     public static final String API_PURCHASE_ORDER_MATERIAL_DETAIL = BASE_URL + "purchase/purchase-order/detail?token=";
     public static final String API_AWARENES_CATEGORY_DATA = BASE_URL + "awareness/get-main-categories?token=";
     public static final String API_AWARENES_SUB_CATEGORY_DATA = BASE_URL + "awareness/get-sub-categories?token=";

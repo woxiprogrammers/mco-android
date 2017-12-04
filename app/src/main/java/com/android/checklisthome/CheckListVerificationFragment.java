@@ -78,10 +78,12 @@ public class CheckListVerificationFragment extends Fragment {
     private String stringCaptionName;
     private View inflatedView;
     private boolean isUploadingImages;
+    private String isFromState;
 
-    public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId) {
+    public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId, String isFromState) {
         Bundle args = new Bundle();
         args.putInt("projectSiteUserCheckpointId", projectSiteUserCheckpointId);
+        args.putString("isFromState", isFromState);
         CheckListVerificationFragment fragment = new CheckListVerificationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -100,6 +102,7 @@ public class CheckListVerificationFragment extends Fragment {
         Bundle bundleArgs = getArguments();
         if (bundleArgs != null) {
             projectSiteUserCheckpointId = bundleArgs.getInt("projectSiteUserCheckpointId");
+            isFromState = bundleArgs.getString("isFromState");
         }
         realm = Realm.getDefaultInstance();
         CheckPointsItem checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
@@ -264,7 +267,7 @@ public class CheckListVerificationFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_CHECKLIST_SUBMIT_CHECKPOINT_STATUS + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_CHECKLIST_SUBMIT_CHECKPOINT_INFO + AppUtils.getInstance().getCurrentToken())
                 .setTag("submitCheckpointDetails")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())

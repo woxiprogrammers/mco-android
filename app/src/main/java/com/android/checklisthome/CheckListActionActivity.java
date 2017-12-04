@@ -15,6 +15,7 @@ public class CheckListActionActivity extends BaseActivity {
     @BindView(R.id.frameLayoutChecklistAction)
     FrameLayout frameLayoutChecklistAction;
     private int projectSiteUserChecklistAssignmentId;
+    private String isFromState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +29,9 @@ public class CheckListActionActivity extends BaseActivity {
         Bundle bundleExtras = getIntent().getExtras();
         if (bundleExtras != null) {
             projectSiteUserChecklistAssignmentId = bundleExtras.getInt("projectSiteUserChecklistAssignmentId");
+            isFromState = bundleExtras.getString("isFromState");
         }
-        CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId);
+        CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, isFromState);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.frameLayoutChecklistAction, checkListTitleFragment, "checkListTitleFragment");
         fragmentTransaction.commit();
@@ -44,7 +46,7 @@ public class CheckListActionActivity extends BaseActivity {
     }
 
     public void getCheckListVerificationFragment(int projectSiteUserCheckpointId) {
-        CheckListVerificationFragment checkListVerificationFragment = CheckListVerificationFragment.newInstance(projectSiteUserCheckpointId);
+        CheckListVerificationFragment checkListVerificationFragment = CheckListVerificationFragment.newInstance(projectSiteUserCheckpointId, isFromState);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayoutChecklistAction, checkListVerificationFragment, "checkListVerificationFragment");
         fragmentTransaction.addToBackStack("checkListTitleFragment");
