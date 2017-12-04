@@ -1,16 +1,23 @@
 package com.android.models.drawing;
-
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class DrawingCommentsResponse extends RealmObject{
+public class DrawingVersionsResponse extends RealmObject{
+
+	@SerializedName("data")
+	private Versionsdata versionsdata;
 
 	@SerializedName("message")
 	private String message;
 
-	@SerializedName("data")
-	private CommentsData commentsData;
+	public void setVersionsdata(Versionsdata versionsdata){
+		this.versionsdata = versionsdata;
+	}
+
+	public Versionsdata getVersionsdata(){
+		return versionsdata;
+	}
 
 	public void setMessage(String message){
 		this.message = message;
@@ -18,13 +25,5 @@ public class DrawingCommentsResponse extends RealmObject{
 
 	public String getMessage(){
 		return message;
-	}
-
-	public void setCommentsData(CommentsData commentsData){
-		this.commentsData = commentsData;
-	}
-
-	public CommentsData getCommentsData(){
-		return commentsData;
 	}
 }

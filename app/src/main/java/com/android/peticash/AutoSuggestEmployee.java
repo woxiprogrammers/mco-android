@@ -18,19 +18,12 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.material_request_approve.AutoSuggestActivity;
-import com.android.material_request_approve.MaterialSearchResponse;
-import com.android.material_request_approve.MaterialSearchResponseData;
-import com.android.material_request_approve.SearchAssetListItem;
-import com.android.material_request_approve.SearchMaterialListItem;
-import com.android.material_request_approve.UnitQuantityItem;
 import com.android.peticashautosearchemployee.EmployeesearchdataItem;
 import com.android.peticashautosearchemployee.PeticashEmpSearchResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
@@ -66,6 +59,7 @@ public class AutoSuggestEmployee extends BaseActivity {
     private RealmResults<EmployeesearchdataItem> employeesearchdataItemsResult;
     private EmployeesearchdataItem employeesearchdataItem;
     private String mStrSearch = "";
+    private String approvedAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +132,7 @@ public class AutoSuggestEmployee extends BaseActivity {
     private void setResultAndFinish(int employeeId) {
         Intent intentData = getIntent();
         intentData.putExtra("employeeId", employeeId);
+        intentData.putExtra("approvedSalaryAmount",approvedAmount);
         setResult(RESULT_OK, intentData);
         finish();
     }
@@ -190,6 +185,7 @@ public class AutoSuggestEmployee extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     setUpAdapter();
+                                    approvedAmount=response.getApproved_amount();
                                     Timber.d("Realm Execution Successful");
                                 }
                             }, new Realm.Transaction.OnError() {

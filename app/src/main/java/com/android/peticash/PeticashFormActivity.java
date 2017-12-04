@@ -36,13 +36,11 @@ import com.android.peticashautosearchemployee.EmployeesearchdataItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -130,18 +128,6 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.frameLayout_UnitSpinner)
     FrameLayout frameLayoutUnitSpinner;
 
-    @BindView(R.id.editText_Date)
-    EditText editTextDate;
-
-    @BindView(R.id.edit_text_inTime)
-    EditText editTextInTime;
-
-    @BindView(R.id.edit_text_outTime)
-    EditText editTextOutTime;
-
-    @BindView(R.id.ll_forSupplierInOutTime)
-    LinearLayout llForSupplierInOutTime;
-
     @BindView(R.id.edit_text_BillNumber)
     EditText editTextBillNumber;
 
@@ -187,9 +173,6 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.button_pay_with_peticash)
     Button buttonPayWithPeticash;
 
-    @BindView(R.id.editText_salary_date)
-    EditText editTextSalaryDate;
-
     @BindView(R.id.editText_addtonoteforsalary)
     EditText editTextAddtonoteforsalary;
 
@@ -205,17 +188,11 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.textView_captureSalaryImage)
     TextView textViewCaptureSalaryImage;
 
-    @BindView(R.id.textView_pickSalaryImage)
-    TextView textViewPickSalaryImage;
-
     @BindView(R.id.imageviewEmpTransactions)
     ImageView imageviewEmpTransactions;
 
     @BindView(R.id.textViewCapturFirst)
     TextView textViewCapturFirst;
-
-    @BindView(R.id.textViewPickFirst)
-    TextView textViewPickFirst;
 
     @BindView(R.id.layout_capture)
     LinearLayout layoutCapture;
@@ -229,12 +206,11 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.textViewCapturSecond)
     TextView textViewCapturSecond;
 
-    @BindView(R.id.textViewPickSecond)
-    TextView textViewPickSecond;
-
     @BindView(R.id.linearLayoutUploadImage)
     LinearLayout linearLayoutUploadImage;
 
+    @BindView(R.id.linearLayoutMiscCategory)
+    LinearLayout linearLayoutMiscCategory;
     @BindView(R.id.linerLayoutSelectedNames)
     LinearLayout linerLayoutSelectedNames;
 
@@ -246,15 +222,26 @@ public class PeticashFormActivity extends BaseActivity {
 
     @BindView(R.id.textViewDenyTransaction)
     TextView textViewDenyTransaction;
+
+    @BindView(R.id.editTextSetUnit)
+    EditText editTextSetUnit;
+
+    @BindView(R.id.exceedAmount)
+    TextView exceedAmount;
+
     private View layoutEmployeeInfo;
     private int primaryKey;
+    private String approvedSalaryAmount;
     private JSONArray jsonImageNameArray = new JSONArray();
 
     @BindView(R.id.linearLayoutEmployeInfo)
     LinearLayout linearLayoutEmployeInfo;
 
+    @BindView(R.id.spinner_misc_category_array)
+    Spinner spinnerMiscCategoryArray;
     @BindView(R.id.linearLayoutUnits)
     LinearLayout linearLayoutUnits;
+    private JSONArray jsonArray;
 
     private String strSelectedSource, strItemName, strItemQuantity, strBillNumber, strBillAmount, strDate;
     private String strSalaryDate, strEmployeeIDOrName, strSalaryAmount, strTotalDays;
@@ -281,6 +268,11 @@ public class PeticashFormActivity extends BaseActivity {
     private int peticashTransactionId;
     private boolean isOtherType;
     private EmployeesearchdataItem employeesearchdataItem;
+    private ArrayList<String> miscelleneousCategoriesArray;
+    private ArrayAdapter<String> adapter;
+    private int miscCategoryId;
+    private boolean isNewType;
+    private String amountLimit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,6 +286,10 @@ public class PeticashFormActivity extends BaseActivity {
             getSupportActionBar().setTitle("Peticash Form");
         }
         initializeviews();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            amountLimit = bundle.getString("amountLimit");
+        }
     }
 
     @Override
@@ -307,14 +303,17 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     //Purchase
-    @OnClick({R.id.button_generate_grn, R.id.button_pay_with_peticash})
+    @OnClick({R.id.button_generate_grn, R.id.button_pay_with_peticash, R.id.imageViewProfilePicture})
     public void onViewImageClicked(View view) {
         switch (view.getId()) {
             case R.id.button_generate_grn:
-                valideateEntries();
+                validateEntries();
                 break;
             case R.id.button_pay_with_peticash:
-                uploadImages_addItemToLocal("billPayment","peticash_purchase_payment_transaction");
+                uploadImages_addItemToLocal("billPayment", "peticash_purchase_payment_transaction");
+                break;
+            case R.id.imageViewProfilePicture:
+                openImageZoomFragment("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture());
                 break;
         }
     }
@@ -331,16 +330,6 @@ public class PeticashFormActivity extends BaseActivity {
         startActivityForResult(intent, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE);
     }
 
-    @OnClick(R.id.editText_salary_date)
-    public void selectSalaryDate() {
-        setInOutDate(editTextSalaryDate);
-    }
-
-    @OnClick(R.id.editText_Date)
-    public void dateForPurchaseCreate() {
-        setInOutDate(editTextDate);
-    }
-
     @OnClick(R.id.imageviewEmpTransactions)
     public void transactionClicked() {
         EmployeeTransactionFragment employeeTransactionFragment = new EmployeeTransactionFragment();
@@ -348,6 +337,12 @@ public class PeticashFormActivity extends BaseActivity {
         bundleArgs.putInt("empId", primaryKey);
         employeeTransactionFragment.setArguments(bundleArgs);
         employeeTransactionFragment.show(getSupportFragmentManager(), "Transactions");
+    }
+
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
     }
 
     private void initializeviews() {
@@ -413,7 +408,6 @@ public class PeticashFormActivity extends BaseActivity {
                     //For Client
                     case 0:
                         linerLayoutSelectedNames_PC.setVisibility(View.VISIBLE);
-                        llForSupplierInOutTime.setVisibility(View.GONE);
                         llForSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.client_name);
                         textViewSelectedName.setText(getString(R.string.client_name));
@@ -421,7 +415,6 @@ public class PeticashFormActivity extends BaseActivity {
                     //For By Hand
                     case 1:
                         linerLayoutSelectedNames_PC.setVisibility(View.VISIBLE);
-                        llForSupplierInOutTime.setVisibility(View.GONE);
                         llForSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.shop_name);
                         textViewSelectedName.setText(getString(R.string.shop_name));
@@ -429,13 +422,12 @@ public class PeticashFormActivity extends BaseActivity {
                     //For Office
                     case 2:
                         linerLayoutSelectedNames_PC.setVisibility(View.GONE);
-                        llForSupplierInOutTime.setVisibility(View.GONE);
                         llForSupplierVehicle.setVisibility(View.GONE);
                         break;
                     //For Supplier
                     case 3:
                         linerLayoutSelectedNames_PC.setVisibility(View.VISIBLE);
-                        llForSupplierInOutTime.setVisibility(View.VISIBLE);
+
                         llForSupplierVehicle.setVisibility(View.VISIBLE);
                         textViewSelectedName.setText(getString(R.string.supplier_name));
                         str = getString(R.string.supplier_name);
@@ -454,13 +446,11 @@ public class PeticashFormActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //ToDO Check here
                 if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
                     floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
                     editTextSalaryAmount.setText(String.valueOf(floatAmount));
                     payableAmountForSalary = floatAmount - intAdvanceAmount;
-                    Log.i("@payableAmountForSalary", String.valueOf(payableAmountForSalary));
-                    Log.i("@floatAmount", String.valueOf(floatAmount));
-                    Log.i("@intAdvanceAmount", String.valueOf(intAdvanceAmount));
                     if (payableAmountForSalary < 0)
                         edittextPayableAmountSalary.setText(String.valueOf(0));
                     else
@@ -476,12 +466,63 @@ public class PeticashFormActivity extends BaseActivity {
             }
         });
 
+        editTextBillamount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!TextUtils.isEmpty(charSequence.toString())) {
+                    if (Integer.parseInt(charSequence.toString()) > Integer.parseInt(amountLimit)) {
+                            exceedAmount.setVisibility(View.VISIBLE);
+                            exceedAmount.setText("Amount should be below " + amountLimit);
+                            buttonGenerateGrn.setVisibility(View.GONE);
+
+                    }else {
+                        exceedAmount.setVisibility(View.GONE);
+                        buttonGenerateGrn.setVisibility(View.VISIBLE);
+                    }
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
         if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Salary")) {
             editTextSalaryAmount.setEnabled(false);
         } else if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Advance")) {
             editTextSalaryAmount.setEnabled(true);
 
         }
+
+        edittextPayableAmountSalary.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!TextUtils.isEmpty(charSequence.toString())) {
+                    if(Integer.parseInt(charSequence.toString()) > /*Integer.parseInt(approvedSalaryAmount)*/ 3000){
+                        textViewDenyTransaction.setVisibility(View.VISIBLE);
+                        buttonSalarySubmit.setVisibility(View.GONE);
+
+                    }else {
+
+                        textViewDenyTransaction.setVisibility(View.GONE);
+                        buttonSalarySubmit.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
 
         editTextItemName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -505,14 +546,14 @@ public class PeticashFormActivity extends BaseActivity {
         if (bundleExtras != null) {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
+            approvedSalaryAmount=bundleExtras.getString("approvedSalaryAmount");
             employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            if (employeesearchdataItem.isTransactionPending()) {
-                textViewDenyTransaction.setVisibility(View.VISIBLE);
-                buttonSalarySubmit.setVisibility(View.GONE);
+            /*if (employeesearchdataItem.isTransactionPending()) {
             } else {
                 textViewDenyTransaction.setVisibility(View.GONE);
                 buttonSalarySubmit.setVisibility(View.VISIBLE);
-            }
+            }*/
+
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
             textViewBalance.setText("Balance - " + employeesearchdataItem.getBalance());
@@ -521,18 +562,19 @@ public class PeticashFormActivity extends BaseActivity {
             intAdvanceAmount = employeesearchdataItem.getAdvanceAmount();
             edittextWeihges.setText("" + getPerWeges);
 
-            AppUtils.getInstance().loadImageViaGlide(employeesearchdataItem.getEmployeeProfilePicture(), imageViewProfilePicture,mContext);
+
+
+            AppUtils.getInstance().loadImageViaGlide(employeesearchdataItem.getEmployeeProfilePicture(), imageViewProfilePicture, mContext);
 
         }
     }
 
-    private void valideateEntries() {
+    private void validateEntries() {
         strSelectedSource = editTextSelectedSourceName.getText().toString();
         strItemName = editTextItemName.getText().toString();
         strItemQuantity = edittextQuantity.getText().toString();
         strBillNumber = editTextBillNumber.getText().toString();
         strBillAmount = editTextBillamount.getText().toString();
-        strDate = editTextDate.getText().toString();
         //For SelectedSourceName
         if (!(spinnerPeticashSource.getSelectedItemPosition() == 2)) {
             if (TextUtils.isEmpty(strSelectedSource)) {
@@ -566,15 +608,6 @@ public class PeticashFormActivity extends BaseActivity {
             edittextQuantity.setError(null);
             edittextQuantity.clearFocus();
         }
-        if (TextUtils.isEmpty(strDate)) {
-            editTextDate.setFocusableInTouchMode(true);
-            editTextDate.requestFocus();
-            editTextDate.setError(getString(R.string.please_enter) + getString(R.string.date));
-            return;
-        } else {
-            editTextDate.setError(null);
-            editTextDate.clearFocus();
-        }
         if (TextUtils.isEmpty(strBillNumber)) {
             editTextBillNumber.setFocusableInTouchMode(true);
             editTextBillNumber.requestFocus();
@@ -594,13 +627,12 @@ public class PeticashFormActivity extends BaseActivity {
             editTextBillamount.clearFocus();
         }
 //        Toast.makeText(mContext, "GRN Generated", Toast.LENGTH_SHORT).show();
-        uploadImages_addItemToLocal("requestToGrnGeneration","peticash_purchase_transaction");
+        uploadImages_addItemToLocal("requestToGrnGeneration", "peticash_purchase_transaction");
     }
 
     private void validationForSalaryAdvance() {
 //
         strEmployeeIDOrName = editTextEmpIdName.getText().toString();
-        strSalaryDate = editTextSalaryDate.getText().toString();
         strSalaryAmount = editTextSalaryAmount.getText().toString();
         strTotalDays = edittextDay.getText().toString();
         if (TextUtils.isEmpty(strEmployeeIDOrName)) {
@@ -611,15 +643,6 @@ public class PeticashFormActivity extends BaseActivity {
         } else {
             editTextEmpIdName.setError(null);
             editTextEmpIdName.clearFocus();
-        }
-        if (TextUtils.isEmpty(strSalaryDate)) {
-            editTextSalaryDate.setFocusableInTouchMode(true);
-            editTextSalaryDate.requestFocus();
-            editTextSalaryDate.setError(getString(R.string.please_enter) + " " + getString(R.string.date));
-            return;
-        } else {
-            editTextSalaryDate.setError(null);
-            editTextSalaryDate.clearFocus();
         }
         if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
             if (TextUtils.isEmpty(strTotalDays)) {
@@ -642,11 +665,13 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSalaryAmount.setError(null);
             editTextSalaryAmount.clearFocus();
         }
-        uploadImages_addItemToLocal("Salary","peticash_salary_transaction");
+        uploadImages_addItemToLocal("Salary", "peticash_salary_transaction");
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
         edittextQuantity.setText("");
+        linearLayoutMiscCategory.setVisibility(View.GONE);
+        isNewType = false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             editTextItemName.clearFocus();
@@ -658,7 +683,10 @@ public class PeticashFormActivity extends BaseActivity {
                 edittextQuantity.setText("");
                 edittextQuantity.setFocusableInTouchMode(true);
                 if (isNewItem) {
+                    isNewType = true;
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
+                    linearLayoutMiscCategory.setVisibility(View.VISIBLE);
+                    setMiscelleneousCategories();
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
                 }
@@ -667,19 +695,21 @@ public class PeticashFormActivity extends BaseActivity {
 //                edittextQuantity.setFocusable(false);
                 if (isNewItem) {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
+                    linearLayoutMiscCategory.setVisibility(View.VISIBLE);
+                    setMiscelleneousCategories();
+
                 } else {
                     searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
-                    isOtherType=searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
+                    isOtherType = searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
 
                 }
-                if(isOtherType){
+                if (isOtherType) {
                     edittextQuantity.setEnabled(true);
-                }else {
+                } else {
                     edittextQuantity.setEnabled(false);
 
                 }
             }
-            Timber.d("AutoSearch complete");
             if (realm != null) {
                 realm.close();
             }
@@ -724,7 +754,8 @@ public class PeticashFormActivity extends BaseActivity {
         try {
             params.put("employee_id", primaryKey);
             params.put("type", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
-            params.put("date", editTextSalaryDate.getText().toString());
+            //ToDo Sharvari date
+//            params.put("date", editTextSalaryDate.getText().toString());
             params.put("amount", editTextSalaryAmount.getText().toString());
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
@@ -774,6 +805,16 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void requestToGenerateGRN() {
+        int intSelectedPos = spinnerMiscCategoryArray.getSelectedItemPosition();
+        try {
+            if (jsonArray != null) {
+                JSONObject jsonObject = jsonArray.getJSONObject(intSelectedPos);
+                miscCategoryId = jsonObject.getInt("category_id");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -787,6 +828,13 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("source_name", editTextSelectedSourceName.getText().toString());
             params.put("name", editTextItemName.getText().toString().toLowerCase());
             params.put("quantity", edittextQuantity.getText().toString());
+            if (isNewType) {
+                params.put("miscellaneous_category_id", miscCategoryId);
+
+            } else {
+                params.put("miscellaneous_category_id", "");
+
+            }
             if (spinnerMaterialOrAsset.getSelectedItemPosition() == 0) {
                 if (isNewItem) {
                     unidId = searchMaterialListItem_fromResult_staticNew.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
@@ -803,18 +851,20 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("component_type_id", searchAssetListItem_fromResult.getMaterialRequestComponentTypeId());
             }
 
-            params.put("date", editTextDate.getText().toString());
+            //ToDo Sharvari
+//            params.put("date", editTextDate.getText().toString());
             params.put("bill_number", editTextBillNumber.getText().toString());
             params.put("bill_amount", editTextBillamount.getText().toString());
-//            params.put("", editTextAddNote.getText().toString());
+            params.put("date", "2017-12-28");
             params.put("images", jsonImageNameArray);
 
             if (spinnerPeticashSource.getSelectedItem().toString().equalsIgnoreCase("Supplier")) {
-                params.put("in_time", editTextDate.getText().toString() + " " + editTextInTime.getText().toString());
-                params.put("out_time", editTextDate.getText().toString() + " " + editTextOutTime.getText().toString());
+                //ToDo Sharvari
+                params.put("in_time", "2017-12-03 10:42:14");
+                params.put("out_time", "2017-12-03 15:42:14");
                 params.put("vehicle_number", editTextVehicleNumber.getText().toString());
             }
-
+            Log.i("@@PeticashFOrm", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -849,7 +899,6 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestForPurchasePayment() {
         JSONObject params = new JSONObject();
-        //ToDO Add Keys for params
         try {
             params.put("peticash_transaction_id", peticashTransactionId);
             if (!editTextRefNumber.getText().toString().isEmpty()) {
@@ -889,45 +938,33 @@ public class PeticashFormActivity extends BaseActivity {
 
     /////////////////////////Images Part/////////////////////////////
 
-    @OnClick({R.id.textViewCapturFirst, R.id.textViewPickFirst})
+    @OnClick(R.id.textViewCapturFirst)
     public void onFirstCapClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCapturFirst:
                 flagForLayout = "firstcapture";
                 captureImage();
                 break;
-            case R.id.textViewPickFirst:
-                flagForLayout = "firstcapture";
-                pickImage();
-                break;
         }
     }
 
-    @OnClick({R.id.textViewCapturSecond, R.id.textViewPickSecond})
+    @OnClick(R.id.textViewCapturSecond)
     public void onSecondCaptureClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCapturSecond:
                 flagForLayout = "secondcapture";
                 captureImage();
                 break;
-            case R.id.textViewPickSecond:
-                flagForLayout = "secondcapture";
-                pickImage();
-                break;
         }
     }
 
-    @OnClick({R.id.textView_captureSalaryImage, R.id.textView_pickSalaryImage})
+    @OnClick(R.id.textView_captureSalaryImage)
     public void onViewClicked(View view) {
 
         switch (view.getId()) {
             case R.id.textView_captureSalaryImage:
                 flagForLayout = "salarycapture";
                 captureImage();
-                break;
-            case R.id.textView_pickSalaryImage:
-                flagForLayout = "salarycapture";
-                pickImage();
                 break;
         }
     }
@@ -941,18 +978,6 @@ public class PeticashFormActivity extends BaseActivity {
         params.setButtonTextColor(R.color.colorWhite);
         intent.putExtra(Constants.KEY_PARAMS, params);
         startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
-    }
-
-    private void pickImage() {
-        Intent intent1 = new Intent(mContext, GalleryActivity.class);
-        Params params1 = new Params();
-        params1.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params1.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params1.setToolbarColor(R.color.colorPrimaryLight);
-        params1.setActionButtonColor(R.color.colorAccentDark);
-        params1.setButtonTextColor(R.color.colorWhite);
-        intent1.putExtra(Constants.KEY_PARAMS, params1);
-        startActivityForResult(intent1, Constants.TYPE_MULTI_PICKER);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -975,19 +1000,7 @@ public class PeticashFormActivity extends BaseActivity {
 
                 }
                 break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                if (flagForLayout.equalsIgnoreCase("firstcapture")) {
-                    onActivityResultForImage(linearLayoutUploadImage, imagesList2);
 
-                } else if (flagForLayout.equalsIgnoreCase("secondcapture")) {
-                    onActivityResultForImage(linearLayoutUploadBillImage, imagesList2);
-
-                } else if (flagForLayout.equalsIgnoreCase("salarycapture")) {
-                    onActivityResultForImage(linearLayoutUploadImageSalary, imagesList2);
-
-                }
-                break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
                 functionToSetEmployeeInfo(intent);
                 break;
@@ -1052,7 +1065,7 @@ public class PeticashFormActivity extends BaseActivity {
                                 e.printStackTrace();
                             }
                             arrayImageFileList.remove(0);
-                            uploadImages_addItemToLocal(strTag,imageFor);
+                            uploadImages_addItemToLocal(strTag, imageFor);
                         }
 
                         @Override
@@ -1115,33 +1128,17 @@ public class PeticashFormActivity extends BaseActivity {
         mTimePicker.show();
     }
 
-    @OnClick({R.id.edit_text_inTime, R.id.edit_text_outTime})
-    public void onViewClickediNoUTtIME(View view) {
-        switch (view.getId()) {
-            case R.id.edit_text_inTime:
-                setInOutTime(editTextInTime);
-                break;
-            case R.id.edit_text_outTime:
-                setInOutTime(editTextOutTime);
-                break;
-        }
-    }
-
     private void setEnabledFalse() {
         spinnerCategoryArray.setEnabled(false);
         spinnerMaterialOrAsset.setEnabled(false);
         spinnerPeticashSource.setEnabled(false);
-        editTextDate.setEnabled(false);
         edittextQuantity.setEnabled(false);
         spinnerSelectUnits.setEnabled(false);
         editTextBillamount.setEnabled(false);
         editTextBillNumber.setEnabled(false);
-        editTextInTime.setEnabled(false);
-        editTextOutTime.setEnabled(false);
         editTextVehicleNumber.setEnabled(false);
         editTextItemName.setEnabled(false);
         textViewCapturFirst.setEnabled(false);
-        textViewPickFirst.setEnabled(false);
         editTextAddNote.setEnabled(false);
 
         /////////////
@@ -1152,5 +1149,36 @@ public class PeticashFormActivity extends BaseActivity {
         buttonGenerateGrn.setVisibility(View.GONE);
         buttonPayWithPeticash.setVisibility(View.VISIBLE);
         layoutCapture.setVisibility(View.VISIBLE);
+    }
+
+    private void setMiscelleneousCategories() {
+        AndroidNetworking.get(AppURL.API_GET_MISCELLANEOUS_CATEGORIES)
+                .setTag("setMiscelleneousCategories")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArray = response.getJSONArray("data");
+                            miscelleneousCategoriesArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                miscelleneousCategoriesArray.add(jsonObject.getString("category_name"));
+
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, miscelleneousCategoriesArray);
+                            spinnerMiscCategoryArray.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                    }
+                });
     }
 }

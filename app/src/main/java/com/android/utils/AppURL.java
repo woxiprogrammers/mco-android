@@ -16,7 +16,7 @@ public class AppURL {
     public static final String API_USER_DASHBOARD = BASE_URL + "dashboard?token=";
     //    public static final String API_USER_LOGIN = "http://www.mocky.io/v2/599c5b5729000020012110ad";
     public static final String API_PURCHASE_ORDER_LIST = BASE_URL + "purchase/purchase-order/listing?token=";
-    public static final String API_PURCHASE_BILL_LIST = BASE_URL + "purchase/purchase-order/bill-listing?token=";
+    public static final String API_PURCHASE_BILL_LIST = BASE_URL + "purchase/purchase-order/transaction-listing?token=";
     public static final String API_MATERIAL_LISTING_URL = BASE_URL + "inventory/material/listing?token=";
     public static final String API_ASSETS_DATA_URL = BASE_URL + "inventory/asset/listing?token=";
     //public static final String API_REQUEST_USERS_WITH_APPROVE_ACL = "http://www.mocky.io/v2/59bb7e190f00009101ff85bb";
@@ -56,7 +56,7 @@ public class AppURL {
     public static final String API_CHECKLIST_CATEGORY_LIST = BASE_URL + "checklist/category?token=";
     public static final String API_INVENTORY_CHECK_AVAILABLE_FOR_UNITS = BASE_URL + "inventory/material/check-availability?token=";
     public static final String API_REQUEST_GENRATE_GRN_PURCHASE_ORDER_PAY = BASE_URL + "purchase/purchase-order/generate-grn?token=";
-    public static final String API_PURCHASE_ORDER_PAYMENT_URL = BASE_URL + "purchase/purchase-order/bill-transaction?token=";
+    public static final String API_PURCHASE_ORDER_PAYMENT_URL = BASE_URL + "purchase/purchase-order/create-transaction?token=";
     public static final String API_GET_CHECKPOINTS_URL = BASE_URL + "checklist/checkpoint-listing?token=";
     public static final String API_CHECKLIST_SUBMIT_CHECKPOINT_INFO = BASE_URL + "checklist/save-checkpoint-detail?token=";
     public static final String API_PURCHASE_ORDER_MATERIAL_DETAIL = BASE_URL + "purchase/purchase-order/detail?token=";
@@ -73,7 +73,9 @@ public class AppURL {
     public static final String API_DRAWING_CATEGORY_DATA = BASE_URL + "drawing/get-main-categories?token=";
     public static final String API_DRAWING_SUB_CAT_DATA = BASE_URL + "drawing/get-sub-categories?token=";
     public static final String API_IMAGE_LIST_DRAWING = BASE_URL + "drawing/get-current-version-images?token=";
-    public static final String API_DRAWING_COMMENTS_LIST = "http://www.mocky.io/v2/5a1e8d002f0000b622ee2e0a";
+    public static final String API_DRAWING_COMMENTS_LIST = BASE_URL + "drawing/get-comments?token=";
     public static final String API_DRAWING_ADD_COMMENT = BASE_URL + "drawing/add-comment?token=";
     public static final String API_CHECKLIST_CHANGE_STATUS = BASE_URL + "checklist/change-status?token=";
+    public static final String API_DRAWING_VERSIONS_LIST = BASE_URL + "drawing/get-all-image-versions?token=";
+    public static final String API_GET_MISCELLANEOUS_CATEGORIES = BASE_URL + "system-miscellaneous-categories";
 }

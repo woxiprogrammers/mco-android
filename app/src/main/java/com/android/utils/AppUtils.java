@@ -1,5 +1,6 @@
 package com.android.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -225,7 +226,7 @@ public class AppUtils {
 
     public void loadImageViaGlide(String strUrl, ImageView imageView,Context mContext){
         //ToDo Imp Sharvari unComment
-        Glide.with(mContext).load(/*"http://test.mconstruction.co.in" + */strUrl)
+        Glide.with(mContext).load("http://test.mconstruction.co.in" + strUrl)
                 .thumbnail(0.1f)
                 .crossFade()
                 .skipMemoryCache(true)
@@ -327,4 +328,6 @@ public class AppUtils {
         }
         return newDateStr;
     }
+
+
 }

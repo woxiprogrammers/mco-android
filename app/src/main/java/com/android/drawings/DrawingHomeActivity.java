@@ -357,6 +357,8 @@ public class DrawingHomeActivity extends BaseActivity {
                     public void onItemClick(View view, final int position) {
                         Intent intent = new Intent(DrawingHomeActivity.this, DrawingDetailsActivity.class);
                         intent.putExtra("url", imagesListDrawingItems.get(position).getImageUrl());
+                        intent.putExtra("imageName",imagesListDrawingItems.get(position).getTitle());
+                        intent.putExtra("getDrawingImageVersionId",imagesListDrawingItems.get(position).getDrawingImageVersionId());
                         startActivity(intent);
 
                     }
@@ -442,7 +444,6 @@ public class DrawingHomeActivity extends BaseActivity {
             imagesListDrawingItem = imagesListDrawingItemOrderedRealmCollection.get(position);
 
             holder.textviewImageTitle.setText(imagesListDrawingItem.getTitle());
-            Log.i("@S", imagesListDrawingItem.getImageUrl());
             Glide.with(mContext).load("http://test.mconstruction.co.in" + imagesListDrawingItem.getImageUrl())
                     .thumbnail(0.1f)
                     .crossFade()
@@ -454,7 +455,7 @@ public class DrawingHomeActivity extends BaseActivity {
 
         @Override
         public long getItemId(int index) {
-            return imagesListDrawingItemOrderedRealmCollection.get(index).getId();
+            return imagesListDrawingItemOrderedRealmCollection.get(index).getDrawingImageVersionId();
 
         }
 

@@ -76,6 +76,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     private Realm realm;
     private RealmResults<DatewiseTransactionsListItem> peticashTransactionsRealmResult;
     private PeticashTransactionsListAdapter peticashTransactionsListAdapter;
+    private String purchaseAmountLimit;
 
     @OnClick(R.id.relative_layout_datePicker_peticash)
     public void onMRelativeLayoutDatePickerPeticashClicked() {
@@ -92,7 +93,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
 
     @OnClick(R.id.floating_add_button_peticash)
     public void onFloatingAddButtonPeticashClicked() {
-        startActivity(new Intent(mContext, PeticashFormActivity.class));
+        startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit",purchaseAmountLimit));
     }
 
     @Override
@@ -266,6 +267,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                 @Override
                                 public void onSuccess() {
                                     setUpPeticashTransactionsListAdapter();
+                                    purchaseAmountLimit=response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

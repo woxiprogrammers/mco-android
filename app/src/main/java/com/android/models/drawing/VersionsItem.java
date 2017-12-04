@@ -3,13 +3,16 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class CommentsListItem extends RealmObject{
+public class VersionsItem extends RealmObject{
 
-	@SerializedName("comment")
+	@SerializedName("name")
 	private String name;
 
 	@SerializedName("id")
 	private int id;
+
+	@SerializedName("title")
+	private String title;
 
 	public void setName(String name){
 		this.name = name;
@@ -25,5 +28,13 @@ public class CommentsListItem extends RealmObject{
 
 	public int getId(){
 		return id;
+	}
+
+	public void setTitle(String title){
+		this.title = title;
+	}
+
+	public String getTitle(){
+		return title;
 	}
 }

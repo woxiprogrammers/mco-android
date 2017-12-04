@@ -10,7 +10,7 @@ public class ImagesListDrawingItem extends RealmObject{
 	private String imageUrl;
 
 	@SerializedName("id")
-	private int id;
+	private int drawingImageVersionId;
 
 	@SerializedName("title")
 	private String title;
@@ -43,10 +43,10 @@ public class ImagesListDrawingItem extends RealmObject{
 	}
 
 	public void setId(int id){
-		this.id = id;
+		this.drawingImageVersionId = id;
 	}
 
-	public int getId(){
-		return id;
+	public int getDrawingImageVersionId(){
+		return drawingImageVersionId;
 	}
 }

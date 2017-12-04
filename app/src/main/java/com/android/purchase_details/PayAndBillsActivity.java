@@ -17,7 +17,6 @@ import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_order.PurchaseOrderListItem;
 import com.android.new_transaction_list.PurchaseTranListFragment;
-import com.android.purchase_request.PurchaseBillListFragment;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 

@@ -3,11 +3,14 @@ package com.android.drawings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,10 +24,13 @@ import com.android.constro360.R;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,25 +50,34 @@ public class DrawingDetailsActivity extends BaseActivity {
     @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
 
-    private String imageUrl;
+    public static String imageUrl;
     private Context mContext;
     private AlertDialog alert_Dialog;
+    public static int drawingVersionId;
+    public static String imageName;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_drawing_details);
         ButterKnife.bind(this);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Drawing Details");
-        }
         mContext = DrawingDetailsActivity.this;
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             imageUrl = bundle.getString("url");
+            drawingVersionId = bundle.getInt("getDrawingImageVersionId");
+            imageName = bundle.getString("imageName");
         }
-        AppUtils.getInstance().loadImageViaGlide("http://test.mconstruction.co.in" +imageUrl, imageViewPreview,mContext);
+        setTitle();
+        call(drawingVersionId, imageUrl, true);
+        imageViewPreview.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                openImageZoomFragment("http://test.mconstruction.co.in" + imageUrl);
+                return true;
+            }
+        });
 
     }
 
@@ -83,7 +98,7 @@ public class DrawingDetailsActivity extends BaseActivity {
             case R.id.textviewComments:
                 textviewComments.setTextColor(getColor(R.color.colorAccent));
                 textviewVersions.setTextColor(getColor(R.color.black));
-                getFragment();
+                call(drawingVersionId, imageUrl, false);
                 break;
             case R.id.textviewVersions:
                 textviewVersions.setTextColor(getColor(R.color.colorAccent));
@@ -93,12 +108,19 @@ public class DrawingDetailsActivity extends BaseActivity {
         }
     }
 
+    public void setTitle() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(imageName);
+        }
+    }
+
     private void openDialogToAddComment() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_add_comment_for_image_drawing, null);
-        Button btnDismiss=dialogView.findViewById(R.id.button_dismiss_drawing_dialog);
-        Button btnAddComment=dialogView.findViewById(R.id.button_assign_drawing_dialog);
-        final EditText editTextAddComment=dialogView.findViewById(R.id.editTextAddComment);
+        Button btnDismiss = dialogView.findViewById(R.id.button_dismiss_drawing_dialog);
+        Button btnAddComment = dialogView.findViewById(R.id.button_assign_drawing_dialog);
+        final EditText editTextAddComment = dialogView.findViewById(R.id.editTextAddComment);
 
         btnDismiss.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,10 +131,10 @@ public class DrawingDetailsActivity extends BaseActivity {
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(editTextAddComment.getText().toString())){
+                if (TextUtils.isEmpty(editTextAddComment.getText().toString())) {
                     editTextAddComment.setError("Please add comment");
                     return;
-                }else {
+                } else {
                     requestToAddComment(editTextAddComment.getText().toString());
                     alert_Dialog.dismiss();
                 }
@@ -123,27 +145,42 @@ public class DrawingDetailsActivity extends BaseActivity {
         alert_Dialog.show();
     }
 
-    private void getFragment() {
-        DrawingCommentFragment drawingCommentFragment = DrawingCommentFragment.newInstance();
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+    }
+
+    public void call(int drawingId, String imageUrl, boolean isLoadImage) {
+        if (isLoadImage) {
+            AppUtils.getInstance().loadImageViaGlide(imageUrl, imageViewPreview, mContext);
+        }
+        textviewVersions.setTextColor(getColor(R.color.black));
+        textviewComments.setTextColor(getColor(R.color.colorAccent));
+        getFragment(drawingId);
+    }
+
+    private void getFragment(int drawingVersionId) {
+        DrawingCommentFragment drawingCommentFragment = DrawingCommentFragment.newInstance(drawingVersionId);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, drawingCommentFragment, "Fragment");
+        fragmentTransaction.replace(R.id.frameLayout, drawingCommentFragment, "drawingCommentFragment");
         fragmentTransaction.commit();
 
     }
 
     private void getFragmentVersions() {
-        DrawingVersionsFragment drawingVersionsFragment = DrawingVersionsFragment.newInstance();
+        DrawingVersionsFragment drawingVersionsFragment = DrawingVersionsFragment.newInstance(drawingVersionId);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, drawingVersionsFragment, "Fragment");
+        fragmentTransaction.replace(R.id.frameLayout, drawingVersionsFragment, "drawingVersionsFragment");
         fragmentTransaction.commit();
 
     }
 
-    private void requestToAddComment(String strComment){
-        JSONObject params=new JSONObject();
+    private void requestToAddComment(String strComment) {
+        JSONObject params = new JSONObject();
         try {
-            params.put("drawing_image_version_id",1);
-            params.put("comment",strComment);
+            params.put("drawing_image_version_id", drawingVersionId);
+            params.put("comment", strComment);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -158,6 +195,10 @@ public class DrawingDetailsActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            DrawingCommentFragment drawingCommentFragment = (DrawingCommentFragment) getSupportFragmentManager().findFragmentByTag("drawingCommentFragment");
+                            if (drawingCommentFragment != null) {
+                                drawingCommentFragment.requestToGetComments();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -169,4 +210,5 @@ public class DrawingDetailsActivity extends BaseActivity {
                     }
                 });
     }
+
 }

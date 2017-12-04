@@ -38,13 +38,14 @@
                         android:entries="@array/category_array"
                         />
                 </FrameLayout>
+
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:digits="0123456789"
-                    android:textColor="@color/black"
                     android:inputType="number"
+                    android:textColor="@color/black"
                     android:visibility="gone"/>
             </LinearLayout>
 
@@ -86,8 +87,8 @@
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789"
-                        android:textColor="@color/black"
                         android:inputType="number"
+                        android:textColor="@color/black"
                         android:visibility="gone"/>
                 </LinearLayout>
 
@@ -123,8 +124,8 @@
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789"
-                        android:textColor="@color/black"
                         android:inputType="number"
+                        android:textColor="@color/black"
                         android:visibility="gone"/>
                 </LinearLayout>
 
@@ -167,8 +168,29 @@
                         android:id="@+id/edit_text_item_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutMiscCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background">
+
+                        <Spinner
+                            android:id="@+id/spinner_misc_category_array"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            />
+                    </FrameLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -196,8 +218,8 @@
                             android:layout_height="wrap_content"
                             android:background="@android:drawable/editbox_background_normal"
                             android:digits="0123456789"
-                            android:textColor="@color/black"
-                            android:inputType="number"/>
+                            android:inputType="number"
+                            android:textColor="@color/black"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -232,87 +254,13 @@
                             android:layout_height="wrap_content"
                             android:background="@android:drawable/editbox_background_normal"
                             android:digits="0123456789"
-                            android:textColor="@color/black"
                             android:inputType="number"
+                            android:textColor="@color/black"
                             android:visibility="gone"/>
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/date"
-                        android:textColor="@color/colorTextLight"/>
-
-                    <EditText
-                        android:id="@+id/editText_Date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:textColor="@color/black"
-                        android:background="@android:drawable/editbox_background_normal"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_forSupplierInOutTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:layout_weight="0.5"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/in_time"
-                            android:textColor="@color/colorTextLight"/>
-
-                        <EditText
-                            android:id="@+id/edit_text_inTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:textColor="@color/black"
-                            android:background="@android:drawable/editbox_background_normal"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:layout_weight="0.5"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/out_time"
-                            android:textColor="@color/colorTextLight"/>
-
-                        <EditText
-                            android:id="@+id/edit_text_outTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:textColor="@color/black"
-                            android:background="@android:drawable/editbox_background_normal"/>
-                    </LinearLayout>
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/lineraLayoutBillNumber"
@@ -332,8 +280,8 @@
                         android:id="@+id/edit_text_BillNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:textColor="@color/black"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -356,8 +304,15 @@
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789"
-                        android:textColor="@color/black"
-                        android:inputType="number"/>
+                        android:inputType="number"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/exceedAmount"
+                        android:textColor="@color/colorAccent"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -379,8 +334,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimen_5dp"
-                        android:textColor="@color/black"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:textColor="@color/black"/>
 
                 </LinearLayout>
 
@@ -401,20 +356,6 @@
                         android:gravity="center_horizontal"
                         android:text="Capture Images"/>
 
-                    <View
-                        android:layout_width="@dimen/dimen_20dp"
-                        android:layout_height="match_parent"/>
-
-                    <TextView
-                        android:id="@+id/textViewPickFirst"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:drawableTop="@android:drawable/ic_menu_gallery"
-                        android:gravity="center_horizontal"
-                        android:onClick="onViewClicked"
-                        android:text="Choose Images"/>
                 </LinearLayout>
 
                 <HorizontalScrollView
@@ -508,6 +449,7 @@
                 <EditText
                     android:id="@+id/editText_PayableAmount"
                     android:layout_width="match_parent"
+                    android:inputType="number"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
@@ -552,20 +494,7 @@
                     android:gravity="center_horizontal"
                     android:text="Capture Images"/>
 
-                <View
-                    android:layout_width="@dimen/dimen_20dp"
-                    android:layout_height="match_parent"/>
 
-                <TextView
-                    android:id="@+id/textViewPickSecond"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:drawableTop="@android:drawable/ic_menu_gallery"
-                    android:gravity="center_horizontal"
-                    android:onClick="onViewClicked"
-                    android:text="Choose Images"/>
             </LinearLayout>
 
             <HorizontalScrollView

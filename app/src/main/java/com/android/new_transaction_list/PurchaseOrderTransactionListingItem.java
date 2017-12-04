@@ -1,9 +1,11 @@
 package com.android.new_transaction_list;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class PurchaseOrderTransactionListingItem extends RealmObject{
 
@@ -22,6 +24,7 @@ public class PurchaseOrderTransactionListingItem extends RealmObject{
 	@SerializedName("transaction_data")
 	private RealmList<TransactionDataItem> transactionData;
 
+	@PrimaryKey
 	@SerializedName("purchase_order_transaction_id")
 	private int purchaseOrderTransactionId;
 
@@ -51,6 +54,8 @@ public class PurchaseOrderTransactionListingItem extends RealmObject{
 
 	@SerializedName("material_name")
 	private String materialName;
+
+	private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
 	public void setOutTime(String outTime){
 		this.outTime = outTime;
