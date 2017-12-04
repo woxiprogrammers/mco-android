@@ -173,10 +173,12 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/linearLayoutMiscCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -186,7 +188,7 @@
                         <Spinner
                             android:id="@+id/spinner_misc_category_array"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             />
                     </FrameLayout>
                 </LinearLayout>
@@ -304,6 +306,13 @@
                         android:digits="0123456789"
                         android:inputType="number"
                         android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/exceedAmount"
+                        android:textColor="@color/colorAccent"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -440,6 +449,7 @@
                 <EditText
                     android:id="@+id/editText_PayableAmount"
                     android:layout_width="match_parent"
+                    android:inputType="number"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
