@@ -447,13 +447,11 @@ public class PeticashFormActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //ToDO Check here
                 if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
                     floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
                     editTextSalaryAmount.setText(String.valueOf(floatAmount));
                     payableAmountForSalary = floatAmount - intAdvanceAmount;
-                    Log.i("@payableAmountForSalary", String.valueOf(payableAmountForSalary));
-                    Log.i("@floatAmount", String.valueOf(floatAmount));
-                    Log.i("@intAdvanceAmount", String.valueOf(intAdvanceAmount));
                     if (payableAmountForSalary < 0)
                         edittextPayableAmountSalary.setText(String.valueOf(0));
                     else
