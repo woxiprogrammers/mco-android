@@ -444,7 +444,6 @@ public class DrawingHomeActivity extends BaseActivity {
             imagesListDrawingItem = imagesListDrawingItemOrderedRealmCollection.get(position);
 
             holder.textviewImageTitle.setText(imagesListDrawingItem.getTitle());
-            Log.i("@S", imagesListDrawingItem.getImageUrl());
             Glide.with(mContext).load("http://test.mconstruction.co.in" + imagesListDrawingItem.getImageUrl())
                     .thumbnail(0.1f)
                     .crossFade()

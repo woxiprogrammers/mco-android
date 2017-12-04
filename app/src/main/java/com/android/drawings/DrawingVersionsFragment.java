@@ -53,6 +53,7 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
     private Realm realm;
     private Context mContext;
     private int drawingId;
+    private String imagePath,versionUrl;
 
     public DrawingVersionsFragment() {
         // Required empty public constructor
@@ -119,6 +120,7 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    imagePath=response.getVersionsdata().getPath();
                                     setUpVersionAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -154,14 +156,17 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        String s="";
-                        Toast.makeText(mContext,versionsItemRealmResults.get(position).getTitle(),Toast.LENGTH_LONG).show();
+                        VersionsItem versionsItem=versionsItemRealmResults.get(position);
                         try {
-                           s =java.net.URLEncoder.encode(versionsItemRealmResults.get(position).getName(), "UTF-8");
+                            versionUrl =java.net.URLEncoder.encode(versionsItem.getName(), "UTF-8");
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                        ((DrawingDetailsActivity)mContext).call(versionsItemRealmResults.get(position).getId(),"http://test.mconstruction.co.in/uploads/admindata/drawing/da4b9237bacccdf19c0760cab7aec4a8359010b0/b1d5781111d84f7b3fe45a0852e59758cd7a87e5/"+s,true);
+                        ((DrawingDetailsActivity)mContext).call(versionsItem.getId(),imagePath + "/" +versionUrl,true);
+                        DrawingDetailsActivity.drawingVersionId=versionsItem.getId();
+                        DrawingDetailsActivity.imageName=versionsItem.getTitle();
+                        DrawingDetailsActivity.imageUrl=imagePath + "/" +versionUrl;
+                        ((DrawingDetailsActivity)mContext).setTitle();
 
                     }
 

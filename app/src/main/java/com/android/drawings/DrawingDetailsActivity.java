@@ -3,11 +3,14 @@ package com.android.drawings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +29,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,11 +50,12 @@ public class DrawingDetailsActivity extends BaseActivity {
     @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
 
-    private String imageUrl;
+    public static String imageUrl;
     private Context mContext;
     private AlertDialog alert_Dialog;
-    private int drawingVersionId;
-    private String imageName;
+    public static int drawingVersionId;
+    public static String imageName;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +67,17 @@ public class DrawingDetailsActivity extends BaseActivity {
         if (bundle != null) {
             imageUrl = bundle.getString("url");
             drawingVersionId = bundle.getInt("getDrawingImageVersionId");
-            imageName=bundle.getString("imageName");
+            imageName = bundle.getString("imageName");
         }
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(imageName);
-        }
+        setTitle();
         call(drawingVersionId, imageUrl, true);
+        imageViewPreview.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                openImageZoomFragment("http://test.mconstruction.co.in" + imageUrl);
+                return true;
+            }
+        });
 
     }
 
@@ -95,6 +105,13 @@ public class DrawingDetailsActivity extends BaseActivity {
                 textviewComments.setTextColor(getColor(R.color.black));
                 getFragmentVersions();
                 break;
+        }
+    }
+
+    public void setTitle() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(imageName);
         }
     }
 
@@ -128,10 +145,18 @@ public class DrawingDetailsActivity extends BaseActivity {
         alert_Dialog.show();
     }
 
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
+    }
+
     public void call(int drawingId, String imageUrl, boolean isLoadImage) {
         if (isLoadImage) {
             AppUtils.getInstance().loadImageViaGlide(imageUrl, imageViewPreview, mContext);
         }
+        textviewVersions.setTextColor(getColor(R.color.black));
+        textviewComments.setTextColor(getColor(R.color.colorAccent));
         getFragment(drawingId);
     }
 
@@ -186,10 +211,4 @@ public class DrawingDetailsActivity extends BaseActivity {
                 });
     }
 
-
-    private void openImageZoomFragment(String url) {
-        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
-        imageZoomDialogFragment.setCancelable(true);
-        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
-    }
 }
