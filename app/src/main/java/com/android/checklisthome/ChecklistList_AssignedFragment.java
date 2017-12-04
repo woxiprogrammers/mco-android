@@ -180,6 +180,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 Intent intentAction = new Intent(mContext, CheckListActionActivity.class);
                 intentAction.putExtra("projectSiteUserChecklistAssignmentId", checklistItemResults.get(position).getProjectSiteUserChecklistAssignmentId());
+                intentAction.putExtra("isFromState", "assigned");
                 startActivity(intentAction);
             }
 
