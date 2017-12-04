@@ -212,6 +212,14 @@
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:textColor="@color/black"/>
+                <TextView
+                    android:id="@+id/textViewDenyTransaction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Please Complete Previous Transaction"
+                    android:textColor="@color/colorAccent"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <LinearLayout
@@ -275,14 +283,6 @@
                 android:visibility="gone"
                 android:text="@string/paywithpeticash"/>
 
-            <TextView
-                android:id="@+id/textViewDenyTransaction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Please Complete Previous Transaction"
-                android:textColor="@color/colorAccent"
-                android:visibility="gone"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

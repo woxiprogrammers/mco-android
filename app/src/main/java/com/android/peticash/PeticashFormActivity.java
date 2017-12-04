@@ -33,6 +33,7 @@ import com.android.material_request_approve.SearchAssetListItem;
 import com.android.material_request_approve.SearchMaterialListItem;
 import com.android.material_request_approve.UnitQuantityItem;
 import com.android.peticashautosearchemployee.EmployeesearchdataItem;
+import com.android.peticashautosearchemployee.PeticashEmpSearchResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -222,12 +223,16 @@ public class PeticashFormActivity extends BaseActivity {
 
     @BindView(R.id.textViewDenyTransaction)
     TextView textViewDenyTransaction;
+
     @BindView(R.id.editTextSetUnit)
     EditText editTextSetUnit;
+
     @BindView(R.id.exceedAmount)
     TextView exceedAmount;
+
     private View layoutEmployeeInfo;
     private int primaryKey;
+    private String approvedSalaryAmount;
     private JSONArray jsonImageNameArray = new JSONArray();
 
     @BindView(R.id.linearLayoutEmployeInfo)
@@ -497,6 +502,31 @@ public class PeticashFormActivity extends BaseActivity {
 
         }
 
+        edittextPayableAmountSalary.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!TextUtils.isEmpty(charSequence.toString())) {
+                    if(Integer.parseInt(charSequence.toString()) > /*Integer.parseInt(approvedSalaryAmount)*/ 3000){
+                        textViewDenyTransaction.setVisibility(View.VISIBLE);
+                        buttonSalarySubmit.setVisibility(View.GONE);
+
+                    }else {
+
+                        textViewDenyTransaction.setVisibility(View.GONE);
+                        buttonSalarySubmit.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
         editTextItemName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -519,14 +549,14 @@ public class PeticashFormActivity extends BaseActivity {
         if (bundleExtras != null) {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
+            approvedSalaryAmount=bundleExtras.getString("approvedSalaryAmount");
             employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            if (employeesearchdataItem.isTransactionPending()) {
-                textViewDenyTransaction.setVisibility(View.VISIBLE);
-                buttonSalarySubmit.setVisibility(View.GONE);
+            /*if (employeesearchdataItem.isTransactionPending()) {
             } else {
                 textViewDenyTransaction.setVisibility(View.GONE);
                 buttonSalarySubmit.setVisibility(View.VISIBLE);
-            }
+            }*/
+
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
             textViewBalance.setText("Balance - " + employeesearchdataItem.getBalance());
@@ -534,6 +564,8 @@ public class PeticashFormActivity extends BaseActivity {
             getPerWeges = employeesearchdataItem.getPerDayWages();
             intAdvanceAmount = employeesearchdataItem.getAdvanceAmount();
             edittextWeihges.setText("" + getPerWeges);
+
+
 
             AppUtils.getInstance().loadImageViaGlide(employeesearchdataItem.getEmployeeProfilePicture(), imageViewProfilePicture, mContext);
 

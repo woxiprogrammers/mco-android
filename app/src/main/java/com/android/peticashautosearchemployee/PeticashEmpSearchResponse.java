@@ -14,6 +14,9 @@ public class PeticashEmpSearchResponse extends RealmObject{
 	@SerializedName("message")
 	private String message;
 
+	@SerializedName("approved_amount")
+	private String approved_amount;
+
 	public void setEmployeesearchdata(RealmList<EmployeesearchdataItem> employeesearchdata){
 		this.employeesearchdata = employeesearchdata;
 	}
@@ -28,5 +31,13 @@ public class PeticashEmpSearchResponse extends RealmObject{
 
 	public String getMessage(){
 		return message;
+	}
+
+	public String getApproved_amount() {
+		return approved_amount;
+	}
+
+	public void setApproved_amount(String approved_amount) {
+		this.approved_amount = approved_amount;
 	}
 }
