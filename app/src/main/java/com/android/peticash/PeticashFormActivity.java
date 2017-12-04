@@ -240,8 +240,11 @@ public class PeticashFormActivity extends BaseActivity {
     @BindView(R.id.linearLayoutEmployeInfo)
     LinearLayout linearLayoutEmployeInfo;
 
+    @BindView(R.id.spinner_misc_category_array)
+    Spinner spinnerMiscCategoryArray;
     @BindView(R.id.linearLayoutUnits)
     LinearLayout linearLayoutUnits;
+    private JSONArray jsonArray;
 
     private String strSelectedSource, strItemName, strItemQuantity, strBillNumber, strBillAmount, strDate;
     private String strSalaryDate, strEmployeeIDOrName, strSalaryAmount, strTotalDays;
@@ -268,6 +271,8 @@ public class PeticashFormActivity extends BaseActivity {
     private int peticashTransactionId;
     private boolean isOtherType;
     private EmployeesearchdataItem employeesearchdataItem;
+    private ArrayList<String> miscelleneousCategoriesArray;
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -622,6 +627,7 @@ public class PeticashFormActivity extends BaseActivity {
                 edittextQuantity.setFocusableInTouchMode(true);
                 if (isNewItem) {
                     searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
+                    setMiscelleneousCategories();
                 } else {
                     searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
                 }
@@ -1046,8 +1052,6 @@ public class PeticashFormActivity extends BaseActivity {
         mTimePicker.show();
     }
 
-
-
     private void setEnabledFalse() {
         spinnerCategoryArray.setEnabled(false);
         spinnerMaterialOrAsset.setEnabled(false);
@@ -1069,5 +1073,35 @@ public class PeticashFormActivity extends BaseActivity {
         buttonGenerateGrn.setVisibility(View.GONE);
         buttonPayWithPeticash.setVisibility(View.VISIBLE);
         layoutCapture.setVisibility(View.VISIBLE);
+    }
+
+    private void setMiscelleneousCategories() {
+        AndroidNetworking.get(AppURL.API_GET_MISELLANEOUS_CATEGORIES)
+                .setTag("setMiscelleneousCategories")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArray = response.getJSONArray("data");
+                            miscelleneousCategoriesArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                miscelleneousCategoriesArray.add(jsonObject.getString("category_name"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, miscelleneousCategoriesArray);
+                            spinnerMiscCategoryArray.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                    }
+                });
     }
 }

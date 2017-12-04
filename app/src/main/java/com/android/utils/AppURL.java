@@ -76,4 +76,5 @@ public class AppURL {
     public static final String API_DRAWING_COMMENTS_LIST = BASE_URL + "drawing/get-comments?token=";
     public static final String API_DRAWING_ADD_COMMENT = BASE_URL + "drawing/add-comment?token=";
     public static final String API_DRAWING_VERSIONS_LIST = BASE_URL +"drawing/get-all-image-versions?token=";
+    public static final String API_GET_MISELLANEOUS_CATEGORIES=BASE_URL + "system-miscellaneous-categories";
 }
