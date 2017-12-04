@@ -50,6 +50,13 @@ public class ChecklistList_InProgressFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static ChecklistList_InProgressFragment newInstance() {
+        Bundle args = new Bundle();
+        ChecklistList_InProgressFragment fragment = new ChecklistList_InProgressFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,13 +92,6 @@ public class ChecklistList_InProgressFragment extends Fragment {
         if (realm != null) {
             realm.close();
         }
-    }
-
-    public static ChecklistList_InProgressFragment newInstance() {
-        Bundle args = new Bundle();
-        ChecklistList_InProgressFragment fragment = new ChecklistList_InProgressFragment();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
