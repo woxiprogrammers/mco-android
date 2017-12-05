@@ -14,36 +14,69 @@
         android:padding="@dimen/dimen_4dp"/>
 
     <LinearLayout
-        android:id="@+id/linearLayout_reviewFrom"
+        android:id="@+id/linearLayout_reassignTo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_8dp"
         android:orientation="vertical">
 
-        <TextView
+        <CheckBox
+            android:id="@+id/checkbox_is_reassignTo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Review From:"
-            android:textColor="@color/colorTextLight"
-            android:textSize="@dimen/text_14sp"/>
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:text="Reassign For Review"
+            android:textSize="@dimen/text_16sp"/>
 
-        <FrameLayout
+        <LinearLayout
+            android:id="@+id/linearLayout_reassignTo_innerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_8dp"
-            android:background="@android:drawable/editbox_background"
-            android:inputType="text">
+            android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/spinner_reviewFrom"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:text="Reassign To:"
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/text_14sp"/>
 
-        <Button
-            android:id="@+id/btn_checkList_reviewFrom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SUBMIT"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_8dp"
+                android:background="@android:drawable/editbox_background"
+                android:inputType="text">
+
+                <Spinner
+                    android:id="@+id/spinner_reassignTo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <EditText
+                    android:id="@+id/editText_addNote_checklist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#FFD740"
+                    android:hint="@string/tap_too_add_note"
+                    android:padding="@dimen/dimen_16dp"
+                    android:textColor="@color/colorText"
+                    android:textSize="@dimen/dimen_16dp"/>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_checkList_reassignTo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_8dp"
+        android:text="SUBMIT"/>
 </LinearLayout>

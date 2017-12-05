@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -48,12 +50,18 @@ public class CheckListTitleFragment extends Fragment {
     @BindView(R.id.rv_checklist_title)
     RecyclerView rvChecklistTitle;
     Unbinder unbinder;
-    @BindView(R.id.spinner_reviewFrom)
-    Spinner mSpinnerReviewFrom;
-    @BindView(R.id.btn_checkList_reviewFrom)
-    Button mBtnCheckListReviewFrom;
-    @BindView(R.id.linearLayout_reviewFrom)
-    LinearLayout mLinearLayoutReviewFrom;
+    @BindView(R.id.spinner_reassignTo)
+    Spinner mSpinnerReassignTo;
+    @BindView(R.id.btn_checkList_reassignTo)
+    Button mBtnCheckListReassignTo;
+    @BindView(R.id.linearLayout_reassignTo)
+    LinearLayout mLinearLayoutReassignTo;
+    @BindView(R.id.linearLayout_reassignTo_innerLayout)
+    LinearLayout mLinearLayoutReassignTo_innerLayout;
+    @BindView(R.id.checkbox_is_reassignTo)
+    CheckBox mCheckboxIsReassignTo;
+    @BindView(R.id.editText_addNote_checklist)
+    EditText mEditTextAddNoteChecklist;
     private Realm realm;
     private Context mContext;
     private int projectSiteUserChecklistAssignmentId;
@@ -85,13 +93,25 @@ public class CheckListTitleFragment extends Fragment {
             isFromState = bundleArgs.getString("isFromState");
             if (isFromState != null) {
                 if (isFromState.equalsIgnoreCase("assigned")) {
-                    mLinearLayoutReviewFrom.setVisibility(View.GONE);
+                    mBtnCheckListReassignTo.setVisibility(View.GONE);
+                    mLinearLayoutReassignTo.setVisibility(View.GONE);
                 } else if (isFromState.equalsIgnoreCase("progress")) {
-                    mLinearLayoutReviewFrom.setVisibility(View.VISIBLE);
+                    mLinearLayoutReassignTo.setVisibility(View.GONE);
                 } else if (isFromState.equalsIgnoreCase("review")) {
-                    mLinearLayoutReviewFrom.setVisibility(View.GONE);
+                    mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
+                    mLinearLayoutReassignTo_innerLayout.setVisibility(View.GONE);
+                    mCheckboxIsReassignTo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                            if (isChecked) {
+                                mLinearLayoutReassignTo_innerLayout.setVisibility(View.VISIBLE);
+                            } else {
+                                mLinearLayoutReassignTo_innerLayout.setVisibility(View.GONE);
+                            }
+                        }
+                    });
                 } else if (isFromState.equalsIgnoreCase("complete")) {
-                    mLinearLayoutReviewFrom.setVisibility(View.GONE);
+                    mLinearLayoutReassignTo.setVisibility(View.GONE);
                 }
             }
         }
@@ -106,8 +126,15 @@ public class CheckListTitleFragment extends Fragment {
         if (isVisibleToUser && notFirstTime) {
             requestToGetCheckpoints();
             if (isCallChangeStatusApi) {
+                invalidateVisibleFields();
                 requestToChangeChecklistStatus();
             }
+        }
+    }
+
+    private void invalidateVisibleFields() {
+        if (isFromState.equalsIgnoreCase("review")) {
+            mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
         }
     }
 
@@ -118,6 +145,7 @@ public class CheckListTitleFragment extends Fragment {
         if (getUserVisibleHint()) {
             requestToGetCheckpoints();
             if (isCallChangeStatusApi) {
+                invalidateVisibleFields();
                 requestToChangeChecklistStatus();
             }
         }
@@ -129,9 +157,9 @@ public class CheckListTitleFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick(R.id.btn_checkList_reviewFrom)
+    @OnClick(R.id.btn_checkList_reassignTo)
     public void onReviewFromClicked() {
-        Toast.makeText(mContext, "Hi onReviewFromClicked", Toast.LENGTH_SHORT).show();
+        requestToChangeChecklistStatus();
     }
 
     private void setUpAdapter() {
@@ -205,10 +233,21 @@ public class CheckListTitleFragment extends Fragment {
     }
 
     private void requestToChangeChecklistStatus() {
+        String strChangeToState = "";
+        if (isFromState.equalsIgnoreCase("assigned")) {
+            strChangeToState = "in-progress";
+        } else if (isFromState.equalsIgnoreCase("progress")) {
+            strChangeToState = "in-progress";
+            isFromState = "review";
+            mBtnCheckListReassignTo.setVisibility(View.VISIBLE);
+        } else if (isFromState.equalsIgnoreCase("review")) {
+            strChangeToState = "complete";
+        }
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_user_checklist_assignment_id", projectSiteUserChecklistAssignmentId);
-            params.put("checklist_status_slug", "in-progress");
+            params.put("checklist_status_slug", strChangeToState);
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -224,6 +263,8 @@ public class CheckListTitleFragment extends Fragment {
                         Timber.d(String.valueOf(response));
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            isFromState = "progress";
+                            mBtnCheckListReassignTo.setVisibility(View.VISIBLE);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
