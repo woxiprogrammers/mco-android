@@ -103,6 +103,13 @@ public class CheckListVerificationFragment extends Fragment {
         if (bundleArgs != null) {
             projectSiteUserCheckpointId = bundleArgs.getInt("projectSiteUserCheckpointId");
             isFromState = bundleArgs.getString("isFromState");
+            if (isFromState != null) {
+                if (isFromState.equalsIgnoreCase("assigned")) {
+                } else if (isFromState.equalsIgnoreCase("progress")) {
+                } else if (isFromState.equalsIgnoreCase("review")) {
+                } else if (isFromState.equalsIgnoreCase("complete")) {
+                }
+            }
         }
         realm = Realm.getDefaultInstance();
         CheckPointsItem checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();

@@ -9,7 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
@@ -44,6 +48,12 @@ public class CheckListTitleFragment extends Fragment {
     @BindView(R.id.rv_checklist_title)
     RecyclerView rvChecklistTitle;
     Unbinder unbinder;
+    @BindView(R.id.spinner_reviewFrom)
+    Spinner mSpinnerReviewFrom;
+    @BindView(R.id.btn_checkList_reviewFrom)
+    Button mBtnCheckListReviewFrom;
+    @BindView(R.id.linearLayout_reviewFrom)
+    LinearLayout mLinearLayoutReviewFrom;
     private Realm realm;
     private Context mContext;
     private int projectSiteUserChecklistAssignmentId;
@@ -73,6 +83,17 @@ public class CheckListTitleFragment extends Fragment {
         if (bundleArgs != null) {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
             isFromState = bundleArgs.getString("isFromState");
+            if (isFromState != null) {
+                if (isFromState.equalsIgnoreCase("assigned")) {
+                    mLinearLayoutReviewFrom.setVisibility(View.GONE);
+                } else if (isFromState.equalsIgnoreCase("progress")) {
+                    mLinearLayoutReviewFrom.setVisibility(View.VISIBLE);
+                } else if (isFromState.equalsIgnoreCase("review")) {
+                    mLinearLayoutReviewFrom.setVisibility(View.GONE);
+                } else if (isFromState.equalsIgnoreCase("complete")) {
+                    mLinearLayoutReviewFrom.setVisibility(View.GONE);
+                }
+            }
         }
         return view;
     }
@@ -106,6 +127,11 @@ public class CheckListTitleFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.btn_checkList_reviewFrom)
+    public void onReviewFromClicked() {
+        Toast.makeText(mContext, "Hi onReviewFromClicked", Toast.LENGTH_SHORT).show();
     }
 
     private void setUpAdapter() {
