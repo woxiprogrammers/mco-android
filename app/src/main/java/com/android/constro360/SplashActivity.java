@@ -87,7 +87,7 @@ public class SplashActivity extends BaseActivity {
         //
         aclKeyValuePair.put("checklist-user-assignment", ChecklistHomeActivity.class.getName());
         aclKeyValuePair.put("checklist-recheck", ChecklistHomeActivity.class.getName());
-        aclKeyValuePair.put("checklist-management", CheckListActionActivity.class.getName());
+        aclKeyValuePair.put("checklist-management", ChecklistHomeActivity.class.getName());
         //
         aclKeyValuePair.put("manage-drawing", DrawingHomeActivity.class.getName());
         Gson gson = new Gson();
