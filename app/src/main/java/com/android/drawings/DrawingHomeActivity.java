@@ -73,6 +73,7 @@ public class DrawingHomeActivity extends BaseActivity {
     private Context mContext;
     private List<MainCategoriesItem> categoryList;
     RealmResults<MainCategoriesItem> mainCategoriesItems;
+    private int subCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,8 +323,8 @@ public class DrawingHomeActivity extends BaseActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-
-                        requestToGetImageData(awarenessSubCategoriesItems.get(position).getName(), awarenessSubCategoriesItems.get(position).getId());
+                        subCategoryId=awarenessSubCategoriesItems.get(position).getId();
+                        requestToGetImageData(awarenessSubCategoriesItems.get(position).getName(), subCategoryId);
 
                     }
 
@@ -359,6 +360,7 @@ public class DrawingHomeActivity extends BaseActivity {
                         intent.putExtra("url", imagesListDrawingItems.get(position).getImageUrl());
                         intent.putExtra("imageName",imagesListDrawingItems.get(position).getTitle());
                         intent.putExtra("getDrawingImageVersionId",imagesListDrawingItems.get(position).getDrawingImageVersionId());
+                        intent.putExtra("subId",subCategoryId);
                         startActivity(intent);
 
                     }

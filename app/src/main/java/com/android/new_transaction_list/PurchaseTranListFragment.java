@@ -81,10 +81,10 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        if(isFromPurchaseRequestHome){
+        if (isFromPurchaseRequestHome) {
             purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
 
-        }else {
+        } else {
             purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("purchaseOrderId", intPrimaryKey).findAll();
 
         }
@@ -123,9 +123,9 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
-            if(isFromPurchaseRequestHome){
+            if (isFromPurchaseRequestHome) {
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            }else {
+            } else {
                 params.put("purchase_order_id", intPrimaryKey);
             }
             params.put("page", 0);
@@ -223,6 +223,10 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                 holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBillListItem.getOutTime()));
 
             }
+            if(isFromPurchaseRequestHome){
+                holder.textViewPurchaseOrderFormat.setVisibility(View.VISIBLE);
+                holder.textViewPurchaseOrderFormat.setText(purchaseBillListItem.getPurchaseOrderFormatId());
+            }
             holder.textViewPurchaseRequestMaterials.setText(purchaseBillListItem.getMaterialName());
         }
 
@@ -245,6 +249,8 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             TextView textViewPurchaseRequestDate;
             @BindView(R.id.textView_purchase_request_materials)
             TextView textViewPurchaseRequestMaterials;
+            @BindView(R.id.textView_purchase_order_format)
+            TextView textViewPurchaseOrderFormat;
 
             MyViewHolder(View itemView) {
                 super(itemView);
