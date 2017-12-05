@@ -237,7 +237,7 @@ public class CheckListTitleFragment extends Fragment {
         if (isFromState.equalsIgnoreCase("assigned")) {
             strChangeToState = "in-progress";
         } else if (isFromState.equalsIgnoreCase("progress")) {
-            strChangeToState = "in-progress";
+            strChangeToState = "review";
             isFromState = "review";
             mBtnCheckListReassignTo.setVisibility(View.VISIBLE);
         } else if (isFromState.equalsIgnoreCase("review")) {
