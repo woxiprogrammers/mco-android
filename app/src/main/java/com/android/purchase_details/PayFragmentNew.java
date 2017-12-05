@@ -35,6 +35,7 @@ import com.android.new_transaction_list.TransactionDataItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -168,6 +169,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private CheckBox checkBox;
     private static String strVendorName;
     View layout;
+    private PurchaseOrderListItem purchaseOrderListItem;
 
     public PayFragmentNew() {
         // Required empty public constructor
@@ -194,7 +196,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
         Log.i("@@id", String.valueOf(orderId));
         realm = Realm.getDefaultInstance();
-        PurchaseOrderListItem purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
+         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
         if (!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())) {
             linearLayoutToVisible.setVisibility(View.VISIBLE);
             linearLayoutFirstLayout.setVisibility(View.GONE);
@@ -212,6 +214,13 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutShowImg.addView(imageView);
+                final int finalIndex = index;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openImageZoomFragment("http://test.mconstruction.co.in" + purchaseOrderListItem.getListOfImages().get(finalIndex).getImageUrl());
+                    }
+                });
                 AppUtils.getInstance().loadImageViaGlide(purchaseOrderListItem.getListOfImages().get(index).getImageUrl(), imageView, mContext);
 
             }
@@ -696,12 +705,18 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         editTextBillAmount.setText("");
     }
 
-    private void loadImage(String strUrl, LinearLayout linearLayout) {
+    private void loadImage(final String strUrl, LinearLayout linearLayout) {
         ImageView imageView = new ImageView(mContext);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(150, 150);
         layoutParams.setMargins(10, 10, 10, 10);
         imageView.setLayoutParams(layoutParams);
         linearLayout.addView(imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openImageZoomFragment("http://test.mconstruction.co.in" + strUrl);
+            }
+        });
         AppUtils.getInstance().loadImageViaGlide(strUrl, imageView, mContext);
 
     }
@@ -780,5 +795,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             });
             linearLayoutSetInflateNames.addView(viewData);
         }
+    }
+
+
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getActivity().getSupportFragmentManager(), "imageZoomDialogFragment");
     }
 }

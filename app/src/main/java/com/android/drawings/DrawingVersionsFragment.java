@@ -52,17 +52,18 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
     Unbinder unbinder;
     private Realm realm;
     private Context mContext;
-    private int drawingId;
+    private int drawingId,getSubCatId;
     private String imagePath,versionUrl;
 
     public DrawingVersionsFragment() {
         // Required empty public constructor
     }
 
-    public static DrawingVersionsFragment newInstance(int drawingVersionId) {
+    public static DrawingVersionsFragment newInstance(int drawingVersionId,int subCatId) {
         Bundle args = new Bundle();
         DrawingVersionsFragment fragment = new DrawingVersionsFragment();
         args.putInt("imageId",drawingVersionId);
+        args.putInt("currentSubCatId",subCatId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -75,6 +76,7 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
         Bundle bundle = getArguments();
         if (bundle != null) {
             drawingId = bundle.getInt("imageId");
+            getSubCatId=bundle.getInt("currentSubCatId");
         }
         requestToGetVersionList();
         return view;
@@ -92,7 +94,7 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
         try {
             params.put("image_id", drawingId);
             params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
-            params.put("sub_category_id",10);
+            params.put("sub_category_id",getSubCatId);
             Log.i("@SP", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -213,6 +215,9 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
             versionsItem = versionsItemOrderedRealmCollection.get(position);
             holder.textViewCommentNo.setText(String.valueOf(counter = counter + 1) + ".");
             holder.textViewCommentList.setText(versionsItem.getTitle());
+            if(DrawingDetailsActivity.drawingVersionId == position){
+                holder.textViewCommentList.setTextColor(getActivity().getColor(R.color.colorAccent));
+            }
 
         }
 

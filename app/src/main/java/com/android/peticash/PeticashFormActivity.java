@@ -268,7 +268,7 @@ public class PeticashFormActivity extends BaseActivity {
     public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
     private SearchAssetListItem searchAssetListItem_fromResult = null;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
-    private int unidId, indexItemUnit;
+    private int unitId, indexItemUnit;
     private int peticashTransactionId;
     private boolean isOtherType;
     private EmployeesearchdataItem employeesearchdataItem;
@@ -288,10 +288,10 @@ public class PeticashFormActivity extends BaseActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (!TextUtils.isEmpty(charSequence.toString())) {
-                if (Float.parseFloat(charSequence.toString()) > /*Integer.parseInt(approvedSalaryAmount)*/ 3000.0) {
+                if (Float.parseFloat(charSequence.toString()) > Float.parseFloat(approvedSalaryAmount)) {
                     textViewAdvAmountCheck.setVisibility(View.VISIBLE);
                     buttonSalarySubmit.setVisibility(View.GONE);
-                    textViewAdvAmountCheck.setText("Amount should be less than 3000");
+                    textViewAdvAmountCheck.setText("Amount should be less than " + approvedSalaryAmount);
 
                 } else {
                     textViewAdvAmountCheck.setVisibility(View.GONE);
@@ -501,10 +501,10 @@ public class PeticashFormActivity extends BaseActivity {
                         edittextPayableAmountSalary.setText(String.valueOf(0));
                     } else {
                         edittextPayableAmountSalary.setText(String.valueOf(payableAmountForSalary));
-                        if (payableAmountForSalary > /*Float.parseFloat(approvedSalaryAmount)*/ 3000.0) {
+                        if (payableAmountForSalary > Float.parseFloat(approvedSalaryAmount) ) {
                             textViewDenyTransaction.setVisibility(View.VISIBLE);
                             buttonSalarySubmit.setVisibility(View.GONE);
-                            textViewDenyTransaction.setText("Amount should be less than 3000"/* + Float.parseFloat(approvedSalaryAmount)*/);
+                            textViewDenyTransaction.setText("Amount should be less than " + Float.parseFloat(approvedSalaryAmount));
 
                         } else {
                             textViewDenyTransaction.setText("");
@@ -589,12 +589,6 @@ public class PeticashFormActivity extends BaseActivity {
             primaryKey = bundleExtras.getInt("employeeId");
             approvedSalaryAmount = bundleExtras.getString("approvedSalaryAmount");
             employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            /*if (employeesearchdataItem.isTransactionPending()) {
-            } else {
-                textViewDenyTransaction.setVisibility(View.GONE);
-                buttonSalarySubmit.setVisibility(View.VISIBLE);
-            }*/
-
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
             textViewBalance.setText("Balance - " + employeesearchdataItem.getBalance());
@@ -763,9 +757,6 @@ public class PeticashFormActivity extends BaseActivity {
                     editTextItemName.setText(searchAssetListItem_fromResult.getAssetName());
                 }
             }
-            /*} else {
-                Timber.i("missing alert dialog");
-            }*/
         }
     }
 
@@ -794,7 +785,7 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("employee_id", primaryKey);
             params.put("type", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
             //ToDo Sharvari date
-//            params.put("date", editTextSalaryDate.getText().toString());
+            params.put("date", currentDate);
             params.put("amount", editTextSalaryAmount.getText().toString());
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
@@ -818,6 +809,7 @@ public class PeticashFormActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.i("@Pa",params.toString());
         AndroidNetworking.post(AppURL.API_CREATE_SALARY_FOR_EMPLOYEE + AppUtils.getInstance().getCurrentToken())
                 .setTag("API_CREATE_SALARY_FOR_EMPLOYEE")
                 .addJSONObjectBody(params)
@@ -876,11 +868,11 @@ public class PeticashFormActivity extends BaseActivity {
             }
             if (spinnerMaterialOrAsset.getSelectedItemPosition() == 0) {
                 if (isNewItem) {
-                    unidId = searchMaterialListItem_fromResult_staticNew.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
-                    params.put("unit_id", unidId);
+                    unitId = searchMaterialListItem_fromResult_staticNew.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
+                    params.put("unit_id", unitId);
                 } else {
-                    unidId = searchMaterialListItem_fromResult.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
-                    params.put("unit_id", unidId);
+                    unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
+                    params.put("unit_id", unitId);
                 }
             }
 

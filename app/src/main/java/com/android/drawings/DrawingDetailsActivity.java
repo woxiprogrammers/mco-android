@@ -53,7 +53,7 @@ public class DrawingDetailsActivity extends BaseActivity {
     public static String imageUrl;
     private Context mContext;
     private AlertDialog alert_Dialog;
-    public static int drawingVersionId;
+    public static int drawingVersionId,subCatId;
     public static String imageName;
     private boolean doubleBackToExitPressedOnce;
 
@@ -68,6 +68,7 @@ public class DrawingDetailsActivity extends BaseActivity {
             imageUrl = bundle.getString("url");
             drawingVersionId = bundle.getInt("getDrawingImageVersionId");
             imageName = bundle.getString("imageName");
+            subCatId=bundle.getInt("subId");
         }
         setTitle();
         call(drawingVersionId, imageUrl, true);
@@ -169,7 +170,7 @@ public class DrawingDetailsActivity extends BaseActivity {
     }
 
     private void getFragmentVersions() {
-        DrawingVersionsFragment drawingVersionsFragment = DrawingVersionsFragment.newInstance(drawingVersionId);
+        DrawingVersionsFragment drawingVersionsFragment = DrawingVersionsFragment.newInstance(drawingVersionId,subCatId);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, drawingVersionsFragment, "drawingVersionsFragment");
         fragmentTransaction.commit();

@@ -19,6 +19,7 @@ import com.android.peticashautosearchemployee.TransactionDetailResponse;
 import com.android.purchase_details.MaterialImagesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -86,13 +87,14 @@ public class ViewPeticashTransactions extends BaseActivity {
     LinearLayout ll_forSupplierSetInOutTime;
     private Realm realm;
     private int transactionTypeId;
+    private TransactionDetailData transactionDetailData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_peticash_transactions);
         ButterKnife.bind(this);
-        mContext=ViewPeticashTransactions.this;
+        mContext = ViewPeticashTransactions.this;
         Bundle bundle = getIntent().getExtras();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Transaction Details");
@@ -165,7 +167,7 @@ public class ViewPeticashTransactions extends BaseActivity {
 
     private void setData() {
         realm = Realm.getDefaultInstance();
-        TransactionDetailData transactionDetailData = realm.where(TransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
+        transactionDetailData = realm.where(TransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
         editTextSourceSetName.setText(transactionDetailData.getSourceName());
         editTextSetItemName.setText(transactionDetailData.getName());
         edittextSetQuantity.setText(transactionDetailData.getQuantity());
@@ -175,10 +177,10 @@ public class ViewPeticashTransactions extends BaseActivity {
         editTextSetGrnNumber.setText(transactionDetailData.getGrn());
         editTextSetPayableAmount.setText(transactionDetailData.getBillAmount());
 
-        if(!transactionDetailData.getRemark().isEmpty()){
+        if (!transactionDetailData.getRemark().isEmpty()) {
             editTextSetRemark.setText(transactionDetailData.getRemark());
             editTextSetRemark.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             editTextSetRemark.setVisibility(View.GONE);
         }
         editTesxtSetBillNumber.setText(transactionDetailData.getBillNumber());
@@ -202,19 +204,32 @@ public class ViewPeticashTransactions extends BaseActivity {
             linearLayoutSetRefNumber.setVisibility(View.GONE);
         }
 
-        if(transactionDetailData.getListOfImages().size() > 0){
-            for (ListOfImagesItem currentUser : transactionDetailData.getListOfImages()) {
+        if (transactionDetailData.getListOfImages().size() > 0) {
+            for (int i = 0; i < transactionDetailData.getListOfImages().size(); i++) {
+                ListOfImagesItem currentUser = transactionDetailData.getListOfImages().get(i);
                 String strMaterialImageUrl = currentUser.getImageUrl();
                 ImageView imageView = new ImageView(mContext);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutSetUploadImage.addView(imageView);
-                AppUtils.getInstance().loadImageViaGlide(strMaterialImageUrl,imageView,mContext);
 
-
+                final int finalI = i;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openImageZoomFragment("http://test.mconstruction.co.in" + transactionDetailData.getListOfImages().get(finalI).getImageUrl());
+                    }
+                });
+                AppUtils.getInstance().loadImageViaGlide(strMaterialImageUrl, imageView, mContext);
             }
         }
 
+    }
+
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
     }
 }

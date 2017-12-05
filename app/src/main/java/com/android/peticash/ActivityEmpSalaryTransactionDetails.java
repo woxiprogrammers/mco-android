@@ -15,6 +15,7 @@ import com.android.peticashautosearchemployee.EmpSalaryTransactionDetailData;
 import com.android.peticashautosearchemployee.EmpSalaryTransactionDetailResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -63,6 +64,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
     private Realm realm;
     private String transactionDetailType;
     public static Context mContext;
+    private EmpSalaryTransactionDetailData empSalaryTransactionDetailData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +142,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
 
     private void setData() {
         realm = Realm.getDefaultInstance();
-        EmpSalaryTransactionDetailData empSalaryTransactionDetailData = realm.where(EmpSalaryTransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
+         empSalaryTransactionDetailData = realm.where(EmpSalaryTransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
         edittextSetEmpName.setText(empSalaryTransactionDetailData.getEmployeeName());
         editTextSetSalaryDate.setText(empSalaryTransactionDetailData.getDate());
         if(transactionDetailType.equalsIgnoreCase("Salary")){
@@ -168,10 +170,23 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutSetImage.addView(imageView);
+                final int finalIndex = index;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openImageZoomFragment("http://test.mconstruction.co.in" + empSalaryTransactionDetailData.getListOfImages().get(finalIndex).getImageUrl());
+                    }
+                });
                 AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView,mContext);
 
 
             }
         }
+    }
+
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
     }
 }

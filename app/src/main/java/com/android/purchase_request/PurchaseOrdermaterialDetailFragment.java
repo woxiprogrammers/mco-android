@@ -202,6 +202,13 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
                     holder.linearLayoutQuoImg.addView(imageView);
+                    final int finalIndex = index;
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openImageZoomFragment("http://test.mconstruction.co.in"+materialsItem.getQuotationImages().get(finalIndex).getImageUrl());
+                        }
+                    });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getQuotationImages().get(index).getImageUrl(), imageView, getActivity());
 
                 }
