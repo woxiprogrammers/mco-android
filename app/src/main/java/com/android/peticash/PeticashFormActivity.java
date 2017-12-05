@@ -495,7 +495,7 @@ public class PeticashFormActivity extends BaseActivity {
                 if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
                     floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
                     editTextSalaryAmount.setText(String.valueOf(floatAmount));
-                    payableAmountForSalary = floatAmount - 100;//intadvanceampunt
+                    payableAmountForSalary = floatAmount - intAdvanceAmount;//intadvanceampunt
 
                     if (payableAmountForSalary < 0) {
                         edittextPayableAmountSalary.setText(String.valueOf(0));

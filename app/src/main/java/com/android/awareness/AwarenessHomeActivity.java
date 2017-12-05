@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -127,6 +128,7 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+
 
     }
 
@@ -341,16 +343,6 @@ public class AwarenessHomeActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         RealmResults<AwarenessSubCategoriesItem> mainCategoriesItemRealmResults = realm.where(AwarenessSubCategoriesItem.class).findAll();
         setUpSubCatSpinnerAdapter(mainCategoriesItemRealmResults);
-        /*if (mainCategoriesItemRealmResults != null) {
-            mainCategoriesItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<SubCategoriesItem>>() {
-                @Override
-                public void onChange(RealmResults<SubCategoriesItem> availableUsersItems) {
-                    setUpSubCatSpinnerAdapter(availableUsersItems);
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("setUpUsersSubCatSpinnerValueChangeListener");
-        }*/
     }
 
     private void setUpSubCatSpinnerAdapter(RealmResults<AwarenessSubCategoriesItem> subCategoriesItems) {
