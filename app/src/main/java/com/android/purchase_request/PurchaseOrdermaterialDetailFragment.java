@@ -54,7 +54,7 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
     private ProgressBar progressBar;
     private Button buttonOk;
     private int purchaseOrderId;
-    private TextView textViewVenName,mob;
+    private TextView textViewVenName, mob;
 
     @NonNull
     @Override
@@ -71,8 +71,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
         buttonOk = dialog.findViewById(R.id.btnOk);
-        textViewVenName=dialog.findViewById(R.id.textViewVenName);
-        mob=dialog.findViewById(R.id.mob);
+        textViewVenName = dialog.findViewById(R.id.textViewVenName);
+        mob = dialog.findViewById(R.id.mob);
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,8 +116,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                                     progressBar.setVisibility(View.GONE);
                                     if (response.getPurchaseOrderDetailData().getMaterials().size() > 0) {
                                         setUpAdapter();
-                                        mob.setText("Mobile Number:- " +response.getPurchaseOrderDetailData().getVendorMobile());
-                                        textViewVenName.setText("Vendor Name:- "+ response.getPurchaseOrderDetailData().getVendorName());
+                                        mob.setText("Mobile Number:- " + response.getPurchaseOrderDetailData().getVendorMobile());
+                                        textViewVenName.setText("Vendor Name:- " + response.getPurchaseOrderDetailData().getVendorName());
 //                                        textViewNoTransactions.setVisibility(View.GONE);
                                     }
                                     /*else {
@@ -170,7 +170,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
 
     public class PurchaseOrdermaterialDetailAdapter extends RealmRecyclerViewAdapter<MaterialsItem, PurchaseOrdermaterialDetailAdapter.MyViewHolder> {
         private OrderedRealmCollection<MaterialsItem> materialsItemOrderedRealmCollection;
-        private MaterialsItem materialsItem;
 
         public PurchaseOrdermaterialDetailAdapter(@Nullable OrderedRealmCollection<MaterialsItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
@@ -186,14 +185,13 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            materialsItem = materialsItemOrderedRealmCollection.get(position);
+            final MaterialsItem materialsItem = materialsItemOrderedRealmCollection.get(position);
             holder.textviewMatDetailName.setText(materialsItem.getName());
             holder.textviewQuantity.setText(materialsItem.getQuantity());
             holder.textviewUnitName.setText(materialsItem.getUnitName());
             holder.linearLayoutQuoImg.removeAllViews();
             holder.textviewRatePerUnit.setText(materialsItem.getRatePerUnit());
-            /*holder.textviewVendorName.setText(detailData.getVendorName());
-            holder.textviewVendorMobile.setText(detailData.getVendorMobile());*/
+            holder.textviewExpDate.setText(materialsItem.getExpectedDeliveryDate());
 
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {
@@ -201,16 +199,18 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
-                    holder.linearLayoutQuoImg.addView(imageView);
-                    final int finalIndex = index;
+                    imageView.setId(index);
+//                    final int finalIndex = index;
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            openImageZoomFragment("http://test.mconstruction.co.in"+materialsItem.getQuotationImages().get(finalIndex).getImageUrl());
+                            int index = view.getId();
+                            openImageZoomFragment("http://test.mconstruction.co.in" + materialsItem.getQuotationImages().get(index).getImageUrl());
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getQuotationImages().get(index).getImageUrl(), imageView, getActivity());
 
+                    holder.linearLayoutQuoImg.addView(imageView);
                 }
             }
             holder.linearLayoutClientImg.removeAllViews();
@@ -220,16 +220,18 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
-                    holder.linearLayoutClientImg.addView(imageView);
-                    final int finalIndex = index;
+//                    final int finalIndex = index;
+                    imageView.setId(index);
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            openImageZoomFragment("http://test.mconstruction.co.in"+materialsItem.getClientApprovalImages().get(finalIndex).getImageUrl());
+                            int index = view.getId();
+                            openImageZoomFragment("http://test.mconstruction.co.in" + materialsItem.getClientApprovalImages().get(index).getImageUrl());
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getClientApprovalImages().get(index).getImageUrl(), imageView, getActivity());
 
+                    holder.linearLayoutClientImg.addView(imageView);
                 }
             }
         }
@@ -258,6 +260,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             LinearLayout linearLayoutClientImg;
             @BindView(R.id.textviewRatePerUnit)
             TextView textviewRatePerUnit;
+            @BindView(R.id.textviewExpDate)
+            TextView textviewExpDate;
 
             private MyViewHolder(View itemView) {
                 super(itemView);
