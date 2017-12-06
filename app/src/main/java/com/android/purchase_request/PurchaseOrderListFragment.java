@@ -136,6 +136,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
 
         }
+
+
+
+
+
+
+
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, int position) {
