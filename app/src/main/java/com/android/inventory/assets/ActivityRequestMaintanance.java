@@ -62,8 +62,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
     Button buttonRequest;
     @BindView(R.id.textView_capture)
     TextView textViewCapture;
-    @BindView(R.id.textView_pick)
-    TextView textViewPick;
     @BindView(R.id.ll_addImage)
     LinearLayout llAddImage;
     private Context mContext;
@@ -196,50 +194,14 @@ public class ActivityRequestMaintanance extends BaseActivity {
                     }
                 }
                 break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                llAddImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                for (Image currentImage : imagesList2) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        llAddImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
         }
     }
 
-    @OnClick({R.id.textView_capture, R.id.textView_pick})
+    @OnClick({R.id.textView_capture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textView_capture:
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-                break;
-            case R.id.textView_pick:
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
                 break;
         }
     }
@@ -247,7 +209,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private void chooseAction(int type, Class aClass) {
         Intent intent = new Intent(mContext, aClass);
         Params params = new Params();
-        params.setCaptureLimit(10);
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
         params.setToolbarColor(R.color.colorPrimaryLight);
         params.setActionButtonColor(R.color.colorAccentDark);
         params.setButtonTextColor(R.color.colorWhite);

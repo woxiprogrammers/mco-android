@@ -136,11 +136,6 @@ public class PayAndBillsActivity extends BaseActivity {
                 Timber.d(String.valueOf(imagesList));
                 Toast.makeText(this, "Capture", Toast.LENGTH_SHORT).show();
                 break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                Toast.makeText(this, "Pick", Toast.LENGTH_SHORT).show();
-                break;
         }
     }
 

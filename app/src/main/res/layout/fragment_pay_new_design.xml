@@ -44,20 +44,6 @@
                     android:drawableTop="@android:drawable/ic_menu_camera"
                     android:gravity="center_horizontal"
                     android:text="Capture Images"/>
-                <View
-                    android:layout_width="@dimen/dimen_20dp"
-                    android:layout_height="match_parent"/>
-                <TextView
-                    android:id="@+id/textViewPickMatImg"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:drawableTop="@android:drawable/ic_menu_gallery"
-                    android:gravity="center_horizontal"
-                    android:onClick="onViewClicked"
-                    android:text="Choose Images"
-                    android:visibility="gone"/>
             </LinearLayout>
             <HorizontalScrollView
                 android:layout_width="wrap_content"
@@ -212,20 +198,6 @@
                     android:drawableTop="@android:drawable/ic_menu_camera"
                     android:gravity="center_horizontal"
                     android:text="Capture Images"/>
-                <View
-                    android:layout_width="@dimen/dimen_20dp"
-                    android:layout_height="match_parent"/>
-                <TextView
-                    android:id="@+id/textViewPickTransImg"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:drawableTop="@android:drawable/ic_menu_gallery"
-                    android:gravity="center_horizontal"
-                    android:onClick="onViewClicked"
-                    android:text="Choose Images"
-                    android:visibility="gone"/>
             </LinearLayout>
             <HorizontalScrollView
                 android:layout_width="wrap_content"

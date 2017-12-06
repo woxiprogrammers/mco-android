@@ -729,7 +729,6 @@ public class PeticashFormActivity extends BaseActivity {
                 if (isNewItem) {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                     linearLayoutMiscCategory.setVisibility(View.VISIBLE);
-                    setMiscelleneousCategories();
 
                 } else {
                     searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();

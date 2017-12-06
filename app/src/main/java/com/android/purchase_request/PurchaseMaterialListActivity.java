@@ -373,7 +373,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         ll_dialog_unit = dialogView.findViewById(R.id.ll_dialog_unit);
         View view = dialogView.findViewById(R.id.layoutCamera);
         TextView mTextViewCaptureImages = (TextView) view.findViewById(R.id.textView_capture);
-        TextView mTextViewPickImages = (TextView) view.findViewById(R.id.textView_pick);
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -391,20 +390,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 params.setButtonTextColor(R.color.colorWhite);
                 intent.putExtra(Constants.KEY_PARAMS, params);
                 startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
-            }
-        });
-        mTextViewPickImages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
             }
         });
         mButtonAddMaterialAsset.setOnClickListener(new View.OnClickListener() {
@@ -580,31 +565,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 arrayImageFileList = new ArrayList<File>();
                 File currentImageFile;
                 for (Image currentImage : imagesList) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        mLlUploadImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                mLlUploadImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
                         arrayImageFileList.add(currentImageFile);

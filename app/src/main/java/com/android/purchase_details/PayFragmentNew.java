@@ -75,8 +75,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     EditText editTextBillumber;
     @BindView(R.id.textViewCaptureMatImg)
     TextView textViewCaptureMatImg;
-    @BindView(R.id.textViewPickMatImg)
-    TextView textViewPickMatImg;
     @BindView(R.id.linearLayoutMatImg)
     LinearLayout linearLayoutMatImg;
     @BindView(R.id.llAddMatImg)
@@ -93,8 +91,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     LinearLayout linearLayoutGrnNum;
     @BindView(R.id.textViewCaptureTransImg)
     TextView textViewCaptureTransImg;
-    @BindView(R.id.textViewPickTransImg)
-    TextView textViewPickTransImg;
     @BindView(R.id.linearLayoutTransImg)
     LinearLayout linearLayoutTransImg;
     @BindView(R.id.ll_PaymentImageLayout)
@@ -243,16 +239,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
     }
 
-    @OnClick({R.id.textViewCaptureMatImg, R.id.textViewPickMatImg, R.id.buttonActionGenerateGrn, R.id.textViewCaptureTransImg, R.id.textViewPickTransImg, R.id.buttonActionSubmit})
+    @OnClick({R.id.textViewCaptureMatImg,  R.id.buttonActionGenerateGrn, R.id.textViewCaptureTransImg,R.id.buttonActionSubmit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCaptureMatImg:
                 isForImage = true;
                 captureImage();
-                break;
-            case R.id.textViewPickMatImg:
-                isForImage = true;
-                pickImage();
                 break;
             case R.id.buttonActionGenerateGrn:
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
@@ -261,10 +253,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             case R.id.textViewCaptureTransImg:
                 isForImage = false;
                 captureImage();
-                break;
-            case R.id.textViewPickTransImg:
-                isForImage = false;
-                pickImage();
                 break;
             case R.id.buttonActionSubmit:
                 validateEntries();
@@ -284,13 +272,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     addImages(imagesList, llAddMatImg);
                 else
                     addImages(imagesList, llPaymentImageLayout);
-                break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                if (isForImage)
-                    addImages(imagesList2, llAddMatImg);
-                else
-                    addImages(imagesList2, llPaymentImageLayout);
                 break;
         }
     }
@@ -504,17 +485,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
-    private void pickImage() {
-        Intent intent = new Intent(mContext, GalleryActivity.class);
-        Params params = new Params();
-        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setToolbarColor(R.color.colorPrimaryLight);
-        params.setActionButtonColor(R.color.colorAccentDark);
-        params.setButtonTextColor(R.color.colorWhite);
-        intent.putExtra(Constants.KEY_PARAMS, params);
-        startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
-    }
 
     private void addImages(ArrayList<Image> imagesList, LinearLayout layout) {
         layout.removeAllViews();
@@ -688,13 +658,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             } else {
                 linearLayoutFirstLayout.setVisibility(View.VISIBLE);
                 layout.setVisibility(View.GONE);
-           /* linearLayoutToVisible.setVisibility(View.GONE);
-            editTextBillumber.setEnabled(true);
-            editTextVehNum.setEnabled(true);
-            editTextInTime.setEnabled(true);
-            editTextOutTime.setEnabled(true);
-            editTextBillAmount.setEnabled(true);
-            editTextGrnNum.setEnabled(false);*/
             }
         }
     }

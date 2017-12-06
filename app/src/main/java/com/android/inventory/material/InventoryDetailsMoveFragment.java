@@ -84,8 +84,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     AutoCompleteTextView edit_text_selected_dest_name;
     @BindView(R.id.ll_forSupplierVehicle)
     LinearLayout ll_forSupplierVehicle;
-    @BindView(R.id.ll_forSupplierInOutTime)
-    LinearLayout ll_forSupplierInOutTime;
     @BindView(R.id.checkbox_moveInOut)
     CheckBox checkboxMoveInOut;
     @BindView(R.id.edit_text_vehicleNumber)
@@ -96,14 +94,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     LinearLayout llChallanNumber;
     @BindView(R.id.editText_addNote)
     EditText editTextAddNote;
-    @BindView(R.id.editText_Date)
-    EditText editText_Date;
     @BindView(R.id.button_move)
     Button buttonMove;
-    @BindView(R.id.edit_text_inTime)
-    EditText editTextInTime;
-    @BindView(R.id.edit_text_outTime)
-    EditText editTextOutTime;
     @BindView(R.id.source_spinner)
     Spinner sourceMoveInSpinner;
     @BindView(R.id.linerLayoutSelectedNames)
@@ -119,8 +111,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.textView_capture)
     TextView textViewCapture;
     Unbinder unbinder;
-    @BindView(R.id.textView_pick)
-    TextView textViewPick;
     @BindView(R.id.spinnerMaterialUnits)
     Spinner spinnerMaterialUnits;
     @BindView(R.id.linearLayoutMaterialSite)
@@ -197,31 +187,11 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     public void fragmentBecameVisible() {
     }
 
-    @OnClick({R.id.textView_capture, R.id.textView_pick, R.id.editText_Date, R.id.edit_text_inTime, R.id.edit_text_outTime})
+    @OnClick({R.id.textView_capture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textView_capture:
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-                break;
-            case R.id.textView_pick:
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
-                break;
-            case R.id.editText_Date:
-                setInOutDate(editText_Date);
-                break;
-            case R.id.edit_text_inTime:
-                setInOutTime(editTextInTime);
-                break;
-            case R.id.edit_text_outTime:
-                setInOutTime(editTextOutTime);
                 break;
         }
     }
@@ -245,15 +215,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             edittextQuantity.requestFocus();
             edittextQuantity.setError(null);
         }
-        //Date
-        strDate = editText_Date.getText().toString();
-        if (TextUtils.isEmpty(strDate)) {
-            editText_Date.setError(getString(R.string.please_enter) + getString(R.string.date));
-            return;
-        } else {
-            editText_Date.requestFocus();
-            editText_Date.setError(null);
-        }
         if (!checkboxMoveInOut.isChecked()) {
         }
         if (isChecked) {
@@ -265,24 +226,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             } else {
                 editTextVehicleNumber.setError(null);
                 editTextVehicleNumber.requestFocus();
-            }
-            //In Time
-            strInTime = editTextInTime.getText().toString();
-            if (TextUtils.isEmpty(strInTime)) {
-                editTextInTime.setError(getString(R.string.please_enter) + getString(R.string.in_time));
-                return;
-            } else {
-                editTextInTime.setError(null);
-                editTextInTime.requestFocus();
-            }
-            //Out Time
-            strOutTime = editTextOutTime.getText().toString();
-            if (TextUtils.isEmpty(strOutTime)) {
-                editTextOutTime.setError(getString(R.string.please_enter) + getString(R.string.out_time));
-                return;
-            } else {
-                editTextOutTime.setError(null);
-                editTextOutTime.requestFocus();
             }
             strBillAmount = editTextBillamount.getText().toString();
             if (TextUtils.isEmpty(strBillAmount)) {
@@ -329,7 +272,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 unidId = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
                 params.put("unit_id", unidId);
             }
-            params.put("date", strDate);
+//            params.put("date", strDate);
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
                 params.put("remark", editTextAddNote.getText().toString());
             } else {
@@ -337,8 +280,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             }
             params.put("images", jsonImageNameArray);
             if (str.equalsIgnoreCase(getString(R.string.supplier_name))) {
-                params.put("in_time", strToDate + " " + strInTime);
-                params.put("out_time", strToDate + " " + strOutTime);
+//                params.put("in_time", strToDate + " " + strInTime);
+//                params.put("out_time", strToDate + " " + strOutTime);
                 params.put("vehicle_number", strVehicleNumber);
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
@@ -346,7 +289,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
             }
-            Log.i("@@SParams", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -377,7 +319,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void chooseAction(int type, Class aClass) {
         Intent intent = new Intent(mContext, aClass);
         Params params = new Params();
-        params.setCaptureLimit(10);
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
         params.setToolbarColor(R.color.colorPrimaryLight);
         params.setActionButtonColor(R.color.colorAccentDark);
         params.setButtonTextColor(R.color.colorWhite);
@@ -398,31 +340,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 arrayImageFileList = new ArrayList<File>();
                 File currentImageFile;
                 for (Image currentImage : imagesList) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        llAddImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                llAddImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
                         arrayImageFileList.add(currentImageFile);
@@ -476,7 +393,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     mFrameLayoutFirst.setVisibility(View.GONE);
                     mFrameLayout1.setVisibility(View.VISIBLE);
                     ll_forSupplierVehicle.setVisibility(View.GONE);
-                    ll_forSupplierInOutTime.setVisibility(View.GONE);
                     linearLayoutMaterialSite.setVisibility(View.GONE);
                     text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
                 }
@@ -490,7 +406,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     case 0:
                         getSystemSites();
                         text_ViewSetSelectedTextName.setText(getString(R.string.site_name));
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
@@ -500,7 +415,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Client
                     case 1:
                         text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
@@ -510,7 +424,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Labour
                     case 2:
                         text_ViewSetSelectedTextName.setText(getString(R.string.labour_name));
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
@@ -520,7 +433,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For SubContracter
                     case 3:
                         text_ViewSetSelectedTextName.setText(getString(R.string.sub_contracter_name));
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearLayoutMaterialSite.setVisibility(View.GONE);
@@ -530,7 +442,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Supplier
                     case 4:
                         text_ViewSetSelectedTextName.setText(getString(R.string.supplier_name));
-                        ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearLayoutMaterialSite.setVisibility(View.GONE);
@@ -556,7 +467,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         str = getString(R.string.client_name);
                         break;
                     //For By Hand
@@ -566,7 +476,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         str = getString(R.string.shop_name);
                         break;
                     //For Office
@@ -575,7 +484,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linearBillAmount.setVisibility(View.GONE);
                         linerLayoutSelectedNames.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         str = "Office";
                         break;
                     //For Supplier
@@ -585,7 +493,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
-                        ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
                         isChecked = true;
                         break;
