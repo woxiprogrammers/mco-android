@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -191,7 +192,12 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             holder.textviewUnitName.setText(materialsItem.getUnitName());
             holder.linearLayoutQuoImg.removeAllViews();
             holder.textviewRatePerUnit.setText(materialsItem.getRatePerUnit());
-            holder.textviewExpDate.setText(materialsItem.getExpectedDeliveryDate());
+            if (!TextUtils.isEmpty(materialsItem.getExpectedDeliveryDate())) {
+                holder.textviewExpDate.setText(materialsItem.getExpectedDeliveryDate());
+                holder.linearLayoutExpDate.setVisibility(View.VISIBLE);
+            } else {
+                holder.linearLayoutExpDate.setVisibility(View.GONE);
+            }
 
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {
@@ -200,7 +206,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                     layoutParams.setMargins(10, 10, 10, 10);
                     imageView.setLayoutParams(layoutParams);
                     imageView.setId(index);
-//                    final int finalIndex = index;
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -262,6 +267,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             TextView textviewRatePerUnit;
             @BindView(R.id.textviewExpDate)
             TextView textviewExpDate;
+            @BindView(R.id.linearLayoutExpDate)
+            LinearLayout linearLayoutExpDate;
 
             private MyViewHolder(View itemView) {
                 super(itemView);

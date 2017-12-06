@@ -2,6 +2,7 @@ package com.android.awareness;
 
 import android.Manifest;
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -85,7 +86,8 @@ public class AwarenessHomeActivity extends BaseActivity {
     private String getPath = "";
     private boolean isGrant;
     private String encodedString;
-
+    private long downloadReference;
+    private BroadcastReceiver downloadRecevier;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +130,15 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+        downloadRecevier = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                if (referenceId == downloadReference) {
+                   Toast.makeText(mContext,"Download Completed",Toast.LENGTH_LONG).show();
+                }
+            }
+        };
 
 
     }
@@ -468,7 +479,10 @@ public class AwarenessHomeActivity extends BaseActivity {
         request.setDescription("Downloading ");
         request.setVisibleInDownloadsUi(true);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "");
-        downloadManager.enqueue(request);
+
+        downloadReference=downloadManager.enqueue(request);
+        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        registerReceiver(downloadRecevier, filter);
     }
 
     @Override
