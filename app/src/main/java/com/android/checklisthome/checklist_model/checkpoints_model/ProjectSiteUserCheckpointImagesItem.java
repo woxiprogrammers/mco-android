@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 
 public class ProjectSiteUserCheckpointImagesItem extends RealmObject {
+    private boolean isThisImageCaptured;
     @SerializedName("project_site_checklist_checkpoint_image_caption")
     private String projectSiteChecklistCheckpointImageCaption;
     @SerializedName("project_site_checklist_checkpoint_image_is_required")
@@ -15,6 +16,14 @@ public class ProjectSiteUserCheckpointImagesItem extends RealmObject {
     private int projectSiteUserCheckpointImageId;
     @SerializedName("project_site_user_checkpoint_image_url")
     private String projectSiteUserCheckpointImageUrl;
+
+    public boolean isThisImageCaptured() {
+        return isThisImageCaptured;
+    }
+
+    public void setThisImageCaptured(boolean thisImageCaptured) {
+        isThisImageCaptured = thisImageCaptured;
+    }
 
     public void setProjectSiteChecklistCheckpointImageCaption(String projectSiteChecklistCheckpointImageCaption) {
         this.projectSiteChecklistCheckpointImageCaption = projectSiteChecklistCheckpointImageCaption;

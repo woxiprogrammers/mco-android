@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
+import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -200,12 +201,18 @@ public class CheckListTitleFragment extends Fragment {
                 .getAsObject(CheckPointsResponse.class, new ParsedRequestListener<CheckPointsResponse>() {
                     @Override
                     public void onResponse(final CheckPointsResponse response) {
+                        try {
+                            Timber.d(String.valueOf(response.getCheckPointsdata().getCheckPoints().size()));
+                        } catch (Exception e) {
+                            Timber.e(e.getMessage());
+                        }
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
                                     realm.delete(CheckPointsItem.class);
+                                    realm.delete(ProjectSiteUserCheckpointImagesItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -284,7 +291,6 @@ public class CheckListTitleFragment extends Fragment {
 
         CheckListTitleAdapter(@Nullable OrderedRealmCollection<CheckPointsItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
-            Timber.d(String.valueOf(data));
             checkPointsItemOrderedRealmCollection = data;
         }
 

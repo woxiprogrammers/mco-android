@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
+import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -46,6 +47,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -75,9 +77,10 @@ public class CheckListVerificationFragment extends Fragment {
     private int projectSiteUserCheckpointId;
     private int intNumberOfImages;
     private ImageView imageViewCapturedImage;
-    private String stringCaptionName;
+    private String projectSiteChecklistCheckpointImageId;
     private View inflatedView;
     private boolean isUploadingImages;
+    private CheckPointsItem checkPointsItem;
     private String isFromState;
 
     public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId, String isFromState) {
@@ -112,7 +115,7 @@ public class CheckListVerificationFragment extends Fragment {
             }
         }
         realm = Realm.getDefaultInstance();
-        CheckPointsItem checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
+        checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
         textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
         if (intNumberOfImages > 0) {
@@ -136,15 +139,19 @@ public class CheckListVerificationFragment extends Fragment {
             inflatedView.setId(i);
             TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
             imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
-            textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
+            if (checkPointsItem.getProjectSiteUserCheckpointImages().get(i).isProjectSiteChecklistCheckpointImageIsRequired()) {
+                textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption() + "*");
+            } else {
+                textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
+            }
             textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
             inflatedView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     TextView textView_captionName = view.findViewById(R.id.textView_captionName);
-                    stringCaptionName = textView_captionName.getHint().toString();
+                    projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
                     ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
-                    imageViewCapturedImage.setTag(stringCaptionName);
+                    imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
                     captureImage();
                 }
             });
@@ -177,7 +184,7 @@ public class CheckListVerificationFragment extends Fragment {
                         Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                         for (int i = 0; i < linearLayoutChecklistImg.getChildCount(); i++) {
                             inflatedView = linearLayoutChecklistImg.getChildAt(i);
-                            imageViewCapturedImage = inflatedView.findViewWithTag(stringCaptionName);
+                            imageViewCapturedImage = inflatedView.findViewWithTag(projectSiteChecklistCheckpointImageId);
                             if (imageViewCapturedImage != null) {
                                 imageViewCapturedImage.setImageBitmap(myBitmap);
                                 uploadImageFileToServer(currentImageFile);
@@ -217,13 +224,28 @@ public class CheckListVerificationFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         try {
-                            isUploadingImages = false;
                             String fileName = response.getString("filename");
                             JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("project_site_checklist_checkpoint_image_id", stringCaptionName);
+                            jsonObject.put("project_site_checklist_checkpoint_image_id", projectSiteChecklistCheckpointImageId);
                             jsonObject.put("image", fileName);
                             jsonImageNameArray.put(jsonObject);
-                            Timber.d(stringCaptionName);
+                            Timber.d(projectSiteChecklistCheckpointImageId);
+                            for (int j = 0; j < checkPointsItem.getProjectSiteUserCheckpointImages().size(); j++) {
+                                final int index = j;
+                                realm = Realm.getDefaultInstance();
+                                realm.executeTransaction(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        ProjectSiteUserCheckpointImagesItem projectSiteUserCheckpointImagesItem = checkPointsItem.getProjectSiteUserCheckpointImages().get(index);
+                                        if (projectSiteUserCheckpointImagesItem.getProjectSiteChecklistCheckpointImageId() == Integer.parseInt(projectSiteChecklistCheckpointImageId)) {
+                                            projectSiteUserCheckpointImagesItem.setThisImageCaptured(true);
+                                            RealmResults<ProjectSiteUserCheckpointImagesItem> projectSiteUserCheckpointImagesItemRealmResults = realm.where(ProjectSiteUserCheckpointImagesItem.class).equalTo("projectSiteChecklistCheckpointImageId", Integer.parseInt(projectSiteChecklistCheckpointImageId)).findAll();
+                                            Timber.d("projectSiteUserCheckpointImagesItemRealmResults Size: " + String.valueOf(projectSiteUserCheckpointImagesItemRealmResults.size()));
+                                        }
+                                    }
+                                });
+                            }
+                            isUploadingImages = false;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -250,9 +272,16 @@ public class CheckListVerificationFragment extends Fragment {
             Toast.makeText(mContext, "Please wait, uploading image.", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (jsonImageNameArray.length() != intNumberOfImages) {
+        /*if (jsonImageNameArray.length() != intNumberOfImages) {
             Toast.makeText(mContext, "Please upload all images", Toast.LENGTH_SHORT).show();
             return;
+        }*/
+        for (int i = 0; i < checkPointsItem.getProjectSiteUserCheckpointImages().size(); i++) {
+            ProjectSiteUserCheckpointImagesItem checkpointImagesItem = checkPointsItem.getProjectSiteUserCheckpointImages().get(i);
+            if (checkpointImagesItem.isProjectSiteChecklistCheckpointImageIsRequired() != checkpointImagesItem.isThisImageCaptured()) {
+                Toast.makeText(mContext, "Please upload all required images", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         boolean isOk = false;
         if (radioGroupChecklistOk.getCheckedRadioButtonId() == R.id.radioButtonOk) {

@@ -23,9 +23,11 @@ public class ChecklistListItem extends RealmObject {
     @SerializedName("title")
     private String title;
     @SerializedName("total_checkpoints")
-    private int totalCheckpounts;
-    @SerializedName("assigned_user_name")
-    private String assignedUserName;
+    private int totalCheckpoints;
+    @SerializedName("completed_checkpoints")
+    private int completedCheckPoints;
+    @SerializedName("assigned_to_user_name")
+    private String assignedToUserName;
     @PrimaryKey
     @SerializedName("project_site_user_checklist_assignment_id")
     private int projectSiteUserChecklistAssignmentId;
@@ -94,20 +96,28 @@ public class ChecklistListItem extends RealmObject {
         return title;
     }
 
-    public void setTotalCheckpounts(int totalCheckpounts) {
-        this.totalCheckpounts = totalCheckpounts;
+    public void setTotalCheckpoints(int totalCheckpoints) {
+        this.totalCheckpoints = totalCheckpoints;
     }
 
-    public int getTotalCheckpounts() {
-        return totalCheckpounts;
+    public int getTotalCheckpoints() {
+        return totalCheckpoints;
     }
 
-    public void setAssignedUserName(String assignedUserName) {
-        this.assignedUserName = assignedUserName;
+    public int getCompletedCheckPoints() {
+        return completedCheckPoints;
     }
 
-    public String getAssignedUserName() {
-        return assignedUserName;
+    public void setCompletedCheckPoints(int completedCheckPoints) {
+        this.completedCheckPoints = completedCheckPoints;
+    }
+
+    public void setAssignedToUserName(String assignedToUserName) {
+        this.assignedToUserName = assignedToUserName;
+    }
+
+    public String getAssignedToUserName() {
+        return assignedToUserName;
     }
 
     public int getProjectSiteUserChecklistAssignmentId() {

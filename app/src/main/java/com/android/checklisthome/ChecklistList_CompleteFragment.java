@@ -205,13 +205,20 @@ public class ChecklistList_CompleteFragment extends Fragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             ChecklistListItem assignedChecklistListItem = assignedChecklistListItems.get(position);
-            holder.textViewAssignedUserName.setText(assignedChecklistListItem.getAssignedUserName());
+            holder.textViewAssignedUserName.setText(assignedChecklistListItem.getAssignedToUserName());
             holder.textviewFloorName.setText(assignedChecklistListItem.getFloorName());
             holder.textviewSubCategoryName.setText(assignedChecklistListItem.getSubCategoryName());
             holder.mTextviewCategoryName.setText(assignedChecklistListItem.getCategoryName());
             holder.mTextviewTitle.setText(assignedChecklistListItem.getTitle());
             holder.mTextviewDescription.setText(assignedChecklistListItem.getDescription());
-            holder.mCircleProgressChecklistAssigned.setProgress(0);
+            try {
+                int intCompleted = assignedChecklistListItem.getCompletedCheckPoints();
+                int intTotal = assignedChecklistListItem.getTotalCheckpoints();
+                double percent = ((double) intCompleted / (double) intTotal) * 100;
+                holder.mCircleProgressChecklistAssigned.setProgress((int) percent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
