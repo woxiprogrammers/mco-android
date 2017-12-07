@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.android.constro360.R;
 import com.android.models.inventory.MaterialListItem;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
@@ -22,6 +24,7 @@ import timber.log.Timber;
  */
 public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListItem, MaterialListAdapter.MyViewHolder> {
     private OrderedRealmCollection<MaterialListItem> materialListItemCollection;
+    private DecimalFormat df;
 
     public MaterialListAdapter(@Nullable OrderedRealmCollection<MaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, autoUpdate, updateOnModification);
@@ -33,6 +36,8 @@ public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListIt
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_material_list, parent, false);
+        df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
         return new MyViewHolder(itemView);
     }
 
@@ -40,9 +45,9 @@ public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListIt
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final MaterialListItem materialListItem = materialListItemCollection.get(position);
         holder.textview_material_name.setText(materialListItem.getMaterialName());
-        holder.textview_quantity_in.setText(materialListItem.getQuantityIn());
-        holder.textview_quantity_out.setText(materialListItem.getQuantityOut());
-        holder.textview_quantity_current.setText(materialListItem.getQuantityAvailable());
+        holder.textview_quantity_in.setText(df.format(Float.parseFloat(materialListItem.getQuantityIn())) + "");
+        holder.textview_quantity_out.setText(df.format(Float.parseFloat(materialListItem.getQuantityOut())) + "");
+        holder.textview_quantity_current.setText(df.format(Float.parseFloat(materialListItem.getQuantityAvailable())) + "");
     }
 
     @Override
