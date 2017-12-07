@@ -253,9 +253,12 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
                 }
             }
-           /* if(spinnerDestinations.getSelectedItemPosition() == 0){
+            if(spinnerDestinations.getSelectedItemPosition() == 0){
                 params.put("project_site_id",project_site_id);
-            }*/
+            }else {
+                params.put("project_site_id",null);
+
+            }
             if (str.equalsIgnoreCase("Office")) {
                 params.put("source_name", "");
             } else {
