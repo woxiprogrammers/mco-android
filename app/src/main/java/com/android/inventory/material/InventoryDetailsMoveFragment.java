@@ -148,6 +148,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private ArrayList<String> siteNameArray;
     private ArrayAdapter<String> adapter;
     private static int inventoryComponentId;
+    private int project_site_id;
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
@@ -260,28 +261,24 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
                 }
             }
+            if(spinnerDestinations.getSelectedItemPosition() == 0){
+                params.put("project_site_id",project_site_id);
+            }
             if (str.equalsIgnoreCase("Office")) {
                 params.put("source_name", "");
             } else {
                 params.put("source_name", edit_text_selected_dest_name.getText().toString());
             }
-            params.put("inventory_component_id", inventoryComponentId);
-            params.put("type", transferType);
-            params.put("quantity", strQuantity);
             if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
                 unidId = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
                 params.put("unit_id", unidId);
             }
-//            params.put("date", strDate);
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
                 params.put("remark", editTextAddNote.getText().toString());
             } else {
                 params.put("remark", "");
             }
-            params.put("images", jsonImageNameArray);
             if (str.equalsIgnoreCase(getString(R.string.supplier_name))) {
-//                params.put("in_time", strToDate + " " + strInTime);
-//                params.put("out_time", strToDate + " " + strOutTime);
                 params.put("vehicle_number", strVehicleNumber);
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
@@ -289,6 +286,10 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
             }
+            params.put("inventory_component_id", inventoryComponentId);
+            params.put("type", transferType);
+            params.put("quantity", strQuantity);
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -404,7 +405,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 switch (selectedItemIndex) {
                     //For Site
                     case 0:
-                        getSystemSites();
+                        requestToGetSystemSites();
                         text_ViewSetSelectedTextName.setText(getString(R.string.site_name));
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
@@ -517,6 +518,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         try {
             JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
             String strProject = jsonObject.getString("project_name");
+            project_site_id=jsonObject.getInt("project_site_id");
             editTexttProjName.setText(strProject + "");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -638,53 +640,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         spinnerMaterialUnits.setAdapter(arrayAdapter);
     }
 
-    private void setInOutDate(final EditText editext_updateDate) {
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText(editext_updateDate);
-            }
-        };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
-    }
-
-    private void updateEditText(EditText editTextUpdateDate) {
-        String myFormat = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
-        editTextUpdateDate.setError(null);
-    }
-
-    private void setInOutTime(final EditText currentEditText) {
-        final Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = mcurrentTime.get(Calendar.MINUTE);
-        final int seconds = mcurrentTime.get(Calendar.SECOND);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.SECOND, seconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
-
-    private void getSystemSites() {
+    private void requestToGetSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
-                .setTag("getSystemSites")
+                .setTag("requestToGetSystemSites")
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -708,7 +666,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
                     }
                 });
     }

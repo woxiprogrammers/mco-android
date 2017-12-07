@@ -114,6 +114,7 @@ public class DrawingHomeActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    ///////////API Calls/////////
     private void requestToGetCategoryData() {
         JSONObject params = new JSONObject();
         try {
@@ -287,6 +288,7 @@ public class DrawingHomeActivity extends BaseActivity {
 
     }
 
+    ////////////SetAdapters
     private void setUpUsersSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
@@ -385,6 +387,7 @@ public class DrawingHomeActivity extends BaseActivity {
         }
     }
 
+    /////////////Adapter//////////
     public class SubCategoryAdapter extends RealmRecyclerViewAdapter<AwarenessSubCategoriesItem, SubCategoryAdapter.MyViewHolder> {
         private OrderedRealmCollection<AwarenessSubCategoriesItem> awarenessSubCategoriesItemOrderedRealmCollection;
         private AwarenessSubCategoriesItem awarenessSubCategoriesItem;
