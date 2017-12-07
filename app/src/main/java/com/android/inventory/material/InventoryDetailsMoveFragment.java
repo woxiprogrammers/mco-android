@@ -124,32 +124,22 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     FrameLayout mFrameLayoutFirst;
     @BindView(R.id.frameLayout1)
     FrameLayout mFrameLayout1;
+
     private View mParentView;
-    private String strDate;
-    private String strVehicleNumber;
-    private String strInTime;
-    private String strOutTime;
-    private String strBillNumber;
-    private String strQuantity;
-    private String strUnit;
-    private String strBillAmount;
+    private String strVehicleNumber,strBillAmount,strBillNumber,strQuantity,str,transferType = "OUT",strToDate;
     private boolean isChecked;
-    private String str;
     private Context mContext;
-    private String transferType = "OUT";
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
-    private int indexItemUnit, unidId;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
-    private String strToDate;
     private JSONArray jsonArray;
     private ArrayList<String> siteNameArray;
     private ArrayAdapter<String> adapter;
     private static int inventoryComponentId;
-    private int project_site_id;
+    private int project_site_id,unitId;
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
@@ -271,8 +261,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 params.put("source_name", edit_text_selected_dest_name.getText().toString());
             }
             if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unidId = unitQuantityItemRealmResults.get(spinnerMaterialUnits.getSelectedItemPosition()).getUnitId();
-                params.put("unit_id", unidId);
+                unitId = unitQuantityItemRealmResults.get(spinnerMaterialUnits.getSelectedItemPosition()).getUnitId();
+                params.put("unit_id", unitId);
             }
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
                 params.put("remark", editTextAddNote.getText().toString());
