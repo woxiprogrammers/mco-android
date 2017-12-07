@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -28,6 +29,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -139,6 +142,15 @@ public class CheckListVerificationFragment extends Fragment {
             inflatedView.setId(i);
             TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
             imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
+            if (!TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
+                Glide.with(mContext)
+                        .load(BuildConfig.BASE_URL_MEDIA + checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
+                        .thumbnail(0.1f)
+                        .crossFade()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(imageViewCapturedImage);
+            }
             if (checkPointsItem.getProjectSiteUserCheckpointImages().get(i).isProjectSiteChecklistCheckpointImageIsRequired()) {
                 textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption() + "*");
             } else {
@@ -272,13 +284,9 @@ public class CheckListVerificationFragment extends Fragment {
             Toast.makeText(mContext, "Please wait, uploading image.", Toast.LENGTH_SHORT).show();
             return;
         }
-        /*if (jsonImageNameArray.length() != intNumberOfImages) {
-            Toast.makeText(mContext, "Please upload all images", Toast.LENGTH_SHORT).show();
-            return;
-        }*/
-        for (int i = 0; i < checkPointsItem.getProjectSiteUserCheckpointImages().size(); i++) {
-            ProjectSiteUserCheckpointImagesItem checkpointImagesItem = checkPointsItem.getProjectSiteUserCheckpointImages().get(i);
-            if (checkpointImagesItem.isProjectSiteChecklistCheckpointImageIsRequired() != checkpointImagesItem.isThisImageCaptured()) {
+        for (int index = 0; index < checkPointsItem.getProjectSiteUserCheckpointImages().size(); index++) {
+            ProjectSiteUserCheckpointImagesItem checkpointImagesItem = checkPointsItem.getProjectSiteUserCheckpointImages().get(index);
+            if (checkpointImagesItem.isProjectSiteChecklistCheckpointImageIsRequired() && !checkpointImagesItem.isThisImageCaptured()) {
                 Toast.makeText(mContext, "Please upload all required images", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -315,7 +323,8 @@ public class CheckListVerificationFragment extends Fragment {
                         Timber.d(String.valueOf(response));
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            CheckListTitleFragment.isCallChangeStatusApi = true;
+                            CheckListTitleFragment checkListTitleFragment = (CheckListTitleFragment) getActivity().getSupportFragmentManager().findFragmentByTag("checkListTitleFragment");
+                            checkListTitleFragment.requestToChangeChecklistStatus(false);
                             getActivity().onBackPressed();
                         } catch (JSONException e) {
                             e.printStackTrace();

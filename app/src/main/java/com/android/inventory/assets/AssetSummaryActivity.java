@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.inventory.asset_models.AssetReadingsListDataItem;
 import com.android.inventory.asset_models.AssetReadingsListResponse;
@@ -40,7 +41,7 @@ import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class AssetSummaryActivity extends AppCompatActivity {
+public class AssetSummaryActivity extends BaseActivity {
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     private int inventoryComponentId;
