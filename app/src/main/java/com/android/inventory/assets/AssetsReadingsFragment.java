@@ -29,7 +29,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +53,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private Realm realm;
     private int inventoryComponentId;
     private String component_type_slug;
+    private int passYear, passMonth;
 
     public AssetsReadingsFragment() {
         // Required empty public constructor
@@ -70,6 +73,9 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         View view = inflater.inflate(R.layout.recyclerview_lsiting_for_asset_summary, container, false);
         unbinder = ButterKnife.bind(this, view);
         Bundle bundleArgs = getArguments();
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passYear = calendar.get(Calendar.YEAR);
         if (bundleArgs != null) {
             inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
             component_type_slug = bundleArgs.getString("component_type_slug");
@@ -129,8 +135,8 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         try {
             params.put("inventory_component_id", inventoryComponentId);
 //            params.put("date", 3);
-            params.put("month", 11);
-            params.put("year", 2017);
+            params.put("month", passMonth);
+            params.put("year", passYear);
         } catch (JSONException e) {
             e.printStackTrace();
         }

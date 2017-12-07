@@ -49,6 +49,8 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     private RealmResults<PurchaseOrderTransactionListingItem> purchaseBillListItems;
     private boolean isFromPurchaseRequestHome;
     private int intPrimaryKey;
+    private View mParentView;
+    private int pageNumber = 0,oldPageNumber;
 
     public PurchaseTranListFragment() {
         // Required empty public constructor
@@ -66,16 +68,32 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        initializeViews();
+        requestPrListOnline(pageNumber);
+        setUpPrAdapter();
+        return mParentView;
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+        requestPrListOnline(pageNumber);
+
+        if (isFromPurchaseRequestHome) {
+            if (getUserVisibleHint() /*&& ((PurchaseHomeActivity) mContext) != null*/) {
+                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+            }
+        }
+    }
+
+    private void initializeViews() {
         unbinder = ButterKnife.bind(this, mParentView);
+        mContext=getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
             intPrimaryKey = bundle.getInt("primaryKey");
             isFromPurchaseRequestHome = bundle.getBoolean("isFromPurchaseHome");
         }
-        requestPrListOnline();
-        setUpPrAdapter();
-        return mParentView;
     }
 
     private void setUpPrAdapter() {
@@ -120,7 +138,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         }
     }
 
-    private void requestPrListOnline() {
+    private void requestPrListOnline(int pageId) {
         JSONObject params = new JSONObject();
         try {
             if (isFromPurchaseRequestHome) {
@@ -128,7 +146,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             } else {
                 params.put("purchase_order_id", intPrimaryKey);
             }
-            params.put("page", 0);
+            params.put("page", pageId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -142,6 +160,9 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                     @Override
                     public void onResponse(final DSPurchaseOrderTransactionResponse response) {
                         realm = Realm.getDefaultInstance();
+                        if (!response.getPageId().equalsIgnoreCase("")) {
+                            pageNumber = Integer.parseInt(response.getPageId());
+                        }
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
@@ -154,6 +175,10 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                                 public void onSuccess() {
 //                                    setUpPrAdapter();
                                     Timber.d("Success");
+                                    if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestPrListOnline(pageNumber);
+                                    }
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -173,17 +198,6 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                         AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
                     }
                 });
-    }
-
-    @Override
-    public void fragmentBecameVisible() {
-        requestPrListOnline();
-
-        if (!isFromPurchaseRequestHome) {
-            if (getUserVisibleHint() && ((PurchaseHomeActivity) mContext) != null) {
-                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-            }
-        }
     }
 
     @Override

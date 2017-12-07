@@ -97,6 +97,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.fragment_purchase_request_list, container, false);
@@ -105,6 +106,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
         Bundle bundle = getArguments();
+
         if (bundle != null) {
             permissionList = bundle.getString("permissionsItemList");
             subModuleTag = bundle.getString("subModule_Tag");

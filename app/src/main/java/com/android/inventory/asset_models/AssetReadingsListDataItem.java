@@ -16,7 +16,7 @@ public class AssetReadingsListDataItem extends RealmObject {
     @SerializedName("date")
     private String date;
     @SerializedName("fuel_used")
-    private int fuelUsed;
+    private float fuelUsed;
     @SerializedName("units_used")
     private int unitsUsed;
     @SerializedName("electricity_used")
@@ -35,11 +35,11 @@ public class AssetReadingsListDataItem extends RealmObject {
         return date;
     }
 
-    public void setFuelUsed(int fuelUsed) {
+    public void setFuelUsed(float fuelUsed) {
         this.fuelUsed = fuelUsed;
     }
 
-    public int getFuelUsed() {
+    public float getFuelUsed() {
         return fuelUsed;
     }
 

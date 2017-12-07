@@ -438,6 +438,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             params.put("vehicle_number", strVehicleNumber);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
                 params.put("bill_amount", editTextBillAmount.getText().toString());
+            }else {
+                params.put("bill_amount", null);
             }
             params.put("remark", editextTransRemark.getText().toString());
             params.put("bill_number", strChallanNumber);
