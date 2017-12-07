@@ -214,8 +214,11 @@ public class CheckListTitleFragment extends Fragment {
         } else if (isFromState.equalsIgnoreCase("progress")) {
             strChangeToState = "review";
         } else if (isFromState.equalsIgnoreCase("review")) {
-            //TODO Check here
-            strChangeToState = "complete";
+            if (mCheckboxIsReassignTo.isChecked()) {
+                return;
+            } else {
+                strChangeToState = "completed";
+            }
         }
         JSONObject params = new JSONObject();
         try {

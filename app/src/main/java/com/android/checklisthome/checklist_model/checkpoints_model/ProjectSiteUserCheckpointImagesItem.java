@@ -12,8 +12,8 @@ public class ProjectSiteUserCheckpointImagesItem extends RealmObject {
     private boolean projectSiteChecklistCheckpointImageIsRequired;
     @SerializedName("project_site_checklist_checkpoint_image_id")
     private int projectSiteChecklistCheckpointImageId;
-    @SerializedName("project_site_user_checkpoint_image_id")
-    private int projectSiteUserCheckpointImageId;
+    //    @SerializedName("project_site_user_checkpoint_image_id")
+//    private int projectSiteUserCheckpointImageId;
     @SerializedName("project_site_user_checkpoint_image_url")
     private String projectSiteUserCheckpointImageUrl;
 
@@ -47,14 +47,6 @@ public class ProjectSiteUserCheckpointImagesItem extends RealmObject {
 
     public int getProjectSiteChecklistCheckpointImageId() {
         return projectSiteChecklistCheckpointImageId;
-    }
-
-    public int getProjectSiteUserCheckpointImageId() {
-        return projectSiteUserCheckpointImageId;
-    }
-
-    public void setProjectSiteUserCheckpointImageId(int projectSiteUserCheckpointImageId) {
-        this.projectSiteUserCheckpointImageId = projectSiteUserCheckpointImageId;
     }
 
     public String getProjectSiteUserCheckpointImageUrl() {

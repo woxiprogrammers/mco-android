@@ -113,7 +113,7 @@ public class CheckListVerificationFragment extends Fragment {
                 if (isFromState.equalsIgnoreCase("assigned")) {
                 } else if (isFromState.equalsIgnoreCase("progress")) {
                 } else if (isFromState.equalsIgnoreCase("review")) {
-                } else if (isFromState.equalsIgnoreCase("complete")) {
+                } else if (isFromState.equalsIgnoreCase("completed")) {
                 }
             }
         }
@@ -142,7 +142,7 @@ public class CheckListVerificationFragment extends Fragment {
             inflatedView.setId(i);
             TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
             imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
-            if (!TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
+            /*if (!TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
                 Glide.with(mContext)
                         .load(BuildConfig.BASE_URL_MEDIA + checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
                         .thumbnail(0.1f)
@@ -150,7 +150,7 @@ public class CheckListVerificationFragment extends Fragment {
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageViewCapturedImage);
-            }
+            }*/
             if (checkPointsItem.getProjectSiteUserCheckpointImages().get(i).isProjectSiteChecklistCheckpointImageIsRequired()) {
                 textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption() + "*");
             } else {

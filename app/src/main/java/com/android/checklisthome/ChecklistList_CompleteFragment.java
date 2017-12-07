@@ -104,7 +104,7 @@ public class ChecklistList_CompleteFragment extends Fragment {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("checklist_status_slug", "complete");
+            params.put("checklist_status_slug", "completed");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -164,7 +164,7 @@ public class ChecklistList_CompleteFragment extends Fragment {
 
     private void getLatestCheckLists() {
         realm = Realm.getDefaultInstance();
-        checklistItemResults = realm.where(ChecklistListItem.class).equalTo("checklistCurrentStatus", "complete").findAllAsync();
+        checklistItemResults = realm.where(ChecklistListItem.class).equalTo("checklistCurrentStatus", "completed").findAllAsync();
         ChecklistListAdapter checklistListAdapter = new ChecklistListAdapter(checklistItemResults, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -176,7 +176,7 @@ public class ChecklistList_CompleteFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 Intent intentAction = new Intent(mContext, CheckListActionActivity.class);
                 intentAction.putExtra("projectSiteUserChecklistAssignmentId", checklistItemResults.get(position).getProjectSiteUserChecklistAssignmentId());
-                intentAction.putExtra("isFromState", "complete");
+                intentAction.putExtra("isFromState", "completed");
                 startActivity(intentAction);
             }
 
