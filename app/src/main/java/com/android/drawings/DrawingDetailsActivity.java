@@ -189,7 +189,7 @@ public class DrawingDetailsActivity extends BaseActivity {
             e.printStackTrace();
         }
         AndroidNetworking.post(AppURL.API_DRAWING_ADD_COMMENT + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToPayment")
+                .setTag("requestToAddComment")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)

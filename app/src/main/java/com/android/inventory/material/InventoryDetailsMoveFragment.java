@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.dummy.UnitsResponse;
+import com.android.dummy.UnitsResponseData;
 import com.android.interfaces.FragmentInterface;
 import com.android.material_request_approve.UnitQuantityItem;
 import com.android.utils.AppConstants;
@@ -261,16 +262,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
                 }
             }
-            if(spinnerDestinations.getSelectedItemPosition() == 0){
+           /* if(spinnerDestinations.getSelectedItemPosition() == 0){
                 params.put("project_site_id",project_site_id);
-            }
+            }*/
             if (str.equalsIgnoreCase("Office")) {
                 params.put("source_name", "");
             } else {
                 params.put("source_name", edit_text_selected_dest_name.getText().toString());
             }
             if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unidId = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
+                unidId = unitQuantityItemRealmResults.get(spinnerMaterialUnits.getSelectedItemPosition()).getUnitId();
                 params.put("unit_id", unidId);
             }
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
@@ -290,6 +291,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             params.put("type", transferType);
             params.put("quantity", strQuantity);
             params.put("images", jsonImageNameArray);
+            Log.i("@@MoveParams",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -593,13 +595,14 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(UnitsResponse.class);
                                     realm.delete(UnitQuantityItem.class);
+                                    realm.delete(UnitsResponseData.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    Timber.d("Realm Execution Successful");
                                     setUpUnitQuantityChangeListener();
                                 }
                             }, new Realm.Transaction.OnError() {
