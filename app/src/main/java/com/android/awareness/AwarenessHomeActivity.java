@@ -24,6 +24,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -381,18 +383,17 @@ public class AwarenessHomeActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 if (view.getId() == R.id.imageviewDownload) {
-                    getFileName="http://test.mconstruction.co.in" + getPath + "/" + encodedString;
+                    try {
+                        encodedString = java.net.URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
+                        getFileName="http://test.mconstruction.co.in" + getPath + "/" + encodedString;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
 
                     if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         isGrant = true;
                         ActivityCompat.requestPermissions(AwarenessHomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
                     } else {
-                        try {
-                            encodedString = java.net.URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
-
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
                         downloadFile(getFileName);
                     }
 
@@ -405,74 +406,6 @@ public class AwarenessHomeActivity extends BaseActivity {
         rvFiles.setAdapter(awarenessListAdapter);
     }
 
-    public class AwarenessListAdapter extends RealmRecyclerViewAdapter<FileDetailsItem, AwarenessListAdapter.MyViewHolder> {
-        private OrderedRealmCollection<FileDetailsItem> detailsItemOrderedRealmCollection;
-        private FileDetailsItem fileDetailsItem;
-        RecyclerViewClickListener recyclerViewClickListener;
-
-        public AwarenessListAdapter(@Nullable OrderedRealmCollection<FileDetailsItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
-            super(data, autoUpdate, updateOnModification);
-            Timber.d(String.valueOf(data));
-            detailsItemOrderedRealmCollection = data;
-            this.recyclerViewClickListener = recyclerViewClickListener;
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_for_awareness_files, parent, false);
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            fileDetailsItem = detailsItemOrderedRealmCollection.get(position);
-
-            separatedString = fileDetailsItem.getName().split("#");
-            holder.textviewFileName.setText(separatedString[0]);
-
-            if (fileDetailsItem.getExtension().equalsIgnoreCase("jpg")) {
-                holder.textviewFileType.setText("Format : JPG");
-            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("png")) {
-                holder.textviewFileType.setText("Format : PNG");
-            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("pdf")) {
-                holder.textviewFileType.setText("Format : PDF");
-            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("mp4")) {
-                holder.textviewFileType.setText("Format : Video");
-            }
-
-        }
-
-        @Override
-        public long getItemId(int index) {
-            return detailsItemOrderedRealmCollection.get(index).getId();
-        }
-
-        @Override
-        public int getItemCount() {
-            return detailsItemOrderedRealmCollection == null ? 0 : detailsItemOrderedRealmCollection.size();
-        }
-
-        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-            @BindView(R.id.textviewFileName)
-            TextView textviewFileName;
-            @BindView(R.id.textviewFileType)
-            TextView textviewFileType;
-            @BindView(R.id.imageviewDownload)
-            ImageView imageviewDownload;
-
-            private MyViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
-                imageviewDownload.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View view) {
-                recyclerViewClickListener.onItemClick(view, getAdapterPosition());
-            }
-        }
-    }
 
 
 
@@ -482,12 +415,13 @@ public class AwarenessHomeActivity extends BaseActivity {
         DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         request.setAllowedOverRoaming(false);
-        request.setTitle("Downloading " + separatedString[0]);
+//        request.setTitle("Downloading " + separatedString[0]);
         request.setDescription("Downloading ");
         request.setVisibleInDownloadsUi(true);
         request.allowScanningByMediaScanner();
+        String nameOfFile = URLUtil.guessFileName(url, null, MimeTypeMap.getFileExtensionFromUrl(url));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "");
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile);
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         final long downloadId = downloadManager.enqueue(request);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
@@ -502,7 +436,6 @@ public class AwarenessHomeActivity extends BaseActivity {
                 boolean downloading = true;
 
                 while (downloading) {
-
                     DownloadManager.Query q = new DownloadManager.Query();
                     q.setFilterById(downloadId);
                     Cursor cursor = downloadManager.query(q);
@@ -515,7 +448,6 @@ public class AwarenessHomeActivity extends BaseActivity {
                     }
 
                     final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
-
                     runOnUiThread(new Runnable() {
 
                         @Override
@@ -590,10 +522,9 @@ public class AwarenessHomeActivity extends BaseActivity {
         int i[] = grantResults;
         if (grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (isGrant) {
-//                    downloadFile("");
+                /*if (isGrant) {
                     downloadFile(getFileName);
-                }
+                }*/
 
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 // Should we show an explanation?
@@ -630,4 +561,74 @@ public class AwarenessHomeActivity extends BaseActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+    public class AwarenessListAdapter extends RealmRecyclerViewAdapter<FileDetailsItem, AwarenessListAdapter.MyViewHolder> {
+        private OrderedRealmCollection<FileDetailsItem> detailsItemOrderedRealmCollection;
+        private FileDetailsItem fileDetailsItem;
+        RecyclerViewClickListener recyclerViewClickListener;
+
+        public AwarenessListAdapter(@Nullable OrderedRealmCollection<FileDetailsItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
+            super(data, autoUpdate, updateOnModification);
+            Timber.d(String.valueOf(data));
+            detailsItemOrderedRealmCollection = data;
+            this.recyclerViewClickListener = recyclerViewClickListener;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_for_awareness_files, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            fileDetailsItem = detailsItemOrderedRealmCollection.get(position);
+
+            separatedString = fileDetailsItem.getName().split("#");
+            holder.textviewFileName.setText(separatedString[0]);
+
+            if (fileDetailsItem.getExtension().equalsIgnoreCase("jpg")) {
+                holder.textviewFileType.setText("Format : JPG");
+            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("png")) {
+                holder.textviewFileType.setText("Format : PNG");
+            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("pdf")) {
+                holder.textviewFileType.setText("Format : PDF");
+            } else if (fileDetailsItem.getExtension().equalsIgnoreCase("mp4")) {
+                holder.textviewFileType.setText("Format : Video");
+            }
+
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return detailsItemOrderedRealmCollection.get(index).getId();
+        }
+
+        @Override
+        public int getItemCount() {
+            return detailsItemOrderedRealmCollection == null ? 0 : detailsItemOrderedRealmCollection.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+            @BindView(R.id.textviewFileName)
+            TextView textviewFileName;
+            @BindView(R.id.textviewFileType)
+            TextView textviewFileType;
+            @BindView(R.id.imageviewDownload)
+            ImageView imageviewDownload;
+
+            private MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+                imageviewDownload.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View view) {
+                recyclerViewClickListener.onItemClick(view, getAdapterPosition());
+            }
+        }
+    }
+
 }
