@@ -170,7 +170,7 @@ public class CheckListTitleFragment extends Fragment {
                                 ReassignCheckPointsItem reassignCheckPointsItem = reassignCheckpointsList.get(i);
                                 CheckBox checkBox = new CheckBox(mContext);
                                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                layoutParams.setMargins(0,0,0,4);
+                                layoutParams.setMargins(0, 0, 0, 4);
                                 checkBox.setLayoutParams(layoutParams);
                                 checkBox.setId(reassignCheckPointsItem.getProjectSiteChecklistCheckpointId());
                                 checkBox.setText(reassignCheckPointsItem.getProjectSiteChecklistCheckpointDescription());
@@ -384,6 +384,12 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            getActivity().onBackPressed();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
