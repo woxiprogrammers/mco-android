@@ -139,7 +139,7 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        downloadRecevier = new BroadcastReceiver() {
+        /*downloadRecevier = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
@@ -147,7 +147,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                     Toast.makeText(mContext, "Download Completed", Toast.LENGTH_LONG).show();
                 }
             }
-        };
+        };*/
 
     }
 
@@ -395,7 +395,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                             e.printStackTrace();
                         }
 
-                        check();
+                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" + encodedString);
 //                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" + encodedString);
                     }
 
@@ -477,10 +477,11 @@ public class AwarenessHomeActivity extends BaseActivity {
         }
     }
 
+
+
     private void downloadFile(String url) {
-        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+
         Uri Download_Uri = Uri.parse(url);
-//        Uri Download_Uri = Uri.parse("http://test.mconstruction.co.in/uploads/awareness/356a192b7913b04c54574d18c28d46e6395428ab/356a192b7913b04c54574d18c28d46e6395428ab/763611170e5a158bc915934dd6765f9880f621ee21337b721.png");
         DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         request.setAllowedOverRoaming(false);
@@ -488,26 +489,8 @@ public class AwarenessHomeActivity extends BaseActivity {
         request.setDescription("Downloading ");
         request.setVisibleInDownloadsUi(true);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "");
-
-        downloadReference = downloadManager.enqueue(request);
-        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        registerReceiver(downloadRecevier, filter);
-    }
-
-    private void check() {
-        String urlDownload = "http://test.mconstruction.co.in/uploads/admindata/drawing/da4b9237bacccdf19c0760cab7aec4a8359010b0/da4b9237bacccdf19c0760cab7aec4a8359010b0/119%236942874170389831b62d1b5af1ac99891e5962897f7565b229.png";
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlDownload));
-
-        request.setDescription("Testando");
-        request.setTitle("Download");
-        request.allowScanningByMediaScanner();
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "teste.zip");
-
-        final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-
-        final long downloadId = manager.enqueue(request);
-
+        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        final long downloadId = downloadManager.enqueue(request);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
         mProgressBar.setVisibility(View.VISIBLE);
 
@@ -522,7 +505,7 @@ public class AwarenessHomeActivity extends BaseActivity {
 
                     DownloadManager.Query q = new DownloadManager.Query();
                     q.setFilterById(downloadId);
-                    Cursor cursor = manager.query(q);
+                    Cursor cursor = downloadManager.query(q);
                     cursor.moveToFirst();
                     int bytes_downloaded = cursor.getInt(cursor
                             .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
@@ -549,8 +532,6 @@ public class AwarenessHomeActivity extends BaseActivity {
             }
         }).start();
     }
-
-    ProgressD
     private String statusMessage(Cursor c) {
         String msg = "???";
 
@@ -562,6 +543,7 @@ public class AwarenessHomeActivity extends BaseActivity {
 
             case DownloadManager.STATUS_PAUSED:
                 msg = "Download paused!";
+                startThread(msg);
                 break;
 
             case DownloadManager.STATUS_PENDING:
@@ -612,7 +594,7 @@ public class AwarenessHomeActivity extends BaseActivity {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (isGrant) {
 //                    downloadFile("");
-                    check();
+                    downloadFile("");
                 }
 
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
