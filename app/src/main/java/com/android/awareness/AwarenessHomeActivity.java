@@ -55,6 +55,7 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,7 @@ public class AwarenessHomeActivity extends BaseActivity {
     private String encodedString;
     private long downloadReference;
     private BroadcastReceiver downloadRecevier;
+    private String getFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,15 +141,11 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-        /*downloadRecevier = new BroadcastReceiver() {
+        downloadRecevier = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                if (referenceId == downloadReference) {
-                    Toast.makeText(mContext, "Download Completed", Toast.LENGTH_LONG).show();
-                }
             }
-        };*/
+        };
 
     }
 
@@ -383,6 +381,7 @@ public class AwarenessHomeActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 if (view.getId() == R.id.imageviewDownload) {
+                    getFileName="http://test.mconstruction.co.in" + getPath + "/" + encodedString;
 
                     if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         isGrant = true;
@@ -394,9 +393,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-
-                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" + encodedString);
-//                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" + encodedString);
+                        downloadFile(getFileName);
                     }
 
                 }
@@ -488,11 +485,14 @@ public class AwarenessHomeActivity extends BaseActivity {
         request.setTitle("Downloading " + separatedString[0]);
         request.setDescription("Downloading ");
         request.setVisibleInDownloadsUi(true);
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "");
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         final long downloadId = downloadManager.enqueue(request);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
         mProgressBar.setVisibility(View.VISIBLE);
+        registerReceiver(downloadRecevier, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         new Thread(new Runnable() {
 
@@ -543,12 +543,10 @@ public class AwarenessHomeActivity extends BaseActivity {
 
             case DownloadManager.STATUS_PAUSED:
                 msg = "Download paused!";
-                startThread(msg);
                 break;
 
             case DownloadManager.STATUS_PENDING:
                 msg = "Download pending!";
-                startThread(msg);
                 break;
 
             case DownloadManager.STATUS_RUNNING:
@@ -594,7 +592,7 @@ public class AwarenessHomeActivity extends BaseActivity {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (isGrant) {
 //                    downloadFile("");
-                    downloadFile("");
+                    downloadFile(getFileName);
                 }
 
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
