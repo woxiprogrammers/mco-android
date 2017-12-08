@@ -173,7 +173,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         });
         //
         arrChecklistTitle = new ArrayList<>();
-        arrChecklistTitle.add("Select Category");
+        arrChecklistTitle.add("Select Title");
         ArrayAdapter<String> arrayTitleAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistTitle);
         arrayTitleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerChecklistTitles.setAdapter(arrayTitleAdapter);

@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
-import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -29,8 +28,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -324,7 +321,9 @@ public class CheckListVerificationFragment extends Fragment {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             CheckListTitleFragment checkListTitleFragment = (CheckListTitleFragment) getActivity().getSupportFragmentManager().findFragmentByTag("checkListTitleFragment");
-                            checkListTitleFragment.requestToChangeChecklistStatus(false);
+                            if (isFromState.equalsIgnoreCase("assigned")) {
+                                checkListTitleFragment.requestToChangeChecklistStatus(false);
+                            }
                             getActivity().onBackPressed();
                         } catch (JSONException e) {
                             e.printStackTrace();
