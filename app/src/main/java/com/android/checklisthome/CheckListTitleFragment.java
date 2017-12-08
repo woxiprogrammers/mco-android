@@ -34,11 +34,14 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.xeoh.android.checkboxgroup.CheckBoxGroup;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,6 +73,8 @@ public class CheckListTitleFragment extends Fragment {
     CheckBox mCheckboxIsReassignTo;
     @BindView(R.id.editText_addNote_checklist)
     EditText mEditTextAddNoteChecklist;
+    @BindView(R.id.linearLayout_checklist_assign_to)
+    LinearLayout mLinearLayoutChecklistAssignTo;
     private Realm realm;
     private Context mContext;
     private int projectSiteUserChecklistAssignmentId;
@@ -77,6 +82,8 @@ public class CheckListTitleFragment extends Fragment {
     private String isFromState;
     private boolean isUsersAvailable;
     private RealmList<UsersItem> usersItemRealmList;
+    private CheckBoxGroup<String> checkBoxGroup;
+    private HashMap<CheckBox, String> checkBoxMap;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -115,6 +122,7 @@ public class CheckListTitleFragment extends Fragment {
                             if (isChecked) {
                                 mLinearLayoutReassignTo_innerLayout.setVisibility(View.VISIBLE);
                                 rvChecklistTitle.setVisibility(View.GONE);
+                                getAndSetCheckpointsList();
                                 getUsersWithChecklistAssignAcl();
                             } else {
                                 rvChecklistTitle.setVisibility(View.VISIBLE);
@@ -129,6 +137,55 @@ public class CheckListTitleFragment extends Fragment {
         }
         requestToGetCheckpoints();
         return view;
+    }
+
+    private void getAndSetCheckpointsList() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_user_checklist_assignment_id", projectSiteUserChecklistAssignmentId);
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_GET_CHECKPOINTS_URL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("getAndSetCheckpointsList")
+                .build()
+                .getAsObject(CheckPointsResponse.class, new ParsedRequestListener<CheckPointsResponse>() {
+                    @Override
+                    public void onResponse(final CheckPointsResponse response) {
+                        Timber.d(String.valueOf(response));
+                        if (response.getCheckPointsdata() != null && !response.getCheckPointsdata().getCheckPoints().isEmpty()) {
+                            RealmList<CheckPointsItem> checkpointsList = response.getCheckPointsdata().getCheckPoints();
+                            checkBoxMap = new HashMap<>();
+                            mLinearLayoutChecklistAssignTo.removeAllViews();
+                            for (int i = 0; i < checkpointsList.size(); i++) {
+                                CheckPointsItem checkPointsItem = checkpointsList.get(i);
+                                CheckBox checkBox = new CheckBox(mContext);
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                checkBox.setLayoutParams(layoutParams);
+                                checkBox.setId(checkPointsItem.getProjectSiteUserCheckpointId());
+                                checkBox.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
+                                mLinearLayoutChecklistAssignTo.addView(checkBox);
+                                checkBoxMap.put(checkBox, String.valueOf(checkPointsItem.getProjectSiteUserCheckpointId()));
+                            }
+                            checkBoxGroup = new CheckBoxGroup<>(checkBoxMap, new CheckBoxGroup.CheckedChangeListener<String>() {
+                                @Override
+                                public void onCheckedChange(ArrayList<String> arrayList) {
+                                }
+                            });
+                        } else {
+                            Toast.makeText(mContext, "Failed to load Checkpoints", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getAndSetCheckpointsList");
+                    }
+                });
     }
 
     @Override
@@ -227,7 +284,11 @@ public class CheckListTitleFragment extends Fragment {
             strChangeToState = "review";
         } else if (isFromState.equalsIgnoreCase("review")) {
             if (mCheckboxIsReassignTo.isChecked()) {
-                requestReassignChecklist();
+                if (checkBoxGroup != null) {
+                    requestReassignChecklist(checkBoxGroup.getValues());
+                } else {
+                    Toast.makeText(mContext, "Failed to load Checkpoints", Toast.LENGTH_SHORT).show();
+                }
                 return;
             } else {
                 strChangeToState = "completed";
@@ -275,7 +336,14 @@ public class CheckListTitleFragment extends Fragment {
                 });
     }
 
-    private void requestReassignChecklist() {
+    private void requestReassignChecklist(ArrayList<String> values) {
+        JSONArray jsonArrayAssignedUser;
+        if (values.isEmpty()) {
+            Toast.makeText(mContext, "Please select at lest one checkpoint.", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            jsonArrayAssignedUser = new JSONArray(values);
+        }
         int intUserId;
         if (isUsersAvailable) {
             int selectedIndex = mSpinnerReassignTo.getSelectedItemPosition();
@@ -294,8 +362,9 @@ public class CheckListTitleFragment extends Fragment {
                 params.put("remark", mEditTextAddNoteChecklist.getText().toString());
             }
             params.put("user_id", intUserId);
-            params.put("project_site_checklist_checkpoint_id", projectSiteUserChecklistAssignmentId);
+            params.put("project_site_checklist_checkpoint_id", jsonArrayAssignedUser);
             Timber.d(String.valueOf(params));
+            Timber.d(String.valueOf(jsonArrayAssignedUser.toString()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -305,39 +374,10 @@ public class CheckListTitleFragment extends Fragment {
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestReassignChecklist")
                 .build()
-                .getAsObject(CheckPointsResponse.class, new ParsedRequestListener<CheckPointsResponse>() {
+                .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(final CheckPointsResponse response) {
-                        try {
-                            Timber.d(String.valueOf(response.getCheckPointsdata().getCheckPoints().size()));
-                        } catch (Exception e) {
-                            Timber.e(e.getMessage());
-                        }
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(CheckPointsItem.class);
-                                    realm.delete(ProjectSiteUserCheckpointImagesItem.class);
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    setUpAdapter();
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
                     }
 
                     @Override

@@ -69,11 +69,11 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
     private ArrayList<String> arrChecklistTitle;
     //    private ArrayList<String> arrChecklistDescription;
     private CheckBoxGroup<String> checkBoxGroup;
+    private HashMap<CheckBox, String> checkBoxMap;
     private ChecklistCategoryResponse receivedCategoryResponse;
     private ChecklistFloorResponse receivedFloorResponse;
     private ChecklistTitlesResponse receivedTitlesResponse;
     private int intProjectSiteChecklistId;
-    private HashMap<CheckBox, String> checkBoxMap;
 
     interface AssignmentDialogListener {
         void onAssignClickListener();
