@@ -31,7 +31,7 @@ public class CheckListActionActivity extends BaseActivity {
         Bundle bundleExtras = getIntent().getExtras();
         if (bundleExtras != null) {
             projectSiteUserChecklistAssignmentId = bundleExtras.getInt("projectSiteUserChecklistAssignmentId");
-            projectSiteChecklistId = bundleExtras.getInt("projectSiteChecklistId");
+            projectSiteChecklistId = Integer.parseInt(bundleExtras.getString("projectSiteChecklistId"));
             isFromState = bundleExtras.getString("isFromState");
             CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, projectSiteChecklistId, isFromState);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

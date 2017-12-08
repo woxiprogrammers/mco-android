@@ -170,6 +170,7 @@ public class CheckListTitleFragment extends Fragment {
                                 ReassignCheckPointsItem reassignCheckPointsItem = reassignCheckpointsList.get(i);
                                 CheckBox checkBox = new CheckBox(mContext);
                                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                layoutParams.setMargins(0,0,0,4);
                                 checkBox.setLayoutParams(layoutParams);
                                 checkBox.setId(reassignCheckPointsItem.getProjectSiteChecklistCheckpointId());
                                 checkBox.setText(reassignCheckPointsItem.getProjectSiteChecklistCheckpointDescription());

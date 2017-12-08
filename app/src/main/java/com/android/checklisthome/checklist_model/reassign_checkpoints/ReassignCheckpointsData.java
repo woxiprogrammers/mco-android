@@ -6,7 +6,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class ReassignCheckpointsData extends RealmObject {
-    @SerializedName("reassign_check_points")
+    @SerializedName("check_points")
     private RealmList<ReassignCheckPointsItem> reassignCheckPoints;
 
     public void setReassignCheckPoints(RealmList<ReassignCheckPointsItem> reassignCheckPoints) {

@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 public class ReassignCheckpointsResponse extends RealmObject {
     @SerializedName("message")
     private String message;
-    @SerializedName("reassign_checkpoints_data")
+    @SerializedName("data")
     private ReassignCheckpointsData reassignCheckpointsData;
 
     public void setMessage(String message) {
