@@ -10,11 +10,13 @@ import com.android.constro360.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class CheckListActionActivity extends BaseActivity {
     @BindView(R.id.frameLayoutChecklistAction)
     FrameLayout frameLayoutChecklistAction;
     private int projectSiteUserChecklistAssignmentId;
+    private int projectSiteChecklistId;
     private String isFromState;
 
     @Override
@@ -29,12 +31,15 @@ public class CheckListActionActivity extends BaseActivity {
         Bundle bundleExtras = getIntent().getExtras();
         if (bundleExtras != null) {
             projectSiteUserChecklistAssignmentId = bundleExtras.getInt("projectSiteUserChecklistAssignmentId");
+            projectSiteChecklistId = bundleExtras.getInt("projectSiteChecklistId");
             isFromState = bundleExtras.getString("isFromState");
+            CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, projectSiteChecklistId, isFromState);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.frameLayoutChecklistAction, checkListTitleFragment, "checkListTitleFragment");
+            fragmentTransaction.commit();
+        } else {
+            Timber.d("bundleExtras: null");
         }
-        CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, isFromState);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.frameLayoutChecklistAction, checkListTitleFragment, "checkListTitleFragment");
-        fragmentTransaction.commit();
     }
 
     @Override

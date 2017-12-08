@@ -25,6 +25,8 @@ import com.android.checklisthome.checklist_model.checklist_users.UsersItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
 import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
+import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckPointsItem;
+import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckpointsResponse;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -78,6 +80,7 @@ public class CheckListTitleFragment extends Fragment {
     private Realm realm;
     private Context mContext;
     private int projectSiteUserChecklistAssignmentId;
+    private int projectSiteChecklistId;
     private RealmResults<CheckPointsItem> checkPointsItemRealmResults;
     private String isFromState;
     private boolean isUsersAvailable;
@@ -89,9 +92,10 @@ public class CheckListTitleFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, String isFromState) {
+    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, int projectSiteChecklistId, String isFromState) {
         Bundle args = new Bundle();
         args.putInt("projectSiteUserChecklistAssignmentId", projectSiteUserChecklistAssignmentId);
+        args.putInt("projectSiteChecklistId", projectSiteChecklistId);
         args.putString("isFromState", isFromState);
         CheckListTitleFragment fragment = new CheckListTitleFragment();
         fragment.setArguments(args);
@@ -106,6 +110,7 @@ public class CheckListTitleFragment extends Fragment {
         Bundle bundleArgs = getArguments();
         if (bundleArgs != null) {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
+            projectSiteChecklistId = bundleArgs.getInt("projectSiteChecklistId");
             isFromState = bundleArgs.getString("isFromState");
             if (isFromState != null) {
                 if (isFromState.equalsIgnoreCase("assigned")) {
@@ -122,7 +127,7 @@ public class CheckListTitleFragment extends Fragment {
                             if (isChecked) {
                                 mLinearLayoutReassignTo_innerLayout.setVisibility(View.VISIBLE);
                                 rvChecklistTitle.setVisibility(View.GONE);
-                                getAndSetCheckpointsList();
+                                getAndSet_reassignCheckpointsList();
                                 getUsersWithChecklistAssignAcl();
                             } else {
                                 rvChecklistTitle.setVisibility(View.VISIBLE);
@@ -139,10 +144,10 @@ public class CheckListTitleFragment extends Fragment {
         return view;
     }
 
-    private void getAndSetCheckpointsList() {
+    private void getAndSet_reassignCheckpointsList() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_user_checklist_assignment_id", projectSiteUserChecklistAssignmentId);
+            params.put("project_site_checklist_id", projectSiteChecklistId);
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -151,25 +156,25 @@ public class CheckListTitleFragment extends Fragment {
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("getAndSetCheckpointsList")
+                .setTag("getAndSet_reassignCheckpointsList")
                 .build()
-                .getAsObject(CheckPointsResponse.class, new ParsedRequestListener<CheckPointsResponse>() {
+                .getAsObject(ReassignCheckpointsResponse.class, new ParsedRequestListener<ReassignCheckpointsResponse>() {
                     @Override
-                    public void onResponse(final CheckPointsResponse response) {
+                    public void onResponse(final ReassignCheckpointsResponse response) {
                         Timber.d(String.valueOf(response));
-                        if (response.getCheckPointsdata() != null && !response.getCheckPointsdata().getCheckPoints().isEmpty()) {
-                            RealmList<CheckPointsItem> checkpointsList = response.getCheckPointsdata().getCheckPoints();
+                        if (response.getReassignCheckpointsData() != null && !response.getReassignCheckpointsData().getReassignCheckPoints().isEmpty()) {
+                            RealmList<ReassignCheckPointsItem> reassignCheckpointsList = response.getReassignCheckpointsData().getReassignCheckPoints();
                             checkBoxMap = new HashMap<>();
                             mLinearLayoutChecklistAssignTo.removeAllViews();
-                            for (int i = 0; i < checkpointsList.size(); i++) {
-                                CheckPointsItem checkPointsItem = checkpointsList.get(i);
+                            for (int i = 0; i < reassignCheckpointsList.size(); i++) {
+                                ReassignCheckPointsItem reassignCheckPointsItem = reassignCheckpointsList.get(i);
                                 CheckBox checkBox = new CheckBox(mContext);
                                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                 checkBox.setLayoutParams(layoutParams);
-                                checkBox.setId(checkPointsItem.getProjectSiteUserCheckpointId());
-                                checkBox.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
+                                checkBox.setId(reassignCheckPointsItem.getProjectSiteChecklistCheckpointId());
+                                checkBox.setText(reassignCheckPointsItem.getProjectSiteChecklistCheckpointDescription());
                                 mLinearLayoutChecklistAssignTo.addView(checkBox);
-                                checkBoxMap.put(checkBox, String.valueOf(checkPointsItem.getProjectSiteUserCheckpointId()));
+                                checkBoxMap.put(checkBox, String.valueOf(reassignCheckPointsItem.getProjectSiteChecklistCheckpointId()));
                             }
                             checkBoxGroup = new CheckBoxGroup<>(checkBoxMap, new CheckBoxGroup.CheckedChangeListener<String>() {
                                 @Override
@@ -183,7 +188,7 @@ public class CheckListTitleFragment extends Fragment {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getAndSetCheckpointsList");
+                        AppUtils.getInstance().logApiError(anError, "getAndSet_reassignCheckpointsList");
                     }
                 });
     }
