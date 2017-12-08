@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +68,8 @@ import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
+import static io.reactivex.schedulers.Schedulers.start;
+
 public class AwarenessHomeActivity extends BaseActivity {
 
     @BindView(R.id.spinnerAwarenesCategory)
@@ -73,6 +78,9 @@ public class AwarenessHomeActivity extends BaseActivity {
     Spinner spinnerAwarenesSubcategory;
     @BindView(R.id.rvFiles)
     RecyclerView rvFiles;
+
+    @BindView(R.id.progressBar1)
+    ProgressBar mProgressBar;
     @BindView(R.id.linearLayoutSubCategory)
     LinearLayout linearLayoutSubCategory;
     private Realm realm;
@@ -88,6 +96,7 @@ public class AwarenessHomeActivity extends BaseActivity {
     private String encodedString;
     private long downloadReference;
     private BroadcastReceiver downloadRecevier;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,11 +144,10 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onReceive(Context context, Intent intent) {
                 long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
                 if (referenceId == downloadReference) {
-                   Toast.makeText(mContext,"Download Completed",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Download Completed", Toast.LENGTH_LONG).show();
                 }
             }
         };
-
 
     }
 
@@ -387,7 +395,8 @@ public class AwarenessHomeActivity extends BaseActivity {
                             e.printStackTrace();
                         }
 
-                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" + encodedString);
+                        check();
+//                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" + encodedString);
                     }
 
                 }
@@ -480,9 +489,120 @@ public class AwarenessHomeActivity extends BaseActivity {
         request.setVisibleInDownloadsUi(true);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "");
 
-        downloadReference=downloadManager.enqueue(request);
+        downloadReference = downloadManager.enqueue(request);
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(downloadRecevier, filter);
+    }
+
+    private void check() {
+        String urlDownload = "http://test.mconstruction.co.in/uploads/admindata/drawing/da4b9237bacccdf19c0760cab7aec4a8359010b0/da4b9237bacccdf19c0760cab7aec4a8359010b0/119%236942874170389831b62d1b5af1ac99891e5962897f7565b229.png";
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlDownload));
+
+        request.setDescription("Testando");
+        request.setTitle("Download");
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "teste.zip");
+
+        final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+
+        final long downloadId = manager.enqueue(request);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                boolean downloading = true;
+
+                while (downloading) {
+
+                    DownloadManager.Query q = new DownloadManager.Query();
+                    q.setFilterById(downloadId);
+                    Cursor cursor = manager.query(q);
+                    cursor.moveToFirst();
+                    int bytes_downloaded = cursor.getInt(cursor
+                            .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                    int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                    if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
+                        downloading = false;
+                    }
+
+                    final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
+
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            mProgressBar.setProgress((int) dl_progress);
+
+                        }
+                    });
+                    statusMessage(cursor);
+                    cursor.close();
+                }
+
+            }
+        }).start();
+    }
+
+    ProgressD
+    private String statusMessage(Cursor c) {
+        String msg = "???";
+
+        switch (c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+            case DownloadManager.STATUS_FAILED:
+                msg = "Download failed!";
+                startThread(msg);
+                break;
+
+            case DownloadManager.STATUS_PAUSED:
+                msg = "Download paused!";
+                break;
+
+            case DownloadManager.STATUS_PENDING:
+                msg = "Download pending!";
+                startThread(msg);
+                break;
+
+            case DownloadManager.STATUS_RUNNING:
+                msg = "Download in progress!";
+                break;
+
+            case DownloadManager.STATUS_SUCCESSFUL:
+                msg = "Download complete!";
+                startThread(msg);
+                break;
+
+            default:
+                msg = "Download is nowhere in sight";
+                break;
+        }
+
+        return (msg);
+    }
+
+    private void startThread(final String strMessage){
+        Thread timer = new Thread() { //new thread
+            public void run() {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(mContext, strMessage, Toast.LENGTH_LONG).show();
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                });
+
+
+
+            };
+        };
+        timer.start();
     }
 
     @Override
@@ -491,7 +611,8 @@ public class AwarenessHomeActivity extends BaseActivity {
         if (grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (isGrant) {
-                    downloadFile("");
+//                    downloadFile("");
+                    check();
                 }
 
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
