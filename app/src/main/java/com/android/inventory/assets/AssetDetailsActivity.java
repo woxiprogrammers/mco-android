@@ -5,18 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.purchase_request.PurchaseRequestListFragment;
+
+import java.text.DateFormatSymbols;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +36,14 @@ public class AssetDetailsActivity extends BaseActivity {
     BottomNavigationView bottom_navigation;
     @BindView(R.id.floating_add_button)
     FloatingActionButton floatingAddButton;
+    @BindView(R.id.textView_readings_appBarTitle)
+    TextView textViewReadingsAppBarTitle;
+    @BindView(R.id.relative_layout_datePicker_readings)
+    RelativeLayout relativeLayoutDatePickerReadings;
+    @BindView(R.id.toolbarAssetDetails)
+    Toolbar toolbarAssetDetails;
+    @BindView(R.id.container)
+    CoordinatorLayout container;
     private MenuItem prevMenuItem;
     private Context mContext;
     private String strAssetName, strModelNumber;
@@ -64,19 +78,25 @@ public class AssetDetailsActivity extends BaseActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
+    public void setDateInAppBar(int passMonth, int passYear) {
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        textViewReadingsAppBarTitle.setText(strMonth + ", " + passYear);
+    }
     private void initializeViews() {
         ButterKnife.bind(this);
+        toolbarAssetDetails.setTitle("");
+        setSupportActionBar(toolbarAssetDetails);
         mContext = AssetDetailsActivity.this;
         Intent extras = getIntent();
         if (extras != null) {
             strAssetName = extras.getStringExtra("assetName");
             strModelNumber = extras.getStringExtra("modelNumber");
             inventoryComponentId = extras.getIntExtra("inventory_component_id", -1);
-            component_type_slug=extras.getStringExtra("component_type_slug");
+            component_type_slug = extras.getStringExtra("component_type_slug");
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(strAssetName);
+            getSupportActionBar().setTitle("");
         }
 
     }
@@ -127,13 +147,19 @@ public class AssetDetailsActivity extends BaseActivity {
                 break;
 
             case R.id.action_move_in_out:
-                Intent startIntent=new Intent(mContext,ActivityAssetMoveInOutTransfer.class);
-                startIntent.putExtra("inventoryCompId",inventoryComponentId);
+                Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
+                startIntent.putExtra("inventoryCompId", inventoryComponentId);
                 startActivity(startIntent);
                 break;
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.relative_layout_datePicker_readings)
+    public void onDatePickerPurchaseRequestClicked() {
+        AssetsReadingsFragment assetsReadingsFragment = (AssetsReadingsFragment) viewPagerAssets.getAdapter().instantiateItem(viewPagerAssets, 0);
+        assetsReadingsFragment.onDatePickerClicked_purchaseRequest();
     }
 
     private void startRequestMaintainanceActivity() {
@@ -146,9 +172,9 @@ public class AssetDetailsActivity extends BaseActivity {
 
     @OnClick(R.id.floating_add_button)
     public void onViewClicked() {
-        Intent intent=new Intent(mContext,ActivityAssetsReadings.class);
-        intent.putExtra("asset_name",strAssetName);
-        intent.putExtra("componentId",inventoryComponentId);
+        Intent intent = new Intent(mContext, ActivityAssetsReadings.class);
+        intent.putExtra("asset_name", strAssetName);
+        intent.putExtra("componentId", inventoryComponentId);
         startActivity(intent);
     }
 

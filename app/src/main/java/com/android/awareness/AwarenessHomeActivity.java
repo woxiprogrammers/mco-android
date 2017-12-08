@@ -432,9 +432,7 @@ public class AwarenessHomeActivity extends BaseActivity {
 
             @Override
             public void run() {
-
                 boolean downloading = true;
-
                 while (downloading) {
                     DownloadManager.Query q = new DownloadManager.Query();
                     q.setFilterById(downloadId);
@@ -446,15 +444,11 @@ public class AwarenessHomeActivity extends BaseActivity {
                     if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
                         downloading = false;
                     }
-
                     final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
                     runOnUiThread(new Runnable() {
-
                         @Override
                         public void run() {
-
                             mProgressBar.setProgress((int) dl_progress);
-
                         }
                     });
                     statusMessage(cursor);

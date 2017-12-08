@@ -52,7 +52,8 @@
         </activity>
         <activity
             android:name="com.android.inventory.assets.AssetDetailsActivity"
-            android:label="@string/title_activity_asset_details">
+            android:label="@string/title_activity_asset_details"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name="com.android.inventory.assets.ActivityAssetsReadings">
         </activity>
