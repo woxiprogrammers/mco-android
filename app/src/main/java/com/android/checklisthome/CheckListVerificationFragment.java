@@ -128,7 +128,7 @@ public class CheckListVerificationFragment extends Fragment {
                 textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
                 intNumberOfImages = parentCheckPointsItem.getProjectSiteUserCheckpointImages().size();
                 if (intNumberOfImages > 0) {
-                    addCaptionsTemplate(parentCheckPointsItem);
+                    addViewOnlyCaptionsTemplate(parentCheckPointsItem);
                 } else {
                     linearLayoutChecklistImg.setVisibility(View.GONE);
                 }
@@ -139,7 +139,7 @@ public class CheckListVerificationFragment extends Fragment {
                 textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
                 intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
                 if (intNumberOfImages > 0) {
-                    addCaptionsTemplate(checkPointsItem);
+                    addClickableCaptionsTemplate(checkPointsItem);
                 } else {
                     linearLayoutChecklistImg.setVisibility(View.GONE);
                 }
@@ -154,7 +154,7 @@ public class CheckListVerificationFragment extends Fragment {
         unbinder.unbind();
     }
 
-    private void addCaptionsTemplate(CheckPointsItem checkPointsItem) {
+    private void addClickableCaptionsTemplate(CheckPointsItem checkPointsItem) {
         linearLayoutChecklistImg.removeAllViews();
         for (int i = 0; i < intNumberOfImages; i++) {
             inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null);
@@ -176,29 +176,29 @@ public class CheckListVerificationFragment extends Fragment {
                 textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
             }
             textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
-            if (!isViewOnly) {
-                inflatedView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        TextView textView_captionName = view.findViewById(R.id.textView_captionName);
-                        projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
-                        ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
-                        imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
-                        captureImage();
-                    }
-                });
-            }
+            inflatedView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView textView_captionName = view.findViewById(R.id.textView_captionName);
+                    projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
+                    ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
+                    imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
+                    captureImage();
+                }
+            });
             linearLayoutChecklistImg.addView(inflatedView);
         }
     }
 
-    private void addCaptionsTemplate(ParentCheckPointsItem parentCheckPointsItem) {
+    private void addViewOnlyCaptionsTemplate(ParentCheckPointsItem parentCheckPointsItem) {
         linearLayoutChecklistImg.removeAllViews();
         for (int i = 0; i < intNumberOfImages; i++) {
             inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null);
             inflatedView.setId(i);
             TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
             imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(400, 300);
+            imageViewCapturedImage.setLayoutParams(layoutParams);
             if (!TextUtils.isEmpty(parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
                 Glide.with(mContext)
                         .load(BuildConfig.BASE_URL_MEDIA + parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
@@ -214,18 +214,16 @@ public class CheckListVerificationFragment extends Fragment {
                 textView_captionName.setText(parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
             }
             textView_captionName.setHint(String.valueOf(parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
-            if (!isViewOnly) {
-                inflatedView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        TextView textView_captionName = view.findViewById(R.id.textView_captionName);
-                        projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
-                        ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
-                        imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
-                        captureImage();
-                    }
-                });
-            }
+            inflatedView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TextView textView_captionName = view.findViewById(R.id.textView_captionName);
+                    projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
+                    ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
+                    imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
+                    captureImage();
+                }
+            });
             linearLayoutChecklistImg.addView(inflatedView);
         }
     }
