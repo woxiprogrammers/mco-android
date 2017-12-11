@@ -182,7 +182,6 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             }
         }
     }
-
     private void openImageZoomFragment(String url) {
         ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
         imageZoomDialogFragment.setCancelable(true);

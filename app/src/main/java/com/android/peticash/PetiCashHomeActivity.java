@@ -65,7 +65,8 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     @BindView(R.id.textView_allocatedAmount)
     TextView mTextViewAllocatedAmount;
     @BindView(R.id.textView_salaryAmount)
-    TextView mTextViewSalaryAmount;
+    TextView mTextViewSalaryAmoun
+    t;
     @BindView(R.id.textView_advanceAmount)
     TextView mTextViewAdvanceAmount;
     @BindView(R.id.textView_purchaseAmount)
