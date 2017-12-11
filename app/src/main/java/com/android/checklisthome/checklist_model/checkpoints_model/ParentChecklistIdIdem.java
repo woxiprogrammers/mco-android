@@ -29,4 +29,9 @@ public class ParentChecklistIdIdem extends RealmObject {
     public void setVisibleParentName(String visibleParentName) {
         this.visibleParentName = visibleParentName;
     }
+
+    @Override
+    public String toString() {
+        return visibleParentName;
+    }
 }

@@ -28,6 +28,9 @@ import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsIt
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
 import com.android.checklisthome.checklist_model.checkpoints_model.ParentChecklistIdIdem;
 import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
+import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsItem;
+import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsResponse;
+import com.android.checklisthome.checklist_model.parent_checkpoints.ParentProjectSiteUserCheckpointImagesItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckPointsItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckpointsResponse;
 import com.android.constro360.R;
@@ -93,12 +96,15 @@ public class CheckListTitleFragment extends Fragment {
     private int projectSiteUserChecklistAssignmentId;
     private int projectSiteChecklistId;
     private RealmResults<CheckPointsItem> checkPointsItemRealmResults;
+    private RealmResults<ParentCheckPointsItem> parentCheckPointsItemRealmResults;
     private String isFromState;
     private boolean isUsersAvailable;
     private RealmList<UsersItem> usersItemRealmList;
     private CheckBoxGroup<String> checkBoxGroup;
     private HashMap<CheckBox, String> checkBoxMap;
     private int parentProjectSiteUserChecklistAssignmentId;
+    private boolean isViewOnly;
+    RecyclerItemClickListener mainCheckpointRecyclerItemClickListener;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -235,18 +241,20 @@ public class CheckListTitleFragment extends Fragment {
         rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
         rvChecklistTitle.setHasFixedSize(true);
         rvChecklistTitle.setAdapter(checkListTitleAdapter);
-        rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+        mainCheckpointRecyclerItemClickListener = new RecyclerItemClickListener(mContext,
                 rvChecklistTitle,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        ((CheckListActionActivity) mContext).getCheckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
+                        Timber.d("Parent Disabled: isViewOnly " + isViewOnly);
+                        ((CheckListActionActivity) mContext).getCheckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly);
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
-                }));
+                });
+        rvChecklistTitle.addOnItemTouchListener(mainCheckpointRecyclerItemClickListener);
     }
 
     private void requestToGetCheckpoints() {
@@ -311,34 +319,44 @@ public class CheckListTitleFragment extends Fragment {
         realm = Realm.getDefaultInstance();
         RealmResults<ParentChecklistIdIdem> parentChecklistIdIdemRealmResults = realm.where(ParentChecklistIdIdem.class).findAll();
         if (parentChecklistIdIdemRealmResults.isEmpty()) {
+            isViewOnly = false;
             mLinearLayoutParentsLayout.setVisibility(View.GONE);
         } else {
             mLinearLayoutParentsLayout.setVisibility(View.VISIBLE);
             ArrayList<ParentChecklistIdIdem> checklistIdIdemArrayList = new ArrayList<ParentChecklistIdIdem>();
             ParentChecklistIdIdem parentChecklistIdIdem;
-            for (int i = 0; i < parentChecklistIdIdemRealmResults.size(); i++) {
-                parentChecklistIdIdem = new ParentChecklistIdIdem();
-                parentChecklistIdIdem.setProjectSiteUserChecklistAssignmentId(parentChecklistIdIdemRealmResults.get(i).getProjectSiteUserChecklistAssignmentId());
-                parentChecklistIdIdem.setVisibleParentName("Parent " + i);
-                checklistIdIdemArrayList.add(parentChecklistIdIdem);
+            for (int i = -1; i < parentChecklistIdIdemRealmResults.size(); i++) {
+                if (i == -1) {
+                    parentChecklistIdIdem = new ParentChecklistIdIdem();
+                    parentChecklistIdIdem.setProjectSiteUserChecklistAssignmentId(i);
+                    parentChecklistIdIdem.setVisibleParentName("Select Parent");
+                    checklistIdIdemArrayList.add(parentChecklistIdIdem);
+                } else {
+                    parentChecklistIdIdem = new ParentChecklistIdIdem();
+                    parentChecklistIdIdem.setProjectSiteUserChecklistAssignmentId(parentChecklistIdIdemRealmResults.get(i).getProjectSiteUserChecklistAssignmentId());
+                    parentChecklistIdIdem.setVisibleParentName("Parent " + i);
+                    checklistIdIdemArrayList.add(parentChecklistIdIdem);
+                }
             }
             ArrayAdapter<ParentChecklistIdIdem> checklistParentsAdapter
                     = new ArrayAdapter<ParentChecklistIdIdem>(mContext, android.R.layout.simple_spinner_item, checklistIdIdemArrayList);
+            checklistParentsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mSpinnerSelectParent.setAdapter(checklistParentsAdapter);
-            mSpinnerSelectParent.setSelection(0);
             mSpinnerSelectParent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    ParentChecklistIdIdem selectedParentChecklistIdIdem = (ParentChecklistIdIdem) adapterView.getSelectedItem();
-                    parentProjectSiteUserChecklistAssignmentId = selectedParentChecklistIdIdem.getProjectSiteUserChecklistAssignmentId();
-                    getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    if (position > 0) {
+                        isViewOnly = true;
+                        ParentChecklistIdIdem selectedParentChecklistIdIdem = (ParentChecklistIdIdem) adapterView.getSelectedItem();
+                        parentProjectSiteUserChecklistAssignmentId = selectedParentChecklistIdIdem.getProjectSiteUserChecklistAssignmentId();
+                        getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
+                    } else {
+                        isViewOnly = false;
+                    }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-                    ParentChecklistIdIdem selectedParentChecklistIdIdem = (ParentChecklistIdIdem) adapterView.getSelectedItem();
-                    parentProjectSiteUserChecklistAssignmentId = selectedParentChecklistIdIdem.getProjectSiteUserChecklistAssignmentId();
-                    getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
                 }
             });
         }
@@ -352,16 +370,64 @@ public class CheckListTitleFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_GET_PARENTS_CHECKPOINTS + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_GET_CHECKPOINTS_URL + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("getParentsCheckpointsList")
                 .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
+                .getAsObject(ParentCheckPointsResponse.class, new ParsedRequestListener<ParentCheckPointsResponse>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
+                    public void onResponse(final ParentCheckPointsResponse response) {
+                        try {
+                            Timber.d(String.valueOf(response.getCheckPointsdata().getCheckPoints().size()));
+                        } catch (Exception e) {
+                            Timber.e(e.getMessage());
+                        }
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(ParentCheckPointsItem.class);
+                                    realm.delete(ParentProjectSiteUserCheckpointImagesItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    realm = Realm.getDefaultInstance();
+                                    parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class).findAll();
+                                    ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
+                                    rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
+                                    rvChecklistTitle.setHasFixedSize(true);
+                                    rvChecklistTitle.setAdapter(parentCheckListTitleAdapter);
+                                    rvChecklistTitle.removeOnItemTouchListener(mainCheckpointRecyclerItemClickListener);
+                                    rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                                            rvChecklistTitle,
+                                            new RecyclerItemClickListener.OnItemClickListener() {
+                                                @Override
+                                                public void onItemClick(View view, final int position) {
+                                                    Timber.d("Parent Enabled: isViewOnly " + isViewOnly);
+                                                    ((CheckListActionActivity) mContext).getCheckListVerificationFragment(parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly);
+                                                }
+
+                                                @Override
+                                                public void onLongItemClick(View view, int position) {
+                                                }
+                                            }));
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
                     }
 
                     @Override
@@ -533,6 +599,55 @@ public class CheckListTitleFragment extends Fragment {
         private CheckPointsItem checkPointsItem;
 
         CheckListTitleAdapter(@Nullable OrderedRealmCollection<CheckPointsItem> data, boolean autoUpdate, boolean updateOnModification) {
+            super(data, autoUpdate, updateOnModification);
+            checkPointsItemOrderedRealmCollection = data;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_checklist_title, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
+            if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                holder.checkboxChecklistTitles.setChecked(true);
+            } else {
+                holder.checkboxChecklistTitles.setChecked(false);
+            }
+            holder.textviewDescription.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
+        }
+
+        @Override
+        public long getItemId(int index) {
+            return checkPointsItemOrderedRealmCollection.get(index).getProjectSiteUserCheckpointId();
+        }
+
+        @Override
+        public int getItemCount() {
+            return checkPointsItemOrderedRealmCollection == null ? 0 : checkPointsItemOrderedRealmCollection.size();
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.checkboxChecklistTitles)
+            CheckBox checkboxChecklistTitles;
+            @BindView(R.id.textviewDescription)
+            TextView textviewDescription;
+
+            private MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }
+    }
+
+    public class ParentCheckListTitleAdapter extends RealmRecyclerViewAdapter<ParentCheckPointsItem, ParentCheckListTitleAdapter.MyViewHolder> {
+        private OrderedRealmCollection<ParentCheckPointsItem> checkPointsItemOrderedRealmCollection;
+        private ParentCheckPointsItem checkPointsItem;
+
+        ParentCheckListTitleAdapter(@Nullable OrderedRealmCollection<ParentCheckPointsItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             checkPointsItemOrderedRealmCollection = data;
         }

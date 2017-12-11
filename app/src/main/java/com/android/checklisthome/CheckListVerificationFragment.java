@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
+import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsItem;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -28,6 +30,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -82,11 +86,13 @@ public class CheckListVerificationFragment extends Fragment {
     private boolean isUploadingImages;
     private CheckPointsItem checkPointsItem;
     private String isFromState;
+    private boolean isViewOnly;
 
-    public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId, String isFromState) {
+    public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId, String isFromState, boolean isViewOnly) {
         Bundle args = new Bundle();
         args.putInt("projectSiteUserCheckpointId", projectSiteUserCheckpointId);
         args.putString("isFromState", isFromState);
+        args.putBoolean("isViewOnly", isViewOnly);
         CheckListVerificationFragment fragment = new CheckListVerificationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -106,6 +112,7 @@ public class CheckListVerificationFragment extends Fragment {
         if (bundleArgs != null) {
             projectSiteUserCheckpointId = bundleArgs.getInt("projectSiteUserCheckpointId");
             isFromState = bundleArgs.getString("isFromState");
+            isViewOnly = bundleArgs.getBoolean("isViewOnly");
             if (isFromState != null) {
                 if (isFromState.equalsIgnoreCase("assigned")) {
                 } else if (isFromState.equalsIgnoreCase("progress")) {
@@ -113,15 +120,30 @@ public class CheckListVerificationFragment extends Fragment {
                 } else if (isFromState.equalsIgnoreCase("completed")) {
                 }
             }
-        }
-        realm = Realm.getDefaultInstance();
-        checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
-        textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
-        intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
-        if (intNumberOfImages > 0) {
-            addCaptionsTemplate(checkPointsItem);
-        } else {
-            linearLayoutChecklistImg.setVisibility(View.GONE);
+            Timber.d("isViewOnly " + isViewOnly);
+            if (isViewOnly) {
+                buttonSubmitChecklist.setVisibility(View.GONE);
+                realm = Realm.getDefaultInstance();
+                ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
+                textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
+                intNumberOfImages = parentCheckPointsItem.getProjectSiteUserCheckpointImages().size();
+                if (intNumberOfImages > 0) {
+                    addCaptionsTemplate(parentCheckPointsItem);
+                } else {
+                    linearLayoutChecklistImg.setVisibility(View.GONE);
+                }
+            } else {
+                buttonSubmitChecklist.setVisibility(View.VISIBLE);
+                realm = Realm.getDefaultInstance();
+                checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
+                textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
+                intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
+                if (intNumberOfImages > 0) {
+                    addCaptionsTemplate(checkPointsItem);
+                } else {
+                    linearLayoutChecklistImg.setVisibility(View.GONE);
+                }
+            }
         }
         return view;
     }
@@ -139,7 +161,7 @@ public class CheckListVerificationFragment extends Fragment {
             inflatedView.setId(i);
             TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
             imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
-            /*if (!TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
+            if (!TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
                 Glide.with(mContext)
                         .load(BuildConfig.BASE_URL_MEDIA + checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
                         .thumbnail(0.1f)
@@ -147,23 +169,63 @@ public class CheckListVerificationFragment extends Fragment {
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageViewCapturedImage);
-            }*/
+            }
             if (checkPointsItem.getProjectSiteUserCheckpointImages().get(i).isProjectSiteChecklistCheckpointImageIsRequired()) {
                 textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption() + "*");
             } else {
                 textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
             }
             textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
-            inflatedView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    TextView textView_captionName = view.findViewById(R.id.textView_captionName);
-                    projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
-                    ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
-                    imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
-                    captureImage();
-                }
-            });
+            if (!isViewOnly) {
+                inflatedView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TextView textView_captionName = view.findViewById(R.id.textView_captionName);
+                        projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
+                        ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
+                        imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
+                        captureImage();
+                    }
+                });
+            }
+            linearLayoutChecklistImg.addView(inflatedView);
+        }
+    }
+
+    private void addCaptionsTemplate(ParentCheckPointsItem parentCheckPointsItem) {
+        linearLayoutChecklistImg.removeAllViews();
+        for (int i = 0; i < intNumberOfImages; i++) {
+            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_captions_for_checkpoints, null);
+            inflatedView.setId(i);
+            TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
+            imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
+            if (!TextUtils.isEmpty(parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
+                Glide.with(mContext)
+                        .load(BuildConfig.BASE_URL_MEDIA + parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
+                        .thumbnail(0.1f)
+                        .crossFade()
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(imageViewCapturedImage);
+            }
+            if (parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).isProjectSiteChecklistCheckpointImageIsRequired()) {
+                textView_captionName.setText(parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption() + "*");
+            } else {
+                textView_captionName.setText(parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
+            }
+            textView_captionName.setHint(String.valueOf(parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
+            if (!isViewOnly) {
+                inflatedView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TextView textView_captionName = view.findViewById(R.id.textView_captionName);
+                        projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
+                        ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
+                        imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
+                        captureImage();
+                    }
+                });
+            }
             linearLayoutChecklistImg.addView(inflatedView);
         }
     }
