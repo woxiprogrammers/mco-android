@@ -10,11 +10,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.android.checklisthome.checklist_model.checklist_users.ChecklistAclUse
 import com.android.checklisthome.checklist_model.checklist_users.UsersItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
+import com.android.checklisthome.checklist_model.checkpoints_model.ParentChecklistIdIdem;
 import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckPointsItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckpointsResponse;
@@ -77,6 +80,14 @@ public class CheckListTitleFragment extends Fragment {
     EditText mEditTextAddNoteChecklist;
     @BindView(R.id.linearLayout_checklist_assign_to)
     LinearLayout mLinearLayoutChecklistAssignTo;
+    @BindView(R.id.checkbox_showParents)
+    CheckBox mCheckboxShowParents;
+    @BindView(R.id.spinner_selectParent)
+    Spinner mSpinnerSelectParent;
+    @BindView(R.id.linearLayout_parentsLayout)
+    LinearLayout mLinearLayoutParentsLayout;
+    @BindView(R.id.frameLayout_spinnerLayout)
+    FrameLayout mFrameLayoutSpinnerLayout;
     private Realm realm;
     private Context mContext;
     private int projectSiteUserChecklistAssignmentId;
@@ -87,6 +98,7 @@ public class CheckListTitleFragment extends Fragment {
     private RealmList<UsersItem> usersItemRealmList;
     private CheckBoxGroup<String> checkBoxGroup;
     private HashMap<CheckBox, String> checkBoxMap;
+    private int parentProjectSiteUserChecklistAssignmentId;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -140,6 +152,17 @@ public class CheckListTitleFragment extends Fragment {
                 }
             }
         }
+        mFrameLayoutSpinnerLayout.setVisibility(View.GONE);
+        mCheckboxShowParents.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    mFrameLayoutSpinnerLayout.setVisibility(View.VISIBLE);
+                } else {
+                    mFrameLayoutSpinnerLayout.setVisibility(View.GONE);
+                }
+            }
+        });
         requestToGetCheckpoints();
         return view;
     }
@@ -205,7 +228,7 @@ public class CheckListTitleFragment extends Fragment {
         requestToChangeChecklistStatus(true);
     }
 
-    private void setUpAdapter() {
+    private void setUpCheckpointsAdapter() {
         realm = Realm.getDefaultInstance();
         checkPointsItemRealmResults = realm.where(CheckPointsItem.class).findAll();
         CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(checkPointsItemRealmResults, true, true);
@@ -255,12 +278,14 @@ public class CheckListTitleFragment extends Fragment {
                                 public void execute(Realm realm) {
                                     realm.delete(CheckPointsItem.class);
                                     realm.delete(ProjectSiteUserCheckpointImagesItem.class);
+                                    realm.delete(ParentChecklistIdIdem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    setUpAdapter();
+                                    setUpParentsSpinnerAdapter();
+                                    setUpCheckpointsAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -278,6 +303,70 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestToGetCheckpoints");
+                    }
+                });
+    }
+
+    private void setUpParentsSpinnerAdapter() {
+        realm = Realm.getDefaultInstance();
+        RealmResults<ParentChecklistIdIdem> parentChecklistIdIdemRealmResults = realm.where(ParentChecklistIdIdem.class).findAll();
+        if (parentChecklistIdIdemRealmResults.isEmpty()) {
+            mLinearLayoutParentsLayout.setVisibility(View.GONE);
+        } else {
+            mLinearLayoutParentsLayout.setVisibility(View.VISIBLE);
+            ArrayList<ParentChecklistIdIdem> checklistIdIdemArrayList = new ArrayList<ParentChecklistIdIdem>();
+            ParentChecklistIdIdem parentChecklistIdIdem;
+            for (int i = 0; i < parentChecklistIdIdemRealmResults.size(); i++) {
+                parentChecklistIdIdem = new ParentChecklistIdIdem();
+                parentChecklistIdIdem.setProjectSiteUserChecklistAssignmentId(parentChecklistIdIdemRealmResults.get(i).getProjectSiteUserChecklistAssignmentId());
+                parentChecklistIdIdem.setVisibleParentName("Parent " + i);
+                checklistIdIdemArrayList.add(parentChecklistIdIdem);
+            }
+            ArrayAdapter<ParentChecklistIdIdem> checklistParentsAdapter
+                    = new ArrayAdapter<ParentChecklistIdIdem>(mContext, android.R.layout.simple_spinner_item, checklistIdIdemArrayList);
+            mSpinnerSelectParent.setAdapter(checklistParentsAdapter);
+            mSpinnerSelectParent.setSelection(0);
+            mSpinnerSelectParent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    ParentChecklistIdIdem selectedParentChecklistIdIdem = (ParentChecklistIdIdem) adapterView.getSelectedItem();
+                    parentProjectSiteUserChecklistAssignmentId = selectedParentChecklistIdIdem.getProjectSiteUserChecklistAssignmentId();
+                    getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    ParentChecklistIdIdem selectedParentChecklistIdIdem = (ParentChecklistIdIdem) adapterView.getSelectedItem();
+                    parentProjectSiteUserChecklistAssignmentId = selectedParentChecklistIdIdem.getProjectSiteUserChecklistAssignmentId();
+                    getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
+                }
+            });
+        }
+    }
+
+    private void getParentsCheckpointsList(int parentProjectSiteUserChecklistAssignmentId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_user_checklist_assignment_id", parentProjectSiteUserChecklistAssignmentId);
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_GET_PARENTS_CHECKPOINTS + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("getParentsCheckpointsList")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getParentsCheckpointsList");
                     }
                 });
     }

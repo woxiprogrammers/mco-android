@@ -79,4 +79,5 @@ public class AppURL {
     public static final String API_DRAWING_VERSIONS_LIST = BASE_URL + "drawing/get-all-image-versions?token=";
     public static final String API_GET_MISCELLANEOUS_CATEGORIES = BASE_URL + "system-miscellaneous-categories";
     public static final String API_REASSIGN_CHECKLIST_CHECKPOINTS = BASE_URL + "checklist/recheck-checkpoint?token=";
+    public static final String API_GET_PARENTS_CHECKPOINTS = BASE_URL + "checklist/get-parent?token=";
 }

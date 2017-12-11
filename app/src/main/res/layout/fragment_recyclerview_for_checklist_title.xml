@@ -5,6 +5,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/linearLayout_parentsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_8dp"
+        android:layout_marginRight="@dimen/dimen_8dp"
+        android:layout_marginTop="@dimen/dimen_8dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox_showParents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/dimen_8dp"
+            android:text="Show Parents"/>
+
+        <FrameLayout
+            android:id="@+id/frameLayout_spinnerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@android:drawable/editbox_background">
+
+            <Spinner
+                android:id="@+id/spinner_selectParent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_checklist_title"
         android:layout_width="match_parent"
@@ -46,8 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimen_8dp"
-                android:background="@android:drawable/editbox_background"
-                android:inputType="text">
+                android:background="@android:drawable/editbox_background">
 
                 <LinearLayout
                     android:id="@+id/linearLayout_checklist_assign_to"
@@ -68,8 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimen_8dp"
-                android:background="@android:drawable/editbox_background"
-                android:inputType="text">
+                android:background="@android:drawable/editbox_background">
 
                 <Spinner
                     android:id="@+id/spinner_reassignTo"
