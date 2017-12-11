@@ -267,7 +267,6 @@ public class PeticashFormActivity extends BaseActivity {
     private SearchMaterialListItem searchMaterialListItem_fromResult = null;
     public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
     private SearchAssetListItem searchAssetListItem_fromResult = null;
-    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private int unitId, indexItemUnit;
     private int peticashTransactionId;
     private boolean isOtherType;
@@ -292,13 +291,11 @@ public class PeticashFormActivity extends BaseActivity {
                     textViewAdvAmountCheck.setVisibility(View.VISIBLE);
                     buttonSalarySubmit.setVisibility(View.GONE);
                     textViewAdvAmountCheck.setText("Amount should be less than " + approvedSalaryAmount);
-
                 } else {
                     textViewAdvAmountCheck.setVisibility(View.GONE);
                     buttonSalarySubmit.setVisibility(View.VISIBLE);
                     textViewAdvAmountCheck.setText("");
                 }
-
             }
         }
 
@@ -316,7 +313,7 @@ public class PeticashFormActivity extends BaseActivity {
         layoutEmployeeInfo = findViewById(R.id.layoutEmployeeInformation);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Peticash Form");
+            getSupportActionBar().setTitle("Peticash");
         }
         initializeviews();
         Bundle bundle = getIntent().getExtras();

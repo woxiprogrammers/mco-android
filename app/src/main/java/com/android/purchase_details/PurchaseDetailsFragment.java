@@ -80,6 +80,27 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem item = menu.findItem(R.id.action_approve);
+        if (isApproval) {
+            item.setVisible(true);
+        } else {
+            item.setVisible(false);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+    }
+
     private void deleteExistingItemEntries() {
         realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
@@ -105,15 +126,6 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvItemList.setLayoutManager(linearLayoutManager);
         rvItemList.setAdapter(purchaseDetailsAdapter);
-        /*rvItemList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvItemList, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, final int position) {
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-            }
-        }));*/
         if (itemListItems != null) {
             itemListItems.addChangeListener(new RealmChangeListener<RealmResults<ItemListItem>>() {
                 @Override
@@ -181,26 +193,5 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem item = menu.findItem(R.id.action_approve);
-        if (isApproval) {
-            item.setVisible(true);
-        } else {
-            item.setVisible(false);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void fragmentBecameVisible() {
     }
 }
