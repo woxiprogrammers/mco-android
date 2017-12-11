@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -157,7 +158,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
@@ -193,7 +193,7 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             holder.linearLayoutQuoImg.removeAllViews();
             holder.textviewRatePerUnit.setText(materialsItem.getRatePerUnit());
             if (!TextUtils.isEmpty(materialsItem.getExpectedDeliveryDate())) {
-                holder.textviewExpDate.setText(materialsItem.getExpectedDeliveryDate());
+                holder.textviewExpDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd hh:mm:ss", "yyyy-MM-dd", materialsItem.getExpectedDeliveryDate()));
                 holder.linearLayoutExpDate.setVisibility(View.VISIBLE);
             } else {
                 holder.linearLayoutExpDate.setVisibility(View.GONE);
