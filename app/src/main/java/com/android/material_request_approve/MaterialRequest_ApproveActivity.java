@@ -882,7 +882,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             buttonApproveDisapprove.setText(slug);
             button_for_edit.setVisibility(View.GONE);
         } else {
-            buttonApproveDisapprove.setText(slug);
+            buttonApproveDisapprove.setText("Ok");
             button_for_edit.setVisibility(View.VISIBLE);
         }
         buttonApproveDisapprove.setOnClickListener(new View.OnClickListener() {
@@ -1374,7 +1374,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.iv_disapprove:
-                        slug = "Disaprove";
+                        slug = "Disapprove";
                         openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.button_move_to_indent:
