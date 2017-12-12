@@ -121,7 +121,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private float floatItemQuantity = 0;
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
-    private boolean isApprove, isMoveIndent, isNewItem;
+    private boolean isNewItem;
     private EditText editText_name_material_asset, editText_quantity_material_asset, edittext_unit, editextDialogRemark;
     private Spinner spinner_select_units;
     private AlertDialog alert_Dialog;
@@ -135,6 +135,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private int unitIDForDialog;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private LinearLayout linearLayoutUnit;
+    private String slug = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -809,23 +810,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         strUnitName = "";
         unitId = 0;
         floatItemQuantity = Float.parseFloat(strQuantity.trim());
-        /*if (isMaterial && !isNewItem) {
-            int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
-            float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
-            unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
-            strUnitName = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitName();
-            Timber.i("Material Old: unitId: " + unitId + " strUnitName " + strUnitName);
-            int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
-            if (floatComparison > 0) {
-                Toast.makeText(mContext, "Quantity is greater than allowed max quantity", Toast.LENGTH_SHORT).show();
-                mEditTextQuantityMaterialAsset.setError("Decrease quantity");
-                mEditTextQuantityMaterialAsset.requestFocus();
-                return;
-            } else {
-                mEditTextQuantityMaterialAsset.setError(null);
-                mEditTextQuantityMaterialAsset.clearFocus();
-            }
-        } else */
         if (isMaterial) {
             int indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
             unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getUnitId();
@@ -891,17 +875,20 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
-        if (isApprove) {
-            buttonApproveDisapprove.setText("Approve");
+        if (slug.equalsIgnoreCase("Approve")) {
+            buttonApproveDisapprove.setText(slug);
             button_for_edit.setVisibility(View.VISIBLE);
-        } else {
-            buttonApproveDisapprove.setText("Disapprove");
+        } else if (slug.equalsIgnoreCase("Disapprove")) {
+            buttonApproveDisapprove.setText(slug);
             button_for_edit.setVisibility(View.GONE);
+        } else {
+            buttonApproveDisapprove.setText(slug);
+            button_for_edit.setVisibility(View.VISIBLE);
         }
         buttonApproveDisapprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (buttonApproveDisapprove.getText().toString().equalsIgnoreCase("Approve")) {
+                if (slug.equalsIgnoreCase("Approve") || slug.equalsIgnoreCase("Move To Indent") ) {
                     realm = Realm.getDefaultInstance();
                     if (TextUtils.isEmpty(editText_quantity_material_asset.getText().toString())) {
                         editText_quantity_material_asset.setError("Please Enter Quantity");
@@ -911,17 +898,30 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         editText_quantity_material_asset.setError(null);
                         editText_quantity_material_asset.clearFocus();
                     }
-                    if (strUserRole.toLowerCase().contains("admin") /*|| strUserRole.equalsIgnoreCase(getString(R.string.admin))*/) {
-                        approveDisapproveMaterial(5, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                    if (TextUtils.isEmpty(editextDialogRemark.getText().toString())) {
+                        editextDialogRemark.setError("Please enter remark");
+                        editextDialogRemark.requestFocus();
+                        return;
                     } else {
-                        approveDisapproveMaterial(3, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        editextDialogRemark.setError(null);
+                        editextDialogRemark.clearFocus();
+                    }
+                }
+                if (buttonApproveDisapprove.getText().toString().equalsIgnoreCase("Approve")) {
+                    if (strUserRole.toLowerCase().contains("admin") /*|| strUserRole.equalsIgnoreCase(getString(R.string.admin))*/) {
+                        approveDisapproveMaterial(5, position, arrPurchaseMaterialListItems);
+                    } else {
+                        approveDisapproveMaterial(3, position, arrPurchaseMaterialListItems);
                     }
                 } else if (buttonApproveDisapprove.getText().toString().equalsIgnoreCase("Disapprove")) {
                     if (strUserRole.toLowerCase().contains("admin")/*strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))*/) {
-                        approveDisapproveMaterial(6, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        approveDisapproveMaterial(6, position, arrPurchaseMaterialListItems);
                     } else {
-                        approveDisapproveMaterial(4, position, arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        approveDisapproveMaterial(4, position, arrPurchaseMaterialListItems);
                     }
+                } else {
+                    approveDisapproveMaterial(7, position, arrPurchaseMaterialListItems);
+
                 }
                 if (alert_Dialog != null) {
                     alert_Dialog.dismiss();
@@ -948,18 +948,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         alert_Dialog.show();
     }
 
-    private void approveDisapproveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
-                                           final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
+    private void approveDisapproveMaterial(final int statusId, int position, OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems) {
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(arrPurchaseMaterialListItems);
         final PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListItems_New.get(position);
         int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
         JSONObject params = new JSONObject();
         try {
-            if (!isMoveIndent) {
-                int indexItemUnit = spinner_select_units.getSelectedItemPosition();
-//                int userId;
                 if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                    unitIDForDialog = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
+                    unitIDForDialog = unitQuantityItemRealmResults.get(spinner_select_units.getSelectedItemPosition()).getUnitId();
                     params.put("unit_id", unitIDForDialog);
                 }
                 params.put("material_request_component_id", materialRequestComponentId);
@@ -973,11 +969,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 } else {
                     params.put("remark", "");
                 }
-            } else {
-                params.put("material_request_component_id", materialRequestComponentId);
-                params.put("change_component_status_id_to", statusId);
-                params.put("remark", "");
-            }
+
             Log.i("@@params", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1250,6 +1242,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                     } else {
                                         linearLayoutUnit.setVisibility(View.VISIBLE);
                                         edittext_unit.setVisibility(View.GONE);
+                                        frameLayoutSpinnerUnitDialog.setVisibility(View.VISIBLE);
                                         setUpUnitQuantityChangeListener();
                                     }
                                 }
@@ -1377,16 +1370,17 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.iv_approve:
-                        isApprove = true;
+                        slug = "Approve";
                         openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.iv_disapprove:
-                        isApprove = false;
+                        slug = "Disaprove";
                         openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.button_move_to_indent:
-                        isMoveIndent = true;
-                        approveDisapproveMaterial(7, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        slug = "Move To Indent";
+                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+//                        approveDisapproveMaterial(7, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                 }
             }
@@ -1410,28 +1404,20 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.buttonMoveToIndent.setVisibility(View.GONE);
             holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
 //            if (purchaseMaterialListItem.getHave_access() != null) {
-                if(!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())){
-                    holder.textviewApprovedBy.setVisibility(View.VISIBLE);
-                    holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
-                }
+            if (!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())) {
+                holder.textviewApprovedBy.setVisibility(View.VISIBLE);
+                holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
+            }
 
 //            }
             if (purchaseMaterialListItem.getHave_access() != null) {
-                /*if (((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))))*//* && !(strStatus.equalsIgnoreCase("in-indent"))*//*) {
-                    Log.i("@@",purchaseMaterialListItem.getHave_access());
-                    Log.i("@@strStatus",strStatus);
-                    Log.i("@@strUserRole",strUserRole);
+                if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                 } else {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-                }*/
-                if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")){
-                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-                }else {
-                    holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
             }
-            if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) && purchaseMaterialListItem.getHave_access().contains("approve") ) {
+            if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) && purchaseMaterialListItem.getHave_access().contains("approve")) {
 //                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                 holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
             } else {
