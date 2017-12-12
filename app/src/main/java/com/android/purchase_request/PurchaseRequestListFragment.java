@@ -11,6 +11,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -114,6 +117,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         //Initialize Views
         initializeViews();
         setUpPrAdapter();
+        setHasOptionsMenu(true);
         return mParentView;
     }
 
@@ -136,6 +140,12 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         unbinder.unbind();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem item = menu.findItem(R.id.action_show_history);
+        item.setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
     public void onDatePickerClicked_purchaseRequest() {
         final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
         Bundle bundleArgs = new Bundle();
@@ -219,7 +229,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    setUpPrAdapter();
                                     Timber.d("Success");
                                     setUpPrAdapter();
                                     if (oldPageNumber != pageNumber) {
@@ -274,22 +283,12 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         intent.putExtra("KEY_SUBMODULETAG", subModuleTag);
                         intent.putExtra("KEY_PERMISSIONLIST", permissionList);
                         startActivity(intent);
-//                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        /*recyclerView_commonListingView.addOnScrollListener(new EndlessRecyclerViewScrollListener(new LinearLayoutManager(mContext)) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (oldPageNumber != pageNumber) {
-                    oldPageNumber = pageNumber;
-                    requestPrListOnline(page);
-                }
-            }
-        });*/
         if (purchaseRequestListItems != null) {
             purchaseRequestListItems.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseRequestListItem>>() {
                 @Override

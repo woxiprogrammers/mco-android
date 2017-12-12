@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -72,6 +75,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         initializeViews();
         requestPrListOnline(pageNumber);
         setUpPrAdapter();
+        setHasOptionsMenu(true);
         return mParentView;
     }
 
@@ -200,6 +204,13 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                 });
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem item = menu.findItem(R.id.action_show_history);
+        item.setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

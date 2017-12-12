@@ -1380,7 +1380,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     case R.id.button_move_to_indent:
                         slug = "Move To Indent";
                         openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
-//                        approveDisapproveMaterial(7, getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                 }
             }

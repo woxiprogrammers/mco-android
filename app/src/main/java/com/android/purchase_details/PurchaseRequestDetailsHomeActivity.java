@@ -213,31 +213,6 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         alert_Dialog.show();
 
 
-       /* AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder
-                .setTitle("Approve")
-                .setMessage("Do You Want To approve?")
-                .setPositiveButton("Approve", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        isInValidate = true;
-                        invalidateOptionsMenu();
-                        requestToChangeStatus(9);
-                        dialog.dismiss();
-                    }
-                }).setNegativeButton("Disapprove", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                requestToChangeStatus(10);
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-        Button positiveOk = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        positiveOk.setBackgroundColor(Color.RED);
-        positiveOk.setPadding(8,0,0,0);
-        Button negativeDisapprove = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        negativeDisapprove.setPadding(0,0,118,0);
-        negativeDisapprove.setBackgroundColor(R.color.custom_progress_message_color);*/
     }
 
     private void requestToChangeStatus(final int changeComponentStatusId) {
