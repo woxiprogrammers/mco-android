@@ -104,7 +104,6 @@ public class CheckListTitleFragment extends Fragment {
     private HashMap<CheckBox, String> checkBoxMap;
     private int parentProjectSiteUserChecklistAssignmentId;
     private boolean isViewOnly;
-    RecyclerItemClickListener mainCheckpointRecyclerItemClickListener;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -241,7 +240,7 @@ public class CheckListTitleFragment extends Fragment {
         rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
         rvChecklistTitle.setHasFixedSize(true);
         rvChecklistTitle.setAdapter(checkListTitleAdapter);
-        mainCheckpointRecyclerItemClickListener = new RecyclerItemClickListener(mContext,
+        rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 rvChecklistTitle,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -253,8 +252,7 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
-                });
-        rvChecklistTitle.addOnItemTouchListener(mainCheckpointRecyclerItemClickListener);
+                }));
     }
 
     private void requestToGetCheckpoints() {
@@ -402,7 +400,6 @@ public class CheckListTitleFragment extends Fragment {
                                     rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
                                     rvChecklistTitle.setHasFixedSize(true);
                                     rvChecklistTitle.setAdapter(parentCheckListTitleAdapter);
-                                    rvChecklistTitle.removeOnItemTouchListener(mainCheckpointRecyclerItemClickListener);
                                     rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                                             rvChecklistTitle,
                                             new RecyclerItemClickListener.OnItemClickListener() {

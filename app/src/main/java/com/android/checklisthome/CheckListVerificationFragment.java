@@ -161,6 +161,8 @@ public class CheckListVerificationFragment extends Fragment {
             inflatedView.setId(i);
             TextView textView_captionName = inflatedView.findViewById(R.id.textView_captionName);
             imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(400, 300);
+            imageViewCapturedImage.setLayoutParams(layoutParams);
             if (!TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
                 Glide.with(mContext)
                         .load(BuildConfig.BASE_URL_MEDIA + checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
@@ -169,6 +171,8 @@ public class CheckListVerificationFragment extends Fragment {
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageViewCapturedImage);
+            } else {
+                imageViewCapturedImage.setImageResource(android.R.drawable.ic_menu_camera);
             }
             if (checkPointsItem.getProjectSiteUserCheckpointImages().get(i).isProjectSiteChecklistCheckpointImageIsRequired()) {
                 textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption() + "*");
