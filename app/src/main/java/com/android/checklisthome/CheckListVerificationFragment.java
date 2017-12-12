@@ -211,6 +211,8 @@ public class CheckListVerificationFragment extends Fragment {
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageViewCapturedImage);
+            } else {
+                imageViewCapturedImage.setImageResource(android.R.drawable.ic_menu_camera);
             }
             if (parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).isProjectSiteChecklistCheckpointImageIsRequired()) {
                 textView_captionName.setText(parentCheckPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption() + "*");
