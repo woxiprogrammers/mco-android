@@ -118,6 +118,7 @@ public class CheckListVerificationFragment extends Fragment {
                 } else if (isFromState.equalsIgnoreCase("progress")) {
                 } else if (isFromState.equalsIgnoreCase("review")) {
                 } else if (isFromState.equalsIgnoreCase("completed")) {
+                    buttonSubmitChecklist.setVisibility(View.GONE);
                 }
             }
             Timber.d("isViewOnly " + isViewOnly);

@@ -15,8 +15,6 @@ import timber.log.Timber;
 public class CheckListActionActivity extends BaseActivity {
     @BindView(R.id.frameLayoutChecklistAction)
     FrameLayout frameLayoutChecklistAction;
-    private int projectSiteUserChecklistAssignmentId;
-    private int projectSiteChecklistId;
     private String isFromState;
 
     @Override
@@ -30,8 +28,8 @@ public class CheckListActionActivity extends BaseActivity {
         }
         Bundle bundleExtras = getIntent().getExtras();
         if (bundleExtras != null) {
-            projectSiteUserChecklistAssignmentId = bundleExtras.getInt("projectSiteUserChecklistAssignmentId");
-            projectSiteChecklistId = Integer.parseInt(bundleExtras.getString("projectSiteChecklistId"));
+            int projectSiteUserChecklistAssignmentId = bundleExtras.getInt("projectSiteUserChecklistAssignmentId");
+            int projectSiteChecklistId = Integer.parseInt(bundleExtras.getString("projectSiteChecklistId"));
             isFromState = bundleExtras.getString("isFromState");
             CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, projectSiteChecklistId, isFromState);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

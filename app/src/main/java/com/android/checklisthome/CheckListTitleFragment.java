@@ -152,19 +152,20 @@ public class CheckListTitleFragment extends Fragment {
                             }
                         }
                     });
-                } else if (isFromState.equalsIgnoreCase("complete")) {
+                } else if (isFromState.equalsIgnoreCase("completed")) {
                     mLinearLayoutReassignTo.setVisibility(View.GONE);
+                    mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
                 }
             }
         }
-        mFrameLayoutSpinnerLayout.setVisibility(View.GONE);
+        mFrameLayoutSpinnerLayout.setVisibility(View.INVISIBLE);
         mCheckboxShowParents.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     mFrameLayoutSpinnerLayout.setVisibility(View.VISIBLE);
                 } else {
-                    mFrameLayoutSpinnerLayout.setVisibility(View.GONE);
+                    mFrameLayoutSpinnerLayout.setVisibility(View.INVISIBLE);
                 }
             }
         });
