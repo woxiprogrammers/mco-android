@@ -51,6 +51,12 @@ public class PurchaseOrderListItem extends RealmObject {
     @SerializedName("grn_generated")
     private String grnGenerated;
 
+    @SerializedName("purchase_order_status_slug")
+    private String purchaseOrderStatusSlug;
+
+    @SerializedName("remaining_quantity")
+    private int remainingQuantity;
+
     @SerializedName("images")
     private RealmList<ImageItem> listOfImages;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
@@ -157,5 +163,21 @@ public class PurchaseOrderListItem extends RealmObject {
 
     public void setListOfImages(RealmList<ImageItem> listOfImages) {
         this.listOfImages = listOfImages;
+    }
+
+    public String getPurchaseOrderStatusSlug() {
+        return purchaseOrderStatusSlug;
+    }
+
+    public void setPurchaseOrderStatusSlug(String purchaseOrderStatusSlug) {
+        this.purchaseOrderStatusSlug = purchaseOrderStatusSlug;
+    }
+
+    public int getRemainingQuantity() {
+        return remainingQuantity;
+    }
+
+    public void setRemainingQuantity(int remainingQuantity) {
+        this.remainingQuantity = remainingQuantity;
     }
 }

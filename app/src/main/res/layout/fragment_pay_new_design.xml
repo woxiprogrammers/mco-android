@@ -237,5 +237,18 @@
                 android:text="Material Received"
                 android:visibility="visible"/>
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textViewShowMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Purchase Order Completed"
+            android:textColor="@color/colorAccent"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:gravity="center"/>
     </LinearLayout>
+
+
 </android.support.v4.widget.NestedScrollView>
