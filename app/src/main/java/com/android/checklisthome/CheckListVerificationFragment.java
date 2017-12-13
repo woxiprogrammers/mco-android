@@ -86,7 +86,6 @@ public class CheckListVerificationFragment extends Fragment {
     private boolean isUploadingImages;
     private CheckPointsItem checkPointsItem;
     private String isFromState;
-    private boolean isViewOnly;
 
     public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId, String isFromState, boolean isViewOnly) {
         Bundle args = new Bundle();
@@ -112,7 +111,7 @@ public class CheckListVerificationFragment extends Fragment {
         if (bundleArgs != null) {
             projectSiteUserCheckpointId = bundleArgs.getInt("projectSiteUserCheckpointId");
             isFromState = bundleArgs.getString("isFromState");
-            isViewOnly = bundleArgs.getBoolean("isViewOnly");
+            boolean isViewOnly = bundleArgs.getBoolean("isViewOnly");
             if (isFromState != null) {
                 if (isFromState.equalsIgnoreCase("assigned")) {
                 } else if (isFromState.equalsIgnoreCase("progress")) {

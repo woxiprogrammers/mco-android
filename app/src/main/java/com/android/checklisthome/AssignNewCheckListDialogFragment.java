@@ -61,12 +61,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
     private Spinner mSpinnerChecklistTitles;
     private TextView mTextViewChecklistDescription;
     private LinearLayout mLinearLayoutChecklistAssignTo;
-    private Button mButtonDismissAssignChecklistDialog;
-    private Button mButtonAssignChecklistDialog;
-    private ArrayList<String> arrChecklistCategories;
-    private ArrayList<String> arrChecklistSubCategories;
-    private ArrayList<String> arrChecklistFloorName;
-    private ArrayList<String> arrChecklistTitle;
     //    private ArrayList<String> arrChecklistDescription;
     private CheckBoxGroup<String> checkBoxGroup;
     private HashMap<CheckBox, String> checkBoxMap;
@@ -97,10 +91,10 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mContext = getActivity();
-        Bundle bundle = getArguments();
+        /*Bundle bundle = getArguments();
         if (bundle != null) {
             //get bundled values
-        }
+        }*/
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -111,10 +105,10 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         mSpinnerChecklistTitles = dialogView.findViewById(R.id.spinner_checklist_titles);
         mTextViewChecklistDescription = dialogView.findViewById(R.id.textView_checklist_description);
         mLinearLayoutChecklistAssignTo = dialogView.findViewById(R.id.linearLayout_checklist_assign_to);
-        mButtonDismissAssignChecklistDialog = dialogView.findViewById(R.id.button_dismiss_assign_checklist_dialog);
-        mButtonAssignChecklistDialog = dialogView.findViewById(R.id.button_assign_checklist_dialog);
+        Button mButtonDismissAssignChecklistDialog = dialogView.findViewById(R.id.button_dismiss_assign_checklist_dialog);
+        Button mButtonAssignChecklistDialog = dialogView.findViewById(R.id.button_assign_checklist_dialog);
         //
-        arrChecklistCategories = new ArrayList<>();
+        ArrayList<String> arrChecklistCategories = new ArrayList<>();
         arrChecklistCategories.add("Select Category");
         ArrayAdapter<String> arrayCategoryAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistCategories);
         arrayCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -135,7 +129,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
             }
         });
         //
-        arrChecklistSubCategories = new ArrayList<>();
+        ArrayList<String> arrChecklistSubCategories = new ArrayList<>();
         arrChecklistSubCategories.add("Select Sub-Category");
         ArrayAdapter<String> arraySubCategoryAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistSubCategories);
         arraySubCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -153,7 +147,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
             }
         });
         //
-        arrChecklistFloorName = new ArrayList<>();
+        ArrayList<String> arrChecklistFloorName = new ArrayList<>();
         arrChecklistFloorName.add("Select Floor");
         ArrayAdapter<String> arrayFloorNameAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistFloorName);
         arrayFloorNameAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -172,7 +166,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
             }
         });
         //
-        arrChecklistTitle = new ArrayList<>();
+        ArrayList<String> arrChecklistTitle = new ArrayList<>();
         arrChecklistTitle.add("Select Title");
         ArrayAdapter<String> arrayTitleAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrChecklistTitle);
         arrayTitleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
