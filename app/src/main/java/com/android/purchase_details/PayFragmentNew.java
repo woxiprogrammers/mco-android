@@ -190,8 +190,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         realm = Realm.getDefaultInstance();
         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
         int quantity = purchaseOrderListItem.getRemainingQuantity();
-        if (quantity > 0) {
+        if (quantity == 0) {
             textViewShowMessage.setVisibility(View.VISIBLE);
+            linearLayoutFirstLayout.setVisibility(View.GONE);
+        } else {
             if (!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())) {
                 linearLayoutToVisible.setVisibility(View.VISIBLE);
                 linearLayoutFirstLayout.setVisibility(View.GONE);
@@ -201,9 +203,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 linearLayoutToVisible.setVisibility(View.GONE);
                 linearLayoutFirstLayout.setVisibility(View.VISIBLE);
             }
-        }else {
-            textViewShowMessage.setVisibility(View.GONE);
-            linearLayoutFirstLayout.setVisibility(View.VISIBLE);
         }
 
         if (purchaseOrderListItem.getListOfImages().size() > 0) {
@@ -370,7 +369,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void requestToGenerateGrn() {
 
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
-            Toast.makeText(mContext, "Please add at least activity_drawing_home image", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
         JSONObject params = new JSONObject();

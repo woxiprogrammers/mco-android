@@ -1,6 +1,8 @@
 package com.android.purchase_request;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
@@ -128,9 +132,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
-        if(isFromPurchaseRequest){
+        if (isFromPurchaseRequest) {
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
-        }else {
+        } else {
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
@@ -142,8 +146,27 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     bundleArgs.putInt("purchase_order_id", purchaseOrderListItems.get(position).getId());
                     purchaseOrdermaterialDetailFragment.setArguments(bundleArgs);
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
+                } else if (view.getId() == R.id.textViewClose) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setMessage("Do you want to close this PO ?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    //  Action for 'NO' Button
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.setTitle("Close PO");
+                    alert.show();
+
+
                 } else {
-                    if(isFromPurchaseRequest){
+                    if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
                         intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
                         intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
@@ -158,14 +181,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         recyclerView_commonListingView.setAdapter(purchaseOrderRvAdapter);
     }
 
-
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
-            if(isFromPurchaseRequest){
+            if (isFromPurchaseRequest) {
                 params.put("purchase_request_id", purchaseRequestId);
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            }else {
+            } else {
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             }
             params.put("page", 0);
@@ -216,11 +238,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     @Override
     public void onResume() {
         super.onResume();
-        if(getUserVisibleHint()){
+        if (getUserVisibleHint()) {
             requestPrListOnline();
         }
     }
-
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {
@@ -248,6 +269,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             holder.textViewPurchaseRequestDate.setText(purchaseOrderListItem.getDate());
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
+            holder.linearLayoutClosePO.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -277,12 +299,17 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             TextView textviewClientName;
             @BindView(R.id.textViewdetails)
             TextView textViewdetails;
+            @BindView(R.id.textViewClose)
+            TextView textViewClose;
+            @BindView(R.id.linearLayoutClosePO)
+            LinearLayout linearLayoutClosePO;
 
             MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
                 itemView.setOnClickListener(this);
                 textViewdetails.setOnClickListener(this);
+                textViewClose.setOnClickListener(this);
             }
 
             @Override
