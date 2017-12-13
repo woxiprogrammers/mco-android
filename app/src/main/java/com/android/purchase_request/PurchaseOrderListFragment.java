@@ -30,6 +30,7 @@ import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
@@ -60,10 +61,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
 
-    public PurchaseOrderListFragment() {
-        // Required empty public constructor
-    }
-
     public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId, boolean isFrom) {
         Bundle args = new Bundle();
         PurchaseOrderListFragment fragment = new PurchaseOrderListFragment();
@@ -71,6 +68,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         purchaseRequestId = mPurchaseRequestId;
         isFromPurchaseRequest = isFrom;
         return fragment;
+    }
+
+    public PurchaseOrderListFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -120,6 +121,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            requestPrListOnline();
+        }
+    }
+
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
@@ -139,7 +148,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(View view, final int position) {
                 if (view.getId() == R.id.textViewdetails) {
                     PurchaseOrdermaterialDetailFragment purchaseOrdermaterialDetailFragment = new PurchaseOrdermaterialDetailFragment();
                     Bundle bundleArgs = new Bundle();
@@ -147,11 +156,12 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     purchaseOrdermaterialDetailFragment.setArguments(bundleArgs);
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
                 } else if (view.getId() == R.id.textViewClose) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext,R.style.MyDialogTheme);
                     builder.setMessage("Do you want to close this PO ?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    requestToClosePo(purchaseOrderListItems.get(position).getId());
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -235,12 +245,46 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint()) {
-            requestPrListOnline();
+    private void requestToClosePo(int id) {
+
+        JSONObject params = new JSONObject();
+        /**/
+        try {
+            params.put("purchase_order_id", id);
+            params.put("change_status_to_slug", "close");
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        AndroidNetworking.post(AppURL.API_CLOSE_PURCHASE_ORDER+ AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToClosePo")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            requestPrListOnline();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_show_history){
+            Toast.makeText(mContext, "Hi", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("WeakerAccess")
