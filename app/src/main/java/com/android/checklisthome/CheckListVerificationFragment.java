@@ -126,12 +126,14 @@ public class CheckListVerificationFragment extends Fragment {
                 buttonSubmitChecklist.setVisibility(View.GONE);
                 realm = Realm.getDefaultInstance();
                 ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
-                textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
-                intNumberOfImages = parentCheckPointsItem.getProjectSiteUserCheckpointImages().size();
-                if (intNumberOfImages > 0) {
-                    addViewOnlyCaptionsTemplate(parentCheckPointsItem);
-                } else {
-                    linearLayoutChecklistImg.setVisibility(View.GONE);
+                if (parentCheckPointsItem != null) {
+                    textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
+                    intNumberOfImages = parentCheckPointsItem.getProjectSiteUserCheckpointImages().size();
+                    if (intNumberOfImages > 0) {
+                        addViewOnlyCaptionsTemplate(parentCheckPointsItem);
+                    } else {
+                        linearLayoutChecklistImg.setVisibility(View.GONE);
+                    }
                 }
             } else {
                 buttonSubmitChecklist.setVisibility(View.VISIBLE);
