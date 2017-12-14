@@ -212,6 +212,8 @@ public class ChecklistList_CompleteFragment extends Fragment {
             holder.mTextviewCategoryName.setText(assignedChecklistListItem.getCategoryName());
             holder.mTextviewTitle.setText(assignedChecklistListItem.getTitle());
             holder.mTextviewDescription.setText(assignedChecklistListItem.getDescription());
+            holder.mTextviewReviewedBy.setVisibility(View.VISIBLE);
+            holder.mTextviewReviewedBy.setText("Reviewed By: " + assignedChecklistListItem.getReviewedByUserName());
             try {
                 int intCompleted = assignedChecklistListItem.getCompletedCheckPoints();
                 int intTotal = assignedChecklistListItem.getTotalCheckpoints();
@@ -242,6 +244,8 @@ public class ChecklistList_CompleteFragment extends Fragment {
             TextView mTextviewDescription;
             @BindView(R.id.circle_progress_checklist_assigned)
             CircleProgress mCircleProgressChecklistAssigned;
+            @BindView(R.id.textViewReviewedBy)
+            TextView mTextviewReviewedBy;
 
             private MyViewHolder(View itemView) {
                 super(itemView);

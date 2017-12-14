@@ -39,6 +39,16 @@ public class ChecklistListItem extends RealmObject {
     private int assignedUserId;
     @SerializedName("checklist_current_status")
     private String checklistCurrentStatus;
+    @SerializedName("assigned_to")
+    private int assignedTo;
+    @SerializedName("assigned_by_user_name")
+    private String assignedByUserName;
+    @SerializedName("assigned_by")
+    private int assignedBy;
+    @SerializedName("reviewed_by_user_name")
+    private String reviewedByUserName;
+    @SerializedName("reviewed_by")
+    private int reviewedBy;
 
     public void setFloorName(String floorName) {
         this.floorName = floorName;
@@ -158,5 +168,45 @@ public class ChecklistListItem extends RealmObject {
 
     public void setChecklistCurrentStatus(String checklistCurrentStatus) {
         this.checklistCurrentStatus = checklistCurrentStatus;
+    }
+
+    public int getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(int assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public String getAssignedByUserName() {
+        return assignedByUserName;
+    }
+
+    public void setAssignedByUserName(String assignedByUserName) {
+        this.assignedByUserName = assignedByUserName;
+    }
+
+    public int getAssignedBy() {
+        return assignedBy;
+    }
+
+    public void setAssignedBy(int assignedBy) {
+        this.assignedBy = assignedBy;
+    }
+
+    public String getReviewedByUserName() {
+        return reviewedByUserName;
+    }
+
+    public void setReviewedByUserName(String reviewedByUserName) {
+        this.reviewedByUserName = reviewedByUserName;
+    }
+
+    public int getReviewedBy() {
+        return reviewedBy;
+    }
+
+    public void setReviewedBy(int reviewedBy) {
+        this.reviewedBy = reviewedBy;
     }
 }

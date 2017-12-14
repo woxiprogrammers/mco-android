@@ -50,6 +50,12 @@
                 android:id="@+id/textviewDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/textViewReviewedBy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <com.github.lzyzsd.circleprogress.CircleProgress
