@@ -45,9 +45,9 @@ public class ChecklistHomeActivity extends BaseActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
     }
 
-    public void moveToScreenNumber(int screenNumber) {
+    /*public void moveToScreenNumber(int screenNumber) {
         mViewPager.setCurrentItem(screenNumber);
-    }
+    }*/
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
