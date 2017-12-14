@@ -73,7 +73,7 @@ public class CheckListVerificationFragment extends Fragment {
     @BindView(R.id.radioGroupChecklistOk)
     RadioGroup radioGroupChecklistOk;
     @BindView(R.id.buttonSubmitChecklist)
-    Button buttonSubmitChecklist;
+    Button btnSubmitChecklist;
     Unbinder unbinder;
     private Context mContext;
     private JSONArray jsonImageNameArray = new JSONArray();
@@ -113,16 +113,17 @@ public class CheckListVerificationFragment extends Fragment {
             isFromState = bundleArgs.getString("isFromState");
             boolean isViewOnly = bundleArgs.getBoolean("isViewOnly");
             if (isFromState != null) {
-                if (isFromState.equalsIgnoreCase("assigned")) {
+                /*if (isFromState.equalsIgnoreCase("assigned")) {
                 } else if (isFromState.equalsIgnoreCase("progress")) {
                 } else if (isFromState.equalsIgnoreCase("review")) {
-                } else if (isFromState.equalsIgnoreCase("completed")) {
-                    buttonSubmitChecklist.setVisibility(View.GONE);
+                } else */
+                if (isFromState.equalsIgnoreCase("completed")) {
+                    btnSubmitChecklist.setVisibility(View.GONE);
                 }
             }
             Timber.d("isViewOnly " + isViewOnly);
             if (isViewOnly) {
-                buttonSubmitChecklist.setVisibility(View.GONE);
+                btnSubmitChecklist.setVisibility(View.GONE);
                 realm = Realm.getDefaultInstance();
                 ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
                 if (parentCheckPointsItem != null) {
@@ -135,11 +136,25 @@ public class CheckListVerificationFragment extends Fragment {
                     }
                 }
             } else {
-                buttonSubmitChecklist.setVisibility(View.VISIBLE);
                 realm = Realm.getDefaultInstance();
                 checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
                 textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
                 intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
+                if (isFromState.equalsIgnoreCase("completed") || isFromState.equalsIgnoreCase("review")) {
+                    if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                        radioButtonOk.setChecked(true);
+                        radioButtonNotOk.setEnabled(false);
+                    } else {
+                        radioButtonNotOk.setChecked(true);
+                        radioButtonOk.setEnabled(false);
+                    }
+                } else {
+                    if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                        radioButtonOk.setChecked(true);
+                    } else {
+                        radioButtonNotOk.setChecked(true);
+                    }
+                }
                 if (intNumberOfImages > 0) {
                     addClickableCaptionsTemplate(checkPointsItem);
                 } else {
@@ -182,16 +197,18 @@ public class CheckListVerificationFragment extends Fragment {
                 textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption());
             }
             textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
-            inflatedView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    TextView textView_captionName = view.findViewById(R.id.textView_captionName);
-                    projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
-                    ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
-                    imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
-                    captureImage();
-                }
-            });
+            if (isFromState.equalsIgnoreCase("assigned") || isFromState.equalsIgnoreCase("progress")) {
+                inflatedView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TextView textView_captionName = view.findViewById(R.id.textView_captionName);
+                        projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
+                        ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
+                        imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
+                        captureImage();
+                    }
+                });
+            }
             linearLayoutChecklistImg.addView(inflatedView);
         }
     }
