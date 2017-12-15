@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -522,8 +524,36 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         EditText edittextMatUnit = dialogView.findViewById(R.id.edittextMatUnit);
         final EditText editTextMatQuantity = dialogView.findViewById(R.id.editTextMatQuantity);
         TextView textViewMaterialNameSelected = dialogView.findViewById(R.id.textViewMaterialNameSelected);
-        Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
-        MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
+        final TextView TextViewExceedQuantity=dialogView.findViewById(R.id.TextViewExceedQuantity);
+        final Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
+        final MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
+        final float l=materialNamesItem.getMaterialComponentRemainingQuantity();
+        editTextMatQuantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int arg1, int arg2, int arg3) {
+                if (!TextUtils.isEmpty(charSequence.toString())){
+                    if(Float.parseFloat(charSequence.toString()) > l){
+                        TextViewExceedQuantity.setText("Quantity should be less than " + String.valueOf(l));
+                        TextViewExceedQuantity.setVisibility(View.VISIBLE);
+                        buttonToOk.setEnabled(false);
+                    }else {
+                        TextViewExceedQuantity.setText("");
+                        TextViewExceedQuantity.setVisibility(View.GONE);
+                        buttonToOk.setEnabled(true);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+            }
+        });
         if (isForEdit) {
             if (materialNamesItem != null) {
                 Timber.d(String.valueOf(materialNamesItem));
@@ -690,7 +720,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void inflateViews() {
         realm = Realm.getDefaultInstance();
         arrayList = new ArrayList<>();
-        materialNamesItems = realm.where(MaterialNamesItem.class).findAll();
+        materialNamesItems = realm.where(MaterialNamesItem.class).notEqualTo("materialComponentRemainingQuantity",0.0).findAll();
         for (int i = 0; i < materialNamesItems.size(); i++) {
             final MaterialNamesItem materialNamesItem = materialNamesItems.get(i);
             inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);

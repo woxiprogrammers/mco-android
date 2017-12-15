@@ -19,9 +19,22 @@ public class MaterialNamesItem extends RealmObject {
     private String materialName;
     @SerializedName("material_request_component_id")
     private int materialRequestComponentId;
+
+    @SerializedName("material_component_remaining_quantity")
+    private float materialComponentRemainingQuantity;
+
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     private int quantity;
+
+    public float getMaterialComponentRemainingQuantity() {
+        return materialComponentRemainingQuantity;
+    }
+
+    public void setMaterialComponentRemainingQuantity(float materialComponentRemainingQuantity) {
+        this.materialComponentRemainingQuantity = materialComponentRemainingQuantity;
+    }
+
     public int getMaterialRequestComponentId() {
         return materialRequestComponentId;
     }

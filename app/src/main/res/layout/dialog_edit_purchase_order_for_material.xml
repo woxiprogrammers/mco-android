@@ -51,6 +51,7 @@
                     android:background="@android:drawable/editbox_background_normal"
                     android:digits="0123456789."
                     android:inputType="number"/>
+
             </LinearLayout>
 
 
@@ -81,11 +82,10 @@
 
 
         <TextView
-            android:id="@+id/TextViewRemainingQuantity"
+            android:id="@+id/TextViewExceedQuantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimen_8dp"
-            android:text="Remaining Quantity"
             android:visibility="gone"
             android:textColor="@color/colorAccent"/>
 
