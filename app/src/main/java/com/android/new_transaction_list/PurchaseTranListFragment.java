@@ -206,12 +206,6 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
 
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem item = menu.findItem(R.id.action_show_history);
-        item.setVisible(false);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         recyclerView_commonListingView.setAdapter(null);

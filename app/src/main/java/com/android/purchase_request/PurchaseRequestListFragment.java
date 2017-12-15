@@ -140,12 +140,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         unbinder.unbind();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem item = menu.findItem(R.id.action_show_history);
-        item.setVisible(false);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
     public void onDatePickerClicked_purchaseRequest() {
         final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
         Bundle bundleArgs = new Bundle();

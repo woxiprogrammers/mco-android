@@ -63,7 +63,7 @@ public class AppURL {
     public static final String API_AWARENES_CATEGORY_DATA = BASE_URL + "awareness/get-main-categories?token=";
     public static final String API_AWARENES_SUB_CATEGORY_DATA = BASE_URL + "awareness/get-sub-categories?token=";
     public static final String API_AWARENES_LISTING = BASE_URL + "awareness/listing?token=";
-    //    public static final String API_CHECKLIST_ASSIGNED_LIST = "http://www.mocky.io/v2/5a17cb0a2c00000714596c11";
+    //public static final String API_CHECKLIST_ASSIGNED_LIST = "http://www.mocky.io/v2/5a17cb0a2c00000714596c11";
     public static final String API_CHECKLIST_ASSIGNED_LIST = BASE_URL + "checklist/listing?token=";
     public static final String API_CHECKLIST_FLOOR_LIST = BASE_URL + "checklist/floor?token=";
     public static final String API_CHECKLIST_TITLE_LIST = BASE_URL + "checklist/title?token=";

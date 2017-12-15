@@ -142,9 +142,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         if (isFromPurchaseRequest) {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
         } else {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
@@ -279,13 +279,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_show_history){
-            Toast.makeText(mContext, "Hi", Toast.LENGTH_SHORT).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {
@@ -313,7 +307,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             holder.textViewPurchaseRequestDate.setText(purchaseOrderListItem.getDate());
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
-            holder.linearLayoutClosePO.setVisibility(View.VISIBLE);
+            if(!purchaseOrderListItem.getPurchaseOrderStatusSlug().equalsIgnoreCase("close")){
+                holder.linearLayoutClosePO.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override

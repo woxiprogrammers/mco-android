@@ -94,6 +94,8 @@
         </activity>
         <activity android:name="com.android.drawings.DrawingDetailsActivity">
         </activity>
+        <activity android:name="com.android.dpr_module.DPRHomeActivity">
+        </activity>
     </application>
 
 </manifest>
