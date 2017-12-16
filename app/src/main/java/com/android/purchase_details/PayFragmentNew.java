@@ -453,7 +453,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("@@Check", params.toString());
         AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_PAYMENT_URL + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToPayment")
                 .addJSONObjectBody(params)
