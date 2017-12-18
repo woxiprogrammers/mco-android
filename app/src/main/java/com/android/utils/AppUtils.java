@@ -1,9 +1,9 @@
 package com.android.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -224,7 +224,7 @@ public class AppUtils {
         Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
     }
 
-    public void loadImageViaGlide(String strUrl, ImageView imageView,Context mContext){
+    public void loadImageViaGlide(String strUrl, ImageView imageView, Context mContext) {
         //ToDo Imp Sharvari unComment
         Glide.with(mContext).load("http://test.mconstruction.co.in" + strUrl)
                 .thumbnail(0.1f)
@@ -294,7 +294,7 @@ public class AppUtils {
         return strLoggedInAt;
     }
 
-    public String getUserRole(){
+    public String getUserRole() {
         Realm realm = Realm.getDefaultInstance();
         try {
             realm.executeTransaction(new Realm.Transaction() {
@@ -314,7 +314,6 @@ public class AppUtils {
         return strUserRole;
     }
 
-
     public String getTime(String currentFormat, String expectedFormat, String currentDateTime) {
         final SimpleDateFormat df = new SimpleDateFormat(currentFormat);
         Date dateObj;
@@ -329,5 +328,13 @@ public class AppUtils {
         return newDateStr;
     }
 
-
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

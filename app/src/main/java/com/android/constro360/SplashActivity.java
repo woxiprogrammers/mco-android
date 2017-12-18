@@ -8,7 +8,6 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.android.awareness.AwarenessHomeActivity;
-import com.android.checklisthome.CheckListActionActivity;
 import com.android.checklisthome.ChecklistHomeActivity;
 import com.android.dashboard.DashBoardActivity;
 import com.android.drawings.DrawingHomeActivity;
@@ -97,45 +96,47 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void requestLatestAcl() {
-        AndroidNetworking.post(AppURL.API_USER_DASHBOARD + AppUtils.getInstance().getCurrentToken())
-                .addBodyParameter("logged_in_at", AppUtils.getInstance().getLoggedInAt())
-                .setTag("requestLatestAcl")
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(final JSONObject response) {
-                        Timber.i("LoginResponse: " + String.valueOf(response));
-                        Gson gson = new Gson();
-                        final LoginResponse loginResponse = gson.fromJson(String.valueOf(response), LoginResponse.class);
-                        if (loginResponse.getLoginResponseData() != null) {
-                            realm = Realm.getDefaultInstance();
-                            try {
-                                realm.executeTransaction(new Realm.Transaction() {
-                                    @Override
-                                    public void execute(Realm realm) {
-                                        realm.deleteAll();
-                                        realm.copyToRealm(loginResponse);
-                                        startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
-                                        finish();
+        if (AppUtils.getInstance().isNetworkAvailable()) {
+            AndroidNetworking.post(AppURL.API_USER_DASHBOARD + AppUtils.getInstance().getCurrentToken())
+                    .addBodyParameter("logged_in_at", AppUtils.getInstance().getLoggedInAt())
+                    .setTag("requestLatestAcl")
+                    .setPriority(Priority.MEDIUM)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(final JSONObject response) {
+                            Timber.i("LoginResponse: " + String.valueOf(response));
+                            Gson gson = new Gson();
+                            final LoginResponse loginResponse = gson.fromJson(String.valueOf(response), LoginResponse.class);
+                            if (loginResponse.getLoginResponseData() != null) {
+                                try {
+                                    realm = Realm.getDefaultInstance();
+                                    realm.executeTransaction(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            realm.deleteAll();
+                                            realm.copyToRealm(loginResponse);
+                                            startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
+                                            finish();
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
                                     }
-                                });
-                            } finally {
-                                if (realm != null) {
-                                    realm.close();
                                 }
+                            } else {
+                                Timber.i(loginResponse.getMessage());
+                                startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
+                                finish();
                             }
-                        } else {
-                            Timber.i(loginResponse.getMessage());
-                            startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
-                            finish();
                         }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestLatestAcl");
-                    }
-                });
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "requestLatestAcl");
+                        }
+                    });
+        }
     }
 }
