@@ -51,6 +51,7 @@ android {
 }
 
 dependencies {
+    compile 'com.google.firebase:firebase-messaging:11.0.4'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -80,3 +81,5 @@ dependencies {
     compile 'com.xeoh.android:checkboxgroup:1.0.1'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
 }
+
+apply plugin: 'com.google.gms.google-services'

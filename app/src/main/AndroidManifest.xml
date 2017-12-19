@@ -22,7 +22,6 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -93,6 +92,22 @@
         </activity>
         <activity android:name="com.android.drawings.DrawingDetailsActivity">
         </activity>
-    </application>
 
+        <service android:name="com.android.firebase.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.android.firebase.MyFirebaseMessagingService"
+            android:enabled="false"
+            android:exported="false">
+        </service>
+        <service
+            android:name="com.android.firebase.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+    </application>
 </manifest>
