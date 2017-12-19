@@ -991,6 +991,14 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         buttonApproveDisapprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(TextUtils.isEmpty(editextDialogRemark.getText().toString())){
+                    editextDialogRemark.setError("Please enter remark");
+                    editextDialogRemark.requestFocus();
+                    return;
+                }else {
+                    editextDialogRemark.setError(null);
+                    editextDialogRemark.clearFocus();
+                }
                 realm = Realm.getDefaultInstance();
                 unitIDForDialog = unitQuantityItemRealmResults.get(spinner_select_units.getSelectedItemPosition()).getUnitId();
                 try {
@@ -998,13 +1006,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                         @Override
                         public void execute(Realm realm) {
                             PurchaseMaterialListItem purchaseMaterialListItem = realm.where(PurchaseMaterialListItem.class).equalTo("primaryKey", (int) itemPrimaryKey).findFirst();
-                            /*unitIDForDialog = unitQuantityItemRealmResults.get(spinner_select_units.getSelectedItemPosition()).getUnitId();
-                            arrPurchaseMaterialListItems.get(position).setInIndentMaterialUpdated(true);
-                            arrPurchaseMaterialListItems.get(position).setRemark(editextDialogRemark.getText().toString());
-                            arrPurchaseMaterialListItems.get(position).setItem_quantity(Float.parseFloat(editText_quantity_material_asset.getText().toString()));
-                            arrPurchaseMaterialListItems.get(position).setItem_unit_id(unitIDForDialog);
-                            realm.insertOrUpdate(arrPurchaseMaterialListItems);*/
-
                             if (purchaseMaterialListItem != null) {
                                 purchaseMaterialListItem.setInIndentMaterialUpdated(true);
                                 purchaseMaterialListItem.setRemark(editextDialogRemark.getText().toString());
@@ -1021,7 +1022,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                         realm.close();
                     }
                 }
-
                 if (alert_Dialog != null) {
                     alert_Dialog.dismiss();
                 }

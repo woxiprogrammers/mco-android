@@ -824,7 +824,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     ///////Approve Functionality////////////////
-    private void openDialog(final int position, final OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems) {
+    private void openDialog(final int position, final OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
+                            final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_material_approve_status, null);
         alertDialogBuilder.setView(dialogView);
@@ -1370,15 +1371,15 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 switch (view.getId()) {
                     case R.id.iv_approve:
                         slug = "Approve";
-                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems);
+                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.iv_disapprove:
                         slug = "Disapprove";
-                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems);
+                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                     case R.id.button_move_to_indent:
                         slug = "Move To Indent";
-                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems);
+                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
                         break;
                 }
             }
@@ -1409,7 +1410,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
 //            }
             if (purchaseMaterialListItem.getHave_access() != null) {
-                if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) {
+                if ((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || strStatus.equalsIgnoreCase("p-r-assigned")) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                 } else {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
