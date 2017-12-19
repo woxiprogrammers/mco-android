@@ -47,6 +47,7 @@ public class AppUtils {
     private String strToken;
     private String strLoggedInAt;
     private String strUserRole;
+    private int intCurrentUserId;
 
     /**
      * initialize utils plus library
@@ -336,5 +337,25 @@ public class AppUtils {
             activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         }
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public int getCurrentUserId() {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
+                    intCurrentUserId = loginResponse.getLoginResponseData().getId();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return intCurrentUserId;
     }
 }

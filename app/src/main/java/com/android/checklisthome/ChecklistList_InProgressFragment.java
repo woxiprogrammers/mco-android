@@ -178,6 +178,11 @@ public class ChecklistList_InProgressFragment extends Fragment {
                 intentAction.putExtra("projectSiteUserChecklistAssignmentId", checklistItemResults.get(position).getProjectSiteUserChecklistAssignmentId());
                 intentAction.putExtra("projectSiteChecklistId", checklistItemResults.get(position).getProjectSiteChecklistId());
                 intentAction.putExtra("isFromState", "progress");
+                if (AppUtils.getInstance().getCurrentUserId() == checklistItemResults.get(position).getAssignedTo()) {
+                    intentAction.putExtra("isUserViewOnly", false);
+                } else {
+                    intentAction.putExtra("isUserViewOnly", true);
+                }
                 startActivity(intentAction);
             }
 

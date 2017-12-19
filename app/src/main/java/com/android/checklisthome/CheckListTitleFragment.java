@@ -104,16 +104,18 @@ public class CheckListTitleFragment extends Fragment {
     private HashMap<CheckBox, String> checkBoxMap;
     private int parentProjectSiteUserChecklistAssignmentId;
     private boolean isViewOnly;
+    private boolean isUserViewOnly;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
     }
 
-    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, int projectSiteChecklistId, String isFromState) {
+    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, int projectSiteChecklistId, String isFromState, boolean isUserViewOnly) {
         Bundle args = new Bundle();
         args.putInt("projectSiteUserChecklistAssignmentId", projectSiteUserChecklistAssignmentId);
         args.putInt("projectSiteChecklistId", projectSiteChecklistId);
         args.putString("isFromState", isFromState);
+        args.putBoolean("isUserViewOnly", isUserViewOnly);
         CheckListTitleFragment fragment = new CheckListTitleFragment();
         fragment.setArguments(args);
         return fragment;
@@ -128,6 +130,7 @@ public class CheckListTitleFragment extends Fragment {
         if (bundleArgs != null) {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
             projectSiteChecklistId = bundleArgs.getInt("projectSiteChecklistId");
+            isUserViewOnly = bundleArgs.getBoolean("isUserViewOnly");
             isFromState = bundleArgs.getString("isFromState");
             if (isFromState != null) {
                 if (isFromState.equalsIgnoreCase("assigned")) {
@@ -156,6 +159,12 @@ public class CheckListTitleFragment extends Fragment {
                     mLinearLayoutReassignTo.setVisibility(View.GONE);
                     mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
                 }
+            }
+            if (isUserViewOnly) {
+                isViewOnly = isUserViewOnly;
+                mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
+            } else {
+                mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
             }
         }
         mFrameLayoutSpinnerLayout.setVisibility(View.INVISIBLE);
