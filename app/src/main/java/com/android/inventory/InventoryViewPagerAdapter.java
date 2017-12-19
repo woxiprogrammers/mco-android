@@ -28,7 +28,7 @@ public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return MaterialListFragment.newInstance();
             case 1:
-                return AssetListFragment.newInstance();
+                return InventoryTransferRequestListFragment.newInstance();
             case 2:
                 return AssetListFragment.newInstance();
             default:
