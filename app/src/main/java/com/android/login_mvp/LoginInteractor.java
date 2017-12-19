@@ -2,7 +2,6 @@ package com.android.login_mvp;
 
 import android.text.TextUtils;
 
-import com.android.constro360.BuildConfig;
 import com.android.models.login_acl.LoginResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -31,7 +30,9 @@ class LoginInteractor implements LoginInteractorInterface {
             listener.onPasswordEmptyError("Password Empty");
         else if (password.length() < 6 /*&& !BuildConfig.DEBUG*/)
             listener.onPasswordValidationError("Password should range between 6–20 chars");
-        else requestLoginAPI(listener, username, password);
+        else if (AppUtils.getInstance().isNetworkAvailable()) {
+            requestLoginAPI(listener, username, password);
+        }
     }
 
     private void requestLoginAPI(final onLoginFinishedListener listener, String mobileNumber, String password) {

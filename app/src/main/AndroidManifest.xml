@@ -99,11 +99,6 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.android.firebase.MyFirebaseMessagingService"
-            android:enabled="false"
-            android:exported="false">
-        </service>
-        <service
             android:name="com.android.firebase.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
