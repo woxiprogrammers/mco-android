@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.models.login_acl.PermissionsItem;
 import com.android.models.purchase_order.PurchaseOrderListItem;
 import com.android.models.purchase_order.PurchaseOrderResponse;
 import com.android.purchase_details.PayAndBillsActivity;
@@ -32,6 +33,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,8 +62,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
+    private String subModuleTag, permissionList;
 
-    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId, boolean isFrom) {
+    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId, boolean isFrom, String permissionsItemList) {
         Bundle args = new Bundle();
         PurchaseOrderListFragment fragment = new PurchaseOrderListFragment();
         fragment.setArguments(args);
@@ -136,7 +139,17 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
      */
     private void initializeViews() {
         mContext = getActivity();
-        setUpPrAdapter();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            permissionList = bundle.getString("permissionsItemList");
+        }
+        PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
+        for (PermissionsItem permissionsItem : permissionsItems) {
+            String accessPermission = permissionsItem.getCanAccess();
+            if (accessPermission.equalsIgnoreCase("view-purchase-order") ){
+                setUpPrAdapter();
+            }
+        }
     }
 
     private void setUpPrAdapter() {
@@ -278,8 +291,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     }
                 });
     }
-
-
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {

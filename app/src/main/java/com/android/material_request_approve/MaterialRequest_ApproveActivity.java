@@ -1410,7 +1410,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
 //            }
             if (purchaseMaterialListItem.getHave_access() != null) {
-                if ((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || strStatus.equalsIgnoreCase("p-r-assigned")) {
+                if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                 } else {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
