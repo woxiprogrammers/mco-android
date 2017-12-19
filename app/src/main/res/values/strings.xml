@@ -107,4 +107,5 @@
     <string name="title_activity_checklist">Checklist Management</string>
     <string name="view_purchase_request">view-purchase-request</string>
     <string name="create_peticash_management">create-peticash-management</string>
+    <string name="transfer_request">Transfer Request</string>
 </resources>
