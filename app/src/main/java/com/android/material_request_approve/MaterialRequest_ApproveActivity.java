@@ -824,8 +824,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     ///////Approve Functionality////////////////
-    private void openDialog(final int position, final OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems,
-                            final LinearLayout linearLayoutApproveDisapprove, final Button buttonMoveToIndent) {
+    private void openDialog(final int position, final OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_material_approve_status, null);
         alertDialogBuilder.setView(dialogView);
@@ -1371,15 +1370,15 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 switch (view.getId()) {
                     case R.id.iv_approve:
                         slug = "Approve";
-                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems);
                         break;
                     case R.id.iv_disapprove:
                         slug = "Disapprove";
-                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems);
                         break;
                     case R.id.button_move_to_indent:
                         slug = "Move To Indent";
-                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems, linearLayoutApproveDisapprove, buttonMoveToIndent);
+                        openDialog(getAdapterPosition(), arrPurchaseMaterialListItems);
                         break;
                 }
             }

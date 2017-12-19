@@ -49,6 +49,9 @@ public class PurchaseMaterialListItem extends RealmObject {
     @SerializedName("approved_by")
     private String approvedBy;
 
+    private String remark;
+
+    private boolean isInIndentMaterialUpdated;
 
     public String getApprovedBy() {
         return approvedBy;
@@ -57,6 +60,7 @@ public class PurchaseMaterialListItem extends RealmObject {
     public void setApprovedBy(String approvedBy) {
         this.approvedBy = approvedBy;
     }
+
     public void setHave_access(String have_access) {
         this.have_access = have_access;
     }
@@ -64,6 +68,21 @@ public class PurchaseMaterialListItem extends RealmObject {
         return have_access;
     }
 
+    public boolean isInIndentMaterialUpdated() {
+        return isInIndentMaterialUpdated;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public void setInIndentMaterialUpdated(boolean inIndentMaterialUpdated) {
+        isInIndentMaterialUpdated = inIndentMaterialUpdated;
+    }
 
     /////////////////////////
 //    private String item_category;
