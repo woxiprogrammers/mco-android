@@ -88,11 +88,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
-        //Initialize Views
-        initializeViews();
-        requestPrListOnline();
-        setUpPrAdapter();
-
+        mContext = getActivity();
+        setUpPOAdapter();
         return mParentView;
     }
 
@@ -116,25 +113,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    /**
-     * <b>private void initializeViews()</b>
-     * <p>This function is used to initialize required views.</p>
-     * Created by - Rohit
-     */
-    private void initializeViews() {
-        mContext = getActivity();
-        setUpPrAdapter();
-    }
-
-    private void setUpPrAdapter() {
+    private void setUpPOAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        if(isFromPurchaseRequest){
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
-
-        }else {
+        if (isFromPurchaseRequest) {
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).equalTo("purchaseRequestId", purchaseRequestId).findAllAsync();
+        } else {
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
-
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
@@ -146,7 +131,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     purchaseOrdermaterialDetailFragment.setArguments(bundleArgs);
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
                 } else {
-                    if(isFromPurchaseRequest){
+                    if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
                         intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
                         intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
@@ -161,16 +146,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         recyclerView_commonListingView.setAdapter(purchaseOrderRvAdapter);
     }
 
-
     private void requestPrListOnline() {
         JSONObject params = new JSONObject();
         try {
-            if(isFromPurchaseRequest){
+            if (isFromPurchaseRequest) {
                 params.put("purchase_request_id", purchaseRequestId);
-                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            }else {
-                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             }
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("page", 0);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -194,6 +176,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    setUpPOAdapter();
                                     Timber.d("Realm execution successful");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -219,11 +202,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     @Override
     public void onResume() {
         super.onResume();
-        if(getUserVisibleHint()){
+        if (getUserVisibleHint()) {
             requestPrListOnline();
         }
     }
-
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {

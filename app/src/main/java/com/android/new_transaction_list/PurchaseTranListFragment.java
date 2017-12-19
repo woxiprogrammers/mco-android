@@ -40,7 +40,6 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class PurchaseTranListFragment extends Fragment implements FragmentInterface {
-
     @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
@@ -73,20 +72,18 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             intPrimaryKey = bundle.getInt("primaryKey");
             isFromPurchaseRequestHome = bundle.getBoolean("isFromPurchaseHome");
         }
-        requestPrListOnline();
-        setUpPrAdapter();
+        mContext = getActivity();
+        setUpTransactionAdapter();
         return mParentView;
     }
 
-    private void setUpPrAdapter() {
+    private void setUpTransactionAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         if (isFromPurchaseRequestHome) {
             purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
-
         } else {
             purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("purchaseOrderId", intPrimaryKey).findAll();
-
         }
         PurchaseTransAdapter purchaseBillRvAdapter = new PurchaseTransAdapter(purchaseBillListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -152,7 +149,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    setUpPrAdapter();
+                                    setUpTransactionAdapter();
                                     Timber.d("Success");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -178,7 +175,6 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     @Override
     public void fragmentBecameVisible() {
         requestPrListOnline();
-
         if (!isFromPurchaseRequestHome) {
             if (getUserVisibleHint() && ((PurchaseHomeActivity) mContext) != null) {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
@@ -218,12 +214,10 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getPurchaseOrderTransactionStatus());
             if (purchaseBillListItem.getPurchaseOrderTransactionStatus().equalsIgnoreCase("GRN Generated")) {
                 holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBillListItem.getInTime()));
-
             } else {
                 holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBillListItem.getOutTime()));
-
             }
-            if(isFromPurchaseRequestHome){
+            if (isFromPurchaseRequestHome) {
                 holder.textViewPurchaseOrderFormat.setVisibility(View.VISIBLE);
                 holder.textViewPurchaseOrderFormat.setText(purchaseBillListItem.getPurchaseOrderFormatId());
             }

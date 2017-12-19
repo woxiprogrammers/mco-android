@@ -164,15 +164,4 @@ public class PurchaseHomeActivity extends BaseActivity {
             }
         }
     }
-
-    /*@Override
-    protected void onPause() {
-        super.onPause();
-        Realm realm = Realm.getDefaultInstance();
-        for (int i = 0; i < 5; i++) {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-    }*/
 }

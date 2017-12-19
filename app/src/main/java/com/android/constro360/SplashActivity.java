@@ -137,6 +137,9 @@ public class SplashActivity extends BaseActivity {
                             AppUtils.getInstance().logApiError(anError, "requestLatestAcl");
                         }
                     });
+        } else {
+            startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
+            finish();
         }
     }
 }

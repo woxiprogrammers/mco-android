@@ -46,9 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
-import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
@@ -217,8 +215,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    setUpPrAdapter();
-                                    Timber.d("Success");
                                     setUpPrAdapter();
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
@@ -272,7 +268,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         intent.putExtra("KEY_SUBMODULETAG", subModuleTag);
                         intent.putExtra("KEY_PERMISSIONLIST", permissionList);
                         startActivity(intent);
-//                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
                     }
 
                     @Override
@@ -288,45 +283,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 }
             }
         });*/
-        if (purchaseRequestListItems != null) {
-            purchaseRequestListItems.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseRequestListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseRequestListItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
-                    // `null`  means the async query returns the first time.
-                    if (changeSet == null) {
-                        purchaseRequestRvAdapter.notifyDataSetChanged();
-                        return;
-                    }
-                    // For deletions, the adapter has to be notified in reverse order.
-                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
-                    for (int i = deletions.length - 1; i >= 0; i--) {
-                        OrderedCollectionChangeSet.Range range = deletions[i];
-                        purchaseRequestRvAdapter.notifyItemRangeRemoved(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
-                    for (OrderedCollectionChangeSet.Range range : insertions) {
-                        purchaseRequestRvAdapter.notifyItemRangeInserted(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
-                    for (OrderedCollectionChangeSet.Range range : modifications) {
-                        purchaseRequestRvAdapter.notifyItemRangeChanged(range.startIndex, range.length);
-                    }
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
-        }
     }
-
-    /*@Override
-    public void onPause() {
-        super.onPause();
-        for (int i = 0; i < 5; i++) {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -365,7 +322,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-            if(!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())){
+            if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
                 holder.textViewApproved.setText("Approved By : - " + purchaseRequestListItem.getApprovedBy());
             }
