@@ -133,7 +133,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         userName.setText(loginResponseData.getFirstName() + " " + loginResponseData.getLastName());
         projectsItemRealmResults = realm.where(ProjectsItem.class).findAll();
         setUpProjectsSpinnerAdapter(projectsItemRealmResults);
-        if (projectsItemRealmResults != null) {
+        /*if (projectsItemRealmResults != null) {
             projectsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<ProjectsItem>>() {
                 @Override
                 public void onChange(RealmResults<ProjectsItem> projectsItems) {
@@ -142,7 +142,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("DashBoardActivity");
-        }
+        }*/
         projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {

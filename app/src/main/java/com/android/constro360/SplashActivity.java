@@ -138,6 +138,7 @@ public class SplashActivity extends BaseActivity {
                         }
                     });
         } else {
+            AppUtils.getInstance().showOfflineMessage("SplashActivity");
             startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
             finish();
         }

@@ -328,7 +328,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
             }
         });
         mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
-        if (peticashTransactionsRealmResult != null) {
+        /*if (peticashTransactionsRealmResult != null) {
             peticashTransactionsRealmResult.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<DatewiseTransactionsListItem>>() {
                 @Override
                 public void onChange(RealmResults<DatewiseTransactionsListItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
@@ -355,6 +355,6 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
-        }
+        }*/
     }
 }

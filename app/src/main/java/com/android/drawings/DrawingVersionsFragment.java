@@ -176,7 +176,7 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (versionsItemRealmResults != null) {
+        /*if (versionsItemRealmResults != null) {
             versionsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<VersionsItem>>() {
                 @Override
                 public void onChange(RealmResults<VersionsItem> assetsListItemRealmResults) {
@@ -184,7 +184,7 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("versionsItemRealmResults");
-        }
+        }*/
     }
 
     @Override

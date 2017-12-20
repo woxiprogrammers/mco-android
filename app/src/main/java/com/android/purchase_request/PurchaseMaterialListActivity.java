@@ -222,7 +222,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         RealmResults<AvailableUsersItem> availableUsersRealmResults = realm.where(AvailableUsersItem.class).findAll();
         setUpSpinnerAdapter(availableUsersRealmResults);
-        if (availableUsersRealmResults != null) {
+        /*if (availableUsersRealmResults != null) {
             Timber.d("availableUsersRealmResults change listener added.");
             availableUsersRealmResults.addChangeListener(new RealmChangeListener<RealmResults<AvailableUsersItem>>() {
                 @Override
@@ -233,7 +233,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }
+        }*/
     }
 
     private void setUpSpinnerAdapter(RealmResults<AvailableUsersItem> availableUsersItems) {
@@ -551,7 +551,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         purchaseMaterialListRealmResult_All = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).or().equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAllSortedAsync("componentStatus", Sort.ASCENDING);
         PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResult_All, true, true, recyclerViewClickListener);
         recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
-        if (purchaseMaterialListRealmResult_All != null) {
+        /*if (purchaseMaterialListRealmResult_All != null) {
             Timber.d("purchaseMaterialListRealmResult_All change listener added.");
             purchaseMaterialListRealmResult_All.addChangeListener(
                     new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
@@ -564,7 +564,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             );
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }
+        }*/
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

@@ -286,7 +286,7 @@ public class DrawingHomeActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
         setUpSpinnerAdapter(mainCategoriesItems);
-        if (mainCategoriesItems != null) {
+        /*if (mainCategoriesItems != null) {
             mainCategoriesItems.addChangeListener(new RealmChangeListener<RealmResults<MainCategoriesItem>>() {
                 @Override
                 public void onChange(RealmResults<MainCategoriesItem> availableUsersItems) {
@@ -295,7 +295,7 @@ public class DrawingHomeActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("Drawing");
-        }
+        }*/
     }
 
     private void setUpSpinnerAdapter(RealmResults<MainCategoriesItem> mainCategoriesItems) {
@@ -332,7 +332,7 @@ public class DrawingHomeActivity extends BaseActivity {
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (awarenessSubCategoriesItems != null) {
+        /*if (awarenessSubCategoriesItems != null) {
             awarenessSubCategoriesItems.addChangeListener(new RealmChangeListener<RealmResults<AwarenessSubCategoriesItem>>() {
                 @Override
                 public void onChange(RealmResults<AwarenessSubCategoriesItem> assetsListItemRealmResults) {
@@ -340,7 +340,7 @@ public class DrawingHomeActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }
+        }*/
     }
 
     private void setUpSubImageListAdapter() {
@@ -369,7 +369,7 @@ public class DrawingHomeActivity extends BaseActivity {
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (imagesListDrawingItems != null) {
+        /*if (imagesListDrawingItems != null) {
             imagesListDrawingItems.addChangeListener(new RealmChangeListener<RealmResults<ImagesListDrawingItem>>() {
                 @Override
                 public void onChange(RealmResults<ImagesListDrawingItem> assetsListItemRealmResults) {
@@ -377,7 +377,7 @@ public class DrawingHomeActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }
+        }*/
     }
 
     public class SubCategoryAdapter extends RealmRecyclerViewAdapter<AwarenessSubCategoriesItem, SubCategoryAdapter.MyViewHolder> {

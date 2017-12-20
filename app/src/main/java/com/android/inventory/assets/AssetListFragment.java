@@ -121,7 +121,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (assetsListItems != null) {
+        /*if (assetsListItems != null) {
             assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsListItem>>() {
                 @Override
                 public void onChange(RealmResults<AssetsListItem> assetsListItemRealmResults) {
@@ -129,7 +129,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }
+        }*/
     }
 
     private void functionForGettingData() {

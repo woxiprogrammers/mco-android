@@ -172,7 +172,7 @@ public class DrawingCommentFragment extends Fragment  implements FragmentInterfa
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        if (commentsListItemRealmResults != null) {
+        /*if (commentsListItemRealmResults != null) {
             commentsListItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<CommentsListItem>>() {
                 @Override
                 public void onChange(RealmResults<CommentsListItem> assetsListItemRealmResults) {
@@ -180,7 +180,7 @@ public class DrawingCommentFragment extends Fragment  implements FragmentInterfa
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }
+        }*/
     }
 
     @Override

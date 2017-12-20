@@ -102,7 +102,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
-    private List<AvailableUsersItem> availableUserArray;
     private AlertDialog alertDialog;
     private boolean isMaterial;
     private TextView mTextViewTitleMaterialAsset;
@@ -418,7 +417,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvExistingMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
-        if (materialListRealmResults_Pending != null) {
+        /*if (materialListRealmResults_Pending != null) {
             Timber.d("materialListRealmResults_New change listener added.");
             materialListRealmResults_Pending.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
                 @Override
@@ -446,7 +445,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
-        }
+        }*/
     }
 
     //Submit Click API
@@ -1100,7 +1099,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         RealmResults<AvailableUsersItem> availableUsersRealmResults = realm.where(AvailableUsersItem.class).findAll();
         setUpSpinnerAdapter(availableUsersRealmResults);
-        if (availableUsersRealmResults != null) {
+        /*if (availableUsersRealmResults != null) {
             Timber.d("availableUsersRealmResults change listener added.");
             availableUsersRealmResults.addChangeListener(new RealmChangeListener<RealmResults<AvailableUsersItem>>() {
                 @Override
@@ -1111,7 +1110,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
-        }
+        }*/
     }
 
     private void setUpCurrentMaterialListAdapter() {
@@ -1134,7 +1133,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         mRvMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
-        if (materialListRealmResults_New != null) {
+        /*if (materialListRealmResults_New != null) {
             Timber.d("materialListRealmResults_New change listener added.");
             materialListRealmResults_New.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
                 @Override
@@ -1162,7 +1161,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
-        }
+        }*/
     }
 
     private void requestUsersWithApproveAcl(String canAccess) {
@@ -1245,7 +1244,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void setUpSpinnerAdapter(RealmResults<AvailableUsersItem> availableUsersItems) {
-        availableUserArray = realm.copyFromRealm(availableUsersItems);
+        List<AvailableUsersItem> availableUserArray = realm.copyFromRealm(availableUsersItems);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (AvailableUsersItem currentUser : availableUserArray) {
             String strUserName = currentUser.getUserName();

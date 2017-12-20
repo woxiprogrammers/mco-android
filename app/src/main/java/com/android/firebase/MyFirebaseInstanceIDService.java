@@ -48,6 +48,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
                             AppUtils.getInstance().logApiError(anError, "sendRegistrationToServer");
                         }
                     });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("MyFirebaseInstanceIDService");
         }
     }
 }

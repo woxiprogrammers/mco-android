@@ -114,7 +114,7 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
             public void onLongItemClick(View view, int position) {
             }
         }));*/
-        if (itemListItems != null) {
+        /*if (itemListItems != null) {
             itemListItems.addChangeListener(new RealmChangeListener<RealmResults<ItemListItem>>() {
                 @Override
                 public void onChange(RealmResults<ItemListItem> purchaseRequestListItems) {
@@ -122,7 +122,7 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseDetailsFragment");
-        }
+        }*/
     }
 
     private void functionForGettingData() {
