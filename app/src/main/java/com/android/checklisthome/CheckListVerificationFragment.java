@@ -86,12 +86,14 @@ public class CheckListVerificationFragment extends Fragment {
     private boolean isUploadingImages;
     private CheckPointsItem checkPointsItem;
     private String isFromState;
+    private boolean isUserViewOnly;
 
-    public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId, String isFromState, boolean isViewOnly) {
+    public static CheckListVerificationFragment newInstance(int projectSiteUserCheckpointId, String isFromState, boolean isViewOnly, boolean isUserViewOnly) {
         Bundle args = new Bundle();
         args.putInt("projectSiteUserCheckpointId", projectSiteUserCheckpointId);
         args.putString("isFromState", isFromState);
         args.putBoolean("isViewOnly", isViewOnly);
+        args.putBoolean("isUserViewOnly", isUserViewOnly);
         CheckListVerificationFragment fragment = new CheckListVerificationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -112,6 +114,8 @@ public class CheckListVerificationFragment extends Fragment {
             projectSiteUserCheckpointId = bundleArgs.getInt("projectSiteUserCheckpointId");
             isFromState = bundleArgs.getString("isFromState");
             boolean isViewOnly = bundleArgs.getBoolean("isViewOnly");
+            isUserViewOnly = bundleArgs.getBoolean("isUserViewOnly");
+            Timber.d("isUserViewOnly " + isUserViewOnly);
             if (isFromState != null) {
                 /*if (isFromState.equalsIgnoreCase("assigned")) {
                 } else if (isFromState.equalsIgnoreCase("progress")) {
@@ -160,6 +164,9 @@ public class CheckListVerificationFragment extends Fragment {
                 } else {
                     linearLayoutChecklistImg.setVisibility(View.GONE);
                 }
+                if (isUserViewOnly) {
+                    btnSubmitChecklist.setVisibility(View.GONE);
+                }
             }
         }
         return view;
@@ -198,16 +205,18 @@ public class CheckListVerificationFragment extends Fragment {
             }
             textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
             if (isFromState.equalsIgnoreCase("assigned") || isFromState.equalsIgnoreCase("progress")) {
-                inflatedView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        TextView textView_captionName = view.findViewById(R.id.textView_captionName);
-                        projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
-                        ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
-                        imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
-                        captureImage();
-                    }
-                });
+                if (!isUserViewOnly) {
+                    inflatedView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            TextView textView_captionName = view.findViewById(R.id.textView_captionName);
+                            projectSiteChecklistCheckpointImageId = textView_captionName.getHint().toString();
+                            ImageView imageViewCapturedImage = view.findViewById(R.id.imageViewCapturedImage);
+                            imageViewCapturedImage.setTag(projectSiteChecklistCheckpointImageId);
+                            captureImage();
+                        }
+                    });
+                }
             }
             linearLayoutChecklistImg.addView(inflatedView);
         }

@@ -161,10 +161,7 @@ public class CheckListTitleFragment extends Fragment {
                 }
             }
             if (isUserViewOnly) {
-                isViewOnly = isUserViewOnly;
                 mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
-            } else {
-                mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
             }
         }
         mFrameLayoutSpinnerLayout.setVisibility(View.INVISIBLE);
@@ -256,7 +253,7 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, final int position) {
                         Timber.d("Parent Disabled: isViewOnly " + isViewOnly);
-                        ((CheckListActionActivity) mContext).getCheckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly);
+                        ((CheckListActionActivity) mContext).getCheckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
                     }
 
                     @Override
@@ -416,7 +413,7 @@ public class CheckListTitleFragment extends Fragment {
                                                 @Override
                                                 public void onItemClick(View view, final int position) {
                                                     Timber.d("Parent Enabled: isViewOnly " + isViewOnly);
-                                                    ((CheckListActionActivity) mContext).getCheckListVerificationFragment(parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly);
+                                                    ((CheckListActionActivity) mContext).getCheckListVerificationFragment(parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
                                                 }
 
                                                 @Override
