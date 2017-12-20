@@ -70,11 +70,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
-import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
-import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
@@ -1449,11 +1446,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.buttonMoveToIndent.setVisibility(View.GONE);
             holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
 //            if (purchaseMaterialListItem.getHave_access() != null) {
-                if(!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())){
-                    holder.textviewApprovedBy.setVisibility(View.VISIBLE);
-                    holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
-                }
-
+            if (!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())) {
+                holder.textviewApprovedBy.setVisibility(View.VISIBLE);
+                holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
+            }
 //            }
             if (purchaseMaterialListItem.getHave_access() != null) {
                 /*if (((purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) || (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))))*//* && !(strStatus.equalsIgnoreCase("in-indent"))*//*) {
@@ -1464,13 +1460,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 } else {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }*/
-                if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")){
+                if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
             }
-            if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) && purchaseMaterialListItem.getHave_access().contains("approve") ) {
+            if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) && purchaseMaterialListItem.getHave_access().contains("approve")) {
 //                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                 holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
             } else {
