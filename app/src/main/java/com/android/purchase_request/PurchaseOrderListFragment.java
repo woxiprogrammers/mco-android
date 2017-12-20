@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_order.PurchaseOrderListItem;
+import com.android.models.purchase_order.PurchaseOrderRespData;
 import com.android.models.purchase_order.PurchaseOrderResponse;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppURL;
@@ -54,7 +55,7 @@ import timber.log.Timber;
 public class PurchaseOrderListFragment extends Fragment implements FragmentInterface {
     private static int purchaseRequestId;
     private static boolean isFromPurchaseRequest;
-    @BindView(R.id.rv_order_list)
+    @BindView(R.id.rv_material_list)
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
@@ -122,9 +123,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         if (isFromPurchaseRequest) {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).equalTo("purchaseRequestId", purchaseRequestId).findAllAsync();
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
         } else {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
@@ -194,6 +195,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(PurchaseOrderResponse.class);
+                                    realm.delete(PurchaseOrderRespData.class);
+                                    realm.delete(PurchaseOrderListItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
