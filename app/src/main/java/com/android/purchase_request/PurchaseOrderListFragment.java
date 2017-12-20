@@ -77,6 +77,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public void fragmentBecameVisible() {
+        requestPrListOnline();
         if (!isFromPurchaseRequest) {
             if (getUserVisibleHint()) {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);

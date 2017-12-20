@@ -172,10 +172,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor) {
         Bundle args = new Bundle();
-        PayFragmentNew fragment = new PayFragmentNew();
-        fragment.setArguments(args);
         orderId = purchaseOrderId;
         strVendorName = strVendor;
+        PayFragmentNew fragment = new PayFragmentNew();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -192,8 +192,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         realm = Realm.getDefaultInstance();
         Timber.d(String.valueOf(orderId));
         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
-        int quantity = purchaseOrderListItem.getRemainingQuantity();
-        if (quantity == 0) {
+        float quantity = Float.parseFloat(purchaseOrderListItem.getRemainingQuantity());
+        if (quantity == 0 || quantity == 0.0) {
             textViewShowMessage.setVisibility(View.VISIBLE);
             linearLayoutFirstLayout.setVisibility(View.GONE);
         } else {
@@ -202,7 +202,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             if (!TextUtils.isEmpty(strGrnGenerated)) {
                 linearLayoutToVisible.setVisibility(View.VISIBLE);
                 linearLayoutFirstLayout.setVisibility(View.GONE);
-                editTextGrnNum.setText(purchaseOrderListItem.getGrnGenerated());
+                editTextGrnNum.setText(strGrnGenerated);
                 requestForMaterialNames();
             } else {
                 linearLayoutToVisible.setVisibility(View.GONE);
