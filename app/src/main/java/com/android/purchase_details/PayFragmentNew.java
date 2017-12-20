@@ -526,39 +526,41 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         final TextView TextViewExceedQuantity=dialogView.findViewById(R.id.TextViewExceedQuantity);
         final Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
         final MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
-        final float floatMaterialComponentRemainingQuantity=materialNamesItem.getMaterialComponentRemainingQuantity();
-        editTextMatQuantity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int arg1, int arg2, int arg3) {
-                if (!TextUtils.isEmpty(charSequence.toString())){
-                    if(Float.parseFloat(charSequence.toString()) > floatMaterialComponentRemainingQuantity){
-                        TextViewExceedQuantity.setText("Quantity should be less than " + String.valueOf(floatMaterialComponentRemainingQuantity));
-                        TextViewExceedQuantity.setVisibility(View.VISIBLE);
-                        buttonToOk.setVisibility(View.GONE);
-                    }else {
-                        TextViewExceedQuantity.setText("");
-                        TextViewExceedQuantity.setVisibility(View.GONE);
-                        buttonToOk.setVisibility(View.VISIBLE);
 
-                    }
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-            }
-        });
         if (isForEdit) {
             if (materialNamesItem != null) {
                 Timber.d(String.valueOf(materialNamesItem));
                 edittextMatUnit.setText(materialNamesItem.getMaterialUnits().get(0).getUnit());
                 textViewMaterialNameSelected.setText(materialNamesItem.getMaterialName());
                 edittextMatUnit.setEnabled(false);
+
+                final float floatMaterialComponentRemainingQuantity=Float.parseFloat(materialNamesItem.getMaterialComponentRemainingQuantity());
+                editTextMatQuantity.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!TextUtils.isEmpty(s.toString())){
+                            if(Float.parseFloat(s.toString()) > floatMaterialComponentRemainingQuantity){
+                                TextViewExceedQuantity.setText("Quantity should be less than " + String.valueOf(floatMaterialComponentRemainingQuantity));
+                                TextViewExceedQuantity.setVisibility(View.VISIBLE);
+                                buttonToOk.setVisibility(View.GONE);
+                            }else {
+                                TextViewExceedQuantity.setText("");
+                                TextViewExceedQuantity.setVisibility(View.GONE);
+                                buttonToOk.setVisibility(View.VISIBLE);
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable arg0) {
+                    }
+                });
             }
         } else {
             TransactionDataItem billDataItem = realm.where(TransactionDataItem.class).equalTo("purchaseOrderTransactionComponentId", getId).findFirst();
@@ -568,6 +570,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             edittextMatUnit.setEnabled(false);
             textViewMaterialNameSelected.setText(billDataItem.getMaterialName());
             LinearLayout linearLayout = dialogView.findViewById(R.id.llAddQuoImg);
+
 
         }
         buttonToOk.setOnClickListener(new View.OnClickListener() {
@@ -584,7 +587,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             @Override
                             public void execute(Realm realm) {
                                 MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
-                                materialNamesItem.setQuantity(Integer.parseInt(editTextMatQuantity.getText().toString()));
+                                materialNamesItem.setQuantity(Float.parseFloat(editTextMatQuantity.getText().toString()));
                                 realm.copyToRealmOrUpdate(materialNamesItem);
                             }
                         }, new Realm.Transaction.OnSuccess() {
@@ -719,7 +722,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void inflateViews() {
         realm = Realm.getDefaultInstance();
         arrayList = new ArrayList<>();
-        materialNamesItems = realm.where(MaterialNamesItem.class).notEqualTo("materialComponentRemainingQuantity",0).findAll();
+        materialNamesItems = realm.where(MaterialNamesItem.class).notEqualTo("materialComponentRemainingQuantity","0").or().notEqualTo("materialComponentRemainingQuantity","0.0").findAll();
         for (int i = 0; i < materialNamesItems.size(); i++) {
             final MaterialNamesItem materialNamesItem = materialNamesItems.get(i);
             inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);

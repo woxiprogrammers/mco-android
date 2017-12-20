@@ -34,6 +34,9 @@ public class MaterialsItem extends RealmObject {
     @SerializedName("expected_delivery_date")
     private String expectedDeliveryDate;
 
+    @SerializedName("consumed_quantity")
+    private int consumed_quantity;
+
     public int getMaterialRequestComponentId() {
         return materialRequestComponentId;
     }
@@ -96,6 +99,14 @@ public class MaterialsItem extends RealmObject {
 
     public int getUnitId() {
         return unitId;
+    }
+
+    public int getConsumed_quantity() {
+        return consumed_quantity;
+    }
+
+    public void setConsumed_quantity(int consumed_quantity) {
+        this.consumed_quantity = consumed_quantity;
     }
 
     public String getExpectedDeliveryDate() {

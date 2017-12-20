@@ -139,17 +139,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
      */
     private void initializeViews() {
         mContext = getActivity();
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            permissionList = bundle.getString("permissionsItemList");
-        }
-        PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
-        for (PermissionsItem permissionsItem : permissionsItems) {
-            String accessPermission = permissionsItem.getCanAccess();
-            if (accessPermission.equalsIgnoreCase("view-purchase-order") ){
-                setUpPrAdapter();
-            }
-        }
+        setUpPrAdapter();
+
+
     }
 
     private void setUpPrAdapter() {

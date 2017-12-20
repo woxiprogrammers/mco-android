@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -199,6 +198,7 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                 holder.linearLayoutExpDate.setVisibility(View.GONE);
             }
 
+            holder.textviewConsumedQuantity.setText(String.valueOf(materialsItem.getConsumed_quantity()));
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {
                     ImageView imageView = new ImageView(getActivity());
@@ -269,6 +269,8 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             TextView textviewExpDate;
             @BindView(R.id.linearLayoutExpDate)
             LinearLayout linearLayoutExpDate;
+            @BindView(R.id.textviewConsumedQuantity)
+            TextView textviewConsumedQuantity;
 
             private MyViewHolder(View itemView) {
                 super(itemView);
