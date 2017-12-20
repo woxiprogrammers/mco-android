@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dummy.MonthYearPickerDialog;
+import com.android.models.login_acl.PermissionsItem;
 import com.android.peticash.peticash_models.DatewiseTransactionsListItem;
 import com.android.peticash.peticash_models.PeticashTransactionData;
 import com.android.peticash.peticash_models.PeticashTransactionStatsData;
@@ -30,6 +31,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,25 +78,8 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     private Realm realm;
     private RealmResults<DatewiseTransactionsListItem> peticashTransactionsRealmResult;
     private PeticashTransactionsListAdapter peticashTransactionsListAdapter;
-    private String purchaseAmountLimit;
+    private String permissionList;
 
-    @OnClick(R.id.relative_layout_datePicker_peticash)
-    public void onMRelativeLayoutDatePickerPeticashClicked() {
-        final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
-        Bundle bundleArgs = new Bundle();
-        bundleArgs.putInt("maxYear", 2019);
-        bundleArgs.putInt("minYear", 2016);
-        bundleArgs.putInt("currentYear", passYear);
-        bundleArgs.putInt("currentMonth", passMonth);
-        monthYearPickerDialog.setArguments(bundleArgs);
-        monthYearPickerDialog.setListener(this);
-        monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
-    }
-
-    @OnClick(R.id.floating_add_button_peticash)
-    public void onFloatingAddButtonPeticashClicked() {
-        startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit",purchaseAmountLimit));
-    }
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
@@ -128,6 +113,43 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpAppBarDatePicker();
+        requestTransactionStats();
+        requestPeticashTransactionsOnline(pageNumber);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    private String purchaseAmountLimit;
+
+    @OnClick(R.id.relative_layout_datePicker_peticash)
+    public void onMRelativeLayoutDatePickerPeticashClicked() {
+        final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
+        Bundle bundleArgs = new Bundle();
+        bundleArgs.putInt("maxYear", 2019);
+        bundleArgs.putInt("minYear", 2016);
+        bundleArgs.putInt("currentYear", passYear);
+        bundleArgs.putInt("currentMonth", passMonth);
+        monthYearPickerDialog.setArguments(bundleArgs);
+        monthYearPickerDialog.setListener(this);
+        monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
+    }
+
+    @OnClick(R.id.floating_add_button_peticash)
+    public void onFloatingAddButtonPeticashClicked() {
+        startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit",purchaseAmountLimit));
+    }
+
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
@@ -135,14 +157,17 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
      */
     private void initializeViews() {
         mContext = PetiCashHomeActivity.this;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpAppBarDatePicker();
-        requestTransactionStats();
-        requestPeticashTransactionsOnline(pageNumber);
+        Bundle bundle=getIntent().getExtras();
+        if (bundle != null) {
+            permissionList = bundle.getString("permissionsItemList");
+        }
+        PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
+        for (PermissionsItem permissionsItem : permissionsItems) {
+            String accessPermission = permissionsItem.getCanAccess();
+            if (accessPermission.equalsIgnoreCase(getString(R.string.create_peticash_management))) {
+                mFloatingAddButtonPeticash.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void requestTransactionStats() {
@@ -216,16 +241,6 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
         passYear = calendar.get(Calendar.YEAR);
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
         mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void requestPeticashTransactionsOnline(int currentPageNumber) {

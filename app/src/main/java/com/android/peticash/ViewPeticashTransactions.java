@@ -2,11 +2,10 @@ package com.android.peticash;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import com.android.constro360.R;
 import com.android.peticashautosearchemployee.ListOfImagesItem;
 import com.android.peticashautosearchemployee.TransactionDetailData;
 import com.android.peticashautosearchemployee.TransactionDetailResponse;
-import com.android.purchase_details.MaterialImagesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.ImageZoomDialogFragment;
@@ -24,8 +22,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -82,6 +78,8 @@ public class ViewPeticashTransactions extends BaseActivity {
     EditText editTextSetRemark;
     @BindView(R.id.editTextRefNum)
     EditText editTextRefNum;
+    @BindView(R.id.horizontalImage)
+    HorizontalScrollView horizontalImage;
     private Context mContext;
     @BindView(R.id.ll_forSupplierSetInOutTime)
     LinearLayout ll_forSupplierSetInOutTime;
@@ -205,6 +203,7 @@ public class ViewPeticashTransactions extends BaseActivity {
         }
 
         if (transactionDetailData.getListOfImages().size() > 0) {
+            horizontalImage.setVisibility(View.VISIBLE);
             for (int i = 0; i < transactionDetailData.getListOfImages().size(); i++) {
                 ListOfImagesItem currentUser = transactionDetailData.getListOfImages().get(i);
                 String strMaterialImageUrl = currentUser.getImageUrl();

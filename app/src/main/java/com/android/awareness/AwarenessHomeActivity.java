@@ -2,9 +2,12 @@ package com.android.awareness;
 
 import android.Manifest;
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,14 +19,18 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +57,7 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +71,8 @@ import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
+import static io.reactivex.schedulers.Schedulers.start;
+
 public class AwarenessHomeActivity extends BaseActivity {
 
     @BindView(R.id.spinnerAwarenesCategory)
@@ -71,6 +81,9 @@ public class AwarenessHomeActivity extends BaseActivity {
     Spinner spinnerAwarenesSubcategory;
     @BindView(R.id.rvFiles)
     RecyclerView rvFiles;
+
+    @BindView(R.id.progressBar1)
+    ProgressBar mProgressBar;
     @BindView(R.id.linearLayoutSubCategory)
     LinearLayout linearLayoutSubCategory;
     private Realm realm;
@@ -84,6 +97,9 @@ public class AwarenessHomeActivity extends BaseActivity {
     private String getPath = "";
     private boolean isGrant;
     private String encodedString;
+    private long downloadReference;
+    private BroadcastReceiver downloadRecevier;
+    private String getFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +143,11 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+        downloadRecevier = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+            }
+        };
 
     }
 
@@ -341,16 +362,6 @@ public class AwarenessHomeActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         RealmResults<AwarenessSubCategoriesItem> mainCategoriesItemRealmResults = realm.where(AwarenessSubCategoriesItem.class).findAll();
         setUpSubCatSpinnerAdapter(mainCategoriesItemRealmResults);
-        /*if (mainCategoriesItemRealmResults != null) {
-            mainCategoriesItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<SubCategoriesItem>>() {
-                @Override
-                public void onChange(RealmResults<SubCategoriesItem> availableUsersItems) {
-                    setUpSubCatSpinnerAdapter(availableUsersItems);
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("setUpUsersSubCatSpinnerValueChangeListener");
-        }*/
     }
 
     private void setUpSubCatSpinnerAdapter(RealmResults<AwarenessSubCategoriesItem> subCategoriesItems) {
@@ -372,19 +383,18 @@ public class AwarenessHomeActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 if (view.getId() == R.id.imageviewDownload) {
+                    try {
+                        encodedString = java.net.URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
+                        getFileName="http://test.mconstruction.co.in" + getPath + "/" + encodedString;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
 
                     if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         isGrant = true;
                         ActivityCompat.requestPermissions(AwarenessHomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
                     } else {
-                        try {
-                            encodedString = java.net.URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
-
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-
-                        downloadFile("http://test.mconstruction.co.in" + getPath + "/" + encodedString);
+                        downloadFile(getFileName);
                     }
 
                 }
@@ -394,6 +404,156 @@ public class AwarenessHomeActivity extends BaseActivity {
         rvFiles.setLayoutManager(new LinearLayoutManager(mContext));
         rvFiles.setHasFixedSize(true);
         rvFiles.setAdapter(awarenessListAdapter);
+    }
+
+
+
+
+    private void downloadFile(String url) {
+
+        Uri Download_Uri = Uri.parse(url);
+        DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+        request.setAllowedOverRoaming(false);
+//        request.setTitle("Downloading " + separatedString[0]);
+        request.setDescription("Downloading ");
+        request.setVisibleInDownloadsUi(true);
+        request.allowScanningByMediaScanner();
+        String nameOfFile = URLUtil.guessFileName(url, null, MimeTypeMap.getFileExtensionFromUrl(url));
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile);
+        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        final long downloadId = downloadManager.enqueue(request);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
+        mProgressBar.setVisibility(View.VISIBLE);
+        registerReceiver(downloadRecevier, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                boolean downloading = true;
+                while (downloading) {
+                    DownloadManager.Query q = new DownloadManager.Query();
+                    q.setFilterById(downloadId);
+                    Cursor cursor = downloadManager.query(q);
+                    cursor.moveToFirst();
+                    int bytes_downloaded = cursor.getInt(cursor
+                            .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                    int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                    if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
+                        downloading = false;
+                    }
+                    final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBar.setProgress((int) dl_progress);
+                        }
+                    });
+                    statusMessage(cursor);
+                    cursor.close();
+                }
+
+            }
+        }).start();
+    }
+    private String statusMessage(Cursor c) {
+        String msg = "???";
+
+        switch (c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+            case DownloadManager.STATUS_FAILED:
+                msg = "Download failed!";
+                startThread(msg);
+                break;
+
+            case DownloadManager.STATUS_PAUSED:
+                msg = "Download paused!";
+                break;
+
+            case DownloadManager.STATUS_PENDING:
+                msg = "Download pending!";
+                break;
+
+            case DownloadManager.STATUS_RUNNING:
+                msg = "Download in progress!";
+                break;
+
+            case DownloadManager.STATUS_SUCCESSFUL:
+                msg = "Download complete!";
+                startThread(msg);
+                break;
+
+            default:
+                msg = "Download is nowhere in sight";
+                break;
+        }
+
+        return (msg);
+    }
+
+    private void startThread(final String strMessage){
+        Thread timer = new Thread() { //new thread
+            public void run() {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(mContext, strMessage, Toast.LENGTH_LONG).show();
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                });
+
+
+
+            };
+        };
+        timer.start();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        int i[] = grantResults;
+        if (grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                /*if (isGrant) {
+                    downloadFile(getFileName);
+                }*/
+
+            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    //Show permission explanation dialog...
+                    Snackbar.make(findViewById(android.R.id.content), "permission_required_for_storage", Snackbar.LENGTH_LONG)
+                            .setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ActivityCompat.requestPermissions(AwarenessHomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
+                                }
+                            }).setActionTextColor(ContextCompat.getColor(mContext, R.color.colorAccent)).show();
+                } else {
+                    //Never ask again selected, or device policy prohibits the app from having that permission.
+                    //So, disable that feature, or fall back to another situation...
+                    //Open App Settings Page
+                    Snackbar.make(findViewById(android.R.id.content), "Denied Permission", Snackbar.LENGTH_LONG)
+                            .setAction("Settings", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intentSettings = new Intent();
+                                    intentSettings.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    intentSettings.addCategory(Intent.CATEGORY_DEFAULT);
+                                    intentSettings.setData(Uri.parse("package:" + mContext.getPackageName()));
+                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                                    mContext.startActivity(intentSettings);
+                                }
+                            }).setActionTextColor(ContextCompat.getColor(mContext, R.color.colorAccent)).show();
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     public class AwarenessListAdapter extends RealmRecyclerViewAdapter<FileDetailsItem, AwarenessListAdapter.MyViewHolder> {
@@ -465,62 +625,4 @@ public class AwarenessHomeActivity extends BaseActivity {
         }
     }
 
-    private void downloadFile(String url) {
-        downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri Download_Uri = Uri.parse(url);
-//        Uri Download_Uri = Uri.parse("http://test.mconstruction.co.in/uploads/awareness/356a192b7913b04c54574d18c28d46e6395428ab/356a192b7913b04c54574d18c28d46e6395428ab/763611170e5a158bc915934dd6765f9880f621ee21337b721.png");
-        DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        request.setAllowedOverRoaming(false);
-        request.setTitle("Downloading " + separatedString[0]);
-        request.setDescription("Downloading ");
-        request.setVisibleInDownloadsUi(true);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "");
-        downloadManager.enqueue(request);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        int i[] = grantResults;
-        if (grantResults.length > 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (isGrant) {
-                    downloadFile("");
-                }
-
-            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    //Show permission explanation dialog...
-                    Snackbar.make(findViewById(android.R.id.content), "permission_required_for_storage", Snackbar.LENGTH_LONG)
-                            .setAction("OK", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    ActivityCompat.requestPermissions(AwarenessHomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
-                                }
-                            }).setActionTextColor(ContextCompat.getColor(mContext, R.color.colorAccent)).show();
-                } else {
-                    //Never ask again selected, or device policy prohibits the app from having that permission.
-                    //So, disable that feature, or fall back to another situation...
-                    //Open App Settings Page
-                    Snackbar.make(findViewById(android.R.id.content), "Denied Permission", Snackbar.LENGTH_LONG)
-                            .setAction("Settings", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent intentSettings = new Intent();
-                                    intentSettings.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                    intentSettings.addCategory(Intent.CATEGORY_DEFAULT);
-                                    intentSettings.setData(Uri.parse("package:" + mContext.getPackageName()));
-                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                                    intentSettings.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                                    mContext.startActivity(intentSettings);
-                                }
-                            }).setActionTextColor(ContextCompat.getColor(mContext, R.color.colorAccent)).show();
-                }
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
 }

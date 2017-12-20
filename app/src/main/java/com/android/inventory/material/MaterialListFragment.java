@@ -28,6 +28,8 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
@@ -49,6 +51,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     private RealmResults<MaterialListItem> materialListItems;
     private int pageNumber = 0;
     private int oldPageNumber;
+    private DecimalFormat df;
 
     public MaterialListFragment() {
         // Required empty public constructor

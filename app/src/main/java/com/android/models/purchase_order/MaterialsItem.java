@@ -1,4 +1,5 @@
 package com.android.models.purchase_order;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
@@ -6,91 +7,113 @@ import io.realm.RealmObject;
 
 public class MaterialsItem extends RealmObject {
 
-	@SerializedName("unit_name")
-	private String unitName;
+    @SerializedName("unit_name")
+    private String unitName;
 
-	@SerializedName("quotation_images")
-	private RealmList<QuotationImagesItem> quotationImages;
+    @SerializedName("quotation_images")
+    private RealmList<QuotationImagesItem> quotationImages;
 
-	@SerializedName("quantity")
-	private String quantity;
+    @SerializedName("quantity")
+    private String quantity;
 
-	@SerializedName("client_approval_images")
-	private RealmList<ClientApprovalImagesItem> clientApprovalImages;
+    @SerializedName("client_approval_images")
+    private RealmList<ClientApprovalImagesItem> clientApprovalImages;
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("unit_id")
-	private int unitId;
+    @SerializedName("unit_id")
+    private int unitId;
 
-	@SerializedName("material_request_component_id")
-	private int materialRequestComponentId;
+    @SerializedName("material_request_component_id")
+    private int materialRequestComponentId;
 
-	@SerializedName("rate_per_unit")
-	private String ratePerUnit;
+    @SerializedName("rate_per_unit")
+    private String ratePerUnit;
 
-	public int getMaterialRequestComponentId() {
-		return materialRequestComponentId;
-	}
+    @SerializedName("expected_delivery_date")
+    private String expectedDeliveryDate;
 
-	public void setMaterialRequestComponentId(int materialRequestComponentId) {
-		this.materialRequestComponentId = materialRequestComponentId;
-	}
+    @SerializedName("consumed_quantity")
+    private int consumed_quantity;
 
-	public void setUnitName(String unitName){
-		this.unitName = unitName;
-	}
+    public int getMaterialRequestComponentId() {
+        return materialRequestComponentId;
+    }
 
-	public String getRatePerUnit() {
-		return ratePerUnit;
-	}
+    public void setMaterialRequestComponentId(int materialRequestComponentId) {
+        this.materialRequestComponentId = materialRequestComponentId;
+    }
 
-	public void setRatePerUnit(String ratePerUnit) {
-		this.ratePerUnit = ratePerUnit;
-	}
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
 
-	public String getUnitName(){
-		return unitName;
-	}
+    public String getRatePerUnit() {
+        return ratePerUnit;
+    }
 
-	public void setQuotationImages(RealmList<QuotationImagesItem> quotationImages){
-		this.quotationImages = quotationImages;
-	}
+    public void setRatePerUnit(String ratePerUnit) {
+        this.ratePerUnit = ratePerUnit;
+    }
 
-	public RealmList<QuotationImagesItem> getQuotationImages(){
-		return quotationImages;
-	}
+    public String getUnitName() {
+        return unitName;
+    }
 
-	public void setQuantity(String quantity){
-		this.quantity = quantity;
-	}
+    public void setQuotationImages(RealmList<QuotationImagesItem> quotationImages) {
+        this.quotationImages = quotationImages;
+    }
 
-	public String getQuantity(){
-		return quantity;
-	}
+    public RealmList<QuotationImagesItem> getQuotationImages() {
+        return quotationImages;
+    }
 
-	public void setClientApprovalImages(RealmList<ClientApprovalImagesItem> clientApprovalImages){
-		this.clientApprovalImages = clientApprovalImages;
-	}
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
 
-	public RealmList<ClientApprovalImagesItem> getClientApprovalImages(){
-		return clientApprovalImages;
-	}
+    public String getQuantity() {
+        return quantity;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public void setClientApprovalImages(RealmList<ClientApprovalImagesItem> clientApprovalImages) {
+        this.clientApprovalImages = clientApprovalImages;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public RealmList<ClientApprovalImagesItem> getClientApprovalImages() {
+        return clientApprovalImages;
+    }
 
-	public void setUnitId(int unitId){
-		this.unitId = unitId;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getUnitId(){
-		return unitId;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setUnitId(int unitId) {
+        this.unitId = unitId;
+    }
+
+    public int getUnitId() {
+        return unitId;
+    }
+
+    public int getConsumed_quantity() {
+        return consumed_quantity;
+    }
+
+    public void setConsumed_quantity(int consumed_quantity) {
+        this.consumed_quantity = consumed_quantity;
+    }
+
+    public String getExpectedDeliveryDate() {
+        return expectedDeliveryDate;
+    }
+
+    public void setExpectedDeliveryDate(String expectedDeliveryDate) {
+        this.expectedDeliveryDate = expectedDeliveryDate;
+    }
 }

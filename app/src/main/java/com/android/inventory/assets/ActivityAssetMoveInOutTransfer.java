@@ -91,14 +91,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     EditText editTextVehicleNum;
     @BindView(R.id.linearLayoutSupplierVehicle)
     LinearLayout linearLayoutSupplierVehicle;
-    @BindView(R.id.editTextInTime)
-    EditText editTextInTime;
-    @BindView(R.id.edittextOutTime)
-    EditText edittextOutTime;
-    @BindView(R.id.linearLayoutSupplierInOutTime)
-    LinearLayout linearLayoutSupplierInOutTime;
-    @BindView(R.id.editText_Date)
-    EditText editTextDate;
     @BindView(R.id.edittextBillNum)
     EditText edittextBillNum;
     @BindView(R.id.linearLayoutBillNum)
@@ -109,8 +101,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     LinearLayout linearLayoutBillAmount;
     @BindView(R.id.textViewCaptureAsset)
     TextView textViewCaptureAsset;
-    @BindView(R.id.textViewPickAsset)
-    TextView textViewPickAsset;
     @BindView(R.id.linearLayoutFirstImage)
     LinearLayout linearLayoutFirstImage;
     @BindView(R.id.editTextAssetRemark)
@@ -209,7 +199,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     assetSourceSpinner.setVisibility(View.VISIBLE);
                     linearLayoutSite.setVisibility(View.GONE);
                     linearLayoutSupplierVehicle.setVisibility(View.GONE);
-                    linearLayoutSupplierInOutTime.setVisibility(View.GONE);
                     textViewNameDestSource.setText(getString(R.string.client_name));
                 }
             }
@@ -222,7 +211,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     case 0:
                         textViewNameDestSource.setText(getString(R.string.site_name));
                         linearLayoutSite.setVisibility(View.VISIBLE);
-                        linearLayoutSupplierInOutTime.setVisibility(View.GONE);
                         linearLayoutSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.site_name);
                         break;
@@ -230,7 +218,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     case 1:
                         textViewNameDestSource.setText(getString(R.string.client_name));
                         linearLayoutSite.setVisibility(View.GONE);
-                        linearLayoutSupplierInOutTime.setVisibility(View.GONE);
                         linearLayoutSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.client_name);
                         break;
@@ -238,7 +225,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     case 2:
                         textViewNameDestSource.setText(getString(R.string.labour_name));
                         linearLayoutSite.setVisibility(View.GONE);
-                        linearLayoutSupplierInOutTime.setVisibility(View.GONE);
                         linearLayoutSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.labour_name);
                         break;
@@ -246,14 +232,12 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     case 3:
                         textViewNameDestSource.setText(getString(R.string.sub_contracter_name));
                         linearLayoutSite.setVisibility(View.GONE);
-                        linearLayoutSupplierInOutTime.setVisibility(View.GONE);
                         linearLayoutSupplierVehicle.setVisibility(View.GONE);
                         str = getString(R.string.sub_contracter_name);
                         break;
                     //For Supplier
                     case 4:
                         textViewNameDestSource.setText(getString(R.string.supplier_name));
-                        linearLayoutSupplierInOutTime.setVisibility(View.VISIBLE);
                         linearLayoutSupplierVehicle.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
                         isChecked = true;
@@ -353,7 +337,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
 
             params.put("unit_id", unitId);
 
-            params.put("date", strDate);
+//            params.put("date", strDate);
             if (!TextUtils.isEmpty(editTextAssetRemark.getText().toString())) {
                 params.put("remark", editTextAssetRemark.getText().toString());
             } else {
@@ -362,8 +346,8 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             }
             params.put("images", jsonImageNameArray);
             if (str.equalsIgnoreCase(getString(R.string.supplier_name))) {
-                params.put("in_time", strToDate + " " + strInTime);
-                params.put("out_time", strToDate + " " + strOutTime);
+//                params.put("in_time", strToDate + " " + strInTime);
+//                params.put("out_time", strToDate + " " + strOutTime);
                 params.put("vehicle_number", strVehicleNumber);
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", edittextBillAmountAssetAsset.getText().toString());
@@ -455,15 +439,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             edittextAssetQuantity.requestFocus();
             edittextAssetQuantity.setError(null);
         }
-        //Date
-        strDate = editTextDate.getText().toString();
-        if (TextUtils.isEmpty(strDate)) {
-            editTextDate.setError(getString(R.string.please_enter) + getString(R.string.date));
-            return;
-        } else {
-            editTextDate.requestFocus();
-            editTextDate.setError(null);
-        }
         if (!checkboxMoveInOut.isChecked()) {
             //Bill
 
@@ -494,46 +469,17 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                 editTextVehicleNum.setError(null);
                 editTextVehicleNum.requestFocus();
             }
-            //In Time
-            strInTime = editTextInTime.getText().toString();
-            if (TextUtils.isEmpty(strInTime)) {
-                editTextInTime.setError(getString(R.string.please_enter) + getString(R.string.in_time));
-                return;
-            } else {
-                editTextInTime.setError(null);
-                editTextInTime.requestFocus();
-            }
-            //Out Time
-            strOutTime = edittextOutTime.getText().toString();
-            if (TextUtils.isEmpty(strOutTime)) {
-                edittextOutTime.setError(getString(R.string.please_enter) + getString(R.string.out_time));
-                return;
-            } else {
-                edittextOutTime.setError(null);
-                edittextOutTime.requestFocus();
-            }
         }
         uploadImages_addItemToLocal();
     }
 
     /////////////////////////////Image/////////////////
 
-    @OnClick({R.id.textViewCaptureAsset, R.id.textViewPickAsset})
+    @OnClick({R.id.textViewCaptureAsset})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCaptureAsset:
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-                break;
-            case R.id.textViewPickAsset:
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
                 break;
         }
     }
@@ -541,7 +487,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     private void chooseAction(int type, Class aClass) {
         Intent intent = new Intent(mContext, aClass);
         Params params = new Params();
-        params.setCaptureLimit(10);
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
         params.setToolbarColor(R.color.colorPrimaryLight);
         params.setActionButtonColor(R.color.colorAccentDark);
         params.setButtonTextColor(R.color.colorWhite);
@@ -562,31 +508,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                 arrayImageFileList = new ArrayList<File>();
                 File currentImageFile;
                 for (Image currentImage : imagesList) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        linearLayoutFirstImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                linearLayoutFirstImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
                         arrayImageFileList.add(currentImageFile);
@@ -743,20 +664,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         mTimePicker.show();
     }
 
-    @OnClick({R.id.editTextInTime, R.id.edittextOutTime, R.id.editText_Date})
-    public void onTimeClicked(View view) {
-        switch (view.getId()) {
-            case R.id.editTextInTime:
-                setInOutTime(editTextInTime);
-                break;
-            case R.id.edittextOutTime:
-                setInOutTime(edittextOutTime);
-                break;
-            case R.id.editText_Date:
-                setInOutDate(editTextDate);
-                break;
-        }
-    }
+
 
     private void getSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)

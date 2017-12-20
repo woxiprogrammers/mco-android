@@ -79,28 +79,33 @@ public class DrawingHomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawing_home);
+        initializeViews();
+        requestToGetCategoryData();
+    }
+
+    private void initializeViews(){
         ButterKnife.bind(this);
+        mContext = DrawingHomeActivity.this;
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Drawings Management");
+            spinnerDrawingCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
+                    rvSubcatdrawingList.setVisibility(View.VISIBLE);
+                    rvImageList.setVisibility(View.GONE);
+                    textviewSetSubCat.setVisibility(View.GONE);
+                    textViewNoResultFound.setVisibility(View.GONE);
+                    requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
         }
-        mContext = DrawingHomeActivity.this;
-        requestToGetCategoryData();
-        spinnerDrawingCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
-                rvSubcatdrawingList.setVisibility(View.VISIBLE);
-                rvImageList.setVisibility(View.GONE);
-                textviewSetSubCat.setVisibility(View.GONE);
-                requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -109,6 +114,7 @@ public class DrawingHomeActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    ///////////API Calls/////////
     private void requestToGetCategoryData() {
         JSONObject params = new JSONObject();
         try {
@@ -252,9 +258,9 @@ public class DrawingHomeActivity extends BaseActivity {
                                     rvSubcatdrawingList.setVisibility(View.GONE);
                                     rvImageList.setVisibility(View.VISIBLE);
                                     textviewSetSubCat.setVisibility(View.VISIBLE);
+                                    textviewSetSubCat.setText("Selected Sub Category:- " +str);
                                     if (response.getImageListDrawing().getImagesListDrawing().size() > 0) {
                                         textViewNoResultFound.setVisibility(View.GONE);
-                                        textviewSetSubCat.setText("Selected Sub Category:- " +str);
                                         setUpSubImageListAdapter();
                                     } else {
                                         textViewNoResultFound.setVisibility(View.VISIBLE);
@@ -282,6 +288,7 @@ public class DrawingHomeActivity extends BaseActivity {
 
     }
 
+    ////////////SetAdapters
     private void setUpUsersSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
@@ -380,6 +387,7 @@ public class DrawingHomeActivity extends BaseActivity {
         }*/
     }
 
+    /////////////Adapter//////////
     public class SubCategoryAdapter extends RealmRecyclerViewAdapter<AwarenessSubCategoriesItem, SubCategoryAdapter.MyViewHolder> {
         private OrderedRealmCollection<AwarenessSubCategoriesItem> awarenessSubCategoriesItemOrderedRealmCollection;
         private AwarenessSubCategoriesItem awarenessSubCategoriesItem;

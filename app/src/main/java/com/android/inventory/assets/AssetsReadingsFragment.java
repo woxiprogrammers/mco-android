@@ -1,5 +1,6 @@
 package com.android.inventory.assets;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,13 +11,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.dummy.MonthYearPickerDialog;
 import com.android.interfaces.FragmentInterface;
 import com.android.inventory.asset_models.AssetReadingsListDataItem;
 import com.android.inventory.asset_models.AssetReadingsListResponse;
+import com.android.purchase_request.PurchaseHomeActivity;
+import com.android.purchase_request.PurchaseRequestListFragment;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -29,7 +34,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +50,7 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AssetsReadingsFragment extends Fragment implements FragmentInterface {
+public class AssetsReadingsFragment extends Fragment implements FragmentInterface,DatePickerDialog.OnDateSetListener {
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     private Context mContext;
@@ -51,6 +58,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private Realm realm;
     private int inventoryComponentId;
     private String component_type_slug;
+    private int passYear, passMonth;
 
     public AssetsReadingsFragment() {
         // Required empty public constructor
@@ -70,6 +78,9 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         View view = inflater.inflate(R.layout.recyclerview_lsiting_for_asset_summary, container, false);
         unbinder = ButterKnife.bind(this, view);
         Bundle bundleArgs = getArguments();
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passYear = calendar.get(Calendar.YEAR);
         if (bundleArgs != null) {
             inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
             component_type_slug = bundleArgs.getString("component_type_slug");
@@ -129,8 +140,8 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         try {
             params.put("inventory_component_id", inventoryComponentId);
 //            params.put("date", 3);
-            params.put("month", 11);
-            params.put("year", 2017);
+            params.put("month", passMonth);
+            params.put("year", passYear);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -178,6 +189,35 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public void fragmentBecameVisible() {
+        ((AssetDetailsActivity)mContext).setDateInAppBar(passMonth,passYear);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        }
+    }
+
+    public void onDatePickerClicked_purchaseRequest() {
+        final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
+        Bundle bundleArgs = new Bundle();
+        bundleArgs.putInt("maxYear", 2019);
+        bundleArgs.putInt("minYear", 2016);
+        bundleArgs.putInt("currentYear", passYear);
+        bundleArgs.putInt("currentMonth", passMonth);
+        monthYearPickerDialog.setArguments(bundleArgs);
+        monthYearPickerDialog.setListener(AssetsReadingsFragment.this);
+        monthYearPickerDialog.show(getActivity().getSupportFragmentManager(), "MonthYearPickerDialog");
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
+        passYear = year;
+        passMonth = month;
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        requestAssetSummaryList();
     }
 }
 

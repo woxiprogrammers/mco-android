@@ -52,12 +52,12 @@
                 android:layout_height="wrap_content"
                 android:digits="0123456789"
                 android:gravity="left"
-                android:text="1111111111"
                 android:hint="@string/prompt_mobile_number"
                 android:imeOptions="actionNext"
                 android:inputType="number"
                 android:maxLength="10"
-                android:paddingLeft="@dimen/dimen_40dp"/>
+                android:paddingLeft="@dimen/dimen_40dp"
+                android:text="1111111111"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -74,11 +74,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:hint="@string/prompt_password"
-                android:text="mco@1234"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
-                android:paddingLeft="@dimen/dimen_40dp"/>
+                android:paddingLeft="@dimen/dimen_40dp"
+                android:text="mco@1234"/>
         </android.support.design.widget.TextInputLayout>
 
         <Button

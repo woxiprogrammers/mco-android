@@ -55,23 +55,27 @@ public class DrawingDetailsActivity extends BaseActivity {
     private AlertDialog alert_Dialog;
     public static int drawingVersionId,subCatId;
     public static String imageName;
-    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_drawing_details);
-        ButterKnife.bind(this);
+        initializeViews();
+
+    }
+
+    private void initializeViews() {
         mContext = DrawingDetailsActivity.this;
+        ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
+        setTitle();
+        call(drawingVersionId, imageUrl, true);
         if (bundle != null) {
             imageUrl = bundle.getString("url");
             drawingVersionId = bundle.getInt("getDrawingImageVersionId");
             imageName = bundle.getString("imageName");
             subCatId=bundle.getInt("subId");
         }
-        setTitle();
-        call(drawingVersionId, imageUrl, true);
         imageViewPreview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -79,7 +83,6 @@ public class DrawingDetailsActivity extends BaseActivity {
                 return true;
             }
         });
-
     }
 
     @Override
@@ -186,7 +189,7 @@ public class DrawingDetailsActivity extends BaseActivity {
             e.printStackTrace();
         }
         AndroidNetworking.post(AppURL.API_DRAWING_ADD_COMMENT + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToPayment")
+                .setTag("requestToAddComment")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)

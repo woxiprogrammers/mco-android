@@ -1,12 +1,12 @@
 package com.android.purchase_request;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -51,7 +51,7 @@ import timber.log.Timber;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class PurchaseOrderListFragment extends Fragment implements FragmentInterface {
+public class PurchaseOrderHistoryFragment extends Fragment implements FragmentInterface {
     private static int purchaseRequestId;
     private static boolean isFromPurchaseRequest;
     @BindView(R.id.rv_order_list)
@@ -61,17 +61,17 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
 
-    public PurchaseOrderListFragment() {
-        // Required empty public constructor
-    }
-
-    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId, boolean isFrom) {
+    public static PurchaseOrderHistoryFragment newInstance(int mPurchaseRequestId, boolean isFrom) {
         Bundle args = new Bundle();
-        PurchaseOrderListFragment fragment = new PurchaseOrderListFragment();
+        PurchaseOrderHistoryFragment fragment = new PurchaseOrderHistoryFragment();
         fragment.setArguments(args);
         purchaseRequestId = mPurchaseRequestId;
         isFromPurchaseRequest = isFrom;
         return fragment;
+    }
+
+    public PurchaseOrderHistoryFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -91,10 +91,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        View mParentView = inflater.inflate(R.layout.purchase_order_list_recylcer_view, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
-        mContext = getActivity();
-        setUpPOAdapter();
+        //Initialize Views
+        initializeViews();
+        requestPrListOnline();
+        setUpPrAdapter();
+
         return mParentView;
     }
 
@@ -118,14 +121,28 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void setUpPOAdapter() {
-        realm = Realm.getDefaultInstance();
-        Timber.d("Adapter setup called");
-        if (isFromPurchaseRequest) {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).equalTo("purchaseRequestId", purchaseRequestId).findAllAsync();
-        } else {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            requestPrListOnline();
         }
+    }
+
+    /**
+     * <b>private void initializeViews()</b>
+     * <p>This function is used to initialize required views.</p>
+     * Created by - Rohit
+     */
+    private void initializeViews() {
+        mContext = getActivity();
+        setUpPrAdapter();
+    }
+
+    private void setUpPrAdapter() {
+        realm = Realm.getDefaultInstance();
+        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).equalTo("purchaseOrderStatusSlug","close").findAllAsync();
+
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
@@ -153,6 +170,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     AlertDialog alert = builder.create();
                     alert.setTitle("Close PO");
                     alert.show();
+
                 } else {
                     if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
@@ -174,8 +192,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         try {
             if (isFromPurchaseRequest) {
                 params.put("purchase_request_id", purchaseRequestId);
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            } else {
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             }
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("page", 0);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -199,7 +219,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    setUpPOAdapter();
                                     Timber.d("Realm execution successful");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -222,13 +241,41 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint()) {
-            requestPrListOnline();
+    private void requestToClosePo(int id) {
+
+        JSONObject params = new JSONObject();
+        /**/
+        try {
+            params.put("purchase_order_id", id);
+            params.put("change_status_to_slug", "close");
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        AndroidNetworking.post(AppURL.API_CLOSE_PURCHASE_ORDER + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToClosePo")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            requestPrListOnline();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
+
+
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {
@@ -306,38 +353,5 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 recyclerViewClickListener.onItemClick(view, getAdapterPosition());
             }
         }
-    }
-
-    private void requestToClosePo(int id) {
-        JSONObject params = new JSONObject();
-        /**/
-        try {
-            params.put("purchase_order_id", id);
-            params.put("change_status_to_slug", "close");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_CLOSE_PURCHASE_ORDER + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToClosePo")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            requestPrListOnline();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
     }
 }

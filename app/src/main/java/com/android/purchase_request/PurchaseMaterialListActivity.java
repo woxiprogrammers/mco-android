@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.dummy.UnitsResponse;
 import com.android.material_request_approve.AssetSearchResponse;
 import com.android.material_request_approve.AssetSearchResponseData;
 import com.android.material_request_approve.AutoSuggestActivity;
@@ -118,6 +120,13 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private boolean isOtherType;
     private int indexItemUnit;
     private RecyclerViewClickListener recyclerViewClickListener;
+    private EditText editText_name_material_asset, editText_quantity_material_asset, edittext_unit, editextDialogRemark;
+    private LinearLayout linearLayoutUnit;
+    private Spinner spinner_select_units;
+    private AlertDialog alert_Dialog;
+    private FrameLayout frameLayoutSpinnerUnitDialog;
+    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
+    private int unitIDForDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,10 +308,21 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             return;
         }*/
         JSONArray jsonArrayPurchaseMaterialListItems = new JSONArray();
-        JSONObject currentJonObject;
+        JSONObject currentJonObject, inIndentJsonObject;
         JSONArray jsonArrayMaterialRequestCompoId = new JSONArray();
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_Approved) {
-            jsonArrayMaterialRequestCompoId.put(purchaseMaterialListItem.getMaterialRequestComponentId());
+            inIndentJsonObject = new JSONObject();
+            try {
+                inIndentJsonObject.put("id", purchaseMaterialListItem.getMaterialRequestComponentId());
+                if (purchaseMaterialListItem.isInIndentMaterialUpdated()) {
+                    inIndentJsonObject.put("quantity", purchaseMaterialListItem.getItem_quantity());
+                    inIndentJsonObject.put("unit_id", purchaseMaterialListItem.getItem_unit_id());
+                    inIndentJsonObject.put("remark", purchaseMaterialListItem.getRemark());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            jsonArrayMaterialRequestCompoId.put(inIndentJsonObject);
         }
         for (PurchaseMaterialListItem purchaseMaterialListItem : purchaseMaterialListItems_prAssigned) {
             currentJonObject = new JSONObject();
@@ -319,9 +339,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         try {
             params.put("item_list", jsonArrayPurchaseMaterialListItems);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-//            params.put("assigned_to", userId);
             if (jsonArrayMaterialRequestCompoId.length() > 0) {
-                params.put("material_request_component_id", jsonArrayMaterialRequestCompoId);
+                params.put("material_request_component", jsonArrayMaterialRequestCompoId);
             }
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
@@ -352,7 +371,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError,     "submitPurchaseRequest");
+                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
                     }
                 });
     }
@@ -373,7 +392,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         ll_dialog_unit = dialogView.findViewById(R.id.ll_dialog_unit);
         View view = dialogView.findViewById(R.id.layoutCamera);
         TextView mTextViewCaptureImages = (TextView) view.findViewById(R.id.textView_capture);
-        TextView mTextViewPickImages = (TextView) view.findViewById(R.id.textView_pick);
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -391,20 +409,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 params.setButtonTextColor(R.color.colorWhite);
                 intent.putExtra(Constants.KEY_PARAMS, params);
                 startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
-            }
-        });
-        mTextViewPickImages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
             }
         });
         mButtonAddMaterialAsset.setOnClickListener(new View.OnClickListener() {
@@ -599,31 +603,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     }
                 }
                 break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                mLlUploadImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                for (Image currentImage : imagesList2) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        mLlUploadImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
             case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
                 mTextViewExceedQuantity.setVisibility(View.GONE);
                 functionForProcessingSearchResult(intent);
@@ -632,7 +611,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
-        isOtherType=false;
+        isOtherType = false;
         isQuotationMaterial = false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
@@ -657,11 +636,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                 } else {
                     searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
-                    isOtherType=searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
+                    isOtherType = searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
                 }
-                if(isOtherType){
+                if (isOtherType) {
                     mEditTextQuantityMaterialAsset.setEnabled(true);
-                }else {
+                } else {
                     mEditTextQuantityMaterialAsset.setEnabled(false);
 
                 }
@@ -907,11 +886,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             if (itemPrInIndent != null) {
                 int primaryKeyInIndent = itemPrInIndent.getPrimaryKey();
                 if (primaryKeyInIndent == purchaseMaterialListItem.getPrimaryKey()) {
-//                    Log.d("@@@itemPrInIndent", "Equal: " + primaryKeyInIndent + "  " + purchaseMaterialListItem.getPrimaryKey());
                     holder.mTextViewHeader_purchaseRequestList.setVisibility(View.VISIBLE);
                     holder.mTextViewHeader_purchaseRequestList.setText("In Indent");
+                    holder.imageView_edit.setVisibility(View.VISIBLE);
                 } else {
-//                    Log.d("@@@itemPrInIndent", "Unequal: " + primaryKeyInIndent + "  " + purchaseMaterialListItem.getPrimaryKey());
                     holder.mTextViewHeader_purchaseRequestList.setVisibility(View.GONE);
                 }
             }
@@ -919,11 +897,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             if (itemPrAssigned != null) {
                 int primaryKeyPrAssigned = itemPrAssigned.getPrimaryKey();
                 if (primaryKeyPrAssigned == purchaseMaterialListItem.getPrimaryKey()) {
-//                    Log.d("@@@itemPrAssigned", "Equal: " + primaryKeyPrAssigned + "  " + purchaseMaterialListItem.getPrimaryKey());
                     holder.mTextViewHeader_purchaseRequestList.setVisibility(View.VISIBLE);
                     holder.mTextViewHeader_purchaseRequestList.setText("Newly Added");
+                    holder.imageView_edit.setVisibility(View.GONE);
                 } else {
-//                    Log.d("@@@itemPrAssigned", "Unequal: " + primaryKeyPrAssigned + "  " + purchaseMaterialListItem.getPrimaryKey());
                     holder.mTextViewHeader_purchaseRequestList.setVisibility(View.GONE);
                 }
             }
@@ -934,6 +911,14 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 @Override
                 public void onClick(View view) {
                     recyclerViewClickListener.onItemClick(view, position);
+                }
+            });
+
+            holder.imageView_edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "Hii", Toast.LENGTH_SHORT).show();
+                    openDialog(position, arrPurchaseMaterialListItems, getItemId(position));
                 }
             });
         }
@@ -961,6 +946,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             LinearLayout mLinearLayoutClickable_Item;
             @BindView(R.id.textViewHeader_purchaseRequestList)
             TextView mTextViewHeader_purchaseRequestList;
+            @BindView(R.id.imageView_edit)
+            ImageView imageView_edit;
 
             MyViewHolder(View itemView) {
                 super(itemView);
@@ -974,4 +961,165 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             }*/
         }
     }
+
+    private void openDialog(final int position, final OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems, final long itemPrimaryKey) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_material_approve_status, null);
+        alertDialogBuilder.setView(dialogView);
+        editText_name_material_asset = dialogView.findViewById(R.id.editText_name_material_asset);
+        editText_quantity_material_asset = dialogView.findViewById(R.id.editText_quantity_material_asset);
+        editextDialogRemark = dialogView.findViewById(R.id.editext_remark_for_disapproval);
+        linearLayoutUnit = dialogView.findViewById(R.id.linearLayoutUnit);
+        edittext_unit = dialogView.findViewById(R.id.edittext_unit);
+        spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
+        mTextViewExceedQuantity = dialogView.findViewById(R.id.TextViewExceedQuantity);
+        final Button buttonApproveDisapprove = dialogView.findViewById(R.id.button_approve);
+        final Button button_dismiss = dialogView.findViewById(R.id.button_dismiss);
+        Button button_for_edit = dialogView.findViewById(R.id.button_for_edit);
+        editText_name_material_asset.setText(arrPurchaseMaterialListItems.get(position).getItem_name());
+        editText_name_material_asset.setEnabled(false);
+        editText_quantity_material_asset.setText("" + arrPurchaseMaterialListItems.get(position).getItem_quantity());
+        editText_quantity_material_asset.setEnabled(false);
+        edittext_unit.setText(arrPurchaseMaterialListItems.get(position).getItem_unit_name());
+        frameLayoutSpinnerUnitDialog = dialogView.findViewById(R.id.frameLayoutSpinnerUnitDialog);
+        edittext_unit.setEnabled(false);
+        if (arrPurchaseMaterialListItems.get(position).getMaterialRequestComponentTypeSlug() != null) {
+            isQuotationMaterial = arrPurchaseMaterialListItems.get(position).getMaterialRequestComponentTypeSlug().equalsIgnoreCase("quotation-material");
+        }
+        alert_Dialog = alertDialogBuilder.create();
+        buttonApproveDisapprove.setText("Update");
+        buttonApproveDisapprove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(TextUtils.isEmpty(editextDialogRemark.getText().toString())){
+                    editextDialogRemark.setError("Please enter remark");
+                    editextDialogRemark.requestFocus();
+                    return;
+                }else {
+                    editextDialogRemark.setError(null);
+                    editextDialogRemark.clearFocus();
+                }
+                realm = Realm.getDefaultInstance();
+                unitIDForDialog = unitQuantityItemRealmResults.get(spinner_select_units.getSelectedItemPosition()).getUnitId();
+                try {
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            PurchaseMaterialListItem purchaseMaterialListItem = realm.where(PurchaseMaterialListItem.class).equalTo("primaryKey", (int) itemPrimaryKey).findFirst();
+                            if (purchaseMaterialListItem != null) {
+                                purchaseMaterialListItem.setInIndentMaterialUpdated(true);
+                                purchaseMaterialListItem.setRemark(editextDialogRemark.getText().toString());
+                                purchaseMaterialListItem.setItem_quantity(Float.parseFloat(editText_quantity_material_asset.getText().toString()));
+                                purchaseMaterialListItem.setItem_unit_id(unitIDForDialog);
+                                realm.insertOrUpdate(purchaseMaterialListItem);
+                            } else {
+                                Timber.d("purchaseMaterialListItem null");
+                            }
+                        }
+                    });
+                } finally {
+                    if (realm != null) {
+                        realm.close();
+                    }
+                }
+                if (alert_Dialog != null) {
+                    alert_Dialog.dismiss();
+                }
+            }
+        });
+        button_dismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (alert_Dialog != null) {
+                    alert_Dialog.dismiss();
+                }
+            }
+        });
+        button_for_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editText_name_material_asset.setEnabled(true);
+                edittext_unit.setEnabled(true);
+                editText_quantity_material_asset.setEnabled(true);
+                checkAvailability(arrPurchaseMaterialListItems.get(position).getMaterialRequestComponentId());
+            }
+        });
+        alert_Dialog.show();
+    }
+
+    private void checkAvailability(int materialRequestComponentId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("material_request_component_id", materialRequestComponentId);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_MATERIAL_REQUEST_AVAILABLE_QUANTITY + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("checkAvailability")
+                .build()
+                .getAsObject(UnitsResponse.class, new ParsedRequestListener<UnitsResponse>() {
+                    @Override
+                    public void onResponse(final UnitsResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(UnitQuantityItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    if (response.getUnitsResponseData().getAllowedQuantityUnit().isEmpty()) {
+                                        linearLayoutUnit.setVisibility(View.GONE);
+                                    } else {
+                                        linearLayoutUnit.setVisibility(View.VISIBLE);
+                                        edittext_unit.setVisibility(View.GONE);
+                                        frameLayoutSpinnerUnitDialog.setVisibility(View.VISIBLE);
+                                        setUpUnitQuantityChangeListener();
+                                    }
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "checkAvailability");
+                    }
+                });
+    }
+
+    private void setUpUnitQuantityChangeListener() {
+        realm = Realm.getDefaultInstance();
+        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
+        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
+    }
+
+    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
+        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (UnitQuantityItem currentUser : unitQuantityItems) {
+            String strUserName = currentUser.getUnitName();
+            arrayOfUsers.add(strUserName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_select_units.setAdapter(arrayAdapter);
+    }
+
 }

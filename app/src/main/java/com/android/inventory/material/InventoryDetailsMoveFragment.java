@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.dummy.UnitsResponse;
+import com.android.dummy.UnitsResponseData;
 import com.android.interfaces.FragmentInterface;
 import com.android.material_request_approve.UnitQuantityItem;
 import com.android.utils.AppConstants;
@@ -54,6 +55,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -84,8 +86,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     AutoCompleteTextView edit_text_selected_dest_name;
     @BindView(R.id.ll_forSupplierVehicle)
     LinearLayout ll_forSupplierVehicle;
-    @BindView(R.id.ll_forSupplierInOutTime)
-    LinearLayout ll_forSupplierInOutTime;
     @BindView(R.id.checkbox_moveInOut)
     CheckBox checkboxMoveInOut;
     @BindView(R.id.edit_text_vehicleNumber)
@@ -96,14 +96,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     LinearLayout llChallanNumber;
     @BindView(R.id.editText_addNote)
     EditText editTextAddNote;
-    @BindView(R.id.editText_Date)
-    EditText editText_Date;
     @BindView(R.id.button_move)
     Button buttonMove;
-    @BindView(R.id.edit_text_inTime)
-    EditText editTextInTime;
-    @BindView(R.id.edit_text_outTime)
-    EditText editTextOutTime;
     @BindView(R.id.source_spinner)
     Spinner sourceMoveInSpinner;
     @BindView(R.id.linerLayoutSelectedNames)
@@ -119,8 +113,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.textView_capture)
     TextView textViewCapture;
     Unbinder unbinder;
-    @BindView(R.id.textView_pick)
-    TextView textViewPick;
     @BindView(R.id.spinnerMaterialUnits)
     Spinner spinnerMaterialUnits;
     @BindView(R.id.linearLayoutMaterialSite)
@@ -133,31 +125,22 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     FrameLayout mFrameLayoutFirst;
     @BindView(R.id.frameLayout1)
     FrameLayout mFrameLayout1;
+
     private View mParentView;
-    private String strDate;
-    private String strVehicleNumber;
-    private String strInTime;
-    private String strOutTime;
-    private String strBillNumber;
-    private String strQuantity;
-    private String strUnit;
-    private String strBillAmount;
+    private String strVehicleNumber,strBillAmount,strBillNumber,strQuantity,str,transferType = "OUT",strToDate;
     private boolean isChecked;
-    private String str;
     private Context mContext;
-    private String transferType = "OUT";
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
-    private int indexItemUnit, unidId;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
-    private String strToDate;
     private JSONArray jsonArray;
     private ArrayList<String> siteNameArray;
     private ArrayAdapter<String> adapter;
     private static int inventoryComponentId;
+    private int project_site_id,unitId;
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
@@ -197,31 +180,11 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     public void fragmentBecameVisible() {
     }
 
-    @OnClick({R.id.textView_capture, R.id.textView_pick, R.id.editText_Date, R.id.edit_text_inTime, R.id.edit_text_outTime})
+    @OnClick({R.id.textView_capture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textView_capture:
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-                break;
-            case R.id.textView_pick:
-                Intent intent = new Intent(mContext, GalleryActivity.class);
-                Params params = new Params();
-                params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-                params.setToolbarColor(R.color.colorPrimaryLight);
-                params.setActionButtonColor(R.color.colorAccentDark);
-                params.setButtonTextColor(R.color.colorWhite);
-                intent.putExtra(Constants.KEY_PARAMS, params);
-                startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
-                break;
-            case R.id.editText_Date:
-                setInOutDate(editText_Date);
-                break;
-            case R.id.edit_text_inTime:
-                setInOutTime(editTextInTime);
-                break;
-            case R.id.edit_text_outTime:
-                setInOutTime(editTextOutTime);
                 break;
         }
     }
@@ -245,15 +208,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             edittextQuantity.requestFocus();
             edittextQuantity.setError(null);
         }
-        //Date
-        strDate = editText_Date.getText().toString();
-        if (TextUtils.isEmpty(strDate)) {
-            editText_Date.setError(getString(R.string.please_enter) + getString(R.string.date));
-            return;
-        } else {
-            editText_Date.requestFocus();
-            editText_Date.setError(null);
-        }
         if (!checkboxMoveInOut.isChecked()) {
         }
         if (isChecked) {
@@ -265,24 +219,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             } else {
                 editTextVehicleNumber.setError(null);
                 editTextVehicleNumber.requestFocus();
-            }
-            //In Time
-            strInTime = editTextInTime.getText().toString();
-            if (TextUtils.isEmpty(strInTime)) {
-                editTextInTime.setError(getString(R.string.please_enter) + getString(R.string.in_time));
-                return;
-            } else {
-                editTextInTime.setError(null);
-                editTextInTime.requestFocus();
-            }
-            //Out Time
-            strOutTime = editTextOutTime.getText().toString();
-            if (TextUtils.isEmpty(strOutTime)) {
-                editTextOutTime.setError(getString(R.string.please_enter) + getString(R.string.out_time));
-                return;
-            } else {
-                editTextOutTime.setError(null);
-                editTextOutTime.requestFocus();
             }
             strBillAmount = editTextBillamount.getText().toString();
             if (TextUtils.isEmpty(strBillAmount)) {
@@ -317,28 +253,27 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
                 }
             }
+            if(spinnerDestinations.getSelectedItemPosition() == 0){
+                params.put("project_site_id",project_site_id);
+            }else {
+                params.put("project_site_id",null);
+
+            }
             if (str.equalsIgnoreCase("Office")) {
                 params.put("source_name", "");
             } else {
                 params.put("source_name", edit_text_selected_dest_name.getText().toString());
             }
-            params.put("inventory_component_id", inventoryComponentId);
-            params.put("type", transferType);
-            params.put("quantity", strQuantity);
             if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unidId = unitQuantityItemRealmResults.get(indexItemUnit).getUnitId();
-                params.put("unit_id", unidId);
+                unitId = unitQuantityItemRealmResults.get(spinnerMaterialUnits.getSelectedItemPosition()).getUnitId();
+                params.put("unit_id", unitId);
             }
-            params.put("date", strDate);
             if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
                 params.put("remark", editTextAddNote.getText().toString());
             } else {
                 params.put("remark", "");
             }
-            params.put("images", jsonImageNameArray);
             if (str.equalsIgnoreCase(getString(R.string.supplier_name))) {
-                params.put("in_time", strToDate + " " + strInTime);
-                params.put("out_time", strToDate + " " + strOutTime);
                 params.put("vehicle_number", strVehicleNumber);
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
@@ -346,7 +281,11 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 params.put("bill_number", strBillNumber);
                 params.put("bill_amount", editTextBillamount.getText().toString());
             }
-            Log.i("@@SParams", String.valueOf(params));
+            params.put("inventory_component_id", inventoryComponentId);
+            params.put("type", transferType);
+            params.put("quantity", strQuantity);
+            params.put("images", jsonImageNameArray);
+            Log.i("@@MoveParams",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -377,7 +316,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     private void chooseAction(int type, Class aClass) {
         Intent intent = new Intent(mContext, aClass);
         Params params = new Params();
-        params.setCaptureLimit(10);
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
         params.setToolbarColor(R.color.colorPrimaryLight);
         params.setActionButtonColor(R.color.colorAccentDark);
         params.setButtonTextColor(R.color.colorWhite);
@@ -398,31 +337,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 arrayImageFileList = new ArrayList<File>();
                 File currentImageFile;
                 for (Image currentImage : imagesList) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        llAddImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList2));
-                llAddImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
                         currentImageFile = new File(currentImage.imagePath);
                         arrayImageFileList.add(currentImageFile);
@@ -476,7 +390,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     mFrameLayoutFirst.setVisibility(View.GONE);
                     mFrameLayout1.setVisibility(View.VISIBLE);
                     ll_forSupplierVehicle.setVisibility(View.GONE);
-                    ll_forSupplierInOutTime.setVisibility(View.GONE);
                     linearLayoutMaterialSite.setVisibility(View.GONE);
                     text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
                 }
@@ -488,9 +401,8 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 switch (selectedItemIndex) {
                     //For Site
                     case 0:
-                        getSystemSites();
+                        requestToGetSystemSites();
                         text_ViewSetSelectedTextName.setText(getString(R.string.site_name));
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
@@ -500,7 +412,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Client
                     case 1:
                         text_ViewSetSelectedTextName.setText(getString(R.string.client_name));
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
@@ -510,7 +421,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Labour
                     case 2:
                         text_ViewSetSelectedTextName.setText(getString(R.string.labour_name));
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
@@ -520,7 +430,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For SubContracter
                     case 3:
                         text_ViewSetSelectedTextName.setText(getString(R.string.sub_contracter_name));
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
                         llChallanNumber.setVisibility(View.GONE);
                         linearLayoutMaterialSite.setVisibility(View.GONE);
@@ -530,7 +439,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                     //For Supplier
                     case 4:
                         text_ViewSetSelectedTextName.setText(getString(R.string.supplier_name));
-                        ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearLayoutMaterialSite.setVisibility(View.GONE);
@@ -556,7 +464,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.GONE);
                         linearBillAmount.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         str = getString(R.string.client_name);
                         break;
                     //For By Hand
@@ -566,7 +473,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         str = getString(R.string.shop_name);
                         break;
                     //For Office
@@ -575,7 +481,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         linearBillAmount.setVisibility(View.GONE);
                         linerLayoutSelectedNames.setVisibility(View.GONE);
                         ll_forSupplierVehicle.setVisibility(View.GONE);
-                        ll_forSupplierInOutTime.setVisibility(View.GONE);
                         str = "Office";
                         break;
                     //For Supplier
@@ -585,7 +490,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         llChallanNumber.setVisibility(View.VISIBLE);
                         linearBillAmount.setVisibility(View.VISIBLE);
                         ll_forSupplierVehicle.setVisibility(View.VISIBLE);
-                        ll_forSupplierInOutTime.setVisibility(View.VISIBLE);
                         str = getString(R.string.supplier_name);
                         isChecked = true;
                         break;
@@ -610,6 +514,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         try {
             JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
             String strProject = jsonObject.getString("project_name");
+            project_site_id=jsonObject.getInt("project_site_id");
             editTexttProjName.setText(strProject + "");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -684,13 +589,14 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(UnitsResponse.class);
                                     realm.delete(UnitQuantityItem.class);
+                                    realm.delete(UnitsResponseData.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    Timber.d("Realm Execution Successful");
                                     setUpUnitQuantityChangeListener();
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -731,53 +637,9 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         spinnerMaterialUnits.setAdapter(arrayAdapter);
     }
 
-    private void setInOutDate(final EditText editext_updateDate) {
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText(editext_updateDate);
-            }
-        };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
-    }
-
-    private void updateEditText(EditText editTextUpdateDate) {
-        String myFormat = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
-        editTextUpdateDate.setError(null);
-    }
-
-    private void setInOutTime(final EditText currentEditText) {
-        final Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = mcurrentTime.get(Calendar.MINUTE);
-        final int seconds = mcurrentTime.get(Calendar.SECOND);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.SECOND, seconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
-
-    private void getSystemSites() {
+    private void requestToGetSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
-                .setTag("getSystemSites")
+                .setTag("requestToGetSystemSites")
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -801,7 +663,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
                     }
                 });
     }

@@ -50,8 +50,11 @@ public class InventoryHomeActivity extends BaseActivity {
                     case R.id.action_material:
                         viewPagerInventory.setCurrentItem(0);
                         break;
-                    case R.id.action_assets:
+                    case R.id.action_transfer_request:
                         viewPagerInventory.setCurrentItem(1);
+                        break;
+                    case R.id.action_assets:
+                        viewPagerInventory.setCurrentItem(2);
                         break;
                 }
                 return false;

@@ -22,6 +22,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -51,7 +52,8 @@
         </activity>
         <activity
             android:name="com.android.inventory.assets.AssetDetailsActivity"
-            android:label="@string/title_activity_asset_details">
+            android:label="@string/title_activity_asset_details"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name="com.android.inventory.assets.ActivityAssetsReadings">
         </activity>
@@ -92,6 +94,8 @@
         </activity>
         <activity android:name="com.android.drawings.DrawingDetailsActivity">
         </activity>
+        <activity android:name="com.android.dpr_module.DPRHomeActivity">
+        </activity>
 
         <service android:name="com.android.firebase.MyFirebaseInstanceIDService">
             <intent-filter>
@@ -105,4 +109,5 @@
             </intent-filter>
         </service>
     </application>
+
 </manifest>

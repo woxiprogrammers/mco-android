@@ -268,6 +268,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         intent.putExtra("KEY_SUBMODULETAG", subModuleTag);
                         intent.putExtra("KEY_PERMISSIONLIST", permissionList);
                         startActivity(intent);
+//                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
                     }
 
                     @Override
@@ -322,7 +323,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-            if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
+            if(!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())){
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
                 holder.textViewApproved.setText("Approved By : - " + purchaseRequestListItem.getApprovedBy());
             }

@@ -21,7 +21,6 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.login_acl.PermissionsItem;
-import com.android.purchase_request.PurchaseMaterialListItem;
 import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.utils.AppURL;
@@ -63,7 +62,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         setContentView(R.layout.activity_purchase_request_details_home);
         initializeViews();
         callFragments();
-        strUserRole=AppUtils.getInstance().getUserRole();
+        strUserRole = AppUtils.getInstance().getUserRole();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             bundle.getString("KEY_SUBMODULETAG");
@@ -74,7 +73,6 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
                     isForApproval = true;
                 }
-
             }
         }
     }
@@ -178,18 +176,15 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         alertDialogBuilder.setView(dialogView);
         Button buttonApprove = dialogView.findViewById(R.id.buttonApprove);
         Button buttonDisapprove = dialogView.findViewById(R.id.buttonDisapprove);
-
         buttonApprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 isInValidate = true;
                 invalidateOptionsMenu();
-                if(strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))){
+                if (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))) {
                     requestToChangeStatus(11);
-
-                }else {
+                } else {
                     requestToChangeStatus(9);
-
                 }
                 alert_Dialog.dismiss();
                 onBackPressed();
@@ -198,12 +193,10 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         buttonDisapprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))) {
+                if (strUserRole.equalsIgnoreCase(getString(R.string.super_admin)) || strUserRole.equalsIgnoreCase(getString(R.string.admin))) {
                     requestToChangeStatus(12);
-
-                }else {
+                } else {
                     requestToChangeStatus(10);
-
                 }
                 alert_Dialog.dismiss();
                 onBackPressed();
@@ -211,33 +204,6 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         });
         alert_Dialog = alertDialogBuilder.create();
         alert_Dialog.show();
-
-
-       /* AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder
-                .setTitle("Approve")
-                .setMessage("Do You Want To approve?")
-                .setPositiveButton("Approve", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        isInValidate = true;
-                        invalidateOptionsMenu();
-                        requestToChangeStatus(9);
-                        dialog.dismiss();
-                    }
-                }).setNegativeButton("Disapprove", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                requestToChangeStatus(10);
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-        Button positiveOk = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        positiveOk.setBackgroundColor(Color.RED);
-        positiveOk.setPadding(8,0,0,0);
-        Button negativeDisapprove = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-        negativeDisapprove.setPadding(0,0,118,0);
-        negativeDisapprove.setBackgroundColor(R.color.custom_progress_message_color);*/
     }
 
     private void requestToChangeStatus(final int changeComponentStatusId) {
@@ -267,16 +233,12 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                                         PurchaseRequestListItem purchaseRequestListItem = realm.where(PurchaseRequestListItem.class).equalTo("id", mPurchaseRequestId).findFirst();
                                         if (changeComponentStatusId == 9) {
                                             purchaseRequestListItem.setStatus("p-r-manager-approved");
-
                                         } else if (changeComponentStatusId == 10) {
                                             purchaseRequestListItem.setStatus("p-r-manager-disapproved");
-
-                                        }else if (changeComponentStatusId == 11) {
+                                        } else if (changeComponentStatusId == 11) {
                                             purchaseRequestListItem.setStatus("p-r-admin-approved");
-
-                                        }else if (changeComponentStatusId == 12) {
+                                        } else if (changeComponentStatusId == 12) {
                                             purchaseRequestListItem.setStatus("p-r-admin-disapproved");
-
                                         }
                                         realm.insertOrUpdate(purchaseRequestListItem);
                                     }

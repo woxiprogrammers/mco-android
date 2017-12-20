@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.dummy.BillDataItem;
-import com.android.dummy.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_order.PurchaseOrderListItem;
 import com.android.new_transaction_list.PurchaseOrderTransactionListingItem;
@@ -41,9 +41,6 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -75,8 +72,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     EditText editTextBillumber;
     @BindView(R.id.textViewCaptureMatImg)
     TextView textViewCaptureMatImg;
-    @BindView(R.id.textViewPickMatImg)
-    TextView textViewPickMatImg;
     @BindView(R.id.linearLayoutMatImg)
     LinearLayout linearLayoutMatImg;
     @BindView(R.id.llAddMatImg)
@@ -93,8 +88,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     LinearLayout linearLayoutGrnNum;
     @BindView(R.id.textViewCaptureTransImg)
     TextView textViewCaptureTransImg;
-    @BindView(R.id.textViewPickTransImg)
-    TextView textViewPickTransImg;
     @BindView(R.id.linearLayoutTransImg)
     LinearLayout linearLayoutTransImg;
     @BindView(R.id.ll_PaymentImageLayout)
@@ -143,6 +136,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     LinearLayout linearLayoutFirstLayout;
     @BindView(R.id.showImg)
     LinearLayout linearLayoutShowImg;
+    @BindView(R.id.textViewShowMessage)
+    TextView textViewShowMessage;
     private ArrayList<Integer> arrayList;
     Unbinder unbinder;
     private static int orderId;
@@ -194,19 +189,24 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         if (strVendorName != null) {
             textViewVendor.setText("Vendor Name : - " + strVendorName);
         }
-        Log.i("@@id", String.valueOf(orderId));
         realm = Realm.getDefaultInstance();
-         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
-        if (!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())) {
-            linearLayoutToVisible.setVisibility(View.VISIBLE);
+        purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
+        int quantity = purchaseOrderListItem.getRemainingQuantity();
+        if (quantity == 0) {
+            textViewShowMessage.setVisibility(View.VISIBLE);
             linearLayoutFirstLayout.setVisibility(View.GONE);
-            editTextGrnNum.setText(purchaseOrderListItem.getGrnGenerated());
-            requestForMaterialNames();
         } else {
-
-            linearLayoutToVisible.setVisibility(View.GONE);
-            linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())) {
+                linearLayoutToVisible.setVisibility(View.VISIBLE);
+                linearLayoutFirstLayout.setVisibility(View.GONE);
+                editTextGrnNum.setText(purchaseOrderListItem.getGrnGenerated());
+                requestForMaterialNames();
+            } else {
+                linearLayoutToVisible.setVisibility(View.GONE);
+                linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+            }
         }
+
         if (purchaseOrderListItem.getListOfImages().size() > 0) {
             for (int index = 0; index < purchaseOrderListItem.getListOfImages().size(); index++) {
                 ImageView imageView = new ImageView(getActivity());
@@ -243,16 +243,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
     }
 
-    @OnClick({R.id.textViewCaptureMatImg, R.id.textViewPickMatImg, R.id.buttonActionGenerateGrn, R.id.textViewCaptureTransImg, R.id.textViewPickTransImg, R.id.buttonActionSubmit})
+    @OnClick({R.id.textViewCaptureMatImg, R.id.buttonActionGenerateGrn, R.id.textViewCaptureTransImg, R.id.buttonActionSubmit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCaptureMatImg:
                 isForImage = true;
                 captureImage();
-                break;
-            case R.id.textViewPickMatImg:
-                isForImage = true;
-                pickImage();
                 break;
             case R.id.buttonActionGenerateGrn:
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
@@ -261,10 +257,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             case R.id.textViewCaptureTransImg:
                 isForImage = false;
                 captureImage();
-                break;
-            case R.id.textViewPickTransImg:
-                isForImage = false;
-                pickImage();
                 break;
             case R.id.buttonActionSubmit:
                 validateEntries();
@@ -284,13 +276,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     addImages(imagesList, llAddMatImg);
                 else
                     addImages(imagesList, llPaymentImageLayout);
-                break;
-            case Constants.TYPE_MULTI_PICKER:
-                ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                if (isForImage)
-                    addImages(imagesList2, llAddMatImg);
-                else
-                    addImages(imagesList2, llPaymentImageLayout);
                 break;
         }
     }
@@ -386,7 +371,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void requestToGenerateGrn() {
 
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
-            Toast.makeText(mContext, "Please add at least activity_drawing_home image", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
         JSONObject params = new JSONObject();
@@ -457,6 +442,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             params.put("vehicle_number", strVehicleNumber);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
                 params.put("bill_amount", editTextBillAmount.getText().toString());
+            } else {
+                params.put("bill_amount", null);
             }
             params.put("remark", editextTransRemark.getText().toString());
             params.put("bill_number", strChallanNumber);
@@ -466,7 +453,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("@@Check", params.toString());
         AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_PAYMENT_URL + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToPayment")
                 .addJSONObjectBody(params)
@@ -504,18 +490,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
-    private void pickImage() {
-        Intent intent = new Intent(mContext, GalleryActivity.class);
-        Params params = new Params();
-        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setPickerLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setToolbarColor(R.color.colorPrimaryLight);
-        params.setActionButtonColor(R.color.colorAccentDark);
-        params.setButtonTextColor(R.color.colorWhite);
-        intent.putExtra(Constants.KEY_PARAMS, params);
-        startActivityForResult(intent, Constants.TYPE_MULTI_PICKER);
-    }
-
     private void addImages(ArrayList<Image> imagesList, LinearLayout layout) {
         layout.removeAllViews();
         arrayImageFileList = new ArrayList<File>();
@@ -549,14 +523,44 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         EditText edittextMatUnit = dialogView.findViewById(R.id.edittextMatUnit);
         final EditText editTextMatQuantity = dialogView.findViewById(R.id.editTextMatQuantity);
         TextView textViewMaterialNameSelected = dialogView.findViewById(R.id.textViewMaterialNameSelected);
-        Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
-        MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
+        final TextView TextViewExceedQuantity=dialogView.findViewById(R.id.TextViewExceedQuantity);
+        final Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
+        final MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
+
         if (isForEdit) {
             if (materialNamesItem != null) {
                 Timber.d(String.valueOf(materialNamesItem));
                 edittextMatUnit.setText(materialNamesItem.getMaterialUnits().get(0).getUnit());
                 textViewMaterialNameSelected.setText(materialNamesItem.getMaterialName());
                 edittextMatUnit.setEnabled(false);
+
+                final float floatMaterialComponentRemainingQuantity=Float.parseFloat(materialNamesItem.getMaterialComponentRemainingQuantity());
+                editTextMatQuantity.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int arg1, int arg2, int arg3) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!TextUtils.isEmpty(s.toString())){
+                            if(Float.parseFloat(s.toString()) > floatMaterialComponentRemainingQuantity){
+                                TextViewExceedQuantity.setText("Quantity should be less than " + String.valueOf(floatMaterialComponentRemainingQuantity));
+                                TextViewExceedQuantity.setVisibility(View.VISIBLE);
+                                buttonToOk.setVisibility(View.GONE);
+                            }else {
+                                TextViewExceedQuantity.setText("");
+                                TextViewExceedQuantity.setVisibility(View.GONE);
+                                buttonToOk.setVisibility(View.VISIBLE);
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable arg0) {
+                    }
+                });
             }
         } else {
             TransactionDataItem billDataItem = realm.where(TransactionDataItem.class).equalTo("purchaseOrderTransactionComponentId", getId).findFirst();
@@ -566,6 +570,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             edittextMatUnit.setEnabled(false);
             textViewMaterialNameSelected.setText(billDataItem.getMaterialName());
             LinearLayout linearLayout = dialogView.findViewById(R.id.llAddQuoImg);
+
 
         }
         buttonToOk.setOnClickListener(new View.OnClickListener() {
@@ -582,7 +587,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             @Override
                             public void execute(Realm realm) {
                                 MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
-                                materialNamesItem.setQuantity(Integer.parseInt(editTextMatQuantity.getText().toString()));
+                                materialNamesItem.setQuantity(Float.parseFloat(editTextMatQuantity.getText().toString()));
                                 realm.copyToRealmOrUpdate(materialNamesItem);
                             }
                         }, new Realm.Transaction.OnSuccess() {
@@ -676,10 +681,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 llSetMatImg.removeAllViews();
                 linearLayoutSetPaymentImageLayout.removeAllViews();
                 for (int i = 0; i < purchaseBIllDetailsItems.getImages().size(); i++) {
-                    if(purchaseBIllDetailsItems.getImages().get(i).getImage_status().equalsIgnoreCase("Pre-GRN")){
+                    if (purchaseBIllDetailsItems.getImages().get(i).getImage_status().equalsIgnoreCase("Pre-GRN")) {
                         loadImage(purchaseBIllDetailsItems.getImages().get(i).getImageUrl(), llSetMatImg);
 
-                    }else {
+                    } else {
                         loadImage(purchaseBIllDetailsItems.getImages().get(i).getImageUrl(), linearLayoutSetPaymentImageLayout);
 
                     }
@@ -688,13 +693,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             } else {
                 linearLayoutFirstLayout.setVisibility(View.VISIBLE);
                 layout.setVisibility(View.GONE);
-           /* linearLayoutToVisible.setVisibility(View.GONE);
-            editTextBillumber.setEnabled(true);
-            editTextVehNum.setEnabled(true);
-            editTextInTime.setEnabled(true);
-            editTextOutTime.setEnabled(true);
-            editTextBillAmount.setEnabled(true);
-            editTextGrnNum.setEnabled(false);*/
             }
         }
     }
@@ -724,7 +722,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void inflateViews() {
         realm = Realm.getDefaultInstance();
         arrayList = new ArrayList<>();
-        materialNamesItems = realm.where(MaterialNamesItem.class).findAll();
+        materialNamesItems = realm.where(MaterialNamesItem.class).notEqualTo("materialComponentRemainingQuantity","0").or().notEqualTo("materialComponentRemainingQuantity","0.0").findAll();
         for (int i = 0; i < materialNamesItems.size(); i++) {
             final MaterialNamesItem materialNamesItem = materialNamesItems.get(i);
             inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);
@@ -796,7 +794,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             linearLayoutSetInflateNames.addView(viewData);
         }
     }
-
 
     private void openImageZoomFragment(String url) {
         ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);

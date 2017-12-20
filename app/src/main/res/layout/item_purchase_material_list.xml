@@ -72,6 +72,15 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/dimen_4dp"
                 app:srcCompat="@drawable/ic_delete"/>
+
+            <ImageView
+                android:id="@+id/imageView_edit"
+                android:layout_width="@dimen/dimen_40dp"
+                android:layout_height="@dimen/dimen_40dp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/dimen_4dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_edit"/>
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -228,77 +228,7 @@
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/ll_forSupplierInOutTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:visibility="gone">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_weight="0.5"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/in_time"
-                        android:textColor="@color/colorTextLight"/>
-
-                    <EditText
-                        android:id="@+id/edit_text_inTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:focusable="false"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_weight="0.5"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/out_time"
-                        android:textColor="@color/colorTextLight"/>
-
-                    <EditText
-                        android:id="@+id/edit_text_outTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:focusable="false"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/date"
-                    android:textColor="@color/colorTextLight"/>
-
-                <EditText
-                    android:id="@+id/editText_Date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:focusable="false"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_challanNumber"
