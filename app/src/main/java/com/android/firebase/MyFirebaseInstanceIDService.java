@@ -31,7 +31,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     }
 
     private void sendRegistrationToServer(String refreshedToken) {
-        if (AppUtils.getInstance().isNetworkAvailable()) {
+        if (AppUtils.getInstance().checkNetworkState()) {
             AndroidNetworking.post(AppURL.API_SEND_FIREBASE_REFRESHED_TOKEN + AppUtils.getInstance().getCurrentToken())
                     .addBodyParameter("firebaseRefreshedToken", refreshedToken)
                     .setTag("requestLatestAcl")

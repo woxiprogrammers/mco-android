@@ -30,7 +30,7 @@ class LoginInteractor implements LoginInteractorInterface {
             listener.onPasswordEmptyError("Password Empty");
         else if (password.length() < 6 /*&& !BuildConfig.DEBUG*/)
             listener.onPasswordValidationError("Password should range between 6–20 chars");
-        else if (AppUtils.getInstance().isNetworkAvailable()) {
+        else if (AppUtils.getInstance().checkNetworkState()) {
             requestLoginAPI(listener, username, password);
         } else {
             AppUtils.getInstance().showOfflineMessage("Login");

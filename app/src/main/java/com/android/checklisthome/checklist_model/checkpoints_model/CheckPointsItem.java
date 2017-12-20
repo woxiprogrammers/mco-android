@@ -68,4 +68,5 @@ public class CheckPointsItem extends RealmObject {
     public void setProjectSiteUserCheckpointIsChecked(boolean projectSiteUserCheckpointIsChecked) {
         this.projectSiteUserCheckpointIsChecked = projectSiteUserCheckpointIsChecked;
     }
+
 }

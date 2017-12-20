@@ -205,7 +205,7 @@ public class CheckListVerificationFragment extends Fragment {
             }
             textView_captionName.setHint(String.valueOf(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageId()));
             if (isFromState.equalsIgnoreCase("assigned") || isFromState.equalsIgnoreCase("progress")) {
-                if (!isUserViewOnly) {
+                if (!isUserViewOnly && TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
                     inflatedView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -352,6 +352,7 @@ public class CheckListVerificationFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        Toast.makeText(mContext, "Image Uploaded", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -379,6 +380,12 @@ public class CheckListVerificationFragment extends Fragment {
             ProjectSiteUserCheckpointImagesItem checkpointImagesItem = checkPointsItem.getProjectSiteUserCheckpointImages().get(index);
             if (checkpointImagesItem.isProjectSiteChecklistCheckpointImageIsRequired() && !checkpointImagesItem.isThisImageCaptured()) {
                 Toast.makeText(mContext, "Please upload all required images", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        if (checkPointsItem.isProjectSiteUserCheckpointIsRemarkRequired()) {
+            if (TextUtils.isEmpty(editextChecklistRemark.getText())) {
+                Toast.makeText(mContext, "Please add remark", Toast.LENGTH_SHORT).show();
                 return;
             }
         }

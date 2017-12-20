@@ -97,7 +97,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void requestLatestAcl() {
-        if (AppUtils.getInstance().isNetworkAvailable()) {
+        if (AppUtils.getInstance().checkNetworkState()) {
             AndroidNetworking.post(AppURL.API_USER_DASHBOARD + AppUtils.getInstance().getCurrentToken())
                     .addBodyParameter("logged_in_at", AppUtils.getInstance().getLoggedInAt())
                     .setTag("requestLatestAcl")

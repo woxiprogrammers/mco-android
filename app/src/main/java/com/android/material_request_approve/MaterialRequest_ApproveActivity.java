@@ -195,31 +195,33 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
     public void onAddClicked() {
-//        setUpUsersSpinnerValueChangeListener();
-//        requestUsersWithApproveAcl(getString(R.string.approve_material_request));
-        setUpCurrentMaterialListAdapter();
-        linerLayoutItemForMaterialRequest.setVisibility(View.VISIBLE);
-        mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.GONE);
-        PopupMenu popup = new PopupMenu(mContext, textViewPurchaseMaterialListAddNew);
-        popup.getMenuInflater().inflate(R.menu.options_menu_create_purchase_request, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_add_material:
-                        isMaterial = true;
-                        AlertDialog alertDialogMaterial = getExistingAlertDialog();
-                        alertDialogMaterial.show();
-                        break;
-                    case R.id.action_add_asset:
-                        isMaterial = false;
-                        AlertDialog alertDialogAsset = getExistingAlertDialog();
-                        alertDialogAsset.show();
-                        break;
+        if (AppUtils.getInstance().checkNetworkState()) {
+            setUpCurrentMaterialListAdapter();
+            linerLayoutItemForMaterialRequest.setVisibility(View.VISIBLE);
+            mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.GONE);
+            PopupMenu popup = new PopupMenu(mContext, textViewPurchaseMaterialListAddNew);
+            popup.getMenuInflater().inflate(R.menu.options_menu_create_purchase_request, popup.getMenu());
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.action_add_material:
+                            isMaterial = true;
+                            AlertDialog alertDialogMaterial = getExistingAlertDialog();
+                            alertDialogMaterial.show();
+                            break;
+                        case R.id.action_add_asset:
+                            isMaterial = false;
+                            AlertDialog alertDialogAsset = getExistingAlertDialog();
+                            alertDialogAsset.show();
+                            break;
+                    }
+                    return true;
                 }
-                return true;
-            }
-        });
-        popup.show();
+            });
+            popup.show();
+        } else {
+            AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
+        }
     }
 
     @Override
