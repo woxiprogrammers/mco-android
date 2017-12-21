@@ -50,11 +50,8 @@ public class InventoryHomeActivity extends BaseActivity {
                     case R.id.action_material:
                         viewPagerInventory.setCurrentItem(0);
                         break;
-                    case R.id.action_transfer_request:
-                        viewPagerInventory.setCurrentItem(1);
-                        break;
                     case R.id.action_assets:
-                        viewPagerInventory.setCurrentItem(2);
+                        viewPagerInventory.setCurrentItem(1);
                         break;
                 }
                 return false;
@@ -98,6 +95,7 @@ public class InventoryHomeActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_site_move_in, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -106,6 +104,10 @@ public class InventoryHomeActivity extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                break;
+
+            case R.id.action_move_in:
+
                 break;
         }
         return super.onOptionsItemSelected(item);

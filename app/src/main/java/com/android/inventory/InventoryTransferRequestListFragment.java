@@ -7,13 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_order.PurchaseOrderListItem;
-import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.utils.RecyclerViewClickListener;
 
 import butterknife.BindView;
@@ -24,10 +22,20 @@ import io.realm.OrderedRealmCollection;
 import io.realm.RealmRecyclerViewAdapter;
 
 public class InventoryTransferRequestListFragment extends Fragment implements FragmentInterface {
-/*
-    @BindView(R.id.rv_transfer_request_list)
-    RecyclerView rvTransferRequestList;*/
+    /*
+        @BindView(R.id.rv_transfer_request_list)
+        RecyclerView rvTransferRequestList;*/
     Unbinder unbinder;
+    @BindView(R.id.textView_itemName)
+    TextView textViewItemName;
+    @BindView(R.id.textview_QuantityUnit)
+    TextView textviewQuantityUnit;
+    @BindView(R.id.textView_rate)
+    TextView textViewRate;
+    @BindView(R.id.textView_TransferTo)
+    TextView textViewTransferTo;
+    @BindView(R.id.textViewApprove)
+    TextView textViewApprove;
     private View mParentView;
 
     public InventoryTransferRequestListFragment() {
@@ -35,9 +43,8 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     }
 
     public static InventoryTransferRequestListFragment newInstance() {
-        
+
         Bundle args = new Bundle();
-        
         InventoryTransferRequestListFragment fragment = new InventoryTransferRequestListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -48,6 +55,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                              Bundle savedInstanceState) {
 //        mParentView = inflater.inflate(R.layout.fragment_inventory_transfer_request_list, container, false);
         mParentView = inflater.inflate(R.layout.item_transfer_request_list, container, false);
+        unbinder = ButterKnife.bind(this, mParentView);
         return mParentView;
     }
 
