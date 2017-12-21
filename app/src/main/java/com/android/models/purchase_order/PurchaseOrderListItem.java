@@ -55,7 +55,7 @@ public class PurchaseOrderListItem extends RealmObject {
     private String purchaseOrderStatusSlug;
 
     @SerializedName("remaining_quantity")
-    private int remainingQuantity;
+    private String remainingQuantity;
 
     @SerializedName("images")
     private RealmList<ImageItem> listOfImages;
@@ -173,11 +173,11 @@ public class PurchaseOrderListItem extends RealmObject {
         this.purchaseOrderStatusSlug = purchaseOrderStatusSlug;
     }
 
-    public int getRemainingQuantity() {
+    public String getRemainingQuantity() {
         return remainingQuantity;
     }
 
-    public void setRemainingQuantity(int remainingQuantity) {
+    public void setRemainingQuantity(String remainingQuantity) {
         this.remainingQuantity = remainingQuantity;
     }
 }

@@ -163,7 +163,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private boolean isCheckedMaterial;
     private CheckBox checkBox;
     private static String strVendorName;
-    View layout;
+    private View layout;
     private PurchaseOrderListItem purchaseOrderListItem;
 
     public PayFragmentNew() {
@@ -172,10 +172,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor) {
         Bundle args = new Bundle();
-        PayFragmentNew fragment = new PayFragmentNew();
-        fragment.setArguments(args);
         orderId = purchaseOrderId;
         strVendorName = strVendor;
+        PayFragmentNew fragment = new PayFragmentNew();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -190,16 +190,19 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             textViewVendor.setText("Vendor Name : - " + strVendorName);
         }
         realm = Realm.getDefaultInstance();
+        Timber.d(String.valueOf(orderId));
         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
-        int quantity = purchaseOrderListItem.getRemainingQuantity();
-        if (quantity == 0) {
+        float quantity = Float.parseFloat(purchaseOrderListItem.getRemainingQuantity());
+        if (quantity == 0 || quantity == 0.0) {
             textViewShowMessage.setVisibility(View.VISIBLE);
             linearLayoutFirstLayout.setVisibility(View.GONE);
         } else {
-            if (!TextUtils.isEmpty(purchaseOrderListItem.getGrnGenerated())) {
+            String strGrnGenerated = purchaseOrderListItem.getGrnGenerated();
+            Timber.d(strGrnGenerated);
+            if (!TextUtils.isEmpty(strGrnGenerated)) {
                 linearLayoutToVisible.setVisibility(View.VISIBLE);
                 linearLayoutFirstLayout.setVisibility(View.GONE);
-                editTextGrnNum.setText(purchaseOrderListItem.getGrnGenerated());
+                editTextGrnNum.setText(strGrnGenerated);
                 requestForMaterialNames();
             } else {
                 linearLayoutToVisible.setVisibility(View.GONE);
@@ -523,7 +526,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         EditText edittextMatUnit = dialogView.findViewById(R.id.edittextMatUnit);
         final EditText editTextMatQuantity = dialogView.findViewById(R.id.editTextMatQuantity);
         TextView textViewMaterialNameSelected = dialogView.findViewById(R.id.textViewMaterialNameSelected);
-        final TextView TextViewExceedQuantity=dialogView.findViewById(R.id.TextViewExceedQuantity);
+        final TextView TextViewExceedQuantity = dialogView.findViewById(R.id.TextViewExceedQuantity);
         final Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
         final MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
 
@@ -534,7 +537,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 textViewMaterialNameSelected.setText(materialNamesItem.getMaterialName());
                 edittextMatUnit.setEnabled(false);
 
-                final float floatMaterialComponentRemainingQuantity=Float.parseFloat(materialNamesItem.getMaterialComponentRemainingQuantity());
+                final float floatMaterialComponentRemainingQuantity = Float.parseFloat(materialNamesItem.getMaterialComponentRemainingQuantity());
                 editTextMatQuantity.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int arg1, int arg2, int arg3) {
@@ -543,12 +546,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if (!TextUtils.isEmpty(s.toString())){
-                            if(Float.parseFloat(s.toString()) > floatMaterialComponentRemainingQuantity){
+                        if (!TextUtils.isEmpty(s.toString())) {
+                            if (Float.parseFloat(s.toString()) > floatMaterialComponentRemainingQuantity) {
                                 TextViewExceedQuantity.setText("Quantity should be less than " + String.valueOf(floatMaterialComponentRemainingQuantity));
                                 TextViewExceedQuantity.setVisibility(View.VISIBLE);
                                 buttonToOk.setVisibility(View.GONE);
-                            }else {
+                            } else {
                                 TextViewExceedQuantity.setText("");
                                 TextViewExceedQuantity.setVisibility(View.GONE);
                                 buttonToOk.setVisibility(View.VISIBLE);
@@ -570,7 +573,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             edittextMatUnit.setEnabled(false);
             textViewMaterialNameSelected.setText(billDataItem.getMaterialName());
             LinearLayout linearLayout = dialogView.findViewById(R.id.llAddQuoImg);
-
 
         }
         buttonToOk.setOnClickListener(new View.OnClickListener() {
@@ -722,7 +724,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void inflateViews() {
         realm = Realm.getDefaultInstance();
         arrayList = new ArrayList<>();
-        materialNamesItems = realm.where(MaterialNamesItem.class).notEqualTo("materialComponentRemainingQuantity","0").or().notEqualTo("materialComponentRemainingQuantity","0.0").findAll();
+        materialNamesItems = realm.where(MaterialNamesItem.class).notEqualTo("materialComponentRemainingQuantity", "0").or().notEqualTo("materialComponentRemainingQuantity", "0.0").findAll();
         for (int i = 0; i < materialNamesItems.size(); i++) {
             final MaterialNamesItem materialNamesItem = materialNamesItems.get(i);
             inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);

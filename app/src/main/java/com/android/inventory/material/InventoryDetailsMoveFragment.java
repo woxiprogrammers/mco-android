@@ -165,6 +165,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()) {
             /*case R.id.textview_materialCount:
                 openMaterialListDialog();
@@ -655,7 +656,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                             }
                             adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
                             edit_text_selected_dest_name.setAdapter(adapter);
-//                            setProjectNameFromIndex(edit_text_selected_dest_name.getListSelection());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
