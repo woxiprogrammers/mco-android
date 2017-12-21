@@ -51,7 +51,6 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -72,7 +71,6 @@ import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
@@ -117,9 +115,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private int unitId = 0;
     private JSONObject jsonImageNameObject = new JSONObject();
     private boolean isQuotationMaterial;
-    private boolean isOtherType;
     private int indexItemUnit;
-    private RecyclerViewClickListener recyclerViewClickListener;
     private EditText editText_name_material_asset, editText_quantity_material_asset, edittext_unit, editextDialogRemark;
     private LinearLayout linearLayoutUnit;
     private Spinner spinner_select_units;
@@ -227,11 +223,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         });
     }
 
-    private void setUpUsersSpinnerValueChangeListener() {
+    /*private void setUpUsersSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         RealmResults<AvailableUsersItem> availableUsersRealmResults = realm.where(AvailableUsersItem.class).findAll();
         setUpSpinnerAdapter(availableUsersRealmResults);
-        /*if (availableUsersRealmResults != null) {
+        *//*if (availableUsersRealmResults != null) {
             Timber.d("availableUsersRealmResults change listener added.");
             availableUsersRealmResults.addChangeListener(new RealmChangeListener<RealmResults<AvailableUsersItem>>() {
                 @Override
@@ -242,10 +238,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }*/
-    }
+        }*//*
+    }*/
 
-    private void setUpSpinnerAdapter(RealmResults<AvailableUsersItem> availableUsersItems) {
+    /*private void setUpSpinnerAdapter(RealmResults<AvailableUsersItem> availableUsersItems) {
         availableUserArray = realm.copyFromRealm(availableUsersItems);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (AvailableUsersItem currentUser : availableUserArray) {
@@ -255,7 +251,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerSelectAssignTo.setAdapter(arrayAdapter);
-    }
+    }*/
 
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
     public void onAddClicked() {
@@ -541,7 +537,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         Timber.d("Adapter setup called");
         recyclerView_materialList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_materialList.setHasFixedSize(true);
-        recyclerViewClickListener = new RecyclerViewClickListener() {
+        RecyclerViewClickListener recyclerViewClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 if (view.getId() == R.id.imageView_deleteMaterial_createPR) {
@@ -611,7 +607,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     }
 
     private void functionForProcessingSearchResult(Intent intent) {
-        isOtherType = false;
+        boolean isOtherType = false;
         isQuotationMaterial = false;
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
@@ -642,7 +638,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     mEditTextQuantityMaterialAsset.setEnabled(true);
                 } else {
                     mEditTextQuantityMaterialAsset.setEnabled(false);
-
                 }
             }
             Timber.d("AutoSearch complete");
@@ -913,7 +908,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     recyclerViewClickListener.onItemClick(view, position);
                 }
             });
-
             holder.imageView_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -991,11 +985,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         buttonApproveDisapprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(editextDialogRemark.getText().toString())){
+                if (TextUtils.isEmpty(editextDialogRemark.getText().toString())) {
                     editextDialogRemark.setError("Please enter remark");
                     editextDialogRemark.requestFocus();
                     return;
-                }else {
+                } else {
                     editextDialogRemark.setError(null);
                     editextDialogRemark.clearFocus();
                 }
@@ -1121,5 +1115,4 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_select_units.setAdapter(arrayAdapter);
     }
-
 }

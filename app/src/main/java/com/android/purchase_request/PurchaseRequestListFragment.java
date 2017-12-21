@@ -297,8 +297,12 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     }
 
     @OnClick(R.id.floating_create_purchase_request)
-    public void onViewClicked() {
-        startActivityForResult(new Intent(mContext, PurchaseMaterialListActivity.class), AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST);
+    public void onCreatePurchaseRequestClicked() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            startActivityForResult(new Intent(mContext, PurchaseMaterialListActivity.class), AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST);
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
+        }
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -323,7 +327,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-            if(!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())){
+            if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
                 holder.textViewApproved.setText("Approved By : - " + purchaseRequestListItem.getApprovedBy());
             }
