@@ -36,6 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -184,7 +185,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        /*if (purchaseBillListItems != null) {
+        if (purchaseBillListItems != null) {
             purchaseBillListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderBillListingItem>>() {
                 @Override
                 public void onChange(RealmResults<PurchaseOrderBillListingItem> purchaseBillListItems) {
@@ -192,7 +193,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
             });
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
-        }*/
+        }
     }
 
     @SuppressWarnings("WeakerAccess")

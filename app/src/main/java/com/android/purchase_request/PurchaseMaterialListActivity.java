@@ -71,6 +71,7 @@ import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
@@ -551,7 +552,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         purchaseMaterialListRealmResult_All = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).or().equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAllSortedAsync("componentStatus", Sort.ASCENDING);
         PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResult_All, true, true, recyclerViewClickListener);
         recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
-        /*if (purchaseMaterialListRealmResult_All != null) {
+        if (purchaseMaterialListRealmResult_All != null) {
             Timber.d("purchaseMaterialListRealmResult_All change listener added.");
             purchaseMaterialListRealmResult_All.addChangeListener(
                     new RealmChangeListener<RealmResults<PurchaseMaterialListItem>>() {
@@ -564,7 +565,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             );
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }*/
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {

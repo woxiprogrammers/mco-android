@@ -97,7 +97,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
         initializeViews();
         requestPrListOnline();
         setUpPrAdapter();
-
         return mParentView;
     }
 
@@ -141,8 +140,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
-        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).equalTo("purchaseOrderStatusSlug","close").findAllAsync();
-
+        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).equalTo("purchaseOrderStatusSlug", "close").findAllAsync();
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
@@ -170,7 +168,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
                     AlertDialog alert = builder.create();
                     alert.setTitle("Close PO");
                     alert.show();
-
                 } else {
                     if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
@@ -242,7 +239,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     }
 
     private void requestToClosePo(int id) {
-
         JSONObject params = new JSONObject();
         /**/
         try {
@@ -274,8 +270,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
                     }
                 });
     }
-
-
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {

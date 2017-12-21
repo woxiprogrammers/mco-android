@@ -136,7 +136,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
         Bundle bundleArgs = new Bundle();
         bundleArgs.putInt("maxYear", 2019);
-        bundleArgs.putInt("minYear", 2016);
+        bundleArgs.putInt("minYear", 2017);
         bundleArgs.putInt("currentYear", passYear);
         bundleArgs.putInt("currentMonth", passMonth);
         monthYearPickerDialog.setArguments(bundleArgs);

@@ -45,9 +45,7 @@ import timber.log.Timber;
 /**
  * Created by Sharvari on 20/11/17.
  */
-
 public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
-
     Unbinder unbinder;
     private AlertDialog alertDialog;
     private Realm realm;
@@ -68,7 +66,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         if (bundle != null) {
             purchaseOrderId = bundle.getInt("purchase_order_id");
         }
-
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
         buttonOk = dialog.findViewById(R.id.btnOk);
@@ -197,7 +194,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             } else {
                 holder.linearLayoutExpDate.setVisibility(View.GONE);
             }
-
             holder.textviewConsumedQuantity.setText(String.valueOf(materialsItem.getConsumed_quantity()));
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {
@@ -214,7 +210,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getQuotationImages().get(index).getImageUrl(), imageView, getActivity());
-
                     holder.linearLayoutQuoImg.addView(imageView);
                 }
             }
@@ -235,7 +230,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getClientApprovalImages().get(index).getImageUrl(), imageView, getActivity());
-
                     holder.linearLayoutClientImg.addView(imageView);
                 }
             }
@@ -252,7 +246,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-
             @BindView(R.id.textviewMatDetailName)
             TextView textviewMatDetailName;
             @BindView(R.id.textviewQuantity)

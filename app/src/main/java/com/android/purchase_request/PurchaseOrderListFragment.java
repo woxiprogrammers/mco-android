@@ -124,9 +124,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         if (isFromPurchaseRequest) {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug", "close").findAllAsync();
         } else {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug", "close").findAllAsync();
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
