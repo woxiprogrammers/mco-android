@@ -132,17 +132,26 @@ public class CheckListVerificationFragment extends Fragment {
                 ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
                 if (parentCheckPointsItem != null) {
                     textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
+//                    editextChecklistRemark.setText("");
                     intNumberOfImages = parentCheckPointsItem.getProjectSiteUserCheckpointImages().size();
                     if (intNumberOfImages > 0) {
                         addViewOnlyCaptionsTemplate(parentCheckPointsItem);
                     } else {
                         linearLayoutChecklistImg.setVisibility(View.GONE);
                     }
+                    if (parentCheckPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                        radioButtonOk.setChecked(true);
+                        radioButtonNotOk.setEnabled(false);
+                    } else {
+                        radioButtonNotOk.setChecked(true);
+                        radioButtonOk.setEnabled(false);
+                    }
                 }
             } else {
                 realm = Realm.getDefaultInstance();
                 checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
                 textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
+//                    editextChecklistRemark.setText("");
                 intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
                 if (isFromState.equalsIgnoreCase("completed") || isFromState.equalsIgnoreCase("review")) {
                     if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
