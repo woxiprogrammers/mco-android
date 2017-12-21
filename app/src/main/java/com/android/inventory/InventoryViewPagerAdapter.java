@@ -11,7 +11,7 @@ import com.android.inventory.material.MaterialListFragment;
  * Created by Sharvari on 23/8/17.
  */
 public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
-    private String[] arrBottomTitle = {"Bottom1", "Bottom2", "Bottom3"};
+    private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
 
     public InventoryViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -28,8 +28,6 @@ public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return MaterialListFragment.newInstance();
             case 1:
-                return InventoryTransferRequestListFragment.newInstance();
-            case 2:
                 return AssetListFragment.newInstance();
             default:
                 return null;

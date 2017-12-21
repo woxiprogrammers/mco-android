@@ -1,11 +1,13 @@
 package com.android.inventory;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.drawings.DrawingVersionsFragment;
 
 public class ActivityTransferRequest extends BaseActivity {
 
@@ -17,6 +19,7 @@ public class ActivityTransferRequest extends BaseActivity {
             getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        getFragment();
     }
 
     @Override
@@ -28,6 +31,9 @@ public class ActivityTransferRequest extends BaseActivity {
     }
 
     private void getFragment(){
-
+        InventoryTransferRequestListFragment transferRequestListFragment = InventoryTransferRequestListFragment.newInstance();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayoutTransferRequest, transferRequestListFragment, "transferRequestListFragment");
+        fragmentTransaction.commit();
     }
 }
