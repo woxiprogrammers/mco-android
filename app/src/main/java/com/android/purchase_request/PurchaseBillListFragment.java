@@ -82,17 +82,15 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
-        //Initialize Views
+        mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
             intPrimaryKey = bundle.getInt("primaryKey");
             isFromPurchaseRequestHome = bundle.getBoolean("isFromPurchaseHome");
         }
-        mContext = getActivity();
         //Get data from Server
         requestPrListOnline();
         setUpPrAdapter();
-        Log.i("@@", String.valueOf(isFromPurchaseRequestHome));
         return mParentView;
     }
 
@@ -129,7 +127,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    setUpPrAdapter();
                                     Timber.d("Success");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -150,17 +147,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                         AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
                     }
                 });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        /*if (getUserVisibleHint()) {
-            ActionBar actionBar = ((PurchaseHomeActivity) mContext).getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setTitle(getString(R.string.app_name));
-            }
-        }*/
     }
 
     @Override
@@ -192,8 +178,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                         if (!isFromPurchaseRequestHome) {
                             ((PayAndBillsActivity) mContext).moveFragments(false);
                         }
-                        /*Intent intent=new Intent(mContext,PayAndBillsActivity.class);
-                        startActivity(intent);*/
                     }
 
                     @Override
