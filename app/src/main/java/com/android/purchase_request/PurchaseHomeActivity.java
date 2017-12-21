@@ -35,8 +35,6 @@ public class PurchaseHomeActivity extends BaseActivity {
     Toolbar toolbarPurchaseHome;
     @BindView(R.id.textView_purchaseHome_appBarTitle)
     TextView textViewPurchaseHomeAppBarTitle;
-    //    @BindView(R.id.relative_layout_datePicker_purchaseRequest)
-//    RelativeLayout mRelativeLayoutDatePickerPurchaseRequest;
     private String strSubModuleTag, permissionsItemList;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
 
@@ -101,14 +99,6 @@ public class PurchaseHomeActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /*@Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
-        passYear = year;
-        passMonth = month;
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + passYear);
-    }*/
 
     @OnClick(R.id.relative_layout_datePicker_purchaseRequest)
     public void onDatePickerPurchaseRequestClicked() {

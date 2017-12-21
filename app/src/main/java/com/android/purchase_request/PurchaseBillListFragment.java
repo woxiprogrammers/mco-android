@@ -36,7 +36,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -89,7 +88,9 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
             intPrimaryKey = bundle.getInt("primaryKey");
             isFromPurchaseRequestHome = bundle.getBoolean("isFromPurchaseHome");
         }
-        initializeViews();
+        mContext = getActivity();
+        //Get data from Server
+        requestPrListOnline();
         setUpPrAdapter();
         Log.i("@@", String.valueOf(isFromPurchaseRequestHome));
         return mParentView;
@@ -172,16 +173,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         unbinder.unbind();
     }
 
-    /**
-     * <b>private void initializeViews()</b>
-     * <p>This function is used to initialize required views.</p>
-     * Created by - Rohit
-     */
-    private void initializeViews() {
-        mContext = getActivity();
-        functionForGettingData();
-    }
-
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
@@ -218,16 +209,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
         }*/
-    }
-
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestPrListOnline();
-        } else {
-            //Get data from local DB
-            setUpPrAdapter();
-        }
     }
 
     @SuppressWarnings("WeakerAccess")
