@@ -165,6 +165,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()) {
             /*case R.id.textview_materialCount:
                 openMaterialListDialog();

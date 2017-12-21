@@ -110,6 +110,8 @@
 
         <activity android:name="com.android.inventory.ActivityTransferRequest">
         </activity>
+        <activity android:name="com.android.inventory.ActivitySiteMoveIn">
+        </activity>
     </application>
 
 </manifest>

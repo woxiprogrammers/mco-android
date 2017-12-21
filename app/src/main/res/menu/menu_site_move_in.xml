@@ -4,5 +4,5 @@
     <item
         android:id="@+id/action_move_in"
         android:title="Site Move In"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 </menu>

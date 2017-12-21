@@ -1,5 +1,6 @@
 package com.android.inventory;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -105,9 +106,9 @@ public class InventoryHomeActivity extends BaseActivity {
             case android.R.id.home:
                 onBackPressed();
                 break;
-
             case R.id.action_move_in:
-
+                Intent intent=new Intent(this,ActivitySiteMoveIn.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
