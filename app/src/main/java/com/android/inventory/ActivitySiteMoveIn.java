@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -69,6 +70,7 @@ public class ActivitySiteMoveIn extends BaseActivity {
     private JSONArray jsonArray;
     private ArrayList<String> siteNameArray;
     private ArrayAdapter<String> adapter;
+    private int project_site_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +78,32 @@ public class ActivitySiteMoveIn extends BaseActivity {
         setContentView(R.layout.activity_site_move_in);
         ButterKnife.bind(this);
         mContext=ActivitySiteMoveIn.this;
+        requestToGetSystemSites();
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Move In");
         }
 
+        edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedString = (String) adapterView.getItemAtPosition(i);
+                setProjectNameFromIndex(selectedString);
+            }
+        });
+
+    }
+
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
+            String strProject = jsonObject.getString("project_name");
+            project_site_id=jsonObject.getInt("project_site_id");
+            edtProjName.setText(strProject + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -33,9 +33,7 @@
                     android:id="@+id/edt_userName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:digits="1234567890."
-                    android:inputType="number"/>
+                    android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
 
