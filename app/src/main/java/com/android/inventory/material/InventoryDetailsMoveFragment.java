@@ -572,7 +572,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         JSONObject params = new JSONObject();
         try {
             params.put("inventory_component_id", materialRequestComponentId);
-//            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
