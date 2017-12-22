@@ -35,7 +35,6 @@
         <activity
             android:name="com.android.peticash.PetiCashHomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name="com.android.dummy.NewActivity"/>
         <activity
             android:name="com.android.purchase_request.PurchaseHomeActivity"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"

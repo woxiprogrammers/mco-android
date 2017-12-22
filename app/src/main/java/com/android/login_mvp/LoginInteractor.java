@@ -21,7 +21,7 @@ import timber.log.Timber;
  */
 class LoginInteractor implements LoginInteractorInterface {
     @Override
-    public void login(String username, String password, final onLoginFinishedListener listener) {
+    public void login(String username, String password, onLoginFinishedListener listener) {
         if (TextUtils.isEmpty(username))
             listener.onUserNameEmptyError("Mobile Number is Empty");
         else if (username.length() < 10 /*&& !BuildConfig.DEBUG*/)
