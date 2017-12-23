@@ -745,7 +745,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
     private void setImage(RealmList<MaterialImagesItem> image) {
         llIm.removeAllViews();
         materialImagesItemList = realm.copyFromRealm(image);
-        if(materialImagesItemList.size() > 0){
+        if (materialImagesItemList.size() > 0) {
             for (MaterialImagesItem currentUser : materialImagesItemList) {
                 String strMaterialImageUrl = currentUser.getImageUrl();
                 ImageView imageView = new ImageView(mContext);
@@ -761,7 +761,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
                         .into(imageView);
             }
         }
-
     }
 
     private void setUpSpinnerValueChangeListener() {
@@ -819,54 +818,58 @@ public class PayFragment extends Fragment implements FragmentInterface {
     }
 
     private void uploadImages_addItemToLocal(int checkCondition) {
-        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
-            File sendImageFile = arrayImageFileList.get(0);
-            File compressedImageFile = sendImageFile;
-            try {
-                compressedImageFile = new Compressor(getActivity()).compressToFile(sendImageFile);
-            } catch (IOException e) {
-                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
-            }
-            String strToken = AppUtils.getInstance().getCurrentToken();
-            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
-                    .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "material-request")
-                    .addHeaders(AppUtils.getInstance().getApiHeaders())
-                    .setTag("uploadImages_addItemToLocal")
-                    .setPercentageThresholdForCancelling(50)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Timber.d(String.valueOf(response));
-                            arrayImageFileList.remove(0);
-                            try {
-                                String fileName = response.getString("filename");
-                                jsonImageNameArray.put(fileName);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+                File sendImageFile = arrayImageFileList.get(0);
+                File compressedImageFile = sendImageFile;
+                try {
+                    compressedImageFile = new Compressor(getActivity()).compressToFile(sendImageFile);
+                } catch (IOException e) {
+                    Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+                }
+                String strToken = AppUtils.getInstance().getCurrentToken();
+                AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                        .setPriority(Priority.MEDIUM)
+                        .addMultipartFile("image", compressedImageFile)
+                        .addMultipartParameter("image_for", "material-request")
+                        .addHeaders(AppUtils.getInstance().getApiHeaders())
+                        .setTag("uploadImages_addItemToLocal")
+                        .setPercentageThresholdForCancelling(50)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Timber.d(String.valueOf(response));
+                                arrayImageFileList.remove(0);
+                                try {
+                                    String fileName = response.getString("filename");
+                                    jsonImageNameArray.put(fileName);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                uploadImages_addItemToLocal(submitCondition);
                             }
-                            uploadImages_addItemToLocal(submitCondition);
-                        }
 
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
-                        }
-                    });
-        } else {
-            switch (checkCondition) {
-                case 1:
-                    requestForPayment();
-                    break;
-                case 2:
-                    requestBillPayment();
-                    break;
-                case 3:
-                    requestEditBill();
-                    break;
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                            }
+                        });
+            } else {
+                switch (checkCondition) {
+                    case 1:
+                        requestForPayment();
+                        break;
+                    case 2:
+                        requestBillPayment();
+                        break;
+                    case 3:
+                        requestEditBill();
+                        break;
+                }
             }
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PayFragment");
         }
     }
 
@@ -950,11 +953,10 @@ public class PayFragment extends Fragment implements FragmentInterface {
             params.put("in_time", editTextInDate.getText().toString() + " " + editTextInTime.getText().toString());
             params.put("out_time", editTextOutDate.getText().toString() + " " + editTextOutTime.getText().toString());
             params.put("bill_amount", editTextBillAmount.getText().toString());
-            if(editext_tapToAddNote.getText().toString() != null)
+            if (editext_tapToAddNote.getText().toString() != null)
                 params.put("remark", editext_tapToAddNote.getText().toString() + "");
             else
                 params.put("remark", "");
-
             //            params.put("images","");
         } catch (JSONException e) {
             e.printStackTrace();

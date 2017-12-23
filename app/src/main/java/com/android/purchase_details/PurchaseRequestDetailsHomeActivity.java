@@ -164,14 +164,18 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 onBackPressed();
                 break;
             case R.id.action_approve:
-                openApproveDialog();
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    openApproveDialog();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PurchaseRequestDetailsHomeActivity");
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void openApproveDialog() {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(mContext);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_approve_disapprove_paurchase_request, null);
         alertDialogBuilder.setView(dialogView);
         Button buttonApprove = dialogView.findViewById(R.id.buttonApprove);

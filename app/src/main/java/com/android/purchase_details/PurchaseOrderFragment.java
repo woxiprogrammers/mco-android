@@ -43,8 +43,6 @@ public class PurchaseOrderFragment extends Fragment implements FragmentInterface
     Unbinder unbinder;
     private Realm realm;
     private Context mContext;
-    private RealmResults<PurchaseOrderListItem> itemListItems;
-    private PurchaseOrderAdapter purchaseOrderAdapter;
 
     public PurchaseOrderFragment() {
         // Required empty public constructor
@@ -93,8 +91,8 @@ public class PurchaseOrderFragment extends Fragment implements FragmentInterface
 
     private void setAdapterForPurchaseorderList() {
         realm = Realm.getDefaultInstance();
-        itemListItems = realm.where(PurchaseOrderListItem.class).findAllAsync();
-        purchaseOrderAdapter = new PurchaseOrderAdapter(itemListItems, true, true);
+        RealmResults<PurchaseOrderListItem> itemListItems = realm.where(PurchaseOrderListItem.class).findAllAsync();
+        PurchaseOrderAdapter purchaseOrderAdapter = new PurchaseOrderAdapter(itemListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvOrderList.setLayoutManager(linearLayoutManager);
