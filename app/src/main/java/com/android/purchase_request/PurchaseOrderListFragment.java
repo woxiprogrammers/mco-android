@@ -124,9 +124,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         if (isFromPurchaseRequest) {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("purchaseRequestId", purchaseRequestId).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class)
+                    .equalTo("purchaseRequestId", purchaseRequestId)
+                    .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                    .notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
         } else {
-            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
+            purchaseOrderListItems = realm.where(PurchaseOrderListItem.class)
+                    .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                    .notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
@@ -138,6 +143,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     purchaseOrdermaterialDetailFragment.setArguments(bundleArgs);
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
                 } else if (view.getId() == R.id.textViewClose) {
+                    if (AppUtils.getInstance().checkNetworkState()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
                     builder.setMessage("Do you want to close this PO ?")
                             .setCancelable(false)
@@ -155,6 +161,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     AlertDialog alert = builder.create();
                     alert.setTitle("Close PO");
                     alert.show();
+                    } else {
+                        AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
+                    }
                 } else {
                     if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
