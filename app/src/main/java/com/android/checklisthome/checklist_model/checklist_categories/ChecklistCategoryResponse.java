@@ -10,19 +10,19 @@ public class ChecklistCategoryResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setChecklistCategoryData(ChecklistCategoryData checklistCategoryData) {
-        this.checklistCategoryData = checklistCategoryData;
-    }
-
     public ChecklistCategoryData getChecklistCategoryData() {
         return checklistCategoryData;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setChecklistCategoryData(ChecklistCategoryData checklistCategoryData) {
+        this.checklistCategoryData = checklistCategoryData;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

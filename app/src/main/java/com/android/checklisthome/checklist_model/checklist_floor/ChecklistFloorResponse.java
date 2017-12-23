@@ -10,19 +10,19 @@ public class ChecklistFloorResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setChecklistFloorData(ChecklistFloorData checklistFloorData) {
-        this.checklistFloorData = checklistFloorData;
-    }
-
     public ChecklistFloorData getChecklistFloorData() {
         return checklistFloorData;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setChecklistFloorData(ChecklistFloorData checklistFloorData) {
+        this.checklistFloorData = checklistFloorData;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

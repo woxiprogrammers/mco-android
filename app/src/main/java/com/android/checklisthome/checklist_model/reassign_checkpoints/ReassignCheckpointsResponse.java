@@ -10,19 +10,19 @@ public class ReassignCheckpointsResponse extends RealmObject {
     @SerializedName("data")
     private ReassignCheckpointsData reassignCheckpointsData;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getMessage() {
         return message;
     }
 
-    public void setReassignCheckpointsData(ReassignCheckpointsData reassignCheckpointsData) {
-        this.reassignCheckpointsData = reassignCheckpointsData;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public ReassignCheckpointsData getReassignCheckpointsData() {
         return reassignCheckpointsData;
+    }
+
+    public void setReassignCheckpointsData(ReassignCheckpointsData reassignCheckpointsData) {
+        this.reassignCheckpointsData = reassignCheckpointsData;
     }
 }

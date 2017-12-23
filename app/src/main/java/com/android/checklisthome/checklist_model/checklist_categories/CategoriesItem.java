@@ -13,27 +13,27 @@ public class CategoriesItem extends RealmObject {
     @SerializedName("category_id")
     private int categoryId;
 
-    public void setSubCategories(RealmList<SubCategoriesItem> subCategories) {
-        this.subCategories = subCategories;
-    }
-
     public RealmList<SubCategoriesItem> getSubCategories() {
         return subCategories;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setSubCategories(RealmList<SubCategoriesItem> subCategories) {
+        this.subCategories = subCategories;
     }
 
     public String getCategoryName() {
         return categoryName;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public int getCategoryId() {
         return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }

@@ -9,11 +9,11 @@ public class ChecklistFloorData extends RealmObject {
     @SerializedName("floor_list")
     private RealmList<FloorListItem> floorList;
 
-    public void setFloorList(RealmList<FloorListItem> floorList) {
-        this.floorList = floorList;
-    }
-
     public RealmList<FloorListItem> getFloorList() {
         return floorList;
+    }
+
+    public void setFloorList(RealmList<FloorListItem> floorList) {
+        this.floorList = floorList;
     }
 }

@@ -17,27 +17,27 @@ public class AssignedChecklistResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setPageId(int pageId) {
-        this.pageId = pageId;
-    }
-
     public int getPageId() {
         return pageId;
     }
 
-    public void setAssignedChecklistData(AssignedChecklistData assignedChecklistData) {
-        this.assignedChecklistData = assignedChecklistData;
+    public void setPageId(int pageId) {
+        this.pageId = pageId;
     }
 
     public AssignedChecklistData getAssignedChecklistData() {
         return assignedChecklistData;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setAssignedChecklistData(AssignedChecklistData assignedChecklistData) {
+        this.assignedChecklistData = assignedChecklistData;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -21,36 +21,36 @@ public class CheckPointsItem extends RealmObject {
     @SerializedName("project_site_user_checkpoint_is_checked")
     private boolean projectSiteUserCheckpointIsChecked;
 
-    public void setProjectSiteUserCheckpointImages(RealmList<ProjectSiteUserCheckpointImagesItem> projectSiteUserCheckpointImages) {
-        this.projectSiteUserCheckpointImages = projectSiteUserCheckpointImages;
-    }
-
     public RealmList<ProjectSiteUserCheckpointImagesItem> getProjectSiteUserCheckpointImages() {
         return projectSiteUserCheckpointImages;
     }
 
-    public void setProjectSiteUserCheckpointId(int projectSiteUserCheckpointId) {
-        this.projectSiteUserCheckpointId = projectSiteUserCheckpointId;
+    public void setProjectSiteUserCheckpointImages(RealmList<ProjectSiteUserCheckpointImagesItem> projectSiteUserCheckpointImages) {
+        this.projectSiteUserCheckpointImages = projectSiteUserCheckpointImages;
     }
 
     public int getProjectSiteUserCheckpointId() {
         return projectSiteUserCheckpointId;
     }
 
-    public void setProjectSiteUserCheckpointDescription(String projectSiteUserCheckpointDescription) {
-        this.projectSiteUserCheckpointDescription = projectSiteUserCheckpointDescription;
+    public void setProjectSiteUserCheckpointId(int projectSiteUserCheckpointId) {
+        this.projectSiteUserCheckpointId = projectSiteUserCheckpointId;
     }
 
     public String getProjectSiteUserCheckpointDescription() {
         return projectSiteUserCheckpointDescription;
     }
 
-    public void setProjectSiteUserCheckpointIsOk(boolean projectSiteUserCheckpointIsOk) {
-        this.projectSiteUserCheckpointIsOk = projectSiteUserCheckpointIsOk;
+    public void setProjectSiteUserCheckpointDescription(String projectSiteUserCheckpointDescription) {
+        this.projectSiteUserCheckpointDescription = projectSiteUserCheckpointDescription;
     }
 
     public boolean isProjectSiteUserCheckpointIsOk() {
         return projectSiteUserCheckpointIsOk;
+    }
+
+    public void setProjectSiteUserCheckpointIsOk(boolean projectSiteUserCheckpointIsOk) {
+        this.projectSiteUserCheckpointIsOk = projectSiteUserCheckpointIsOk;
     }
 
     public boolean isProjectSiteUserCheckpointIsRemarkRequired() {
@@ -68,5 +68,4 @@ public class CheckPointsItem extends RealmObject {
     public void setProjectSiteUserCheckpointIsChecked(boolean projectSiteUserCheckpointIsChecked) {
         this.projectSiteUserCheckpointIsChecked = projectSiteUserCheckpointIsChecked;
     }
-
 }

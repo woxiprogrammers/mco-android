@@ -12,19 +12,19 @@ public class ReassignCheckPointsItem extends RealmObject {
     @SerializedName("project_site_checklist_checkpoint_description")
     private String projectSiteChecklistCheckpointDescription;
 
-    public void setProjectSiteChecklistCheckpointId(int projectSiteChecklistCheckpointId) {
-        this.projectSiteChecklistCheckpointId = projectSiteChecklistCheckpointId;
-    }
-
     public int getProjectSiteChecklistCheckpointId() {
         return projectSiteChecklistCheckpointId;
     }
 
-    public void setProjectSiteChecklistCheckpointDescription(String projectSiteChecklistCheckpointDescription) {
-        this.projectSiteChecklistCheckpointDescription = projectSiteChecklistCheckpointDescription;
+    public void setProjectSiteChecklistCheckpointId(int projectSiteChecklistCheckpointId) {
+        this.projectSiteChecklistCheckpointId = projectSiteChecklistCheckpointId;
     }
 
     public String getProjectSiteChecklistCheckpointDescription() {
         return projectSiteChecklistCheckpointDescription;
+    }
+
+    public void setProjectSiteChecklistCheckpointDescription(String projectSiteChecklistCheckpointDescription) {
+        this.projectSiteChecklistCheckpointDescription = projectSiteChecklistCheckpointDescription;
     }
 }

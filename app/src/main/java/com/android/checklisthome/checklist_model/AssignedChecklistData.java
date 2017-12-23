@@ -14,11 +14,11 @@ public class AssignedChecklistData extends RealmObject {
     @SerializedName("checklist_data")
     private RealmList<ChecklistListItem> assignedChecklistList;
 
-    public void setAssignedChecklistList(RealmList<ChecklistListItem> assignedChecklistList) {
-        this.assignedChecklistList = assignedChecklistList;
-    }
-
     public RealmList<ChecklistListItem> getAssignedChecklistList() {
         return assignedChecklistList;
+    }
+
+    public void setAssignedChecklistList(RealmList<ChecklistListItem> assignedChecklistList) {
+        this.assignedChecklistList = assignedChecklistList;
     }
 }

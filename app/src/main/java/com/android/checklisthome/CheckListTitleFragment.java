@@ -229,37 +229,44 @@ public class CheckListTitleFragment extends Fragment {
                 });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @OnClick(R.id.btn_checkList_checkpointSubmit)
-    public void onCheckpointSubmitClicked() {
-        requestToChangeChecklistStatus(true);
-    }
-
-    private void setUpCheckpointsAdapter() {
-        realm = Realm.getDefaultInstance();
-        checkPointsItemRealmResults = realm.where(CheckPointsItem.class).findAll();
-        CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(checkPointsItemRealmResults, true, true);
-        rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
-        rvChecklistTitle.setHasFixedSize(true);
-        rvChecklistTitle.setAdapter(checkListTitleAdapter);
-        rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                rvChecklistTitle,
-                new RecyclerItemClickListener.OnItemClickListener() {
+    private void getUsersWithChecklistAssignAcl() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_USERS_WITH_ACL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getUsersWithChecklistAssignAcl")
+                .build()
+                .getAsObject(ChecklistAclUsersResponse.class, new ParsedRequestListener<ChecklistAclUsersResponse>() {
                     @Override
-                    public void onItemClick(View view, final int position) {
-                        Timber.d("Parent Disabled: isViewOnly " + isViewOnly);
-                        ((CheckListActionActivity) mContext).getCheckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
+                    public void onResponse(ChecklistAclUsersResponse response) {
+                        if (response.getChecklistAclUsersData() != null && !response.getChecklistAclUsersData().getUsers().isEmpty()) {
+                            usersItemRealmList = response.getChecklistAclUsersData().getUsers();
+                            ArrayList<String> arrayListOfUserNames = new ArrayList<>();
+                            for (int i = 0; i < usersItemRealmList.size(); i++) {
+                                UsersItem currentUsersItem = usersItemRealmList.get(i);
+                                arrayListOfUserNames.add(currentUsersItem.getFirstName() + " " + currentUsersItem.getLastName());
+                                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayListOfUserNames);
+                                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                mSpinnerReassignTo.setAdapter(arrayAdapter);
+                                isUsersAvailable = true;
+                            }
+                        } else {
+                            isUsersAvailable = false;
+                            Toast.makeText(mContext, "Failed to load Users", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
-                    public void onLongItemClick(View view, int position) {
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getUsersWithChecklistAssignAcl");
                     }
-                }));
+                });
     }
 
     private void requestToGetCheckpoints() {
@@ -367,6 +374,28 @@ public class CheckListTitleFragment extends Fragment {
         }
     }
 
+    private void setUpCheckpointsAdapter() {
+        realm = Realm.getDefaultInstance();
+        checkPointsItemRealmResults = realm.where(CheckPointsItem.class).findAll();
+        CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(checkPointsItemRealmResults, true, true);
+        rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
+        rvChecklistTitle.setHasFixedSize(true);
+        rvChecklistTitle.setAdapter(checkListTitleAdapter);
+        rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                rvChecklistTitle,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        Timber.d("Parent Disabled: isViewOnly " + isViewOnly);
+                        ((CheckListActionActivity) mContext).getCheckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+    }
+
     private void getParentsCheckpointsList(int parentProjectSiteUserChecklistAssignmentId) {
         JSONObject params = new JSONObject();
         try {
@@ -439,6 +468,17 @@ public class CheckListTitleFragment extends Fragment {
                         AppUtils.getInstance().logApiError(anError, "getParentsCheckpointsList");
                     }
                 });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @OnClick(R.id.btn_checkList_checkpointSubmit)
+    public void onCheckpointSubmitClicked() {
+        requestToChangeChecklistStatus(true);
     }
 
     public void requestToChangeChecklistStatus(final boolean isExitScreen) {
@@ -558,46 +598,6 @@ public class CheckListTitleFragment extends Fragment {
                 });
     }
 
-    private void getUsersWithChecklistAssignAcl() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            Timber.d(String.valueOf(params));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_CHECKLIST_USERS_WITH_ACL + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("getUsersWithChecklistAssignAcl")
-                .build()
-                .getAsObject(ChecklistAclUsersResponse.class, new ParsedRequestListener<ChecklistAclUsersResponse>() {
-                    @Override
-                    public void onResponse(ChecklistAclUsersResponse response) {
-                        if (response.getChecklistAclUsersData() != null && !response.getChecklistAclUsersData().getUsers().isEmpty()) {
-                            usersItemRealmList = response.getChecklistAclUsersData().getUsers();
-                            ArrayList<String> arrayListOfUserNames = new ArrayList<>();
-                            for (int i = 0; i < usersItemRealmList.size(); i++) {
-                                UsersItem currentUsersItem = usersItemRealmList.get(i);
-                                arrayListOfUserNames.add(currentUsersItem.getFirstName() + " " + currentUsersItem.getLastName());
-                                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayListOfUserNames);
-                                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                mSpinnerReassignTo.setAdapter(arrayAdapter);
-                                isUsersAvailable = true;
-                            }
-                        } else {
-                            isUsersAvailable = false;
-                            Toast.makeText(mContext, "Failed to load Users", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getUsersWithChecklistAssignAcl");
-                    }
-                });
-    }
-
     public class CheckListTitleAdapter extends RealmRecyclerViewAdapter<CheckPointsItem, CheckListTitleAdapter.MyViewHolder> {
         private OrderedRealmCollection<CheckPointsItem> checkPointsItemOrderedRealmCollection;
         private CheckPointsItem checkPointsItem;
@@ -614,6 +614,9 @@ public class CheckListTitleFragment extends Fragment {
         }
 
         @Override
+        public long getItemId(int index) {
+            return checkPointsItemOrderedRealmCollection.get(index).getProjectSiteUserCheckpointId();
+        }        @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
             if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
@@ -622,16 +625,6 @@ public class CheckListTitleFragment extends Fragment {
                 holder.checkboxChecklistTitles.setChecked(false);
             }
             holder.textviewDescription.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
-        }
-
-        @Override
-        public long getItemId(int index) {
-            return checkPointsItemOrderedRealmCollection.get(index).getProjectSiteUserCheckpointId();
-        }
-
-        @Override
-        public int getItemCount() {
-            return checkPointsItemOrderedRealmCollection == null ? 0 : checkPointsItemOrderedRealmCollection.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
@@ -645,6 +638,13 @@ public class CheckListTitleFragment extends Fragment {
                 ButterKnife.bind(this, itemView);
             }
         }
+
+        @Override
+        public int getItemCount() {
+            return checkPointsItemOrderedRealmCollection == null ? 0 : checkPointsItemOrderedRealmCollection.size();
+        }
+
+
     }
 
     public class ParentCheckListTitleAdapter extends RealmRecyclerViewAdapter<ParentCheckPointsItem, ParentCheckListTitleAdapter.MyViewHolder> {
@@ -656,7 +656,17 @@ public class CheckListTitleFragment extends Fragment {
             checkPointsItemOrderedRealmCollection = data;
         }
 
-        @Override
+        class MyViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.checkboxChecklistTitles)
+            CheckBox checkboxChecklistTitles;
+            @BindView(R.id.textviewDescription)
+            TextView textviewDescription;
+
+            private MyViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
+        }        @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_checklist_title, parent, false);
             return new MyViewHolder(itemView);
@@ -683,16 +693,6 @@ public class CheckListTitleFragment extends Fragment {
             return checkPointsItemOrderedRealmCollection == null ? 0 : checkPointsItemOrderedRealmCollection.size();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.checkboxChecklistTitles)
-            CheckBox checkboxChecklistTitles;
-            @BindView(R.id.textviewDescription)
-            TextView textviewDescription;
 
-            private MyViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
-            }
-        }
     }
 }

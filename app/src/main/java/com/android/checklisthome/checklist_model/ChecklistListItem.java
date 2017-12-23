@@ -50,68 +50,68 @@ public class ChecklistListItem extends RealmObject {
     @SerializedName("reviewed_by")
     private int reviewedBy;
 
-    public void setFloorName(String floorName) {
-        this.floorName = floorName;
-    }
-
     public String getFloorName() {
         return floorName;
     }
 
-    public void setAssignedOn(String assignedOn) {
-        this.assignedOn = assignedOn;
+    public void setFloorName(String floorName) {
+        this.floorName = floorName;
     }
 
     public String getAssignedOn() {
         return assignedOn;
     }
 
-    public void setSubCategoryName(String subCategoryName) {
-        this.subCategoryName = subCategoryName;
+    public void setAssignedOn(String assignedOn) {
+        this.assignedOn = assignedOn;
     }
 
     public String getSubCategoryName() {
         return subCategoryName;
     }
 
-    public void setProjectSiteChecklistId(String projectSiteChecklistId) {
-        this.projectSiteChecklistId = projectSiteChecklistId;
+    public void setSubCategoryName(String subCategoryName) {
+        this.subCategoryName = subCategoryName;
     }
 
     public String getProjectSiteChecklistId() {
         return projectSiteChecklistId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setProjectSiteChecklistId(String projectSiteChecklistId) {
+        this.projectSiteChecklistId = projectSiteChecklistId;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getCategoryName() {
         return categoryName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTotalCheckpoints(int totalCheckpoints) {
-        this.totalCheckpoints = totalCheckpoints;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getTotalCheckpoints() {
         return totalCheckpoints;
+    }
+
+    public void setTotalCheckpoints(int totalCheckpoints) {
+        this.totalCheckpoints = totalCheckpoints;
     }
 
     public int getCompletedCheckPoints() {
@@ -122,12 +122,12 @@ public class ChecklistListItem extends RealmObject {
         this.completedCheckPoints = completedCheckPoints;
     }
 
-    public void setAssignedToUserName(String assignedToUserName) {
-        this.assignedToUserName = assignedToUserName;
-    }
-
     public String getAssignedToUserName() {
         return assignedToUserName;
+    }
+
+    public void setAssignedToUserName(String assignedToUserName) {
+        this.assignedToUserName = assignedToUserName;
     }
 
     public int getProjectSiteUserChecklistAssignmentId() {

@@ -10,19 +10,19 @@ public class ChecklistTitlesResponse extends RealmObject {
     @SerializedName("data")
     private ChecklistTitlesData checklistTitlesData;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getMessage() {
         return message;
     }
 
-    public void setChecklistTitlesData(ChecklistTitlesData checklistTitlesData) {
-        this.checklistTitlesData = checklistTitlesData;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public ChecklistTitlesData getChecklistTitlesData() {
         return checklistTitlesData;
+    }
+
+    public void setChecklistTitlesData(ChecklistTitlesData checklistTitlesData) {
+        this.checklistTitlesData = checklistTitlesData;
     }
 }

@@ -18,6 +18,22 @@ public class CheckListActionActivity extends BaseActivity {
     private String isFromState;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void getCheckListVerificationFragment(int projectSiteUserCheckpointId, boolean isViewOnly, boolean isUserViewOnly) {
+        CheckListVerificationFragment checkListVerificationFragment = CheckListVerificationFragment.newInstance(projectSiteUserCheckpointId, isFromState, isViewOnly, isUserViewOnly);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayoutChecklistAction, checkListVerificationFragment, "checkListVerificationFragment");
+        fragmentTransaction.addToBackStack("checkListTitleFragment");
+        fragmentTransaction.commit();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_checklist_action_activity);
@@ -39,21 +55,5 @@ public class CheckListActionActivity extends BaseActivity {
         } else {
             Timber.d("bundleExtras: null");
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void getCheckListVerificationFragment(int projectSiteUserCheckpointId, boolean isViewOnly, boolean isUserViewOnly) {
-        CheckListVerificationFragment checkListVerificationFragment = CheckListVerificationFragment.newInstance(projectSiteUserCheckpointId, isFromState, isViewOnly,isUserViewOnly);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayoutChecklistAction, checkListVerificationFragment, "checkListVerificationFragment");
-        fragmentTransaction.addToBackStack("checkListTitleFragment");
-        fragmentTransaction.commit();
     }
 }

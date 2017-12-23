@@ -9,11 +9,11 @@ public class ChecklistAclUsersData extends RealmObject {
     @SerializedName("users")
     private RealmList<UsersItem> users;
 
-    public void setUsers(RealmList<UsersItem> users) {
-        this.users = users;
-    }
-
     public RealmList<UsersItem> getUsers() {
         return users;
+    }
+
+    public void setUsers(RealmList<UsersItem> users) {
+        this.users = users;
     }
 }

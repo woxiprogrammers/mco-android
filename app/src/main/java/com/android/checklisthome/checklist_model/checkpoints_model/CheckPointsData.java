@@ -11,12 +11,12 @@ public class CheckPointsData extends RealmObject {
     @SerializedName("parent_checklist")
     private RealmList<ParentChecklistIdIdem> parentChecklist;
 
-    public void setCheckPoints(RealmList<CheckPointsItem> checkPoints) {
-        this.checkPoints = checkPoints;
-    }
-
     public RealmList<CheckPointsItem> getCheckPoints() {
         return checkPoints;
+    }
+
+    public void setCheckPoints(RealmList<CheckPointsItem> checkPoints) {
+        this.checkPoints = checkPoints;
     }
 
     public RealmList<ParentChecklistIdIdem> getParentChecklist() {

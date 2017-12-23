@@ -10,19 +10,19 @@ public class ParentCheckPointsResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setCheckPointsdata(ParentCheckPointsData checkPointsdata) {
-        this.checkPointsdata = checkPointsdata;
-    }
-
     public ParentCheckPointsData getCheckPointsdata() {
         return checkPointsdata;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setCheckPointsdata(ParentCheckPointsData checkPointsdata) {
+        this.checkPointsdata = checkPointsdata;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

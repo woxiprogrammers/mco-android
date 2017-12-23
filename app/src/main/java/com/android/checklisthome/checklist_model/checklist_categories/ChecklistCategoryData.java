@@ -9,11 +9,11 @@ public class ChecklistCategoryData extends RealmObject {
     @SerializedName("categories")
     private RealmList<CategoriesItem> categories;
 
-    public void setCategories(RealmList<CategoriesItem> categories) {
-        this.categories = categories;
-    }
-
     public RealmList<CategoriesItem> getCategories() {
         return categories;
+    }
+
+    public void setCategories(RealmList<CategoriesItem> categories) {
+        this.categories = categories;
     }
 }

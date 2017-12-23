@@ -19,6 +19,24 @@ public class ChecklistHomeActivity extends BaseActivity {
     private ViewPager mViewPager;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /*public void moveToScreenNumber(int screenNumber) {
+        mViewPager.setCurrentItem(screenNumber);
+    }*/
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checklist_home);
@@ -44,10 +62,6 @@ public class ChecklistHomeActivity extends BaseActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
     }
-
-    /*public void moveToScreenNumber(int screenNumber) {
-        mViewPager.setCurrentItem(screenNumber);
-    }*/
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -81,19 +95,5 @@ public class ChecklistHomeActivity extends BaseActivity {
             // Show 3 total pages.
             return 4;
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

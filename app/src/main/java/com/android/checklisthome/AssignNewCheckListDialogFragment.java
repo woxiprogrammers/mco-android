@@ -69,15 +69,11 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
     private ChecklistTitlesResponse receivedTitlesResponse;
     private int intProjectSiteChecklistId;
 
-    interface AssignmentDialogListener {
-        void onAssignClickListener();
+    public AssignNewCheckListDialogFragment() {
     }
 
     public void setUpAssignmentDialogListener(AssignmentDialogListener assignmentDialogListener) {
         this.assignmentDialogListener = assignmentDialogListener;
-    }
-
-    public AssignNewCheckListDialogFragment() {
     }
 
     public static AssignNewCheckListDialogFragment newInstance() {
@@ -208,6 +204,80 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    private ArrayAdapter<String> getSubCategoryArrayAdapter(RealmList<SubCategoriesItem> subCategories) {
+        ArrayList<String> stringSubCategoryArrayList = new ArrayList<String>();
+        for (SubCategoriesItem subCategoriesItem : subCategories) {
+            String categoryName = subCategoriesItem.getSubCategoryName();
+            stringSubCategoryArrayList.add(categoryName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringSubCategoryArrayList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
+    }
+
+    private void getFloorListings() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_FLOOR_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getFloorListings")
+                .build()
+                .getAsObject(ChecklistFloorResponse.class, new ParsedRequestListener<ChecklistFloorResponse>() {
+                    @Override
+                    public void onResponse(ChecklistFloorResponse response) {
+                        receivedFloorResponse = new ChecklistFloorResponse();
+                        receivedFloorResponse = response;
+                        Timber.d(String.valueOf(receivedFloorResponse));
+                        if (response.getChecklistFloorData() != null && !response.getChecklistFloorData().getFloorList().isEmpty()) {
+                            mSpinnerChecklistFloorName.setAdapter(getFloorArrayAdapter(response.getChecklistFloorData().getFloorList()));
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getFloorListings");
+                    }
+                });
+    }
+
+    private void getTitleListings(int quotationFloorId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("quotation_floor_id", quotationFloorId);
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_TITLE_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getTitleListings")
+                .build()
+                .getAsObject(ChecklistTitlesResponse.class, new ParsedRequestListener<ChecklistTitlesResponse>() {
+                    @Override
+                    public void onResponse(ChecklistTitlesResponse response) {
+                        receivedTitlesResponse = new ChecklistTitlesResponse();
+                        receivedTitlesResponse = response;
+                        Timber.d(String.valueOf(receivedTitlesResponse));
+                        if (response.getChecklistTitlesData() != null && !response.getChecklistTitlesData().getTitleList().isEmpty()) {
+                            mSpinnerChecklistTitles.setAdapter(getTitlesArrayAdapter(response.getChecklistTitlesData().getTitleList()));
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getTitleListings");
+                    }
+                });
+    }
+
     private void getUsersWithChecklistAssignAcl() {
         JSONObject params = new JSONObject();
         try {
@@ -298,60 +368,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                 });
     }
 
-    private void getTitleListings(int quotationFloorId) {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("quotation_floor_id", quotationFloorId);
-            Timber.d(String.valueOf(params));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_CHECKLIST_TITLE_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("getTitleListings")
-                .build()
-                .getAsObject(ChecklistTitlesResponse.class, new ParsedRequestListener<ChecklistTitlesResponse>() {
-                    @Override
-                    public void onResponse(ChecklistTitlesResponse response) {
-                        receivedTitlesResponse = new ChecklistTitlesResponse();
-                        receivedTitlesResponse = response;
-                        Timber.d(String.valueOf(receivedTitlesResponse));
-                        if (response.getChecklistTitlesData() != null && !response.getChecklistTitlesData().getTitleList().isEmpty()) {
-                            mSpinnerChecklistTitles.setAdapter(getTitlesArrayAdapter(response.getChecklistTitlesData().getTitleList()));
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getTitleListings");
-                    }
-                });
-    }
-
-    private SpinnerAdapter getTitlesArrayAdapter(RealmList<TitleListItem> titleList) {
-        ArrayList<String> stringArrayList = new ArrayList<String>();
-        for (TitleListItem titleListItem : titleList) {
-            String title = titleListItem.getTitle();
-            stringArrayList.add(title);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringArrayList);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return arrayAdapter;
-    }
-
-    private ArrayAdapter<String> getSubCategoryArrayAdapter(RealmList<SubCategoriesItem> subCategories) {
-        ArrayList<String> stringSubCategoryArrayList = new ArrayList<String>();
-        for (SubCategoriesItem subCategoriesItem : subCategories) {
-            String categoryName = subCategoriesItem.getSubCategoryName();
-            stringSubCategoryArrayList.add(categoryName);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringSubCategoryArrayList);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return arrayAdapter;
-    }
-
     private void getCategory_SubCategoryListings() {
         JSONObject params = new JSONObject();
         try {
@@ -383,42 +399,22 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
                 });
     }
 
-    private void getFloorListings() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            Timber.d(String.valueOf(params));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_CHECKLIST_FLOOR_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("getFloorListings")
-                .build()
-                .getAsObject(ChecklistFloorResponse.class, new ParsedRequestListener<ChecklistFloorResponse>() {
-                    @Override
-                    public void onResponse(ChecklistFloorResponse response) {
-                        receivedFloorResponse = new ChecklistFloorResponse();
-                        receivedFloorResponse = response;
-                        Timber.d(String.valueOf(receivedFloorResponse));
-                        if (response.getChecklistFloorData() != null && !response.getChecklistFloorData().getFloorList().isEmpty()) {
-                            mSpinnerChecklistFloorName.setAdapter(getFloorArrayAdapter(response.getChecklistFloorData().getFloorList()));
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getFloorListings");
-                    }
-                });
-    }
-
     private SpinnerAdapter getFloorArrayAdapter(RealmList<FloorListItem> floorList) {
         ArrayList<String> stringArrayList = new ArrayList<String>();
         for (FloorListItem floorListItem : floorList) {
             String categoryName = floorListItem.getQuotationFloorName();
             stringArrayList.add(categoryName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringArrayList);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
+    }
+
+    private SpinnerAdapter getTitlesArrayAdapter(RealmList<TitleListItem> titleList) {
+        ArrayList<String> stringArrayList = new ArrayList<String>();
+        for (TitleListItem titleListItem : titleList) {
+            String title = titleListItem.getTitle();
+            stringArrayList.add(title);
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringArrayList);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -434,5 +430,9 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, stringCategoryArrayList);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
+    }
+
+    interface AssignmentDialogListener {
+        void onAssignClickListener();
     }
 }

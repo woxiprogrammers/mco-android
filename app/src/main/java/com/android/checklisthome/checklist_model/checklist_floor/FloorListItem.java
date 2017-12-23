@@ -10,19 +10,19 @@ public class FloorListItem extends RealmObject {
     @SerializedName("quotation_floor_id")
     private int quotationFloorId;
 
-    public void setQuotationFloorName(String quotationFloorName) {
-        this.quotationFloorName = quotationFloorName;
-    }
-
     public String getQuotationFloorName() {
         return quotationFloorName;
     }
 
-    public void setQuotationFloorId(int quotationFloorId) {
-        this.quotationFloorId = quotationFloorId;
+    public void setQuotationFloorName(String quotationFloorName) {
+        this.quotationFloorName = quotationFloorName;
     }
 
     public int getQuotationFloorId() {
         return quotationFloorId;
+    }
+
+    public void setQuotationFloorId(int quotationFloorId) {
+        this.quotationFloorId = quotationFloorId;
     }
 }

@@ -9,11 +9,11 @@ public class ChecklistTitlesData extends RealmObject {
     @SerializedName("title_list")
     private RealmList<TitleListItem> titleList;
 
-    public void setTitleList(RealmList<TitleListItem> titleList) {
-        this.titleList = titleList;
-    }
-
     public RealmList<TitleListItem> getTitleList() {
         return titleList;
+    }
+
+    public void setTitleList(RealmList<TitleListItem> titleList) {
+        this.titleList = titleList;
     }
 }

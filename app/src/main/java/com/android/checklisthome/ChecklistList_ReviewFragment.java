@@ -39,12 +39,13 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class ChecklistList_ReviewFragment extends Fragment {
-    private Realm realm;
-    private Context mContext;
     @BindView(R.id.recyclerView_checkList_review)
     RecyclerView mRecyclerViewCheckListInProgress;
-    private RealmResults<ChecklistListItem> checklistItemResults;
     Unbinder unbinder;
+    private Realm realm;
+    private Context mContext;
+    private RealmResults<ChecklistListItem> checklistItemResults;
+    private boolean notFirstTime;
 
     public ChecklistList_ReviewFragment() {
         // Required empty public constructor
@@ -58,6 +59,14 @@ public class ChecklistList_ReviewFragment extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && notFirstTime) {
+            requestToGetInProgressCheckList();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -65,16 +74,6 @@ public class ChecklistList_ReviewFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
         return view;
-    }
-
-    private boolean notFirstTime;
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && notFirstTime) {
-            requestToGetInProgressCheckList();
-        }
     }
 
     @Override
@@ -87,17 +86,17 @@ public class ChecklistList_ReviewFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (realm != null) {
             realm.close();
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     private void requestToGetInProgressCheckList() {

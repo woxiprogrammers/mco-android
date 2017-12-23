@@ -12,27 +12,27 @@ public class TitleListItem extends RealmObject {
     @SerializedName("project_site_checklist_id")
     private int projectSiteChecklistId;
 
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
     public String getDetail() {
         return detail;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setProjectSiteChecklistId(int projectSiteChecklistId) {
-        this.projectSiteChecklistId = projectSiteChecklistId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getProjectSiteChecklistId() {
         return projectSiteChecklistId;
+    }
+
+    public void setProjectSiteChecklistId(int projectSiteChecklistId) {
+        this.projectSiteChecklistId = projectSiteChecklistId;
     }
 }

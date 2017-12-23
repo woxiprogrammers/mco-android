@@ -42,17 +42,26 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class ChecklistList_AssignedFragment extends Fragment {
-    private Realm realm;
-    private Context mContext;
     @BindView(R.id.btn_checkList_assignNew)
     Button mBtnCheckListAssignNew;
     @BindView(R.id.recyclerView_checkList_assigned)
     RecyclerView mRecyclerViewCheckListAssigned;
-    private RealmResults<ChecklistListItem> checklistItemResults;
     Unbinder unbinder;
+    private Realm realm;
+    private Context mContext;
+    private RealmResults<ChecklistListItem> checklistItemResults;
+    private boolean notFirstTime;
 
     public ChecklistList_AssignedFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && notFirstTime) {
+            requestToGetAssignCheckedListData();
+        }
     }
 
     @Override
@@ -62,16 +71,6 @@ public class ChecklistList_AssignedFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
         return view;
-    }
-
-    private boolean notFirstTime;
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && notFirstTime) {
-            requestToGetAssignCheckedListData();
-        }
     }
 
     @Override
@@ -84,6 +83,12 @@ public class ChecklistList_AssignedFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (realm != null) {
@@ -91,79 +96,71 @@ public class ChecklistList_AssignedFragment extends Fragment {
         }
     }
 
-    public static ChecklistList_AssignedFragment newInstance() {
-        Bundle args = new Bundle();
-        ChecklistList_AssignedFragment fragment = new ChecklistList_AssignedFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
     private void requestToGetAssignCheckedListData() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("checklist_status_slug", "assigned");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestToGetAssignCheckedListData")
-                .build()
-                .getAsObject(AssignedChecklistResponse.class, new ParsedRequestListener<AssignedChecklistResponse>() {
-                    @Override
-                    public void onResponse(final AssignedChecklistResponse response) {
-                       /* if (!response.getPageid().equalsIgnoreCase("")) {
-                            pageNumber = Integer.parseInt(response.getPageid());
-                        }*/
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(ChecklistListItem.class);
-                                    try {
-                                        Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            JSONObject params = new JSONObject();
+            try {
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("checklist_status_slug", "assigned");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            AndroidNetworking.post(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken())
+                    .addJSONObjectBody(params)
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setPriority(Priority.MEDIUM)
+                    .setTag("requestToGetAssignCheckedListData")
+                    .build()
+                    .getAsObject(AssignedChecklistResponse.class, new ParsedRequestListener<AssignedChecklistResponse>() {
+                        @Override
+                        public void onResponse(final AssignedChecklistResponse response) {
+                           /* if (!response.getPageid().equalsIgnoreCase("")) {
+                                pageNumber = Integer.parseInt(response.getPageid());
+                            }*/
+                            realm = Realm.getDefaultInstance();
+                            try {
+                                realm.executeTransactionAsync(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        realm.delete(ChecklistListItem.class);
+                                        try {
+                                            Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        realm.insertOrUpdate(response);
                                     }
-                                    realm.insertOrUpdate(response);
+                                }, new Realm.Transaction.OnSuccess() {
+                                    @Override
+                                    public void onSuccess() {
+                                        /*if (oldPageNumber != pageNumber) {
+                                            oldPageNumber = pageNumber;
+                                            requestAssetListOnline(pageNumber);
+                                        }*/
+                                        getLatestAssignedCheckLists();
+                                    }
+                                }, new Realm.Transaction.OnError() {
+                                    @Override
+                                    public void onError(Throwable error) {
+                                        AppUtils.getInstance().logRealmExecutionError(error);
+                                    }
+                                });
+                            } finally {
+                                if (realm != null) {
+                                    realm.close();
                                 }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    /*if (oldPageNumber != pageNumber) {
-                                        oldPageNumber = pageNumber;
-                                        requestAssetListOnline(pageNumber);
-                                    }*/
-                                    getLatestAssignedCheckLists();
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
                         }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestToGetAssignCheckedListData");
-                    }
-                });
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "requestToGetAssignCheckedListData");
+                        }
+                    });
+        } else {
+            getLatestAssignedCheckLists();
+            AppUtils.getInstance().showOfflineMessage("ChecklistList_AssignedFragment");
+        }
     }
 
     private void getLatestAssignedCheckLists() {
@@ -194,6 +191,29 @@ public class ChecklistList_AssignedFragment extends Fragment {
             public void onLongItemClick(View view, int position) {
             }
         }));
+    }
+
+    public static ChecklistList_AssignedFragment newInstance() {
+        Bundle args = new Bundle();
+        ChecklistList_AssignedFragment fragment = new ChecklistList_AssignedFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @OnClick(R.id.btn_checkList_assignNew)
+    public void onViewClicked() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = AssignNewCheckListDialogFragment.newInstance();
+            assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
+                @Override
+                public void onAssignClickListener() {
+                    requestToGetAssignCheckedListData();
+                }
+            });
+            assignNewCheckListDialogFragment.show(getActivity().getSupportFragmentManager(), "assignNewCheckListDialogFragment");
+        } else {
+            AppUtils.getInstance().showOfflineMessage("ChecklistList_AssignedFragment");
+        }
     }
 
     public class AssignedChecklistListAdapter extends RealmRecyclerViewAdapter<ChecklistListItem,
@@ -257,17 +277,5 @@ public class ChecklistList_AssignedFragment extends Fragment {
                 ButterKnife.bind(this, itemView);
             }
         }
-    }
-
-    @OnClick(R.id.btn_checkList_assignNew)
-    public void onViewClicked() {
-        AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = AssignNewCheckListDialogFragment.newInstance();
-        assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
-            @Override
-            public void onAssignClickListener() {
-                requestToGetAssignCheckedListData();
-            }
-        });
-        assignNewCheckListDialogFragment.show(getActivity().getSupportFragmentManager(), "assignNewCheckListDialogFragment");
     }
 }

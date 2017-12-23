@@ -25,28 +25,28 @@ public class ParentProjectSiteUserCheckpointImagesItem extends RealmObject {
         isThisImageCaptured = thisImageCaptured;
     }
 
-    public void setProjectSiteChecklistCheckpointImageCaption(String projectSiteChecklistCheckpointImageCaption) {
-        this.projectSiteChecklistCheckpointImageCaption = projectSiteChecklistCheckpointImageCaption;
-    }
-
     public String getProjectSiteChecklistCheckpointImageCaption() {
         return projectSiteChecklistCheckpointImageCaption;
     }
 
-    public void setProjectSiteChecklistCheckpointImageIsRequired(boolean projectSiteChecklistCheckpointImageIsRequired) {
-        this.projectSiteChecklistCheckpointImageIsRequired = projectSiteChecklistCheckpointImageIsRequired;
+    public void setProjectSiteChecklistCheckpointImageCaption(String projectSiteChecklistCheckpointImageCaption) {
+        this.projectSiteChecklistCheckpointImageCaption = projectSiteChecklistCheckpointImageCaption;
     }
 
     public boolean isProjectSiteChecklistCheckpointImageIsRequired() {
         return projectSiteChecklistCheckpointImageIsRequired;
     }
 
-    public void setProjectSiteChecklistCheckpointImageId(int projectSiteChecklistCheckpointImageId) {
-        this.projectSiteChecklistCheckpointImageId = projectSiteChecklistCheckpointImageId;
+    public void setProjectSiteChecklistCheckpointImageIsRequired(boolean projectSiteChecklistCheckpointImageIsRequired) {
+        this.projectSiteChecklistCheckpointImageIsRequired = projectSiteChecklistCheckpointImageIsRequired;
     }
 
     public int getProjectSiteChecklistCheckpointImageId() {
         return projectSiteChecklistCheckpointImageId;
+    }
+
+    public void setProjectSiteChecklistCheckpointImageId(int projectSiteChecklistCheckpointImageId) {
+        this.projectSiteChecklistCheckpointImageId = projectSiteChecklistCheckpointImageId;
     }
 
     public String getProjectSiteUserCheckpointImageUrl() {
