@@ -118,10 +118,10 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(PurchaseOrderBillListingResponse.class);
-                                    realm.delete(PurchaseOrderBillListingData.class);
-                                    realm.delete(BillDataItem.class);
-                                    realm.delete(PurchaseOrderBillListingItem.class);
+//                                    realm.delete(PurchaseOrderBillListingResponse.class);
+//                                    realm.delete(PurchaseOrderBillListingData.class);
+//                                    realm.delete(BillDataItem.class);
+//                                    realm.delete(PurchaseOrderBillListingItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {

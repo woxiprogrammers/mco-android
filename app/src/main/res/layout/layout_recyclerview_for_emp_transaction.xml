@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp">
+    android:padding="@dimen/dimen_10dp">
 
     <ProgressBar
         android:id="@+id/progressBarTrans"
@@ -11,14 +11,12 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
-
     <Button
         android:id="@+id/btnOk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dimen_18dp"
         android:layout_marginTop="@dimen/dimen_18dp"
         android:text="Ok"/>
 
@@ -41,8 +39,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/btnOk"
         android:layout_below="@id/mob"
-        android:orientation="vertical"
-        android:padding="@dimen/dimen_4dp"/>
+        android:orientation="vertical"/>
 
     <TextView
         android:id="@+id/textViewNoTransactions"

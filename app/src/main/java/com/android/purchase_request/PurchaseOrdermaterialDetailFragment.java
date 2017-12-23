@@ -38,22 +38,19 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
  * Created by Sharvari on 20/11/17.
  */
-
 public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
-
     Unbinder unbinder;
     private AlertDialog alertDialog;
     private Realm realm;
     private RecyclerView recyclerviewTransaction;
     private ProgressBar progressBar;
-    private Button buttonOk;
     private int purchaseOrderId;
     private TextView textViewVenName, mob;
 
@@ -68,10 +65,9 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         if (bundle != null) {
             purchaseOrderId = bundle.getInt("purchase_order_id");
         }
-
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
-        buttonOk = dialog.findViewById(R.id.btnOk);
+        Button buttonOk = dialog.findViewById(R.id.btnOk);
         textViewVenName = dialog.findViewById(R.id.textViewVenName);
         mob = dialog.findViewById(R.id.mob);
         buttonOk.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +76,13 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                 alertDialog.dismiss();
             }
         });
-        requestToGetDetails();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestToGetDetails();
+        } else {
+            progressBar.setVisibility(View.GONE);
+            AppUtils.getInstance().showOfflineMessage("PurchaseOrdermaterialDetailFragment");
+            setUpAdapter();
+        }
         alertDialog = builder.create();
         return alertDialog;
     }
@@ -106,9 +108,9 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(PurchaseOrderMaterialDetailResponse.class);
-                                    realm.delete(MaterialsItem.class);
-                                    realm.delete(PurchaseOrderDetailData.class);
+//                                    realm.delete(PurchaseOrderMaterialDetailResponse.class);
+//                                    realm.delete(MaterialsItem.class);
+//                                    realm.delete(PurchaseOrderDetailData.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -119,11 +121,7 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                                         setUpAdapter();
                                         mob.setText("Mobile Number:- " + response.getPurchaseOrderDetailData().getVendorMobile());
                                         textViewVenName.setText("Vendor Name:- " + response.getPurchaseOrderDetailData().getVendorName());
-//                                        textViewNoTransactions.setVisibility(View.GONE);
                                     }
-                                    /*else {
-                                        textViewNoTransactions.setVisibility(View.VISIBLE);
-                                    }*/
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -147,12 +145,16 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
 
     private void setUpAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<MaterialsItem> materialsItemRealmResults = realm.where(MaterialsItem.class).findAllAsync();
-        final RealmResults<PurchaseOrderDetailData> purchaseOrderDetailData = realm.where(PurchaseOrderDetailData.class).findAllAsync();
-        PurchaseOrdermaterialDetailAdapter purchaseOrdermaterialDetailAdapter = new PurchaseOrdermaterialDetailAdapter(materialsItemRealmResults, true, true);
-        recyclerviewTransaction.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerviewTransaction.setHasFixedSize(true);
-        recyclerviewTransaction.setAdapter(purchaseOrdermaterialDetailAdapter);
+        PurchaseOrderDetailData purchaseOrderDetailData = realm.where(PurchaseOrderDetailData.class).equalTo("purchaseOrderId", purchaseOrderId).findFirst();
+        if (purchaseOrderDetailData != null) {
+            mob.setText("Mobile Number: " + purchaseOrderDetailData.getVendorMobile());
+            textViewVenName.setText("Vendor Name: " + purchaseOrderDetailData.getVendorName());
+            RealmList<MaterialsItem> materialsItemRealmResults = purchaseOrderDetailData.getMaterials();
+            PurchaseOrdermaterialDetailAdapter purchaseOrdermaterialDetailAdapter = new PurchaseOrdermaterialDetailAdapter(materialsItemRealmResults, true, true);
+            recyclerviewTransaction.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerviewTransaction.setHasFixedSize(true);
+            recyclerviewTransaction.setAdapter(purchaseOrdermaterialDetailAdapter);
+        }
     }
 
     @Override
@@ -197,7 +199,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             } else {
                 holder.linearLayoutExpDate.setVisibility(View.GONE);
             }
-
             holder.textviewConsumedQuantity.setText(String.valueOf(materialsItem.getConsumed_quantity()));
             if (materialsItem.getQuotationImages().size() > 0) {
                 for (int index = 0; index < materialsItem.getQuotationImages().size(); index++) {
@@ -214,7 +215,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getQuotationImages().get(index).getImageUrl(), imageView, getActivity());
-
                     holder.linearLayoutQuoImg.addView(imageView);
                 }
             }
@@ -235,7 +235,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getClientApprovalImages().get(index).getImageUrl(), imageView, getActivity());
-
                     holder.linearLayoutClientImg.addView(imageView);
                 }
             }
@@ -252,7 +251,6 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-
             @BindView(R.id.textviewMatDetailName)
             TextView textviewMatDetailName;
             @BindView(R.id.textviewQuantity)

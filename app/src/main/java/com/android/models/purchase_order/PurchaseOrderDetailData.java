@@ -1,85 +1,79 @@
 package com.android.models.purchase_order;
+
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class PurchaseOrderDetailData extends RealmObject {
+    @SerializedName("date")
+    private String date;
+    @SerializedName("vendor_mobile")
+    private String vendorMobile;
+    @SerializedName("materials")
+    private RealmList<MaterialsItem> materials;
+    @SerializedName("purchase_order_id")
+    private int purchaseOrderId;
+    @SerializedName("vendor_id")
+    private int vendorId;
+    @SerializedName("vendor_name")
+    private String vendorName;
+    @SerializedName("purchase_order_format_id")
+    private String purchaseOrderFormatId;
 
-	@SerializedName("date")
-	private String date;
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-	@SerializedName("vendor_mobile")
-	private String vendorMobile;
+    public String getDate() {
+        return date;
+    }
 
-	@SerializedName("materials")
-	private RealmList<MaterialsItem> materials;
+    public void setVendorMobile(String vendorMobile) {
+        this.vendorMobile = vendorMobile;
+    }
 
-	@SerializedName("purchase_order_id")
-	private int purchaseOrderId;
+    public String getVendorMobile() {
+        return vendorMobile;
+    }
 
-	@SerializedName("vendor_id")
-	private int vendorId;
+    public void setMaterials(RealmList<MaterialsItem> materials) {
+        this.materials = materials;
+    }
 
-	@SerializedName("vendor_name")
-	private String vendorName;
+    public RealmList<MaterialsItem> getMaterials() {
+        return materials;
+    }
 
-	@SerializedName("purchase_order_format_id")
-	private String purchaseOrderFormatId;
+    public void setPurchaseOrderId(int purchaseOrderId) {
+        this.purchaseOrderId = purchaseOrderId;
+    }
 
-	public void setDate(String date){
-		this.date = date;
-	}
+    public int getPurchaseOrderId() {
+        return purchaseOrderId;
+    }
 
-	public String getDate(){
-		return date;
-	}
+    public void setVendorId(int vendorId) {
+        this.vendorId = vendorId;
+    }
 
-	public void setVendorMobile(String vendorMobile){
-		this.vendorMobile = vendorMobile;
-	}
+    public int getVendorId() {
+        return vendorId;
+    }
 
-	public String getVendorMobile(){
-		return vendorMobile;
-	}
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+    }
 
-	public void setMaterials(RealmList<MaterialsItem> materials){
-		this.materials = materials;
-	}
+    public String getVendorName() {
+        return vendorName;
+    }
 
-	public RealmList<MaterialsItem> getMaterials(){
-		return materials;
-	}
+    public void setPurchaseOrderFormatId(String purchaseOrderFormatId) {
+        this.purchaseOrderFormatId = purchaseOrderFormatId;
+    }
 
-	public void setPurchaseOrderId(int purchaseOrderId){
-		this.purchaseOrderId = purchaseOrderId;
-	}
-
-	public int getPurchaseOrderId(){
-		return purchaseOrderId;
-	}
-
-	public void setVendorId(int vendorId){
-		this.vendorId = vendorId;
-	}
-
-	public int getVendorId(){
-		return vendorId;
-	}
-
-	public void setVendorName(String vendorName){
-		this.vendorName = vendorName;
-	}
-
-	public String getVendorName(){
-		return vendorName;
-	}
-
-	public void setPurchaseOrderFormatId(String purchaseOrderFormatId){
-		this.purchaseOrderFormatId = purchaseOrderFormatId;
-	}
-
-	public String getPurchaseOrderFormatId(){
-		return purchaseOrderFormatId;
-	}
+    public String getPurchaseOrderFormatId() {
+        return purchaseOrderFormatId;
+    }
 }

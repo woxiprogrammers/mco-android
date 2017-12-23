@@ -149,7 +149,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private RealmList<TransactionDataItem> billDataItemRealmResults;
     private Calendar myCalendar;
     private boolean isForImage;
-    private File currentImageFile;
     private JSONArray jsonImageNameArray = new JSONArray();
     private String strChallanNumber, strVehicleNumber;
     private TextView textViewIdDummy;
@@ -209,7 +208,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 linearLayoutFirstLayout.setVisibility(View.VISIBLE);
             }
         }
-
         if (purchaseOrderListItem.getListOfImages().size() > 0) {
             for (int index = 0; index < purchaseOrderListItem.getListOfImages().size(); index++) {
                 ImageView imageView = new ImageView(getActivity());
@@ -225,7 +223,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     }
                 });
                 AppUtils.getInstance().loadImageViaGlide(purchaseOrderListItem.getListOfImages().get(index).getImageUrl(), imageView, mContext);
-
             }
         }
         return view;
@@ -255,7 +252,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionGenerateGrn:
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
-
                 break;
             case R.id.textViewCaptureTransImg:
                 isForImage = false;
@@ -286,7 +282,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void validateEntries() {
         strChallanNumber = editTextBillumber.getText().toString();
         strVehicleNumber = editTextVehNum.getText().toString();
-
         if (!isCheckedMaterial) {
             Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
             return;
@@ -311,7 +306,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextVehNum.setError(null);
             editTextVehNum.requestFocus();
         }
-
         if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
@@ -372,7 +366,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToGenerateGrn() {
-
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
@@ -419,7 +412,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToPayment() {
-
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (int intKey : arrayList) {
@@ -498,7 +490,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         arrayImageFileList = new ArrayList<File>();
         for (Image currentImage : imagesList) {
             if (currentImage.imagePath != null) {
-                currentImageFile = new File(currentImage.imagePath);
+                File currentImageFile = new File(currentImage.imagePath);
                 arrayImageFileList.add(currentImageFile);
                 Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
                 ImageView imageView = new ImageView(mContext);
@@ -529,19 +521,16 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         final TextView TextViewExceedQuantity = dialogView.findViewById(R.id.TextViewExceedQuantity);
         final Button buttonToOk = dialogView.findViewById(R.id.buttonToOk);
         final MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
-
         if (isForEdit) {
             if (materialNamesItem != null) {
                 Timber.d(String.valueOf(materialNamesItem));
                 edittextMatUnit.setText(materialNamesItem.getMaterialUnits().get(0).getUnit());
                 textViewMaterialNameSelected.setText(materialNamesItem.getMaterialName());
                 edittextMatUnit.setEnabled(false);
-
                 final float floatMaterialComponentRemainingQuantity = Float.parseFloat(materialNamesItem.getMaterialComponentRemainingQuantity());
                 editTextMatQuantity.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int arg1, int arg2, int arg3) {
-
                     }
 
                     @Override
@@ -555,7 +544,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                                 TextViewExceedQuantity.setText("");
                                 TextViewExceedQuantity.setVisibility(View.GONE);
                                 buttonToOk.setVisibility(View.VISIBLE);
-
                             }
                         }
                     }
@@ -573,7 +561,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             edittextMatUnit.setEnabled(false);
             textViewMaterialNameSelected.setText(billDataItem.getMaterialName());
             LinearLayout linearLayout = dialogView.findViewById(R.id.llAddQuoImg);
-
         }
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -620,47 +607,51 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     //    bill_transaction
     private void uploadImages_addItemToLocal(final String strTag, final String imageFor) {
-        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
-            File sendImageFile = arrayImageFileList.get(0);
-            File compressedImageFile = sendImageFile;
-            try {
-                compressedImageFile = new Compressor(mContext).compressToFile(sendImageFile);
-            } catch (IOException e) {
-                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
-            }
-            String strToken = AppUtils.getInstance().getCurrentToken();
-            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
-                    .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", imageFor)
-                    .addHeaders(AppUtils.getInstance().getApiHeaders())
-                    .setTag("uploadImages_addItemToLocal")
-                    .setPercentageThresholdForCancelling(50)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                String fileName = response.getString("filename");
-                                jsonImageNameArray.put(fileName);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+                File sendImageFile = arrayImageFileList.get(0);
+                File compressedImageFile = sendImageFile;
+                try {
+                    compressedImageFile = new Compressor(mContext).compressToFile(sendImageFile);
+                } catch (IOException e) {
+                    Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+                }
+                String strToken = AppUtils.getInstance().getCurrentToken();
+                AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                        .setPriority(Priority.MEDIUM)
+                        .addMultipartFile("image", compressedImageFile)
+                        .addMultipartParameter("image_for", imageFor)
+                        .addHeaders(AppUtils.getInstance().getApiHeaders())
+                        .setTag("uploadImages_addItemToLocal")
+                        .setPercentageThresholdForCancelling(50)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    String fileName = response.getString("filename");
+                                    jsonImageNameArray.put(fileName);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                arrayImageFileList.remove(0);
+                                uploadImages_addItemToLocal(strTag, imageFor);
                             }
-                            arrayImageFileList.remove(0);
-                            uploadImages_addItemToLocal(strTag, imageFor);
-                        }
 
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
-                        }
-                    });
-        } else {
-            if (strTag.equalsIgnoreCase("requestToGenerateGrn"))
-                requestToGenerateGrn();
-            else if (strTag.equalsIgnoreCase("requestToPayment")) {
-                requestToPayment();
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                            }
+                        });
+            } else {
+                if (strTag.equalsIgnoreCase("requestToGenerateGrn"))
+                    requestToGenerateGrn();
+                else if (strTag.equalsIgnoreCase("requestToPayment")) {
+                    requestToPayment();
+                }
             }
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PayFragmentNew");
         }
     }
 
@@ -685,10 +676,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 for (int i = 0; i < purchaseBIllDetailsItems.getImages().size(); i++) {
                     if (purchaseBIllDetailsItems.getImages().get(i).getImage_status().equalsIgnoreCase("Pre-GRN")) {
                         loadImage(purchaseBIllDetailsItems.getImages().get(i).getImageUrl(), llSetMatImg);
-
                     } else {
                         loadImage(purchaseBIllDetailsItems.getImages().get(i).getImageUrl(), linearLayoutSetPaymentImageLayout);
-
                     }
                 }
                 setViewData();
@@ -718,7 +707,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             }
         });
         AppUtils.getInstance().loadImageViaGlide(strUrl, imageView, mContext);
-
     }
 
     private void inflateViews() {
