@@ -4,13 +4,13 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class DummyCheckResponse extends RealmObject{
+public class PurchaseOrderBillListingResponse extends RealmObject{
 
 	@SerializedName("page_id")
 	private String pageId;
 
 	@SerializedName("data")
-	private DummyCheckdata dummyCheckdata;
+	private PurchaseOrderBillListingData dummyCheckdata;
 
 	@SerializedName("next_url")
 	private String nextUrl;
@@ -26,11 +26,11 @@ public class DummyCheckResponse extends RealmObject{
 		return pageId;
 	}
 
-	public void setDummyCheckdata(DummyCheckdata dummyCheckdata){
+	public void setDummyCheckdata(PurchaseOrderBillListingData dummyCheckdata){
 		this.dummyCheckdata = dummyCheckdata;
 	}
 
-	public DummyCheckdata getDummyCheckdata(){
+	public PurchaseOrderBillListingData getDummyCheckdata(){
 		return dummyCheckdata;
 	}
 

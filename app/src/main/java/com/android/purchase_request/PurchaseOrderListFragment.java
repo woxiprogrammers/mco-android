@@ -127,11 +127,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class)
                     .equalTo("purchaseRequestId", purchaseRequestId)
                     .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                    .notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
+                    .notEqualTo("purchaseOrderStatusSlug", "close").findAllAsync();
         } else {
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class)
                     .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                    .notEqualTo("purchaseOrderStatusSlug","close").findAllAsync();
+                    .notEqualTo("purchaseOrderStatusSlug", "close").findAllAsync();
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
@@ -144,23 +144,23 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
                 } else if (view.getId() == R.id.textViewClose) {
                     if (AppUtils.getInstance().checkNetworkState()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
-                    builder.setMessage("Do you want to close this PO ?")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    requestToClosePo(purchaseOrderListItems.get(position).getId());
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    //  Action for 'NO' Button
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.setTitle("Close PO");
-                    alert.show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
+                        builder.setMessage("Do you want to close this PO ?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        requestToClosePo(purchaseOrderListItems.get(position).getId());
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //  Action for 'NO' Button
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alert = builder.create();
+                        alert.setTitle("Close PO");
+                        alert.show();
                     } else {
                         AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
                     }
@@ -205,9 +205,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(PurchaseOrderResponse.class);
-                                    realm.delete(PurchaseOrderRespData.class);
-                                    realm.delete(PurchaseOrderListItem.class);
+//                                    realm.delete(PurchaseOrderResponse.class);
+//                                    realm.delete(PurchaseOrderRespData.class);
+//                                    realm.delete(PurchaseOrderListItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -324,7 +324,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     private void requestToClosePo(int id) {
         JSONObject params = new JSONObject();
-        /**/
         try {
             params.put("purchase_order_id", id);
             params.put("change_status_to_slug", "close");

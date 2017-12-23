@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
-public class DummyCheckdata extends RealmObject{
+public class PurchaseOrderBillListingData extends RealmObject{
 
 	@SerializedName("purchase_order_bill_listing")
 	private RealmList<PurchaseOrderBillListingItem> purchaseOrderBillListing;

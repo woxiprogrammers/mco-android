@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.dummy.BillDataItem;
-import com.android.dummy.DummyCheckResponse;
-import com.android.dummy.DummyCheckdata;
+import com.android.dummy.PurchaseOrderBillListingResponse;
+import com.android.dummy.PurchaseOrderBillListingData;
 import com.android.dummy.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
 import com.android.purchase_details.PayAndBillsActivity;
@@ -110,16 +110,16 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPrListOnline")
                 .build()
-                .getAsObject(DummyCheckResponse.class, new ParsedRequestListener<DummyCheckResponse>() {
+                .getAsObject(PurchaseOrderBillListingResponse.class, new ParsedRequestListener<PurchaseOrderBillListingResponse>() {
                     @Override
-                    public void onResponse(final DummyCheckResponse response) {
+                    public void onResponse(final PurchaseOrderBillListingResponse response) {
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(DummyCheckResponse.class);
-                                    realm.delete(DummyCheckdata.class);
+                                    realm.delete(PurchaseOrderBillListingResponse.class);
+                                    realm.delete(PurchaseOrderBillListingData.class);
                                     realm.delete(BillDataItem.class);
                                     realm.delete(PurchaseOrderBillListingItem.class);
                                     realm.insertOrUpdate(response);
