@@ -320,7 +320,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseRequestListItem purchaseRequestListItem = arrPurchaseRequestListItems.get(position);
             holder.textViewPurchaseRequestId.setText(purchaseRequestListItem.getPurchaseRequestId());
-            holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
+            holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseRequestListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
             if(!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())){

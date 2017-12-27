@@ -1,6 +1,7 @@
 package com.android.dashboard;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -57,6 +59,13 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         final ModulesItem modulesItem = modulesItemOrderedRealmCollection.get(position);
         RealmList<SubModulesItem> modulesItemRealmList = modulesItem.getSubModules();
         holder.moduleName.setText(modulesItem.getModuleName());
+        String moduleName=modulesItem.getModuleName();
+        if(moduleName.equalsIgnoreCase("Purchase")){
+            holder.imageViewModule.setBackgroundResource(R.drawable.action_button_bg);
+        }else {
+            holder.imageViewModule.setBackgroundResource(R.drawable.ic_action_more_vert);
+
+        }
 //        holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
         int noOfTextViews = holder.ll_sub_modules.getChildCount();
         int noOfSubModules = modulesItemRealmList.size();
@@ -109,6 +118,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         private Context context;
         private LinearLayout ll_sub_modules;
         private FrameLayout fl_mainModuleFrame;
+        private ImageView imageViewModule;
 
         MyViewHolder(View view) {
             super(view);
@@ -117,6 +127,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
 //            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
             fl_mainModuleFrame = (FrameLayout) view.findViewById(R.id.fl_mainModuleFrame);
             ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_sub_modules);
+            imageViewModule=view.findViewById(R.id.imageViewModule);
             int intMaxSize = 0;
             for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
                 int intMaxSizeTemp = modulesItemOrderedRealmCollection.get(index).getSubModules().size();

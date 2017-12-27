@@ -1389,7 +1389,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
             setTime(purchaseMaterialListItem.getCreatedAt(), holder.textViewDate);
-            holder.textViewItemStatus.setText(purchaseMaterialListItem.getComponentStatus());
+            holder.textViewItemStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseMaterialListItem.getComponentStatus()));
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
             final String strUserRole = AppUtils.getInstance().getUserRole();
