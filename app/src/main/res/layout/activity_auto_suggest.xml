@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/dimen_10dp">
+                android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editTextAutoSuggest"
+
+    <FrameLayout
+        android:id="@+id/editTextAutoSuggestFrame"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_44dp"
-        android:paddingBottom="@dimen/dimen_16dp"/>
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background">
+
+        <EditText
+            android:id="@+id/editTextAutoSuggest"
+            android:layout_width="match_parent"
+            android:background="@null"
+            android:hint="Search Material/Asset"
+            android:drawableLeft="@drawable/ic_autosearch_"
+            android:layout_height="@dimen/dimen_44dp"/>
+    </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewSearchResultList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/editTextAutoSuggest"
+        android:layout_below="@id/editTextAutoSuggestFrame"
         android:scrollbars="vertical"/>
 
     <Button
         android:id="@+id/buttonAddAsNewItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:layout_below="@id/editTextAutoSuggestFrame"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dimen_20dp"
-        android:layout_below="@id/editTextAutoSuggest"
-        android:background="@drawable/selectable_button_background_gray"
+        android:background="@color/colorAccent"
         android:text="@string/add_as_new_item"/>
 </RelativeLayout>
 

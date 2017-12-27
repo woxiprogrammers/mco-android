@@ -2,6 +2,7 @@ package com.android.dashboard;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -146,6 +147,8 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
+                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
+
                 setUpStaticValues(selectedId);
             }
 

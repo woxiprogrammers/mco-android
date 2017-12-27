@@ -18,20 +18,26 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:visibility="gone"
         app:srcCompat="@android:drawable/sym_def_app_icon"/>
 
     <TextView
         android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_2dp"
+        android:layout_marginLeft="@dimen/dimen_5dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white"/>
 
-    <Spinner
-        android:id="@+id/project_spinner"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"/>
+        android:layout_height="wrap_content">
+        <Spinner
+            android:id="@+id/project_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"/>
+
+    </FrameLayout>
 
 </LinearLayout>

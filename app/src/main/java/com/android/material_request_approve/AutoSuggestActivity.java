@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -332,7 +333,8 @@ public class AutoSuggestActivity extends BaseActivity {
     private void setUpAddNewButton(boolean isVisible) {
         if (isVisible) {
             mButtonAddAsNewItem.setVisibility(View.VISIBLE);
-            mButtonAddAsNewItem.setText(getString(R.string.add_as_new_item, mStrSearch));
+            mButtonAddAsNewItem.setText(getString(R.string.add_as_new_item,"\""+ mStrSearch + "\"" ));
+
             mRecyclerViewSearchResultList.setVisibility(View.GONE);
         } else {
             mButtonAddAsNewItem.setVisibility(View.GONE);
