@@ -6,7 +6,7 @@ import io.realm.RealmObject;
 
 public class RequestComponentResponse extends RealmObject{
 
-	@SerializedName("request_component_data")
+	@SerializedName("data")
 	private RequestComponentData requestComponentData;
 
 	@SerializedName("message")

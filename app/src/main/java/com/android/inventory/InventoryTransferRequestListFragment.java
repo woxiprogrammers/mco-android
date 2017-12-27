@@ -1,10 +1,12 @@
 package com.android.inventory;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,8 +17,11 @@ import android.widget.TextView;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.inventory.MaterialListItem;
+import com.android.models.inventory.RequestComponentData;
 import com.android.models.inventory.RequestComponentListingItem;
 import com.android.models.inventory.RequestComponentResponse;
+import com.android.purchase_details.PayAndBillsActivity;
+import com.android.purchase_request.PurchaseOrdermaterialDetailFragment;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -78,21 +83,19 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
         requestComponentListingItems = realm.where(RequestComponentListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
-        TransferRequestAdapter transferRequestAdapter = new TransferRequestAdapter(requestComponentListingItems, true, true);
+        RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
+            @Override
+            public void onItemClick(View view, final int position) {
+                if (view.getId() == R.id.textViewApprove) {
+
+                }
+            }
+        };
+        TransferRequestAdapter transferRequestAdapter = new TransferRequestAdapter(requestComponentListingItems, true, true,recyclerItemClickListener);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvTransferRequestList.setLayoutManager(linearLayoutManager);
         rvTransferRequestList.setAdapter(transferRequestAdapter);
-        rvTransferRequestList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvTransferRequestList, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, final int position) {
-
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-            }
-        }));
     }
 
     private void requestComponentList() {
@@ -120,6 +123,9 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(RequestComponentResponse.class);
+                                    realm.delete(RequestComponentData.class);
+                                    realm.delete(RequestComponentListingItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -161,7 +167,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
         private OrderedRealmCollection<RequestComponentListingItem> requestComponentListingItemOrderedRealmCollection;
         RecyclerViewClickListener recyclerViewClickListener;
 
-        TransferRequestAdapter(@Nullable OrderedRealmCollection<RequestComponentListingItem> data, boolean autoUpdate, boolean updateOnModification) {
+        TransferRequestAdapter(@Nullable OrderedRealmCollection<RequestComponentListingItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
             super(data, autoUpdate, updateOnModification);
             requestComponentListingItemOrderedRealmCollection = data;
             this.recyclerViewClickListener = recyclerViewClickListener;
@@ -211,6 +217,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
             MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+                textViewApprove.setOnClickListener(this);
             }
 
             @Override
