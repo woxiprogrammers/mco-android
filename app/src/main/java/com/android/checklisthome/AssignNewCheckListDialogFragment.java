@@ -364,6 +364,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
 
                     @Override
                     public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "submitChecklistAssignmentRequest");
                     }
                 });
     }

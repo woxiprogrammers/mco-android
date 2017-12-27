@@ -86,7 +86,7 @@ public class CheckListVerificationFragment extends Fragment {
     private boolean isUploadingImages;
     private CheckPointsItem checkPointsItem;
     private String isFromState;
-    private boolean isUserViewOnly;
+    private boolean isUserViewOnly;//Only used for current checklist i.e. not parent checklist
 
     public CheckListVerificationFragment() {
         // Required empty public constructor
@@ -137,8 +137,7 @@ public class CheckListVerificationFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_checkpoint_verification, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();

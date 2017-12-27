@@ -2,6 +2,7 @@ package com.android.login_mvp;
 
 import android.text.TextUtils;
 
+import com.android.firebase.MyFirebaseInstanceIDService;
 import com.android.models.login_acl.LoginResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -65,6 +66,7 @@ class LoginInteractor implements LoginInteractorInterface {
                                 public void onSuccess() {
                                     listener.onSuccess("Login Success");
                                     AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, true);
+                                    AppUtils.getInstance().sendRegistrationToServer();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

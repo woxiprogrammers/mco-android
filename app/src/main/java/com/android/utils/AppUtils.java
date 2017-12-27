@@ -3,6 +3,7 @@ package com.android.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -10,9 +11,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.models.login_acl.LoginResponse;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -346,5 +352,32 @@ public class AppUtils {
             }
         }
         return intCurrentUserId;
+    }
+
+    public void sendRegistrationToServer() {
+        String refreshedToken = AppUtils.getInstance().getString("firebaseRefreshedToken", "");
+        if (TextUtils.isEmpty(refreshedToken)) {
+            return;
+        }
+        if (AppUtils.getInstance().checkNetworkState()) {
+            AndroidNetworking.post(AppURL.API_SEND_FIREBASE_REFRESHED_TOKEN + AppUtils.getInstance().getCurrentToken())
+                    .addBodyParameter("firebaseRefreshedToken", refreshedToken)
+                    .setTag("sendRegistrationToServer")
+                    .setPriority(Priority.MEDIUM)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Timber.d(String.valueOf(response));
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "sendRegistrationToServer");
+                        }
+                    });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("MyFirebaseInstanceIDService");
+        }
     }
 }

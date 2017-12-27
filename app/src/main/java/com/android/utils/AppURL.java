@@ -80,5 +80,5 @@ public class AppURL {
     public static final String API_GET_MISCELLANEOUS_CATEGORIES = BASE_URL + "system-miscellaneous-categories";
     public static final String API_REASSIGN_CHECKLIST_CHECKPOINTS = BASE_URL + "checklist/recheck-checkpoint?token=";
     public static final String API_GET_PARENTS_CHECKPOINTS = BASE_URL + "checklist/get-parent?token=";
-    public static final String API_SEND_FIREBASE_REFRESHED_TOKEN = BASE_URL + "";
+    public static final String API_SEND_FIREBASE_REFRESHED_TOKEN = BASE_URL + "notification/store-fcm-token?token=";
 }
