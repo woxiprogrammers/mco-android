@@ -84,8 +84,8 @@ public class AutoSuggestActivity extends BaseActivity {
                 isForMaterial = false;
             } else if (moduleName.equalsIgnoreCase("material")) {
                 isForMaterial = true;
-            }else if(moduleName.equalsIgnoreCase("peticash")){
-                isFromPeticash=true;
+            } else if (moduleName.equalsIgnoreCase("peticash")) {
+                isFromPeticash = true;
             }
         }
         deletePreviousLocalData();
@@ -99,7 +99,6 @@ public class AutoSuggestActivity extends BaseActivity {
                 mStrSearch = s.toString();
                 if (mStrSearch.length() > 2) {
                     requestAutoSearchApi(mStrSearch);
-//                    AppUtils.getInstance().hideKeyBoard(mEditTextAutoSuggest);
                 }
             }
 
@@ -170,7 +169,7 @@ public class AutoSuggestActivity extends BaseActivity {
             postRequestBuilder.getAsObject(MaterialSearchResponse.class, new ParsedRequestListener<MaterialSearchResponse>() {
                 @Override
                 public void onResponse(final MaterialSearchResponse response) {
-                    Log.i("@@",response.toString());
+                    Log.i("@@", response.toString());
                     searchMaterialListItem = response.getMaterialSearchResponseData().getMaterialList().get(0);
                     if (searchMaterialListItem.getMaterialRequestComponentTypeSlug().contains("new")) {
                         setUpAddNewButton(true);
@@ -290,15 +289,6 @@ public class AutoSuggestActivity extends BaseActivity {
                         public void onLongItemClick(View view, int position) {
                         }
                     }));
-            /*if (searchMaterialListItemRealmResults != null) {
-                searchMaterialListItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<SearchMaterialListItem>>() {
-                    @Override
-                    public void onChange(RealmResults<SearchMaterialListItem> searchMaterialListItems) {
-                    }
-                });
-            } else {
-                AppUtils.getInstance().showOfflineMessage("AutoSuggestActivity");
-            }*/
         } else {
             searchAssetListItemRealmResults = realm.where(SearchAssetListItem.class).findAllAsync();
             AssetAutoSuggestAdapter assetAutoSuggestAdapter = new AssetAutoSuggestAdapter(searchAssetListItemRealmResults, true, true);
@@ -318,22 +308,13 @@ public class AutoSuggestActivity extends BaseActivity {
                         public void onLongItemClick(View view, int position) {
                         }
                     }));
-            /*if (searchAssetListItemRealmResults != null) {
-                searchAssetListItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<SearchAssetListItem>>() {
-                    @Override
-                    public void onChange(RealmResults<SearchAssetListItem> searchAssetListItems) {
-                    }
-                });
-            } else {
-                AppUtils.getInstance().showOfflineMessage("AutoSuggestActivity");
-            }*/
         }
     }
 
     private void setUpAddNewButton(boolean isVisible) {
         if (isVisible) {
             mButtonAddAsNewItem.setVisibility(View.VISIBLE);
-            mButtonAddAsNewItem.setText(getString(R.string.add_as_new_item,"\""+ mStrSearch + "\"" ));
+            mButtonAddAsNewItem.setText(getString(R.string.add_as_new_item, "\"" + mStrSearch + "\""));
 
             mRecyclerViewSearchResultList.setVisibility(View.GONE);
         } else {
@@ -355,8 +336,8 @@ public class AutoSuggestActivity extends BaseActivity {
                     PurchaseMaterialListActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
                 }
 
-                if(isFromPeticash){
-                    PeticashFormActivity.searchMaterialListItem_fromResult_staticNew=searchMaterialListItem;
+                if (isFromPeticash) {
+                    PeticashFormActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
                 }
             }
         } else {
@@ -365,11 +346,10 @@ public class AutoSuggestActivity extends BaseActivity {
                 Timber.i(String.valueOf(intent));
                 if (isForMaterial) {
                     MaterialRequest_ApproveActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
+                } else if (isFromPeticash) {
+                    PeticashFormActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
                 } else {
                     PurchaseMaterialListActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
-                }
-                if(isFromPeticash){
-                    PeticashFormActivity.searchAssetListItem_fromResult_staticNew=searchAssetListItem;
                 }
             }
         }
@@ -427,7 +407,9 @@ public class AutoSuggestActivity extends BaseActivity {
         @Override
         public int getItemCount() {
             return arrSearchMaterialListItem == null ? 0 : arrSearchMaterialListItem.size();
-        }        @Override
+        }
+
+        @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             SearchMaterialListItem searchMaterialListItem = arrSearchMaterialListItem.get(position);
             holder.mTextViewResultItem.setText(searchMaterialListItem.getMaterialName());
@@ -448,7 +430,6 @@ public class AutoSuggestActivity extends BaseActivity {
             }
         }
 
-
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -468,7 +449,9 @@ public class AutoSuggestActivity extends BaseActivity {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
             }
-        }        @Override
+        }
+
+        @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_result_list, parent, false);
             return new MyViewHolder(itemView);
@@ -489,7 +472,6 @@ public class AutoSuggestActivity extends BaseActivity {
         public int getItemCount() {
             return arrSearchAssetListItem == null ? 0 : arrSearchAssetListItem.size();
         }
-
 
     }
 }
