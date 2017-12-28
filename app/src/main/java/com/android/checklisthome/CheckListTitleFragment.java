@@ -387,6 +387,7 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onItemClick(View view, final int position) {
                         Timber.d("Parent Disabled: isViewOnly " + isViewOnly);
+                        Timber.d("Current projectSiteUserCheckpointId: " + checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
                         ((CheckListActionActivity) mContext).getCheckListVerificationFragment(checkPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
                     }
 
@@ -430,18 +431,21 @@ public class CheckListTitleFragment extends Fragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    realm = Realm.getDefaultInstance();
                                     parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class).findAll();
+                                    for (ParentCheckPointsItem parent :
+                                            parentCheckPointsItemRealmResults) {
+                                        Timber.d("ID: " + parent.getProjectSiteUserCheckpointId());
+                                    }
                                     ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
                                     rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
                                     rvChecklistTitle.setHasFixedSize(true);
                                     rvChecklistTitle.setAdapter(parentCheckListTitleAdapter);
-                                    rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                                            rvChecklistTitle,
+                                    rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvChecklistTitle,
                                             new RecyclerItemClickListener.OnItemClickListener() {
                                                 @Override
                                                 public void onItemClick(View view, final int position) {
                                                     Timber.d("Parent Enabled: isViewOnly " + isViewOnly);
+                                                    Timber.d("Parent projectSiteUserCheckpointId: " + parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
                                                     ((CheckListActionActivity) mContext).getCheckListVerificationFragment(parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
                                                 }
 
@@ -616,7 +620,9 @@ public class CheckListTitleFragment extends Fragment {
         @Override
         public long getItemId(int index) {
             return checkPointsItemOrderedRealmCollection.get(index).getProjectSiteUserCheckpointId();
-        }        @Override
+        }
+
+        @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
             if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
@@ -643,8 +649,6 @@ public class CheckListTitleFragment extends Fragment {
         public int getItemCount() {
             return checkPointsItemOrderedRealmCollection == null ? 0 : checkPointsItemOrderedRealmCollection.size();
         }
-
-
     }
 
     public class ParentCheckListTitleAdapter extends RealmRecyclerViewAdapter<ParentCheckPointsItem, ParentCheckListTitleAdapter.MyViewHolder> {
@@ -666,7 +670,9 @@ public class CheckListTitleFragment extends Fragment {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
             }
-        }        @Override
+        }
+
+        @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_checklist_title, parent, false);
             return new MyViewHolder(itemView);
@@ -692,7 +698,5 @@ public class CheckListTitleFragment extends Fragment {
         public int getItemCount() {
             return checkPointsItemOrderedRealmCollection == null ? 0 : checkPointsItemOrderedRealmCollection.size();
         }
-
-
     }
 }
