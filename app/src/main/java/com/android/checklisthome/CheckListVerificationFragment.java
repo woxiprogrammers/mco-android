@@ -204,6 +204,9 @@ public class CheckListVerificationFragment extends Fragment {
                 if (intNumberOfImages > 0) {
                     addClickableCaptionsTemplate(checkPointsItem);
                 } else {
+                    if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                        btnSubmitChecklist.setVisibility(View.GONE);
+                    }
                     linearLayoutChecklistImg.setVisibility(View.GONE);
                 }
                 if (isUserViewOnly) {
@@ -269,17 +272,22 @@ public class CheckListVerificationFragment extends Fragment {
             imageViewCapturedImage = inflatedView.findViewById(R.id.imageViewCapturedImage);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(400, 300);
             imageViewCapturedImage.setLayoutParams(layoutParams);
-            if (!TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
-                Glide.with(mContext)
-                        .load(BuildConfig.BASE_URL_MEDIA + checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
-                        .thumbnail(0.1f)
-                        .crossFade()
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(imageViewCapturedImage);
-            } else {
+            //!TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
+            if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
                 btnSubmitChecklist.setVisibility(View.GONE);
                 imageViewCapturedImage.setImageResource(android.R.drawable.ic_menu_camera);
+            } else {
+                if (TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())) {
+                    imageViewCapturedImage.setImageResource(android.R.drawable.ic_menu_camera);
+                } else {
+                    Glide.with(mContext)
+                            .load(BuildConfig.BASE_URL_MEDIA + checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteUserCheckpointImageUrl())
+                            .thumbnail(0.1f)
+                            .crossFade()
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .into(imageViewCapturedImage);
+                }
             }
             if (checkPointsItem.getProjectSiteUserCheckpointImages().get(i).isProjectSiteChecklistCheckpointImageIsRequired()) {
                 textView_captionName.setText(checkPointsItem.getProjectSiteUserCheckpointImages().get(i).getProjectSiteChecklistCheckpointImageCaption() + "*");
