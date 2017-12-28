@@ -361,11 +361,15 @@ public class CheckListTitleFragment extends Fragment {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                     if (position > 0) {
                         isViewOnly = true;
+                        mLinearLayoutReassignTo.setVisibility(View.GONE);
+                        mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
                         ParentChecklistIdIdem selectedParentChecklistIdIdem = (ParentChecklistIdIdem) adapterView.getSelectedItem();
                         parentProjectSiteUserChecklistAssignmentId = selectedParentChecklistIdIdem.getProjectSiteUserChecklistAssignmentId();
                         getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
                     } else {
                         isViewOnly = false;
+                        mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
+                        mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
                     }
                 }
 

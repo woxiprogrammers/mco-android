@@ -13,10 +13,7 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 
 public class ChecklistHomeActivity extends BaseActivity {
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
+    private String strSubModuleTag, permissionsItemList;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -32,10 +29,6 @@ public class ChecklistHomeActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*public void moveToScreenNumber(int screenNumber) {
-        mViewPager.setCurrentItem(screenNumber);
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,19 +37,18 @@ public class ChecklistHomeActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.title_activity_checklist);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        /*
-      The {@link android.support.v4.view.PagerAdapter} that will provide
-      fragments for each of the sections. We use a
-      {@link FragmentPagerAdapter} derivative, which will keep every
-      loaded fragment in memory. If this becomes too memory intensive, it
-      may be best to switch to a
-      {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            strSubModuleTag = bundle.getString("subModuleTag");
+            permissionsItemList = bundle.getString("permissionsItemList");
+        }
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        /*
+      The {@link ViewPager} that will host the section contents.
+     */
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -78,13 +70,13 @@ public class ChecklistHomeActivity extends BaseActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return ChecklistList_AssignedFragment.newInstance();
+                    return ChecklistList_AssignedFragment.newInstance(strSubModuleTag, permissionsItemList);
                 case 1:
-                    return ChecklistList_InProgressFragment.newInstance();
+                    return ChecklistList_InProgressFragment.newInstance(strSubModuleTag, permissionsItemList);
                 case 2:
-                    return ChecklistList_ReviewFragment.newInstance();
+                    return ChecklistList_ReviewFragment.newInstance(strSubModuleTag, permissionsItemList);
                 case 3:
-                    return ChecklistList_CompleteFragment.newInstance();
+                    return ChecklistList_CompleteFragment.newInstance(strSubModuleTag, permissionsItemList);
                 default:
                     return null;
             }

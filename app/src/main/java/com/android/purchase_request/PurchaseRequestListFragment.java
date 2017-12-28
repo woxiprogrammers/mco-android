@@ -79,10 +79,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     }
 
     public static PurchaseRequestListFragment newInstance(String subModule_Tag, String permissionsItemList) {
+        PurchaseRequestListFragment fragment = new PurchaseRequestListFragment();
         Bundle args = new Bundle();
         args.putString("subModule_Tag", subModule_Tag);
         args.putString("permissionsItemList", permissionsItemList);
-        PurchaseRequestListFragment fragment = new PurchaseRequestListFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -165,10 +165,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             String accessPermission = permissionsItem.getCanAccess();
             if (accessPermission.equalsIgnoreCase(getString(R.string.create_purchase_request))) {
                 floatingCreatePurchaseRequest.setVisibility(View.VISIBLE);
-            }//TODO Sharvari
-            /*else if (accessPermission.equalsIgnoreCase(getString(R.string.aprove_purchase_request))) {
-                floatingCreatePurchaseRequest.setVisibility(View.GONE);
-            }*/
+            }
         }
     }
 
