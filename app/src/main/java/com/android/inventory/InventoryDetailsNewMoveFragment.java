@@ -128,18 +128,19 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
 
     private void validateEntries() {
         String strSourceName = edtUserName.getText().toString();
-            if (TextUtils.isEmpty(strSourceName)) {
-                edtUserName.setError(getString(R.string.please_enter) + " " + " User Name");
-                return;
-            } else {
-                edtUserName.requestFocus();
-                edtUserName.setError(null);
-            }
+        if (TextUtils.isEmpty(strSourceName)) {
+            edtUserName.setError(getString(R.string.please_enter) + " " + " User Name");
+            return;
+        } else {
+            edtUserName.requestFocus();
+            edtUserName.setError(null);
+        }
 
         //Quantity
         String strQuantity = edtQuantity.getText().toString();
         if (TextUtils.isEmpty(strQuantity)) {
             edtQuantity.setError("Please " + getString(R.string.edittext_hint_quantity));
+            return;
         } else {
             edtQuantity.requestFocus();
             edtQuantity.setError(null);
@@ -147,8 +148,6 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
         uploadImages_addItemToLocal();
 
     }
-
-
 
     private void uploadImages_addItemToLocal() {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
@@ -193,7 +192,8 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     private void requestToMoveOut() {
         JSONObject params = new JSONObject();
         try {
-            params.put("name", "labour");
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("name", "user");
             params.put("source_name", edtUserName.getText().toString());
             params.put("type", "OUT");
             params.put("inventory_component_id", inventoryComponentId);
@@ -245,7 +245,6 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
         }
     }
 
-
     private void chooseAction(int type, Class aClass) {
         Intent intent = new Intent(mContext, aClass);
         Params params = new Params();
@@ -256,6 +255,7 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
         intent.putExtra(Constants.KEY_PARAMS, params);
         startActivityForResult(intent, type);
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode != RESULT_OK) {
@@ -290,7 +290,6 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
                 break;
         }
     }
-
 
     private void checkAvailability(int materialRequestComponentId) {
         JSONObject params = new JSONObject();

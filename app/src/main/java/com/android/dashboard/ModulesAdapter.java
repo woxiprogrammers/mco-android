@@ -66,7 +66,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_action_more_vert);
 
         }*/
-//        holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
+//       holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
         int noOfTextViews = holder.ll_sub_modules.getChildCount();
         int noOfSubModules = modulesItemRealmList.size();
         if (noOfSubModules < noOfTextViews) {
