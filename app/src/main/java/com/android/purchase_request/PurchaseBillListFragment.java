@@ -214,7 +214,7 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
         public void onBindViewHolder(MyViewHolder holder, int position) {
             BillDataItem purchaseBillListItem = arrPurchaseBillListItems.get(position).getBillData().get(0);
             holder.textViewPurchaseGrn.setText(purchaseBillListItem.getPurchaseBillGrn());
-            holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getStatus());
+            holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseBillListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseBillListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseBillListItem.getMaterialName());
         }

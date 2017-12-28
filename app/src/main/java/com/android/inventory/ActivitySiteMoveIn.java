@@ -1,25 +1,30 @@
 package com.android.inventory;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.material_request_approve.SearchAssetListItem;
+import com.android.material_request_approve.SearchMaterialListItem;
+import com.android.material_request_approve.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -37,11 +42,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import id.zelory.compressor.Compressor;
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class ActivitySiteMoveIn extends BaseActivity {
@@ -64,28 +75,68 @@ public class ActivitySiteMoveIn extends BaseActivity {
     EditText edtSiteTransferRemark;
     @BindView(R.id.btnSubmit)
     Button btnSubmit;
+    @BindView(R.id.radioButtonMaterial)
+    RadioButton radioButtonMaterial;
+    @BindView(R.id.radioButtonAsset)
+    RadioButton radioButtonAsset;
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonArray;
     private ArrayList<String> siteNameArray;
     private ArrayAdapter<String> adapter;
+    private int project_site_id;
+    private JSONArray jsonImageNameArray = new JSONArray();
+    private Realm realm;
+    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
+    private int unitId;
+    private boolean isMaterial=false;
+    private SearchMaterialListItem searchMaterialListItem_fromResult = null;
+    private SearchAssetListItem searchAssetListItem_fromResult = null;
+    private boolean isNewItem;
+    public static SearchMaterialListItem searchMaterialListItem_fromResult_staticNew = null;
+    public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_site_move_in);
         ButterKnife.bind(this);
-        mContext=ActivitySiteMoveIn.this;
-        if(getSupportActionBar() != null){
+        mContext = ActivitySiteMoveIn.this;
+        requestToGetSystemSites();
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Move In");
         }
+        if(radioButtonMaterial.isChecked()){
+            isMaterial=true;
+        }else {
+            isMaterial=false;
+        }
+        edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedString = (String) adapterView.getItemAtPosition(i);
+                setProjectNameFromIndex(selectedString);
+            }
+        });
 
+    }
+
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
+            String strProject = jsonObject.getString("project_name");
+            project_site_id = jsonObject.getInt("project_site_id");
+            edtProjName.setText(strProject + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
@@ -95,14 +146,26 @@ public class ActivitySiteMoveIn extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.edtMatAssetName:
+                if(!radioButtonAsset.isChecked() && !radioButtonMaterial.isChecked()){
+                    Toast.makeText(mContext,"Please select either Material/Asset",Toast.LENGTH_LONG).show();
+                    return;
+                }else {
+                    Intent intent=new Intent(ActivitySiteMoveIn.this,AutoSuggestInventoryComponent.class);
+                    intent.putExtra("isMaterial",isMaterial);
+                    startActivity(intent);
+                }
+
                 break;
             case R.id.textView_capture:
                 chooseAction();
                 break;
             case R.id.btnSubmit:
+                validateEntries();
                 break;
         }
     }
+
+
 
     private void chooseAction() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
@@ -147,9 +210,72 @@ public class ActivitySiteMoveIn extends BaseActivity {
                     }
                 }
                 break;
+
+            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
+                edtQuantity.setText("");
+                functionForProcessingSearchResult(intent);
+                break;
         }
     }
 
+    private void functionForProcessingSearchResult(Intent intent) {
+        Bundle bundleExtras = intent.getExtras();
+        if (bundleExtras != null) {
+            edtMatAssetName.clearFocus();
+            isNewItem = bundleExtras.getBoolean("isNewItem");
+            isMaterial = bundleExtras.getBoolean("isMaterial");
+            String searchedItemName = bundleExtras.getString("searchedItemName");
+            realm = Realm.getDefaultInstance();
+            if (isMaterial) {
+                edtQuantity.setText("");
+                edtQuantity.setFocusableInTouchMode(true);
+                if (isNewItem) {
+                    searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
+                } else {
+                    searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                }
+            } else {
+//                mEditTextQuantityMaterialAsset.setFocusable(false);
+                if (isNewItem) {
+                    searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
+                } else {
+                    searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
+                }
+            }
+            Timber.d("AutoSearch complete");
+            if (realm != null) {
+                realm.close();
+            }
+                if (isMaterial) {
+                    if (searchMaterialListItem_fromResult != null) {
+                        edtMatAssetName.setText(searchMaterialListItem_fromResult.getMaterialName());
+                        spinnerItemUnit.setAdapter(setSpinnerUnits(searchMaterialListItem_fromResult.getUnitQuantity()));
+                    }
+                } else {
+                    if (searchAssetListItem_fromResult != null) {
+                        edtMatAssetName.setText(searchAssetListItem_fromResult.getAssetName());
+                    }
+                }
+        }
+    }
+
+
+    private ArrayAdapter<String> setSpinnerUnits(RealmList<UnitQuantityItem> unitQuantityItems) {
+        List<UnitQuantityItem> arrUnitQuantityItems = null;
+        try {
+            arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
+        } catch (Exception e) {
+            arrUnitQuantityItems = unitQuantityItems;
+        }
+        ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
+        for (UnitQuantityItem quantityItem : arrUnitQuantityItems) {
+            String unitName = quantityItem.getUnitName();
+            arrayOfUnitNames.add(unitName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUnitNames);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
+    }
     private void requestToGetSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
                 .setTag("requestToGetSystemSites")
@@ -178,6 +304,153 @@ public class ActivitySiteMoveIn extends BaseActivity {
                         AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
                     }
                 });
+    }
+
+    private void uploadImages_addItemToLocal() {
+        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+            File sendImageFile = arrayImageFileList.get(0);
+            File compressedImageFile = sendImageFile;
+            try {
+                compressedImageFile = new Compressor(mContext).compressToFile(sendImageFile);
+            } catch (IOException e) {
+                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+            }
+            String strToken = AppUtils.getInstance().getCurrentToken();
+            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                    .setPriority(Priority.MEDIUM)
+                    .addMultipartFile("image", compressedImageFile)
+                    .addMultipartParameter("image_for", "inventory_transfer")
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("uploadImages_addItemToLocal")
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            arrayImageFileList.remove(0);
+                            try {
+                                String fileName = response.getString("filename");
+                                jsonImageNameArray.put(fileName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            uploadImages_addItemToLocal();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                        }
+                    });
+        } else {
+            requestToMoveIn();
+        }
+    }
+
+    private void requestToMoveIn() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("name", "user");
+            params.put("source_name", edtMatAssetName.getText().toString());
+            params.put("type", "OUT");
+            params.put("inventory_component_id", "1");
+            params.put("quantity", edtQuantity.getText().toString());
+            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                unitId = unitQuantityItemRealmResults.get(spinnerItemUnit.getSelectedItemPosition()).getUnitId();
+                params.put("unit_id", unitId);
+            }
+            params.put("remark", edtSiteTransferRemark.getText().toString());
+            params.put("image", jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
+                .setTag("materialCreateTransfer")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    private void validateEntries() {
+        String strSiteName, strProjectName, strItemName, strQuantity;
+        strSiteName = edtSiteName.getText().toString();
+        strProjectName = edtProjName.getText().toString();
+        strItemName = edtMatAssetName.getText().toString();
+        strQuantity = edtQuantity.getText().toString();
+
+        //SiteName
+        if (TextUtils.isEmpty(strSiteName)) {
+            edtSiteName.setError("Please Enter Site Name");
+            return;
+        } else {
+            edtSiteName.requestFocus();
+            edtSiteName.setError(null);
+        }
+
+        //Project
+        if (TextUtils.isEmpty(strProjectName)) {
+            edtProjName.setError("Please Enter Project Name");
+            return;
+        } else {
+            edtProjName.requestFocus();
+            edtProjName.setError(null);
+        }
+
+        //Item Name Mat/Asset
+        if (TextUtils.isEmpty(strItemName)) {
+            edtMatAssetName.setError("Please Enter Material/Asset");
+            return;
+        } else {
+            edtMatAssetName.requestFocus();
+            edtMatAssetName.setError(null);
+        }
+
+        //Quantity
+        if (TextUtils.isEmpty(strQuantity)) {
+            edtQuantity.setError("Please " + getString(R.string.edittext_hint_quantity));
+            return;
+        } else {
+            edtQuantity.requestFocus();
+            edtQuantity.setError(null);
+        }
+
+        uploadImages_addItemToLocal();
+    }
+
+    private void setUpUnitQuantityChangeListener() {
+        realm = Realm.getDefaultInstance();
+        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
+        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
+    }
+
+    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
+        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (UnitQuantityItem currentUser : unitQuantityItems) {
+            String strUserName = currentUser.getUnitName();
+            arrayOfUsers.add(strUserName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerItemUnit.setAdapter(arrayAdapter);
     }
 
 }

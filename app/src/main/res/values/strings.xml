@@ -88,7 +88,7 @@
     <string name="text_bills">Transaction</string>
     <string name="title_activity_material_request">Material Request</string>
     <string name="tag_in_indent">in-indent</string>
-    <string name="add_as_new_item">Add %s as new item</string>
+    <string name="add_as_new_item">add %s as new item</string>
     <string name="tag_new">new</string>
     <string name="create_material_request">create-material-request</string>
     <string name="approve_material_request">approve-material-request</string>

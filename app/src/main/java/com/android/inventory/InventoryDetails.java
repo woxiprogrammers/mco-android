@@ -138,7 +138,7 @@ public class InventoryDetails extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return InventoryDetailsMoveFragment.newInstance(intCompId);
+                    return InventoryDetailsNewMoveFragment.newInstance(intCompId);
                 case 1:
                     return MaterialHistoryFragment.newInstance();
                 default:

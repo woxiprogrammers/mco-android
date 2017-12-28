@@ -299,7 +299,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
             PurchaseOrderListItem purchaseOrderListItem = arrPurchaseOrderListItems.get(position);
             holder.textViewPurchaseRequestId.setText(purchaseOrderListItem.getPurchaseOrderFormatId());
             holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
-            holder.textViewPurchaseRequestStatus.setText(purchaseOrderListItem.getStatus());
+            holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseOrderListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseOrderListItem.getDate());
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());

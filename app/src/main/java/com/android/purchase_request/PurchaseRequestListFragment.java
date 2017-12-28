@@ -71,7 +71,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
     private int pageNumber = 0;
     private int oldPageNumber;
-    private PurchaseRequestRvAdapter purchaseRequestRvAdapter;
     private int passYear, passMonth;
 
     public PurchaseRequestListFragment() {
@@ -246,7 +245,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
                 .contains("date", strMonth).findAllAsync();
-        purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
+        PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
         recyclerView_commonListingView.setAdapter(purchaseRequestRvAdapter);
@@ -321,7 +320,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseRequestListItem purchaseRequestListItem = arrPurchaseRequestListItems.get(position);
             holder.textViewPurchaseRequestId.setText(purchaseRequestListItem.getPurchaseRequestId());
-            holder.textViewPurchaseRequestStatus.setText(purchaseRequestListItem.getStatus());
+            holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseRequestListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {

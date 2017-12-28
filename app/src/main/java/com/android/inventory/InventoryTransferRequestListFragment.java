@@ -1,8 +1,13 @@
 package com.android.inventory;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,32 +16,42 @@ import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.models.purchase_order.PurchaseOrderListItem;
+import com.android.models.inventory.MaterialListItem;
+import com.android.models.inventory.RequestComponentData;
+import com.android.models.inventory.RequestComponentListingItem;
+import com.android.models.inventory.RequestComponentResponse;
+import com.android.purchase_details.PayAndBillsActivity;
+import com.android.purchase_request.PurchaseOrdermaterialDetailFragment;
+import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
+import com.android.utils.RecyclerItemClickListener;
 import com.android.utils.RecyclerViewClickListener;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.ParsedRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
+import timber.log.Timber;
 
 public class InventoryTransferRequestListFragment extends Fragment implements FragmentInterface {
-    /*
-        @BindView(R.id.rv_transfer_request_list)
-        RecyclerView rvTransferRequestList;*/
+    @BindView(R.id.rv_transfer_request_list)
+    RecyclerView rvTransferRequestList;
     Unbinder unbinder;
-    @BindView(R.id.textView_itemName)
-    TextView textViewItemName;
-    @BindView(R.id.textview_QuantityUnit)
-    TextView textviewQuantityUnit;
-    @BindView(R.id.textView_rate)
-    TextView textViewRate;
-    @BindView(R.id.textView_TransferTo)
-    TextView textViewTransferTo;
-    @BindView(R.id.textViewApprove)
-    TextView textViewApprove;
+    private RealmResults<RequestComponentListingItem> requestComponentListingItems;
     private View mParentView;
+    private Realm realm;
+    private Context mContext;
 
     public InventoryTransferRequestListFragment() {
         // Required empty public constructor
@@ -53,10 +68,92 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        mParentView = inflater.inflate(R.layout.fragment_inventory_transfer_request_list, container, false);
-        mParentView = inflater.inflate(R.layout.item_transfer_request_list, container, false);
+        mParentView = inflater.inflate(R.layout.fragment_inventory_transfer_request_list, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
+        mContext=getActivity();
+        setAdapterForMaterialList();
         return mParentView;
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+            requestComponentList();
+    }
+
+    private void setAdapterForMaterialList() {
+        realm = Realm.getDefaultInstance();
+        requestComponentListingItems = realm.where(RequestComponentListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
+            @Override
+            public void onItemClick(View view, final int position) {
+                if (view.getId() == R.id.textViewApprove) {
+
+                }
+            }
+        };
+        TransferRequestAdapter transferRequestAdapter = new TransferRequestAdapter(requestComponentListingItems, true, true,recyclerItemClickListener);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rvTransferRequestList.setLayoutManager(linearLayoutManager);
+        rvTransferRequestList.setAdapter(transferRequestAdapter);
+    }
+
+    private void requestComponentList() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        realm = Realm.getDefaultInstance();
+        Timber.d(AppURL.API_REQUEST_COMPONENT_LIST + AppUtils.getInstance().getCurrentToken());
+        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("requestInventoryData")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsObject(RequestComponentResponse.class, new ParsedRequestListener<RequestComponentResponse>() {
+                    @Override
+                    public void onResponse(final RequestComponentResponse response) {
+                        /*if (!response.getPageid().equalsIgnoreCase("")) {
+                            pageNumber = Integer.parseInt(response.getPageid());
+                        }*/
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(RequestComponentResponse.class);
+                                    realm.delete(RequestComponentData.class);
+                                    realm.delete(RequestComponentListingItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    /*if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestInventoryResponse(pageNumber);
+                                    }*/
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
 
     @Override
@@ -65,19 +162,14 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
         unbinder.unbind();
     }
 
-    @Override
-    public void fragmentBecameVisible() {
-
-    }
-
     @SuppressWarnings("WeakerAccess")
-    public class TransferRequestAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, TransferRequestAdapter.MyViewHolder> {
-        private OrderedRealmCollection<PurchaseOrderListItem> arrPurchaseOrderListItems;
+    public class TransferRequestAdapter extends RealmRecyclerViewAdapter<RequestComponentListingItem, TransferRequestAdapter.MyViewHolder> {
+        private OrderedRealmCollection<RequestComponentListingItem> requestComponentListingItemOrderedRealmCollection;
         RecyclerViewClickListener recyclerViewClickListener;
 
-        TransferRequestAdapter(@Nullable OrderedRealmCollection<PurchaseOrderListItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
+        TransferRequestAdapter(@Nullable OrderedRealmCollection<RequestComponentListingItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
             super(data, autoUpdate, updateOnModification);
-            arrPurchaseOrderListItems = data;
+            requestComponentListingItemOrderedRealmCollection = data;
             this.recyclerViewClickListener = recyclerViewClickListener;
         }
 
@@ -89,17 +181,20 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            PurchaseOrderListItem purchaseOrderListItem = arrPurchaseOrderListItems.get(position);
+            RequestComponentListingItem requestComponentListingItem = requestComponentListingItemOrderedRealmCollection.get(position);
+            holder.textViewItemName.setText(requestComponentListingItem.getComponentName());
+            holder.textviewQuantityUnit.setText(requestComponentListingItem.getQuantity() + " " + requestComponentListingItem.getUnit());
+            holder.textViewTransferTo.setText(requestComponentListingItem.getProjectSiteTo());
         }
 
         @Override
         public long getItemId(int index) {
-            return arrPurchaseOrderListItems.get(index).getId();
+            return requestComponentListingItemOrderedRealmCollection.get(index).getInventoryComponentTransferId();
         }
 
         @Override
         public int getItemCount() {
-            return arrPurchaseOrderListItems == null ? 0 : arrPurchaseOrderListItems.size();
+            return requestComponentListingItemOrderedRealmCollection == null ? 0 : requestComponentListingItemOrderedRealmCollection.size();
         }
 
         @OnClick(R.id.textViewdetails)
@@ -108,9 +203,21 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
 
         class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+            @BindView(R.id.textView_itemName)
+            TextView textViewItemName;
+            @BindView(R.id.textview_QuantityUnit)
+            TextView textviewQuantityUnit;
+            @BindView(R.id.textView_rate)
+            TextView textViewRate;
+            @BindView(R.id.textView_TransferTo)
+            TextView textViewTransferTo;
+            @BindView(R.id.textViewApprove)
+            TextView textViewApprove;
+
             MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+                textViewApprove.setOnClickListener(this);
             }
 
             @Override

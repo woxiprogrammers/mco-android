@@ -380,4 +380,33 @@ public class AppUtils {
             AppUtils.getInstance().showOfflineMessage("MyFirebaseInstanceIDService");
         }
     }
+
+    public String getVisibleStatus(String strStatus) {
+        if (strStatus.equalsIgnoreCase("p-r-assigned")) {
+            return "P R Assigned";
+        } else if (strStatus.equalsIgnoreCase("pending")) {
+            return "Pending";
+        } else if (strStatus.equalsIgnoreCase("manager-approved")) {
+            return "Manager Approved";
+        } else if (strStatus.equalsIgnoreCase("manager-disapproved")) {
+            return "Manager Disapproved";
+        } else if (strStatus.equalsIgnoreCase("admin-approved")) {
+            return "Admin Approved";
+        } else if (strStatus.equalsIgnoreCase("admin-disapproved")) {
+            return "Admin Disapproved";
+        } else if (strStatus.equalsIgnoreCase("in-indent")) {
+            return "in Indent";
+        } else if (strStatus.equalsIgnoreCase("p-r-manager-approved")) {
+            return "P R Manager Approved";
+        } else if (strStatus.equalsIgnoreCase("p-r-manager-disapproved")) {
+            return "P R Manager Disapproved";
+        } else if (strStatus.equalsIgnoreCase("p-r-admin-approved")) {
+            return "P R Admin Approved";
+        } else if (strStatus.equalsIgnoreCase("p-r-admin-disapproved")) {
+            return "P R Admin Disapproved";
+        } else if (strStatus.equalsIgnoreCase("purchase-requested")) {
+            return "Purchase Requested";
+        }
+        return "";
+    }
 }

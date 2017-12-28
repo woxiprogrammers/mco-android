@@ -5,13 +5,13 @@
 
 
     <FrameLayout
-        android:id="@+id/editTextAutoSuggestFrame"
+        android:id="@+id/editTextAutoSearchFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/editbox_background">
 
         <EditText
-            android:id="@+id/editTextAutoSuggest"
+            android:id="@+id/editTextAutoSuggestInvComponent"
             android:layout_width="match_parent"
             android:background="@null"
             android:hint="Search Material/Asset"
@@ -20,18 +20,18 @@
     </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewSearchResultList"
+        android:id="@+id/recyclerViewSearchList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/editTextAutoSuggestFrame"
+        android:layout_below="@id/editTextAutoSearchFrame"
         android:scrollbars="vertical"/>
 
     <Button
-        android:id="@+id/buttonAddAsNewItem"
+        android:id="@+id/buttonAddNewItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
-        android:layout_below="@id/editTextAutoSuggestFrame"
+        android:layout_below="@id/editTextAutoSearchFrame"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dimen_20dp"
         android:background="@color/colorAccent"
