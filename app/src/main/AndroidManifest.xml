@@ -112,6 +112,8 @@
         </activity>
         <activity android:name="com.android.inventory.ActivitySiteMoveIn">
         </activity>
+        <activity android:name="com.android.inventory.AutoSuggestInventoryComponent">
+        </activity>
     </application>
 
 </manifest>

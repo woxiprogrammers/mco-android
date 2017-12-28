@@ -133,11 +133,11 @@ public class ActivitySiteMoveIn extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.edtMatAssetName:
-                if(!radioButtonAsset.isChecked() || !radioButtonMaterial.isChecked()){
+                if(!radioButtonAsset.isChecked() && !radioButtonMaterial.isChecked()){
                     Toast.makeText(mContext,"Please select either Material/Asset",Toast.LENGTH_LONG).show();
                     return;
                 }else {
-                    Intent intent=new Intent(mContext,AutoSuggectInventoryComponent.class);
+                    Intent intent=new Intent(ActivitySiteMoveIn.this,AutoSuggestInventoryComponent.class);
                     startActivity(intent);
                 }
 
