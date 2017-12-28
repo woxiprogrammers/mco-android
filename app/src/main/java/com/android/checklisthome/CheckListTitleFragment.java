@@ -105,6 +105,8 @@ public class CheckListTitleFragment extends Fragment {
     private int parentProjectSiteUserChecklistAssignmentId;
     private boolean isViewOnly;
     private boolean isUserViewOnly;
+    RecyclerItemClickListener recyclerParentItemClickListener;
+    RecyclerItemClickListener recyclerCurrentItemClickListener;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -381,7 +383,10 @@ public class CheckListTitleFragment extends Fragment {
         rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
         rvChecklistTitle.setHasFixedSize(true);
         rvChecklistTitle.setAdapter(checkListTitleAdapter);
-        rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+        if (recyclerParentItemClickListener != null) {
+            rvChecklistTitle.removeOnItemTouchListener(recyclerParentItemClickListener);
+        }
+        recyclerCurrentItemClickListener = new RecyclerItemClickListener(mContext,
                 rvChecklistTitle,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -394,7 +399,8 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
-                }));
+                });
+        rvChecklistTitle.addOnItemTouchListener(recyclerCurrentItemClickListener);
     }
 
     private void getParentsCheckpointsList(int parentProjectSiteUserChecklistAssignmentId) {
@@ -440,7 +446,10 @@ public class CheckListTitleFragment extends Fragment {
                                     rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
                                     rvChecklistTitle.setHasFixedSize(true);
                                     rvChecklistTitle.setAdapter(parentCheckListTitleAdapter);
-                                    rvChecklistTitle.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvChecklistTitle,
+                                    if (recyclerCurrentItemClickListener != null) {
+                                        rvChecklistTitle.removeOnItemTouchListener(recyclerCurrentItemClickListener);
+                                    }
+                                    recyclerParentItemClickListener = new RecyclerItemClickListener(mContext, rvChecklistTitle,
                                             new RecyclerItemClickListener.OnItemClickListener() {
                                                 @Override
                                                 public void onItemClick(View view, final int position) {
@@ -452,7 +461,8 @@ public class CheckListTitleFragment extends Fragment {
                                                 @Override
                                                 public void onLongItemClick(View view, int position) {
                                                 }
-                                            }));
+                                            });
+                                    rvChecklistTitle.addOnItemTouchListener(recyclerParentItemClickListener);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
