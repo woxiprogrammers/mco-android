@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.material_request_approve.SearchAssetListItem;
+import com.android.material_request_approve.SearchMaterialListItem;
 import com.android.material_request_approve.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -49,6 +51,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
@@ -86,6 +89,12 @@ public class ActivitySiteMoveIn extends BaseActivity {
     private Realm realm;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private int unitId;
+    private boolean isMaterial=false;
+    private SearchMaterialListItem searchMaterialListItem_fromResult = null;
+    private SearchAssetListItem searchAssetListItem_fromResult = null;
+    private boolean isNewItem;
+    public static SearchMaterialListItem searchMaterialListItem_fromResult_staticNew = null;
+    public static SearchAssetListItem searchAssetListItem_fromResult_staticNew = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +107,11 @@ public class ActivitySiteMoveIn extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Move In");
         }
-
+        if(radioButtonMaterial.isChecked()){
+            isMaterial=true;
+        }else {
+            isMaterial=false;
+        }
         edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -138,6 +151,7 @@ public class ActivitySiteMoveIn extends BaseActivity {
                     return;
                 }else {
                     Intent intent=new Intent(ActivitySiteMoveIn.this,AutoSuggestInventoryComponent.class);
+                    intent.putExtra("isMaterial",isMaterial);
                     startActivity(intent);
                 }
 
@@ -146,9 +160,12 @@ public class ActivitySiteMoveIn extends BaseActivity {
                 chooseAction();
                 break;
             case R.id.btnSubmit:
+                validateEntries();
                 break;
         }
     }
+
+
 
     private void chooseAction() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
@@ -193,9 +210,72 @@ public class ActivitySiteMoveIn extends BaseActivity {
                     }
                 }
                 break;
+
+            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
+                edtQuantity.setText("");
+                functionForProcessingSearchResult(intent);
+                break;
         }
     }
 
+    private void functionForProcessingSearchResult(Intent intent) {
+        Bundle bundleExtras = intent.getExtras();
+        if (bundleExtras != null) {
+            edtMatAssetName.clearFocus();
+            isNewItem = bundleExtras.getBoolean("isNewItem");
+            isMaterial = bundleExtras.getBoolean("isMaterial");
+            String searchedItemName = bundleExtras.getString("searchedItemName");
+            realm = Realm.getDefaultInstance();
+            if (isMaterial) {
+                edtQuantity.setText("");
+                edtQuantity.setFocusableInTouchMode(true);
+                if (isNewItem) {
+                    searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
+                } else {
+                    searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                }
+            } else {
+//                mEditTextQuantityMaterialAsset.setFocusable(false);
+                if (isNewItem) {
+                    searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
+                } else {
+                    searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
+                }
+            }
+            Timber.d("AutoSearch complete");
+            if (realm != null) {
+                realm.close();
+            }
+                if (isMaterial) {
+                    if (searchMaterialListItem_fromResult != null) {
+                        edtMatAssetName.setText(searchMaterialListItem_fromResult.getMaterialName());
+                        spinnerItemUnit.setAdapter(setSpinnerUnits(searchMaterialListItem_fromResult.getUnitQuantity()));
+                    }
+                } else {
+                    if (searchAssetListItem_fromResult != null) {
+                        edtMatAssetName.setText(searchAssetListItem_fromResult.getAssetName());
+                    }
+                }
+        }
+    }
+
+
+    private ArrayAdapter<String> setSpinnerUnits(RealmList<UnitQuantityItem> unitQuantityItems) {
+        List<UnitQuantityItem> arrUnitQuantityItems = null;
+        try {
+            arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
+        } catch (Exception e) {
+            arrUnitQuantityItems = unitQuantityItems;
+        }
+        ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
+        for (UnitQuantityItem quantityItem : arrUnitQuantityItems) {
+            String unitName = quantityItem.getUnitName();
+            arrayOfUnitNames.add(unitName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUnitNames);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
+    }
     private void requestToGetSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
                 .setTag("requestToGetSystemSites")

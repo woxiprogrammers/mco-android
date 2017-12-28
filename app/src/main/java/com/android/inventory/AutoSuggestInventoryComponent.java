@@ -2,6 +2,8 @@ package com.android.inventory;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +17,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
@@ -30,6 +35,7 @@ import com.android.material_request_approve.SearchMaterialListItem;
 import com.android.material_request_approve.UnitQuantityItem;
 import com.android.peticash.PeticashFormActivity;
 import com.android.purchase_request.PurchaseMaterialListActivity;
+import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -38,9 +44,14 @@ import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.vlk.multimager.utils.Constants;
+import com.vlk.multimager.utils.Image;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,16 +74,14 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
     Button buttonAddNewItem;
     private Context mContext;
 
-
     boolean isMaterial = false;
-    boolean isForMaterial = false;
     private String mStrSearch;
     private Realm realm;
     private RealmResults<SearchMaterialListItem> searchMaterialListItemRealmResults;
     private RealmResults<SearchAssetListItem> searchAssetListItemRealmResults;
     private SearchMaterialListItem searchMaterialListItem;
     private SearchAssetListItem searchAssetListItem;
-    private boolean isFromPeticash;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +101,7 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
             setResultAndFinish(searchAssetListItem.getAssetName(), true);
         }
     }
+
 
     private void initializeViews() {
         mContext = AutoSuggestInventoryComponent.this;
@@ -273,6 +283,7 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
             });
         }
     }
+
     private void setUpAddNewButton(boolean isVisible) {
         if (isVisible) {
             buttonAddNewItem.setVisibility(View.VISIBLE);
@@ -329,32 +340,18 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
         }
     }
 
-
-
     private void setResultAndFinish(String searchedItemName, boolean isNewItem) {
         Intent intentData = getIntent();
         intentData.putExtra("isMaterial", isMaterial);
         if (isMaterial) {
             if (isNewItem) {
-                Intent intent = getIntent();
-                Timber.i(String.valueOf(intent));
-                if (isForMaterial) {
-                    //TODO
-                    MaterialRequest_ApproveActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
-                } else {
-                    //TODO
-                    PurchaseMaterialListActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
-                }
+                //TODO
+                PurchaseMaterialListActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
+
             }
         } else {
             if (isNewItem) {
-                Intent intent = getIntent();
-                Timber.i(String.valueOf(intent));
-                if (isForMaterial) {
-                    MaterialRequest_ApproveActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
-                }  else {
-                    PurchaseMaterialListActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
-                }
+                MaterialRequest_ApproveActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
             }
         }
         intentData.putExtra("searchedItemName", searchedItemName);
@@ -440,7 +437,5 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
         }
 
     }
-
-
 
 }
