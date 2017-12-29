@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 
+import io.realm.Realm;
+
 public class ChecklistHomeActivity extends BaseActivity {
     private String strSubModuleTag, permissionsItemList;
 
@@ -37,7 +39,6 @@ public class ChecklistHomeActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.title_activity_checklist);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             strSubModuleTag = bundle.getString("subModuleTag");

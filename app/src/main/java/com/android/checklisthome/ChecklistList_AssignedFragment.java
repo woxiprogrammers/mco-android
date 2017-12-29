@@ -30,6 +30,8 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -59,6 +61,15 @@ public class ChecklistList_AssignedFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static ChecklistList_AssignedFragment newInstance(String strSubModuleTag, String permissionsItemList) {
+        Bundle args = new Bundle();
+        ChecklistList_AssignedFragment fragment = new ChecklistList_AssignedFragment();
+        args.putString("subModule_Tag", strSubModuleTag);
+        args.putString("permissionsItemList", permissionsItemList);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -79,9 +90,14 @@ public class ChecklistList_AssignedFragment extends Fragment {
             subModuleTag = bundle.getString("subModule_Tag");
         }
         PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
-        for (PermissionsItem permissionsItem : permissionsItems) {
-            String accessPermission = permissionsItem.getCanAccess();
+        if (Arrays.asList(permissionsItems).contains("assign")) {
+            mBtnCheckListAssignNew.setVisibility(View.VISIBLE);
+        } else {
+            mBtnCheckListAssignNew.setVisibility(View.GONE);
         }
+        /*for (PermissionsItem permissionsItem : permissionsItems) {
+            String accessPermission = permissionsItem.getCanAccess();
+        }*/
         return view;
     }
 
@@ -203,15 +219,6 @@ public class ChecklistList_AssignedFragment extends Fragment {
             public void onLongItemClick(View view, int position) {
             }
         }));
-    }
-
-    public static ChecklistList_AssignedFragment newInstance(String strSubModuleTag, String permissionsItemList) {
-        Bundle args = new Bundle();
-        ChecklistList_AssignedFragment fragment = new ChecklistList_AssignedFragment();
-        args.putString("subModule_Tag", strSubModuleTag);
-        args.putString("permissionsItemList", permissionsItemList);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @OnClick(R.id.btn_checkList_assignNew)
