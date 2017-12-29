@@ -147,7 +147,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
-                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
+//                ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
                 setUpStaticValues(selectedId);
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
@@ -218,7 +218,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             String strProjectSiteName = currentUser.getProjectSiteName();
             arrayOfUsers.add(strProjectSiteName);
         }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         projectSpinner.setAdapter(arrayAdapter);
         if (AppUtils.getInstance().getCurrentSiteId() != -1) {

@@ -20,6 +20,8 @@ public class ParentCheckPointsItem extends RealmObject {
     private boolean projectSiteUserCheckpointIsRemarkRequired;
     @SerializedName("project_site_user_checkpoint_is_checked")
     private boolean projectSiteUserCheckpointIsChecked;
+    @SerializedName("project_site_user_checkpoint_remark")
+    private String projectSiteUserCheckpointRemark;
 
     public RealmList<ParentProjectSiteUserCheckpointImagesItem> getProjectSiteUserCheckpointImages() {
         return projectSiteUserCheckpointImages;
@@ -67,5 +69,17 @@ public class ParentCheckPointsItem extends RealmObject {
 
     public void setProjectSiteUserCheckpointIsChecked(boolean projectSiteUserCheckpointIsChecked) {
         this.projectSiteUserCheckpointIsChecked = projectSiteUserCheckpointIsChecked;
+    }
+
+    public boolean isProjectSiteUserCheckpointIsChecked() {
+        return projectSiteUserCheckpointIsChecked;
+    }
+
+    public String getProjectSiteUserCheckpointRemark() {
+        return projectSiteUserCheckpointRemark;
+    }
+
+    public void setProjectSiteUserCheckpointRemark(String projectSiteUserCheckpointRemark) {
+        this.projectSiteUserCheckpointRemark = projectSiteUserCheckpointRemark;
     }
 }

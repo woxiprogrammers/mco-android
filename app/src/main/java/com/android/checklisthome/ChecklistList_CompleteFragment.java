@@ -42,7 +42,7 @@ import timber.log.Timber;
  */
 public class ChecklistList_CompleteFragment extends Fragment {
     @BindView(R.id.recyclerView_checkList_complete)
-    RecyclerView mRecyclerViewCheckListInProgress;
+    RecyclerView mRecyclerViewCheckListComplete;
     Unbinder unbinder;
     private Realm realm;
     private Context mContext;
@@ -181,10 +181,10 @@ public class ChecklistList_CompleteFragment extends Fragment {
         ChecklistListAdapter checklistListAdapter = new ChecklistListAdapter(checklistItemResults, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerViewCheckListInProgress.setLayoutManager(linearLayoutManager);
-        mRecyclerViewCheckListInProgress.setAdapter(checklistListAdapter);
-        mRecyclerViewCheckListInProgress.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                mRecyclerViewCheckListInProgress, new RecyclerItemClickListener.OnItemClickListener() {
+        mRecyclerViewCheckListComplete.setLayoutManager(linearLayoutManager);
+        mRecyclerViewCheckListComplete.setAdapter(checklistListAdapter);
+        mRecyclerViewCheckListComplete.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                mRecyclerViewCheckListComplete, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intentAction = new Intent(mContext, CheckListActionActivity.class);

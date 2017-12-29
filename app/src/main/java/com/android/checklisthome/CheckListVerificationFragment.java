@@ -165,7 +165,13 @@ public class CheckListVerificationFragment extends Fragment {
                 ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
                 if (parentCheckPointsItem != null) {
                     textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
-//                    editextChecklistRemark.setText("");
+                    if (TextUtils.isEmpty(parentCheckPointsItem.getProjectSiteUserCheckpointRemark())) {
+                        editextChecklistRemark.setText("");
+                        editextChecklistRemark.setEnabled(true);
+                    } else {
+                        editextChecklistRemark.setText(parentCheckPointsItem.getProjectSiteUserCheckpointRemark());
+                        editextChecklistRemark.setEnabled(true);
+                    }
                     intNumberOfImages = parentCheckPointsItem.getProjectSiteUserCheckpointImages().size();
                     if (intNumberOfImages > 0) {
                         addViewOnlyCaptionsTemplate(parentCheckPointsItem);
@@ -184,7 +190,13 @@ public class CheckListVerificationFragment extends Fragment {
                 realm = Realm.getDefaultInstance();
                 checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
                 textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
-//                    editextChecklistRemark.setText("");
+                if (TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointRemark())) {
+                    editextChecklistRemark.setText("");
+                    editextChecklistRemark.setEnabled(true);
+                } else {
+                    editextChecklistRemark.setText(checkPointsItem.getProjectSiteUserCheckpointRemark());
+                    editextChecklistRemark.setEnabled(true);
+                }
                 intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
                 if (isFromState.equalsIgnoreCase("completed") || isFromState.equalsIgnoreCase("review")) {
                     if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {

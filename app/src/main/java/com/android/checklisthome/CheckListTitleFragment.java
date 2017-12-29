@@ -368,8 +368,13 @@ public class CheckListTitleFragment extends Fragment {
                         getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
                     } else {
                         isViewOnly = false;
-                        mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
-                        mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
+                        if (isFromState.equalsIgnoreCase("completed")) {
+                            mLinearLayoutReassignTo.setVisibility(View.GONE);
+                            mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
+                        } else {
+                            mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
+                            mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
 
