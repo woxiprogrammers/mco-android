@@ -67,12 +67,12 @@ public class ParentCheckPointsItem extends RealmObject {
         return projectSiteUserCheckpointIsChecked;
     }
 
-    public void setProjectSiteUserCheckpointIsChecked(boolean projectSiteUserCheckpointIsChecked) {
-        this.projectSiteUserCheckpointIsChecked = projectSiteUserCheckpointIsChecked;
-    }
-
     public boolean isProjectSiteUserCheckpointIsChecked() {
         return projectSiteUserCheckpointIsChecked;
+    }
+
+    public void setProjectSiteUserCheckpointIsChecked(boolean projectSiteUserCheckpointIsChecked) {
+        this.projectSiteUserCheckpointIsChecked = projectSiteUserCheckpointIsChecked;
     }
 
     public String getProjectSiteUserCheckpointRemark() {

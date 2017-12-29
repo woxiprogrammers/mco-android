@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.android.checklisthome.checklist_model.AssignedChecklistResponse;
 import com.android.checklisthome.checklist_model.ChecklistListItem;
 import com.android.constro360.R;
-import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -23,7 +22,6 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.github.lzyzsd.circleprogress.CircleProgress;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;

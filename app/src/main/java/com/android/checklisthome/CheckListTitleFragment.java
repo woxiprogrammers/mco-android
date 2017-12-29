@@ -93,6 +93,8 @@ public class CheckListTitleFragment extends Fragment {
     LinearLayout mLinearLayoutParentsLayout;
     @BindView(R.id.frameLayout_spinnerLayout)
     FrameLayout mFrameLayoutSpinnerLayout;
+    RecyclerItemClickListener recyclerParentItemClickListener;
+    RecyclerItemClickListener recyclerCurrentItemClickListener;
     private Realm realm;
     private Context mContext;
     private int projectSiteUserChecklistAssignmentId;
@@ -107,8 +109,6 @@ public class CheckListTitleFragment extends Fragment {
     private int parentProjectSiteUserChecklistAssignmentId;
     private boolean isViewOnly;
     private boolean isUserViewOnly;
-    RecyclerItemClickListener recyclerParentItemClickListener;
-    RecyclerItemClickListener recyclerCurrentItemClickListener;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -662,17 +662,6 @@ public class CheckListTitleFragment extends Fragment {
             return checkPointsItemOrderedRealmCollection.get(index).getProjectSiteUserCheckpointId();
         }
 
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
-            if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
-                holder.checkboxChecklistTitles.setChecked(true);
-            } else {
-                holder.checkboxChecklistTitles.setChecked(false);
-            }
-            holder.textviewDescription.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
-        }
-
         class MyViewHolder extends RecyclerView.ViewHolder {
             @BindView(R.id.checkboxChecklistTitles)
             CheckBox checkboxChecklistTitles;
@@ -683,7 +672,18 @@ public class CheckListTitleFragment extends Fragment {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
             }
+        }        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
+            if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                holder.checkboxChecklistTitles.setChecked(true);
+            } else {
+                holder.checkboxChecklistTitles.setChecked(false);
+            }
+            holder.textviewDescription.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         }
+
+
 
         @Override
         public int getItemCount() {
