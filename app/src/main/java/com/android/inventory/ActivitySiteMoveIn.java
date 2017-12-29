@@ -6,24 +6,25 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.material_request_approve.SearchAssetListItem;
-import com.android.material_request_approve.SearchMaterialListItem;
 import com.android.material_request_approve.UnitQuantityItem;
 import com.android.models.inventory.AutoSuggestdataItem;
 import com.android.models.inventory.UnitItem;
@@ -81,6 +82,8 @@ public class ActivitySiteMoveIn extends BaseActivity {
     RadioButton radioButtonMaterial;
     @BindView(R.id.radioButtonAsset)
     RadioButton radioButtonAsset;
+    @BindView(R.id.radioGroupInventoryComp)
+    RadioGroup radioGroupInventoryComp;
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonArray;
@@ -89,12 +92,9 @@ public class ActivitySiteMoveIn extends BaseActivity {
     private int project_site_id;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
-    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
-    private int unitId;
     private boolean isMaterial = false;
-    private AutoSuggestdataItem searchMaterialListItem_fromResult = null;
-    private boolean isNewItem;
-    public static AutoSuggestdataItem searchMaterialListItem_fromResult_staticNew = null;
+    private AutoSuggestdataItem autoSuggestdataItem = null;
+    private int inventoryCompId,intRefId,unitId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,16 +107,36 @@ public class ActivitySiteMoveIn extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Move In");
         }
-        if (radioButtonMaterial.isChecked()) {
-            isMaterial = true;
-        } else {
-            isMaterial = false;
-        }
         edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedString = (String) adapterView.getItemAtPosition(i);
                 setProjectNameFromIndex(selectedString);
+            }
+        });
+
+        radioGroupInventoryComp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int index) {
+                if (index == R.id.radioButtonMaterial) {
+                    isMaterial = true;
+                    edtMatAssetName.setText("");
+                } else {
+                    isMaterial = false;
+                    edtMatAssetName.setText("");
+                }
+            }
+        });
+
+        edtSiteName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                edtMatAssetName.setText("");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -146,15 +166,18 @@ public class ActivitySiteMoveIn extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.edtMatAssetName:
-                if (!radioButtonAsset.isChecked() && !radioButtonMaterial.isChecked()) {
+                if (TextUtils.isEmpty(edtSiteName.getText().toString())) {
+                    edtSiteName.setError("Please enter site name");
+                    return;
+                } else if (!radioButtonAsset.isChecked() && !radioButtonMaterial.isChecked()) {
                     Toast.makeText(mContext, "Please select either Material/Asset", Toast.LENGTH_LONG).show();
                     return;
                 } else {
                     Intent intent = new Intent(ActivitySiteMoveIn.this, AutoSuggestInventoryComponent.class);
                     intent.putExtra("isMaterial", isMaterial);
-                    startActivity(intent);
+                    intent.putExtra("siteId", project_site_id);
+                    startActivityForResult(intent, AppConstants.REQUEST_CODE_AUTO_SUGGEST_INVENTORY);
                 }
-
                 break;
             case R.id.textView_capture:
                 chooseAction();
@@ -209,7 +232,7 @@ public class ActivitySiteMoveIn extends BaseActivity {
                 }
                 break;
 
-            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST:
+            case AppConstants.REQUEST_CODE_AUTO_SUGGEST_INVENTORY:
                 edtQuantity.setText("");
                 functionForProcessingSearchResult(intent);
                 break;
@@ -220,25 +243,23 @@ public class ActivitySiteMoveIn extends BaseActivity {
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             edtMatAssetName.clearFocus();
-            isNewItem = bundleExtras.getBoolean("isNewItem");
+//            isNewItem = bundleExtras.getBoolean("isNewItem");
             isMaterial = bundleExtras.getBoolean("isMaterial");
             String searchedItemName = bundleExtras.getString("searchedItemName");
             realm = Realm.getDefaultInstance();
-                edtQuantity.setText("");
-                edtQuantity.setFocusableInTouchMode(true);
-                if (isNewItem) {
-                    searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
-                } else {
-                    searchMaterialListItem_fromResult = realm.where(AutoSuggestdataItem.class).equalTo("name", searchedItemName).findFirst();
-                }
-            Timber.d("AutoSearch complete");
+            edtQuantity.setText("");
+            edtQuantity.setFocusableInTouchMode(true);
+            autoSuggestdataItem = realm.where(AutoSuggestdataItem.class).equalTo("name", searchedItemName).findFirst();
+            inventoryCompId = autoSuggestdataItem.getInventoryComponentId();
+            intRefId=autoSuggestdataItem.getReferenceId();
+            Timber.d("AutoSearch complete: " + inventoryCompId);
             if (realm != null) {
                 realm.close();
             }
 
-            if (searchMaterialListItem_fromResult != null) {
-                edtMatAssetName.setText(searchMaterialListItem_fromResult.getName());
-                spinnerItemUnit.setAdapter(setSpinnerUnits(searchMaterialListItem_fromResult.getUnit()));
+            if (autoSuggestdataItem != null) {
+                edtMatAssetName.setText(autoSuggestdataItem.getName());
+                spinnerItemUnit.setAdapter(setSpinnerUnits(autoSuggestdataItem.getUnit()));
             }
 
         }
@@ -334,18 +355,26 @@ public class ActivitySiteMoveIn extends BaseActivity {
     private void requestToMoveIn() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("name", "user");
+            params.put("project_site_id_from", project_site_id);
+            params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
+            params.put("name", "site");
             params.put("source_name", edtMatAssetName.getText().toString());
-            params.put("type", "OUT");
-            params.put("inventory_component_id", "1");
+            params.put("type", "IN");
+            if(inventoryCompId != 0){
+                params.put("inventory_component_id", inventoryCompId);
+            }else {
+                params.put("is_material",isMaterial);
+                params.put("reference_id",intRefId);
+            }
+            params.put("component_name", edtMatAssetName.getText().toString());
             params.put("quantity", edtQuantity.getText().toString());
-            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unitId = unitQuantityItemRealmResults.get(spinnerItemUnit.getSelectedItemPosition()).getUnitId();
+            if (autoSuggestdataItem != null) {
+                unitId=autoSuggestdataItem.getUnit().get(spinnerItemUnit.getSelectedItemPosition()).getUnitId();
                 params.put("unit_id", unitId);
             }
             params.put("remark", edtSiteTransferRemark.getText().toString());
             params.put("image", jsonImageNameArray);
+            Log.i("@@MyParams",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -420,22 +449,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
         uploadImages_addItemToLocal();
     }
 
-    private void setUpUnitQuantityChangeListener() {
-        realm = Realm.getDefaultInstance();
-        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
-        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
-    }
 
-    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
-        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
-        ArrayList<String> arrayOfUsers = new ArrayList<String>();
-        for (UnitQuantityItem currentUser : unitQuantityItems) {
-            String strUserName = currentUser.getUnitName();
-            arrayOfUsers.add(strUserName);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerItemUnit.setAdapter(arrayAdapter);
-    }
 
 }

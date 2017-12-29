@@ -83,5 +83,5 @@ public class AppURL {
     public static final String API_SEND_FIREBASE_REFRESHED_TOKEN = BASE_URL + "notification/store-fcm-token?token=";
     public static final String API_REQUEST_COMPONENT_LIST = BASE_URL + "inventory/request-component-listing?token=";
     public static final String API_CHANGE_STATUS_INVENTORY_APPROVE=BASE_URL + "inventory/change-status?token=";
-    public static final String API_INVENTORY_COMPONENT_AUTO_SUGGEST="inventory/component/auto-suggest?token=";
+    public static final String API_INVENTORY_COMPONENT_AUTO_SUGGEST=BASE_URL+ "inventory/component/auto-suggest?token=";
 }
