@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
@@ -29,6 +30,7 @@ import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
@@ -94,15 +96,38 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
             @Override
             public void onItemClick(View view, final int position) {
                 if (view.getId() == R.id.textViewApprove) {
-
+                    if (AppUtils.getInstance().checkNetworkState()) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
+                        builder.setMessage("Do you want to approve this material ?")
+                                .setCancelable(false)
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        requestToApprove(requestComponentListingItems.get(position).getInventoryComponentTransferId());
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //  Action for 'NO' Button
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alert = builder.create();
+                        alert.setTitle("Approve Material");
+                        alert.show();
+                    } else {
+                        AppUtils.getInstance().showOfflineMessage("RequestComponentListFragment");
+                    }
                 }
             }
         };
-        TransferRequestAdapter transferRequestAdapter = new TransferRequestAdapter(requestComponentListingItems, true, true,recyclerItemClickListener);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rvTransferRequestList.setLayoutManager(linearLayoutManager);
-        rvTransferRequestList.setAdapter(transferRequestAdapter);
+        if(requestComponentListingItems != null){
+            TransferRequestAdapter transferRequestAdapter = new TransferRequestAdapter(requestComponentListingItems, true, true,recyclerItemClickListener);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            rvTransferRequestList.setLayoutManager(linearLayoutManager);
+            rvTransferRequestList.setAdapter(transferRequestAdapter);
+
+        }
     }
 
     private void requestComponentList() {
@@ -161,6 +186,39 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                     }
                 });
     }
+
+    private void requestToApprove(int id) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("inventory_component_transfer_id", id);
+            params.put("change_status_slug_to", "approved");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHANGE_STATUS_INVENTORY_APPROVE + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToApprove")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            requestComponentList();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
 
     @Override
     public void onDestroyView() {
