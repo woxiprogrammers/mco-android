@@ -2,40 +2,31 @@ package com.android.inventory;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.material_request_approve.AssetSearchResponse;
 import com.android.material_request_approve.AssetSearchResponseData;
-import com.android.material_request_approve.AutoSuggestActivity;
-import com.android.material_request_approve.MaterialRequest_ApproveActivity;
 import com.android.material_request_approve.MaterialSearchResponse;
 import com.android.material_request_approve.MaterialSearchResponseData;
 import com.android.material_request_approve.SearchAssetListItem;
 import com.android.material_request_approve.SearchMaterialListItem;
 import com.android.material_request_approve.UnitQuantityItem;
-import com.android.peticash.PeticashFormActivity;
-import com.android.purchase_request.PurchaseMaterialListActivity;
-import com.android.utils.AppConstants;
+import com.android.models.inventory.AutoSuggestdataItem;
+import com.android.models.inventory.InventoryAutoSuggestResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -44,14 +35,9 @@ import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.vlk.multimager.utils.Constants;
-import com.vlk.multimager.utils.Image;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.File;
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,10 +63,9 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
     boolean isMaterial = false;
     private String mStrSearch;
     private Realm realm;
-    private RealmResults<SearchMaterialListItem> searchMaterialListItemRealmResults;
+    private RealmResults<AutoSuggestdataItem> searchMaterialListItemRealmResults;
     private RealmResults<SearchAssetListItem> searchAssetListItemRealmResults;
-    private SearchMaterialListItem searchMaterialListItem;
-    private SearchAssetListItem searchAssetListItem;
+    private AutoSuggestdataItem searchMaterialListItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,13 +78,9 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
 
     @OnClick(R.id.buttonAddNewItem)
     public void onViewClicked() {
-        if (isMaterial) {
-            searchMaterialListItem.setMaterialName(mStrSearch);
-            setResultAndFinish(searchMaterialListItem.getMaterialName(), true);
-        } else {
-            searchAssetListItem.setAssetName(mStrSearch);
-            setResultAndFinish(searchAssetListItem.getAssetName(), true);
-        }
+            searchMaterialListItem.setName(mStrSearch);
+            setResultAndFinish(searchMaterialListItem.getName(), true);
+
     }
 
 
@@ -183,27 +164,27 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
         try {
             params.put("search_in", strMaterialOrAsset);
             params.put("keyword", searchString);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("project_site_id_from", 2);
+            params.put("project_site_id_to",AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
         //ToDo Add URL
-        ANRequest postRequestBuilder = AndroidNetworking.post(AppURL.API_AUTO_SUGGEST_COMMON)
+        ANRequest postRequestBuilder = AndroidNetworking.post(AppURL.API_INVENTORY_COMPONENT_AUTO_SUGGEST + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .setTag("requestAutoSearchApi")
                 .build();
-        if (isMaterial) {
-            postRequestBuilder.getAsObject(MaterialSearchResponse.class, new ParsedRequestListener<MaterialSearchResponse>() {
+//        if (isMaterial) {
+            postRequestBuilder.getAsObject(InventoryAutoSuggestResponse.class, new ParsedRequestListener<InventoryAutoSuggestResponse>() {
                 @Override
-                public void onResponse(final MaterialSearchResponse response) {
-                    Log.i("@@", response.toString());
-                    searchMaterialListItem = response.getMaterialSearchResponseData().getMaterialList().get(0);
-                    if (searchMaterialListItem.getMaterialRequestComponentTypeSlug().contains("new")) {
+                public void onResponse(final InventoryAutoSuggestResponse response) {
+                    searchMaterialListItem = response.getAutoSuggestdata();
+                    /*if (searchMaterialListItem.getInventoryComponentId() == null) {
                         setUpAddNewButton(true);
                     } else {
                         setUpAddNewButton(false);
-                    }
+                    }*/
                     realm = Realm.getDefaultInstance();
                     try {
                         realm.executeTransactionAsync(new Realm.Transaction() {
@@ -238,7 +219,8 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
                     AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                 }
             });
-        } else {
+//        }
+        /*else {
             postRequestBuilder.getAsObject(AssetSearchResponse.class, new ParsedRequestListener<AssetSearchResponse>() {
                 @Override
                 public void onResponse(final AssetSearchResponse response) {
@@ -281,7 +263,7 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
                     AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                 }
             });
-        }
+        }*/
     }
 
     private void setUpAddNewButton(boolean isVisible) {
@@ -299,8 +281,8 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
     private void setUpSearchResultAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        if (isMaterial) {
-            searchMaterialListItemRealmResults = realm.where(SearchMaterialListItem.class).findAllAsync();
+//        if (isMaterial) {
+            searchMaterialListItemRealmResults = realm.where(AutoSuggestdataItem.class).findAllAsync();
             MaterialAutoSuggestAdapter materialAutoSuggestAdapter = new MaterialAutoSuggestAdapter(searchMaterialListItemRealmResults, true, true);
             recyclerViewSearchList.setLayoutManager(new LinearLayoutManager(mContext));
             recyclerViewSearchList.setHasFixedSize(true);
@@ -311,14 +293,14 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
                         @Override
                         public void onItemClick(View view, final int position) {
                             searchMaterialListItem = searchMaterialListItemRealmResults.get(position);
-                            setResultAndFinish(searchMaterialListItem.getMaterialName(), false);
+                            setResultAndFinish(searchMaterialListItem.getName(), false);
                         }
 
                         @Override
                         public void onLongItemClick(View view, int position) {
                         }
                     }));
-        } else {
+       /* } else {
             searchAssetListItemRealmResults = realm.where(SearchAssetListItem.class).findAllAsync();
             AssetAutoSuggestAdapter assetAutoSuggestAdapter = new AssetAutoSuggestAdapter(searchAssetListItemRealmResults, true, true);
             recyclerViewSearchList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -337,7 +319,7 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
                         public void onLongItemClick(View view, int position) {
                         }
                     }));
-        }
+        }*/
     }
 
     private void setResultAndFinish(String searchedItemName, boolean isNewItem) {
@@ -346,14 +328,14 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
         if (isMaterial) {
             if (isNewItem) {
                 //TODO
-                PurchaseMaterialListActivity.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
+                ActivitySiteMoveIn.searchMaterialListItem_fromResult_staticNew = searchMaterialListItem;
 
             }
-        } else {
+        } /*else {
             if (isNewItem) {
                 MaterialRequest_ApproveActivity.searchAssetListItem_fromResult_staticNew = searchAssetListItem;
             }
-        }
+        }*/
         intentData.putExtra("searchedItemName", searchedItemName);
         intentData.putExtra("isNewItem", isNewItem);
         setResult(RESULT_OK, intentData);
@@ -361,11 +343,11 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
     }
 
     @SuppressWarnings("WeakerAccess")
-    protected class MaterialAutoSuggestAdapter extends RealmRecyclerViewAdapter<SearchMaterialListItem, MaterialAutoSuggestAdapter.MyViewHolder> {
+    protected class MaterialAutoSuggestAdapter extends RealmRecyclerViewAdapter<AutoSuggestdataItem, MaterialAutoSuggestAdapter.MyViewHolder> {
         //ToDO ITEM CLASS
-        private OrderedRealmCollection<SearchMaterialListItem> arrSearchMaterialListItem;
+        private OrderedRealmCollection<AutoSuggestdataItem> arrSearchMaterialListItem;
 
-        MaterialAutoSuggestAdapter(@Nullable OrderedRealmCollection<SearchMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        MaterialAutoSuggestAdapter(@Nullable OrderedRealmCollection<AutoSuggestdataItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             arrSearchMaterialListItem = data;
         }
@@ -383,8 +365,8 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
 
         @Override
         public void onBindViewHolder(MaterialAutoSuggestAdapter.MyViewHolder holder, int position) {
-            SearchMaterialListItem searchMaterialListItem = arrSearchMaterialListItem.get(position);
-            holder.mTextViewResultItem.setText(searchMaterialListItem.getMaterialName());
+            AutoSuggestdataItem searchMaterialListItem = arrSearchMaterialListItem.get(position);
+            holder.mTextViewResultItem.setText(searchMaterialListItem.getName());
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
