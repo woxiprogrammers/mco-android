@@ -1,10 +1,18 @@
 package com.android.models.inventory;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
 public class RequestComponentListingItem extends RealmObject{
+	/*
+	"inventory_component_transfer_id": 3,
+			"project_site_from": "Konark Orchid School",
+			"project_site_to": "Mohar Pratima-Talegaon",
+			"component_name": "Cement Ppc",
+			"quantity": "10",
+			"unit": "Bags"*/
 
 	@SerializedName("project_site_to")
 	private String projectSiteTo;
@@ -23,6 +31,9 @@ public class RequestComponentListingItem extends RealmObject{
 
 	@SerializedName("project_site_from")
 	private String projectSiteFrom;
+
+	private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
+
 
 	public void setProjectSiteTo(String projectSiteTo){
 		this.projectSiteTo = projectSiteTo;

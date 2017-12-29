@@ -76,6 +76,13 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            requestComponentList();
+        }
+    }
+    @Override
     public void fragmentBecameVisible() {
             requestComponentList();
     }
@@ -106,8 +113,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
             e.printStackTrace();
         }
         realm = Realm.getDefaultInstance();
-        Timber.d(AppURL.API_REQUEST_COMPONENT_LIST + AppUtils.getInstance().getCurrentToken());
-        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_REQUEST_COMPONENT_LIST + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("requestInventoryData")
@@ -184,7 +190,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
             RequestComponentListingItem requestComponentListingItem = requestComponentListingItemOrderedRealmCollection.get(position);
             holder.textViewItemName.setText(requestComponentListingItem.getComponentName());
             holder.textviewQuantityUnit.setText(requestComponentListingItem.getQuantity() + " " + requestComponentListingItem.getUnit());
-            holder.textViewTransferTo.setText(requestComponentListingItem.getProjectSiteTo());
+            holder.textViewTransferTo.setText("Transfer To : - " + requestComponentListingItem.getProjectSiteTo());
         }
 
         @Override
