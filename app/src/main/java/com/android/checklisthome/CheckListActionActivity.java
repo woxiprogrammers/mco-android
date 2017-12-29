@@ -10,13 +10,12 @@ import com.android.constro360.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
 import timber.log.Timber;
 
 public class CheckListActionActivity extends BaseActivity {
     @BindView(R.id.frameLayoutChecklistAction)
     FrameLayout frameLayoutChecklistAction;
-    private String isFromState;
+    private String isFromState, subModulesItemList;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -48,8 +47,9 @@ public class CheckListActionActivity extends BaseActivity {
             int projectSiteUserChecklistAssignmentId = bundleExtras.getInt("projectSiteUserChecklistAssignmentId");
             int projectSiteChecklistId = Integer.parseInt(bundleExtras.getString("projectSiteChecklistId"));
             isFromState = bundleExtras.getString("isFromState");
+            subModulesItemList = bundleExtras.getString("subModulesItemList");
             boolean isUserViewOnly = bundleExtras.getBoolean("isUserViewOnly");
-            CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, projectSiteChecklistId, isFromState, isUserViewOnly);
+            CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, projectSiteChecklistId, isFromState, isUserViewOnly, subModulesItemList);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.frameLayoutChecklistAction, checkListTitleFragment, "checkListTitleFragment");
             fragmentTransaction.commit();

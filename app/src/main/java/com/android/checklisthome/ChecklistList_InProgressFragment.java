@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.android.checklisthome.checklist_model.AssignedChecklistResponse;
 import com.android.checklisthome.checklist_model.ChecklistListItem;
 import com.android.constro360.R;
-import com.android.models.login_acl.PermissionsItem;
+import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -48,17 +48,18 @@ public class ChecklistList_InProgressFragment extends Fragment {
     private Context mContext;
     private RealmResults<ChecklistListItem> checklistItemResults;
     private boolean notFirstTime;
-    private String subModuleTag, permissionList;
+    private String subModuleTag, permissionList, subModulesItemList;
 
     public ChecklistList_InProgressFragment() {
         // Required empty public constructor
     }
 
-    public static ChecklistList_InProgressFragment newInstance(String strSubModuleTag, String permissionsItemList) {
+    public static ChecklistList_InProgressFragment newInstance(String strSubModuleTag, String permissionsItemList, String subModulesItemList) {
         Bundle args = new Bundle();
         ChecklistList_InProgressFragment fragment = new ChecklistList_InProgressFragment();
         args.putString("subModule_Tag", strSubModuleTag);
         args.putString("permissionsItemList", permissionsItemList);
+        args.putString("subModulesItemList", subModulesItemList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,12 +82,17 @@ public class ChecklistList_InProgressFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             permissionList = bundle.getString("permissionsItemList");
+            subModulesItemList = bundle.getString("subModulesItemList");
             subModuleTag = bundle.getString("subModule_Tag");
         }
-        PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
-        for (PermissionsItem permissionsItem : permissionsItems) {
-            String accessPermission = permissionsItem.getCanAccess();
-        }
+        /*SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
+        for (SubModulesItem subModulesItem : subModulesItems) {
+            String subModuleTag = subModulesItem.getSubModuleTag();
+            if (subModuleTag.contains("assign")) {
+                break;
+            } else {
+            }
+        }*/
         return view;
     }
 
@@ -191,6 +197,7 @@ public class ChecklistList_InProgressFragment extends Fragment {
                 intentAction.putExtra("projectSiteUserChecklistAssignmentId", checklistItemResults.get(position).getProjectSiteUserChecklistAssignmentId());
                 intentAction.putExtra("projectSiteChecklistId", checklistItemResults.get(position).getProjectSiteChecklistId());
                 intentAction.putExtra("isFromState", "progress");
+                intentAction.putExtra("subModulesItemList", subModulesItemList);
                 if (AppUtils.getInstance().getCurrentUserId() == checklistItemResults.get(position).getAssignedTo()) {
                     intentAction.putExtra("isUserViewOnly", false);
                 } else {

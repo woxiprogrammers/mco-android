@@ -2,7 +2,6 @@ package com.android.dashboard;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -45,7 +44,7 @@ import butterknife.ButterKnife;
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
@@ -122,8 +121,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             @Override
             public void onItemClick(View itemView, int modulePosition) {
                 int subModuleIndex = itemView.getId();
-                SubModulesItem subModulesItem = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules().get(subModuleIndex);
-                startCorrespondingAclActivity(subModulesItem);
+                RealmList<SubModulesItem> subModulesItemRealmList = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules();
+                SubModulesItem subModulesItem = subModulesItemRealmList.get(subModuleIndex);
+                startCorrespondingAclActivity(subModulesItem, subModulesItemRealmList);
             }
         });
     }
@@ -159,7 +159,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 setUpStaticValues(selectedId);
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
-
             }
         });
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -196,7 +195,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         }
     }
 
-    private void startCorrespondingAclActivity(SubModulesItem subModulesItem) {
+    private void startCorrespondingAclActivity(SubModulesItem subModulesItem, RealmList<SubModulesItem> subModulesItemRealmList) {
         HashMap<String, String> aclKeyValuePair = retrieveAclKeyValueFromLocal();
         Intent intent = new Intent();
         String strClassName = aclKeyValuePair.get(subModulesItem.getSubModuleTag());
@@ -204,6 +203,8 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         Realm realm = Realm.getDefaultInstance();
         List<PermissionsItem> permissionsItemList = realm.copyFromRealm(subModulesItem.getPermissions());
         intent.putExtra("permissionsItemList", new Gson().toJson(permissionsItemList));
+        List<SubModulesItem> subModulesItemList = realm.copyFromRealm(subModulesItemRealmList);
+        intent.putExtra("subModulesItemList", new Gson().toJson(subModulesItemList));
         intent.putExtra("subModuleTag", subModulesItem.getSubModuleTag());
         if (strClassName != null) {
             intent.setClassName(getApplicationContext(), strClassName);

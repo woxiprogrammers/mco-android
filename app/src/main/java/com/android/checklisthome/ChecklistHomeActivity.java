@@ -12,10 +12,8 @@ import android.view.MenuItem;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 
-import io.realm.Realm;
-
 public class ChecklistHomeActivity extends BaseActivity {
-    private String strSubModuleTag, permissionsItemList;
+    private String strSubModuleTag, permissionsItemList, subModulesItemList;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -43,6 +41,7 @@ public class ChecklistHomeActivity extends BaseActivity {
         if (bundle != null) {
             strSubModuleTag = bundle.getString("subModuleTag");
             permissionsItemList = bundle.getString("permissionsItemList");
+            subModulesItemList = bundle.getString("subModulesItemList");
         }
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
@@ -71,13 +70,13 @@ public class ChecklistHomeActivity extends BaseActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return ChecklistList_AssignedFragment.newInstance(strSubModuleTag, permissionsItemList);
+                    return ChecklistList_AssignedFragment.newInstance(strSubModuleTag, permissionsItemList, subModulesItemList);
                 case 1:
-                    return ChecklistList_InProgressFragment.newInstance(strSubModuleTag, permissionsItemList);
+                    return ChecklistList_InProgressFragment.newInstance(strSubModuleTag, permissionsItemList, subModulesItemList);
                 case 2:
-                    return ChecklistList_ReviewFragment.newInstance(strSubModuleTag, permissionsItemList);
+                    return ChecklistList_ReviewFragment.newInstance(strSubModuleTag, permissionsItemList, subModulesItemList);
                 case 3:
-                    return ChecklistList_CompleteFragment.newInstance(strSubModuleTag, permissionsItemList);
+                    return ChecklistList_CompleteFragment.newInstance(strSubModuleTag, permissionsItemList, subModulesItemList);
                 default:
                     return null;
             }

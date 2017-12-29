@@ -34,6 +34,7 @@ import com.android.checklisthome.checklist_model.parent_checkpoints.ParentProjec
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckPointsItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckpointsResponse;
 import com.android.constro360.R;
+import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -42,6 +43,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.google.gson.Gson;
 import com.xeoh.android.checkboxgroup.CheckBoxGroup;
 
 import org.json.JSONArray;
@@ -97,7 +99,7 @@ public class CheckListTitleFragment extends Fragment {
     private int projectSiteChecklistId;
     private RealmResults<CheckPointsItem> checkPointsItemRealmResults;
     private RealmResults<ParentCheckPointsItem> parentCheckPointsItemRealmResults;
-    private String isFromState;
+    private String isFromState, subModulesItemList;
     private boolean isUsersAvailable;
     private RealmList<UsersItem> usersItemRealmList;
     private CheckBoxGroup<String> checkBoxGroup;
@@ -112,12 +114,13 @@ public class CheckListTitleFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, int projectSiteChecklistId, String isFromState, boolean isUserViewOnly) {
+    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, int projectSiteChecklistId, String isFromState, boolean isUserViewOnly, String subModulesItemList) {
         Bundle args = new Bundle();
         args.putInt("projectSiteUserChecklistAssignmentId", projectSiteUserChecklistAssignmentId);
         args.putInt("projectSiteChecklistId", projectSiteChecklistId);
         args.putString("isFromState", isFromState);
         args.putBoolean("isUserViewOnly", isUserViewOnly);
+        args.putString("subModulesItemList", subModulesItemList);
         CheckListTitleFragment fragment = new CheckListTitleFragment();
         fragment.setArguments(args);
         return fragment;
@@ -133,7 +136,25 @@ public class CheckListTitleFragment extends Fragment {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
             projectSiteChecklistId = bundleArgs.getInt("projectSiteChecklistId");
             isUserViewOnly = bundleArgs.getBoolean("isUserViewOnly");
+            subModulesItemList = bundleArgs.getString("subModulesItemList");
             isFromState = bundleArgs.getString("isFromState");
+///////////////
+            SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
+            for (SubModulesItem subModulesItem : subModulesItems) {
+                String subModuleTag = subModulesItem.getSubModuleTag();
+//                Timber.d("subModuleTag: " + subModuleTag);
+                if (subModuleTag.contains("recheck")) {
+//                    Timber.d("Review True");
+                    mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
+                    mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
+                    break;
+                } else {
+//                    Timber.d("Review False");
+                    mLinearLayoutReassignTo.setVisibility(View.GONE);
+                    mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
+                }
+            }
+///////////////
             if (isFromState != null) {
                 if (isFromState.equalsIgnoreCase("assigned")) {
                     mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
