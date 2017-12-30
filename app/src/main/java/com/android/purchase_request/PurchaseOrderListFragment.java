@@ -61,6 +61,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
+    private boolean isCreateAcces;
 
     public PurchaseOrderListFragment() {
         // Required empty public constructor
@@ -96,7 +97,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
-        setUpPOAdapter();
         return mParentView;
     }
 
@@ -168,6 +168,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
                         intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
+                        intent.putExtra("isCreateAccess",isCreateAcces);
                         intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
                         startActivity(intent);
                     }
@@ -205,14 +206,15 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    realm.delete(PurchaseOrderResponse.class);
-//                                    realm.delete(PurchaseOrderRespData.class);
-//                                    realm.delete(PurchaseOrderListItem.class);
+                                    realm.delete(PurchaseOrderResponse.class);
+                                    realm.delete(PurchaseOrderRespData.class);
+                                    realm.delete(PurchaseOrderListItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    isCreateAcces=response.isCreateAccess();
                                     setUpPOAdapter();
                                     Timber.d("Realm execution successful");
                                 }

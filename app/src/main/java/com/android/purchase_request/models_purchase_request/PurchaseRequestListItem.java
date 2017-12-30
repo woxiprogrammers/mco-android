@@ -23,6 +23,8 @@ public class PurchaseRequestListItem extends RealmObject {
     private String haveAccess;
     @SerializedName("approved_by")
     private String approvedBy;
+    @SerializedName("created_by")
+    private String createdBy;
 
     public int getId() {
         return id;
@@ -42,6 +44,14 @@ public class PurchaseRequestListItem extends RealmObject {
 
     public void setApprovedBy(String approvedBy) {
         this.approvedBy = approvedBy;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     public void setId(int id) {

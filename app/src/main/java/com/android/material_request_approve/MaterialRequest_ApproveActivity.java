@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -287,7 +286,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.i("@@", response.toString());
                             linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                             mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                             getRequestedItemList();
@@ -399,7 +397,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsObject(RequestedItemResponse.class, new ParsedRequestListener<RequestedItemResponse>() {
                     @Override
                     public void onResponse(final RequestedItemResponse response) {
-                        Log.i("@@", response.toString());
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -413,8 +410,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d("Realm Execution Successful");
-                                    isApproveAccess=response.isApproveAccess();
-                                    Log.i("@@Val", String.valueOf(isApproveAccess));
+                                    isApproveAccess = response.isApproveAccess();
                                     setUpApprovedStatusAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -441,7 +437,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
-        ExistingMaterialApproveRvAdapter purchaseMaterialRvAdapter = new ExistingMaterialApproveRvAdapter(materialListRealmResults_Pending, true, true,isApproveAccess);
+        ExistingMaterialApproveRvAdapter purchaseMaterialRvAdapter = new ExistingMaterialApproveRvAdapter(materialListRealmResults_Pending, true, true, isApproveAccess);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvExistingMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
@@ -973,7 +969,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             } else {
                 params.put("remark", "");
             }
-            Log.i("@@params", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1133,7 +1128,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
                     @Override
                     public void onResponse(final UsersWithAclResponse response) {
-                        Log.i("@@", response.toString());
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -1337,11 +1331,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
         private boolean isAcces;
 
-        public ExistingMaterialApproveRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification,boolean isApprove) {
+        public ExistingMaterialApproveRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification, boolean isApprove) {
             super(data, autoUpdate, updateOnModification);
             arrPurchaseMaterialListItems = data;
-            isAcces=isApprove;
-            Log.i("@@ValAd", String.valueOf(isAcces));
+            isAcces = isApprove;
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -1363,6 +1356,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             TextView textViewDate;
             @BindView(R.id.textviewApprovedBy)
             TextView textviewApprovedBy;
+            @BindView(R.id.textviewCreatedBy)
+            TextView textviewCreatedBy;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
@@ -1405,26 +1400,23 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseMaterialListItem.getComponentStatus()));
             holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
-            final String strUserRole = AppUtils.getInstance().getUserRole();
             holder.buttonMoveToIndent.setVisibility(View.GONE);
+            holder.textviewCreatedBy.setText("Created By :-" + purchaseMaterialListItem.getMaterialCreatedBy());
             holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-//            if (purchaseMaterialListItem.getHave_access() != null) {
             if (!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())) {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
                 holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
             }
-            if(isAcces) {
-                    if (/*purchaseMaterialListItem.getHave_access().contains("approve") && */strStatus.equalsIgnoreCase("pending")) {
-                        holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
-                    }
+            if (isAcces) {
+                if (strStatus.equalsIgnoreCase("pending")) {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                } else {
+                    holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                }
 
-                if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) /*&& purchaseMaterialListItem.getHave_access().contains("approve")*/) {
-//                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) ) {
                     holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
                 } else {
-//                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
                     holder.buttonMoveToIndent.setVisibility(View.GONE);
                 }
             }

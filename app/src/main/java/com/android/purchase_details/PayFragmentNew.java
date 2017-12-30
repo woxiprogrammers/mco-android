@@ -169,7 +169,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         // Required empty public constructor
     }
 
-    public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor) {
+    public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor,boolean isHaveCreateAccess) {
         Bundle args = new Bundle();
         orderId = purchaseOrderId;
         strVendorName = strVendor;

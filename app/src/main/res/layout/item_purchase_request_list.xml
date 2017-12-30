@@ -84,6 +84,15 @@
                 android:visibility="gone"
                 android:textSize="@dimen/text_14sp"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewCreated"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Created By : -"
+            android:visibility="gone"
+            android:textColor="@color/colorTextLight"
+            android:textSize="@dimen/text_14sp"/>
         <LinearLayout
             android:id="@+id/linearLayoutToHideApproved"
             android:layout_width="match_parent"
@@ -100,7 +109,6 @@
                 android:textColor="@color/colorTextLight"
                 android:textSize="@dimen/text_14sp"/>
         </LinearLayout>
-
         <LinearLayout
             android:id="@+id/linearLayoutClosePO"
             android:layout_width="match_parent"

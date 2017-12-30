@@ -49,12 +49,22 @@ public class PurchaseMaterialListItem extends RealmObject {
     @SerializedName("approved_by")
     private String approvedBy;
 
+    @SerializedName("created_by")
+    private String materialCreatedBy;
     private String remark;
 
     private boolean isInIndentMaterialUpdated;
 
     public String getApprovedBy() {
         return approvedBy;
+    }
+
+    public String getMaterialCreatedBy() {
+        return materialCreatedBy;
+    }
+
+    public void setMaterialCreatedBy(String materialCreatedBy) {
+        this.materialCreatedBy = materialCreatedBy;
     }
 
     public void setApprovedBy(String approvedBy) {
