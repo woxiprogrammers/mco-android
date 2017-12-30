@@ -120,68 +120,73 @@ public class ChecklistList_CompleteFragment extends Fragment {
     }
 
     private void requestToGetInProgressCheckList() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("checklist_status_slug", "completed");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestToGetInProgressCheckList")
-                .build()
-                .getAsObject(AssignedChecklistResponse.class, new ParsedRequestListener<AssignedChecklistResponse>() {
-                    @Override
-                    public void onResponse(final AssignedChecklistResponse response) {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            JSONObject params = new JSONObject();
+            try {
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("checklist_status_slug", "completed");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            AndroidNetworking.post(AppURL.API_CHECKLIST_ASSIGNED_LIST + AppUtils.getInstance().getCurrentToken())
+                    .addJSONObjectBody(params)
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setPriority(Priority.MEDIUM)
+                    .setTag("requestToGetInProgressCheckList")
+                    .build()
+                    .getAsObject(AssignedChecklistResponse.class, new ParsedRequestListener<AssignedChecklistResponse>() {
+                        @Override
+                        public void onResponse(final AssignedChecklistResponse response) {
                        /* if (!response.getPageid().equalsIgnoreCase("")) {
                             pageNumber = Integer.parseInt(response.getPageid());
                         }*/
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(ChecklistListItem.class);
-                                    try {
-                                        Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                            realm = Realm.getDefaultInstance();
+                            try {
+                                realm.executeTransactionAsync(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        realm.delete(ChecklistListItem.class);
+                                        try {
+                                            Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        realm.insertOrUpdate(response);
                                     }
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
+                                }, new Realm.Transaction.OnSuccess() {
+                                    @Override
+                                    public void onSuccess() {
                                     /*if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
                                         requestAssetListOnline(pageNumber);
                                     }*/
-                                    getLatestCheckLists();
+                                        getLatestCheckLists_setAdapter();
+                                    }
+                                }, new Realm.Transaction.OnError() {
+                                    @Override
+                                    public void onError(Throwable error) {
+                                        AppUtils.getInstance().logRealmExecutionError(error);
+                                    }
+                                });
+                            } finally {
+                                if (realm != null) {
+                                    realm.close();
                                 }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
                         }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestToGetInProgressCheckList");
-                    }
-                });
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "requestToGetInProgressCheckList");
+                        }
+                    });
+        } else {
+            getLatestCheckLists_setAdapter();
+            AppUtils.getInstance().showOfflineMessage("ChecklistList_InProgressFragment");
+        }
     }
 
-    private void getLatestCheckLists() {
+    private void getLatestCheckLists_setAdapter() {
         realm = Realm.getDefaultInstance();
         checklistItemResults = realm.where(ChecklistListItem.class).equalTo("checklistCurrentStatus", "completed").findAllAsync();
         ChecklistListAdapter checklistListAdapter = new ChecklistListAdapter(checklistItemResults, true, true);

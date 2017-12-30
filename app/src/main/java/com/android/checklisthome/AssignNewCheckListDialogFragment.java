@@ -195,8 +195,13 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 if (checkBoxGroup != null) {
-                    submitChecklistAssignmentRequest(checkBoxGroup.getValues());
-                } else Toast.makeText(mContext, "Failed to load Users", Toast.LENGTH_SHORT).show();
+                    if (AppUtils.getInstance().checkNetworkState()) {
+                        submitChecklistAssignmentRequest(checkBoxGroup.getValues());
+                    } else
+                        Toast.makeText(mContext, "Failed to load Users", Toast.LENGTH_SHORT).show();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("AssignNewCheckListDialogFragment");
+                }
             }
         });
         getCategory_SubCategoryListings();
@@ -338,6 +343,7 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
             if (intProjectSiteChecklistId != 0) {
                 params.put("project_site_checklist_id", intProjectSiteChecklistId);
             } else {
+                Toast.makeText(mContext, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 return;
             }
             params.put("assigned_to", jsonArrayAssignedUser);

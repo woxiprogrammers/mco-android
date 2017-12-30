@@ -166,7 +166,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
                                             oldPageNumber = pageNumber;
                                             requestAssetListOnline(pageNumber);
                                         }*/
-                                        getLatestAssignedCheckLists();
+                                        getLatestAssignedCheckLists_setAdapter();
                                     }
                                 }, new Realm.Transaction.OnError() {
                                     @Override
@@ -187,12 +187,12 @@ public class ChecklistList_AssignedFragment extends Fragment {
                         }
                     });
         } else {
-            getLatestAssignedCheckLists();
+            getLatestAssignedCheckLists_setAdapter();
             AppUtils.getInstance().showOfflineMessage("ChecklistList_AssignedFragment");
         }
     }
 
-    private void getLatestAssignedCheckLists() {
+    private void getLatestAssignedCheckLists_setAdapter() {
         realm = Realm.getDefaultInstance();
         checklistItemResults = realm.where(ChecklistListItem.class).equalTo("checklistCurrentStatus", "assigned").findAllAsync();
         AssignedChecklistListAdapter assignedChecklistListAdapter = new AssignedChecklistListAdapter(checklistItemResults, true, true);
