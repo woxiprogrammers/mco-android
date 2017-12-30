@@ -395,7 +395,7 @@ public class AppUtils {
         } else if (strStatus.equalsIgnoreCase("admin-disapproved")) {
             return "Admin Disapproved";
         } else if (strStatus.equalsIgnoreCase("in-indent")) {
-            return "in Indent";
+            return "In Indent";
         } else if (strStatus.equalsIgnoreCase("p-r-manager-approved")) {
             return "P R Manager Approved";
         } else if (strStatus.equalsIgnoreCase("p-r-manager-disapproved")) {

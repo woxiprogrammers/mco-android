@@ -101,19 +101,17 @@ public class ActivitySiteMoveIn extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_site_move_in);
         ButterKnife.bind(this);
+        initializeViews();
+
+    }
+
+    private void initializeViews() {
         mContext = ActivitySiteMoveIn.this;
-        requestToGetSystemSites();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Move In");
         }
-        edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedString = (String) adapterView.getItemAtPosition(i);
-                setProjectNameFromIndex(selectedString);
-            }
-        });
+        requestToGetSystemSites();
 
         radioGroupInventoryComp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -139,19 +137,13 @@ public class ActivitySiteMoveIn extends BaseActivity {
 
             }
         });
-
-    }
-
-    private void setProjectNameFromIndex(String selectedString) {
-        int selectedIndex = siteNameArray.indexOf(selectedString);
-        try {
-            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
-            String strProject = jsonObject.getString("project_name");
-            project_site_id = jsonObject.getInt("project_site_id");
-            edtProjName.setText(strProject + "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedString = (String) adapterView.getItemAtPosition(i);
+                setProjectNameFromIndex(selectedString);
+            }
+        });
     }
 
     @Override
@@ -243,7 +235,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
         Bundle bundleExtras = intent.getExtras();
         if (bundleExtras != null) {
             edtMatAssetName.clearFocus();
-//            isNewItem = bundleExtras.getBoolean("isNewItem");
             isMaterial = bundleExtras.getBoolean("isMaterial");
             String searchedItemName = bundleExtras.getString("searchedItemName");
             realm = Realm.getDefaultInstance();
@@ -252,11 +243,9 @@ public class ActivitySiteMoveIn extends BaseActivity {
             autoSuggestdataItem = realm.where(AutoSuggestdataItem.class).equalTo("name", searchedItemName).findFirst();
             inventoryCompId = autoSuggestdataItem.getInventoryComponentId();
             intRefId=autoSuggestdataItem.getReferenceId();
-            Timber.d("AutoSearch complete: " + inventoryCompId);
             if (realm != null) {
                 realm.close();
             }
-
             if (autoSuggestdataItem != null) {
                 edtMatAssetName.setText(autoSuggestdataItem.getName());
                 spinnerItemUnit.setAdapter(setSpinnerUnits(autoSuggestdataItem.getUnit()));
@@ -265,15 +254,15 @@ public class ActivitySiteMoveIn extends BaseActivity {
         }
     }
 
-    private ArrayAdapter<String> setSpinnerUnits(RealmList<UnitItem> unitQuantityItems) {
-        List<UnitItem> arrUnitQuantityItems = null;
+    private ArrayAdapter<String> setSpinnerUnits(RealmList<UnitItem> unitItems) {
+        List<UnitItem> unitItemList = null;
         try {
-            arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
+            unitItemList = realm.copyFromRealm(unitItems);
         } catch (Exception e) {
-            arrUnitQuantityItems = unitQuantityItems;
+            unitItemList = unitItems;
         }
         ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
-        for (UnitItem quantityItem : arrUnitQuantityItems) {
+        for (UnitItem quantityItem : unitItemList) {
             String unitName = quantityItem.getUnitName();
             arrayOfUnitNames.add(unitName);
         }
@@ -374,7 +363,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
             }
             params.put("remark", edtSiteTransferRemark.getText().toString());
             params.put("image", jsonImageNameArray);
-            Log.i("@@MyParams",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -449,6 +437,18 @@ public class ActivitySiteMoveIn extends BaseActivity {
         uploadImages_addItemToLocal();
     }
 
+
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
+            String strProject = jsonObject.getString("project_name");
+            project_site_id = jsonObject.getInt("project_site_id");
+            edtProjName.setText(strProject + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

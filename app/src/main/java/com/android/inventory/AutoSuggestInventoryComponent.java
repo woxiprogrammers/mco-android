@@ -65,9 +65,8 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
     boolean isMaterial = false;
     private String mStrSearch;
     private Realm realm;
-    private RealmResults<AutoSuggestdataItem> searchMaterialListItemRealmResults;
-    private RealmResults<SearchAssetListItem> searchAssetListItemRealmResults;
-    private AutoSuggestdataItem searchMaterialListItem;
+    private RealmResults<AutoSuggestdataItem> autoSuggestdataItemRealmResults;
+    private AutoSuggestdataItem autoSuggestdataItem;
     private int projectSiteIdFrom;
 
     @Override
@@ -117,7 +116,7 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
     private void deletePreviousLocalData() {
         realm = Realm.getDefaultInstance();
         try {
-            realm.executeTransactionAsync(new Realm.Transaction() {
+            realm.executeTransactionAsync( new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     realm.delete(InventoryAutoSuggestResponse.class);
@@ -156,7 +155,6 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
             params.put("keyword", searchString);
             params.put("project_site_id_from", projectSiteIdFrom);
             params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
-            Log.i("@@Auto",params.toString());
         } catch (JSONException e) {
             Timber.d("Exception occurred: " + e.getMessage());
         }
@@ -205,10 +203,8 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
 
     private void setUpSearchResultAdapter() {
         realm = Realm.getDefaultInstance();
-        Timber.d("Adapter setup called");
-//        if (isMaterial) {
-        searchMaterialListItemRealmResults = realm.where(AutoSuggestdataItem.class).findAllAsync();
-        MaterialAutoSuggestAdapter materialAutoSuggestAdapter = new MaterialAutoSuggestAdapter(searchMaterialListItemRealmResults, true, true);
+        autoSuggestdataItemRealmResults = realm.where(AutoSuggestdataItem.class).findAllAsync();
+        MaterialAutoSuggestAdapter materialAutoSuggestAdapter = new MaterialAutoSuggestAdapter(autoSuggestdataItemRealmResults, true, true);
         recyclerViewSearchList.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerViewSearchList.setHasFixedSize(true);
         recyclerViewSearchList.setAdapter(materialAutoSuggestAdapter);
@@ -217,34 +213,14 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        searchMaterialListItem = searchMaterialListItemRealmResults.get(position);
-                        setResultAndFinish(searchMaterialListItem.getName());
+                        autoSuggestdataItem = autoSuggestdataItemRealmResults.get(position);
+                        setResultAndFinish(autoSuggestdataItem.getName());
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-       /* } else {
-            searchAssetListItemRealmResults = realm.where(SearchAssetListItem.class).findAllAsync();
-            AssetAutoSuggestAdapter assetAutoSuggestAdapter = new AssetAutoSuggestAdapter(searchAssetListItemRealmResults, true, true);
-            recyclerViewSearchList.setLayoutManager(new LinearLayoutManager(mContext));
-            recyclerViewSearchList.setHasFixedSize(true);
-            recyclerViewSearchList.setAdapter(assetAutoSuggestAdapter);
-            recyclerViewSearchList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                    recyclerViewSearchList,
-                    new RecyclerItemClickListener.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(View view, final int position) {
-                            searchAssetListItem = searchAssetListItemRealmResults.get(position);
-                            setResultAndFinish(searchAssetListItem.getAssetName(), false);
-                        }
-
-                        @Override
-                        public void onLongItemClick(View view, int position) {
-                        }
-                    }));
-        }*/
     }
 
     private void setResultAndFinish(String searchedItemName) {
@@ -266,12 +242,11 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
 
     @SuppressWarnings("WeakerAccess")
     protected class MaterialAutoSuggestAdapter extends RealmRecyclerViewAdapter<AutoSuggestdataItem, MaterialAutoSuggestAdapter.MyViewHolder> {
-        //ToDO ITEM CLASS
-        private OrderedRealmCollection<AutoSuggestdataItem> arrSearchMaterialListItem;
+        private OrderedRealmCollection<AutoSuggestdataItem> autoSuggestdataItemOrderedRealmCollection;
 
         MaterialAutoSuggestAdapter(@Nullable OrderedRealmCollection<AutoSuggestdataItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
-            arrSearchMaterialListItem = data;
+            autoSuggestdataItemOrderedRealmCollection = data;
         }
 
         @Override
@@ -282,13 +257,13 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
 
         @Override
         public int getItemCount() {
-            return arrSearchMaterialListItem == null ? 0 : arrSearchMaterialListItem.size();
+            return autoSuggestdataItemOrderedRealmCollection == null ? 0 : autoSuggestdataItemOrderedRealmCollection.size();
         }
 
         @Override
         public void onBindViewHolder(MaterialAutoSuggestAdapter.MyViewHolder holder, int position) {
-            AutoSuggestdataItem searchMaterialListItem = arrSearchMaterialListItem.get(position);
-            holder.mTextViewResultItem.setText(searchMaterialListItem.getName());
+            AutoSuggestdataItem autoSuggestdataItem = autoSuggestdataItemOrderedRealmCollection.get(position);
+            holder.mTextViewResultItem.setText(autoSuggestdataItem.getName());
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {

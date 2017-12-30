@@ -130,6 +130,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private LinearLayout linearLayoutUnit;
     private String slug = "";
+    private boolean isApproveAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +151,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
             mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
             getRequestedItemList();
-            setUpApprovedStatusAdapter();
             for (PermissionsItem permissionsItem : permissionsItems) {
                 String accessPermission = permissionsItem.getCanAccess();
                 if (accessPermission.equalsIgnoreCase(getString(R.string.create_material_request))) {
@@ -413,6 +413,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d("Realm Execution Successful");
+                                    isApproveAccess=response.isApproveAccess();
+                                    Log.i("@@Val", String.valueOf(isApproveAccess));
+                                    setUpApprovedStatusAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -438,7 +441,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         RealmResults<PurchaseMaterialListItem> materialListRealmResults_Pending = realm.where(PurchaseMaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
-        ExistingMaterialApproveRvAdapter purchaseMaterialRvAdapter = new ExistingMaterialApproveRvAdapter(materialListRealmResults_Pending, true, true);
+        ExistingMaterialApproveRvAdapter purchaseMaterialRvAdapter = new ExistingMaterialApproveRvAdapter(materialListRealmResults_Pending, true, true,isApproveAccess);
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvExistingMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
@@ -1332,10 +1335,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     protected class ExistingMaterialApproveRvAdapter extends RealmRecyclerViewAdapter<PurchaseMaterialListItem,
             ExistingMaterialApproveRvAdapter.MyViewHolder> {
         private OrderedRealmCollection<PurchaseMaterialListItem> arrPurchaseMaterialListItems;
+        private boolean isAcces;
 
-        public ExistingMaterialApproveRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        public ExistingMaterialApproveRvAdapter(@Nullable OrderedRealmCollection<PurchaseMaterialListItem> data, boolean autoUpdate, boolean updateOnModification,boolean isApprove) {
             super(data, autoUpdate, updateOnModification);
             arrPurchaseMaterialListItems = data;
+            isAcces=isApprove;
+            Log.i("@@ValAd", String.valueOf(isAcces));
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -1407,19 +1413,20 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
                 holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
             }
-            if (purchaseMaterialListItem.getHave_access() != null) {
-                if (purchaseMaterialListItem.getHave_access().contains("approve") && strStatus.equalsIgnoreCase("pending")) {
-                    holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+            if(isAcces) {
+                    if (/*purchaseMaterialListItem.getHave_access().contains("approve") && */strStatus.equalsIgnoreCase("pending")) {
+                        holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+                    }
+
+                if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) /*&& purchaseMaterialListItem.getHave_access().contains("approve")*/) {
+//                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                    holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
                 } else {
-                    holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
+//                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
+                    holder.buttonMoveToIndent.setVisibility(View.GONE);
                 }
-            }
-            if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) && purchaseMaterialListItem.getHave_access().contains("approve")) {
-//                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-                holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
-            } else {
-//                holder.linearLayoutApproveDisapprove.setVisibility(View.GONE);
-                holder.buttonMoveToIndent.setVisibility(View.GONE);
             }
         }
 
