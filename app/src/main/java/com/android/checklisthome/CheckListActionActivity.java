@@ -48,8 +48,9 @@ public class CheckListActionActivity extends BaseActivity {
             int projectSiteChecklistId = Integer.parseInt(bundleExtras.getString("projectSiteChecklistId"));
             isFromState = bundleExtras.getString("isFromState");
             subModulesItemList = bundleExtras.getString("subModulesItemList");
+            int assignedTo = bundleExtras.getInt("assignedTo");
             boolean isUserViewOnly = bundleExtras.getBoolean("isUserViewOnly");
-            CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, projectSiteChecklistId, isFromState, isUserViewOnly, subModulesItemList);
+            CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, projectSiteChecklistId, isFromState, isUserViewOnly, subModulesItemList, assignedTo);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.frameLayoutChecklistAction, checkListTitleFragment, "checkListTitleFragment");
             fragmentTransaction.commit();

@@ -109,18 +109,20 @@ public class CheckListTitleFragment extends Fragment {
     private int parentProjectSiteUserChecklistAssignmentId;
     private boolean isViewOnly;
     private boolean isUserViewOnly;
+    private int assignedTo;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
     }
 
-    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, int projectSiteChecklistId, String isFromState, boolean isUserViewOnly, String subModulesItemList) {
+    public static CheckListTitleFragment newInstance(int projectSiteUserChecklistAssignmentId, int projectSiteChecklistId, String isFromState, boolean isUserViewOnly, String subModulesItemList, int assignedTo) {
         Bundle args = new Bundle();
         args.putInt("projectSiteUserChecklistAssignmentId", projectSiteUserChecklistAssignmentId);
         args.putInt("projectSiteChecklistId", projectSiteChecklistId);
         args.putString("isFromState", isFromState);
         args.putBoolean("isUserViewOnly", isUserViewOnly);
         args.putString("subModulesItemList", subModulesItemList);
+        args.putInt("assignedTo", assignedTo);
         CheckListTitleFragment fragment = new CheckListTitleFragment();
         fragment.setArguments(args);
         return fragment;
@@ -138,20 +140,22 @@ public class CheckListTitleFragment extends Fragment {
             isUserViewOnly = bundleArgs.getBoolean("isUserViewOnly");
             subModulesItemList = bundleArgs.getString("subModulesItemList");
             isFromState = bundleArgs.getString("isFromState");
+            assignedTo = bundleArgs.getInt("assignedTo");
 ///////////////
             SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
             for (SubModulesItem subModulesItem : subModulesItems) {
                 String subModuleTag = subModulesItem.getSubModuleTag();
-//                Timber.d("subModuleTag: " + subModuleTag);
                 if (subModuleTag.contains("recheck")) {
-//                    Timber.d("Review True");
                     mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
                     mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
                     break;
                 } else {
-//                    Timber.d("Review False");
                     mLinearLayoutReassignTo.setVisibility(View.GONE);
-                    mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
+                    if (subModuleTag.contains("management") && assignedTo == AppUtils.getInstance().getCurrentUserId()) {
+                        mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
+                    } else {
+                        mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
+                    }
                 }
             }
 ///////////////
@@ -198,6 +202,7 @@ public class CheckListTitleFragment extends Fragment {
                 }
             }
         });
+        mLinearLayoutParentsLayout.setVisibility(View.GONE);
         requestToGetCheckpoints();
         return view;
     }
@@ -389,12 +394,12 @@ public class CheckListTitleFragment extends Fragment {
                         getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
                     } else {
                         isViewOnly = false;
-                        if (isFromState.equalsIgnoreCase("completed")) {
-                            mLinearLayoutReassignTo.setVisibility(View.GONE);
-                            mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
-                        } else {
+                        if (isFromState.equalsIgnoreCase("review")) {
                             mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
                             mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
+                        } else {
+                            mLinearLayoutReassignTo.setVisibility(View.GONE);
+                            mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -672,7 +677,9 @@ public class CheckListTitleFragment extends Fragment {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
             }
-        }        @Override
+        }
+
+        @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             checkPointsItem = checkPointsItemOrderedRealmCollection.get(position);
             if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
@@ -682,8 +689,6 @@ public class CheckListTitleFragment extends Fragment {
             }
             holder.textviewDescription.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
         }
-
-
 
         @Override
         public int getItemCount() {
