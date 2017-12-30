@@ -2,7 +2,6 @@ package com.android.login_mvp;
 
 import android.text.TextUtils;
 
-import com.android.firebase.MyFirebaseInstanceIDService;
 import com.android.models.login_acl.LoginResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -35,6 +34,7 @@ class LoginInteractor implements LoginInteractorInterface {
             requestLoginAPI(listener, username, password);
         } else {
             AppUtils.getInstance().showOfflineMessage("Login");
+            listener.onFailure("");
         }
     }
 
@@ -42,10 +42,6 @@ class LoginInteractor implements LoginInteractorInterface {
         AndroidNetworking.post(AppURL.API_USER_LOGIN)
                 .addBodyParameter("mobile", mobileNumber)
                 .addBodyParameter("password", password)
-//                .addBodyParameter("email", "superadmin@gmail.com")
-//                .addBodyParameter("password", "superadmin")
-//                .addBodyParameter("email", "admin@mconstruction.co.in")
-//                .addBodyParameter("password", "mco@1234")
                 .setTag("requestLoginAPI")
                 .setPriority(Priority.MEDIUM)
                 .build()

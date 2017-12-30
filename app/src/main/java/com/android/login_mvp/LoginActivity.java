@@ -2,6 +2,7 @@ package com.android.login_mvp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -136,6 +137,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void loginFailure(String message) {
         btnSignIn.setEnabled(true);
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if (!TextUtils.isEmpty(message)) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
