@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.android.inventory.InventoryDetails;
 import com.android.inventory.MaterialListAdapter;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
+import com.android.models.login_acl.PermissionsItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -24,6 +26,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +54,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     private RealmResults<MaterialListItem> materialListItems;
     private int pageNumber = 0;
     private int oldPageNumber;
-    private DecimalFormat df;
+    private String subModuleTag, permissionList;
 
     public MaterialListFragment() {
         // Required empty public constructor
@@ -60,6 +63,8 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     public static MaterialListFragment newInstance(String subModule_Tag, String permissionsItemList) {
         Bundle args = new Bundle();
         MaterialListFragment fragment = new MaterialListFragment();
+        args.putString("subModule_Tag", subModule_Tag);
+        args.putString("permissionsItemList", permissionsItemList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,6 +73,19 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            permissionList = bundle.getString("permissionsItemList");
+            subModuleTag = bundle.getString("subModule_Tag");
+        }
+        PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
+        for (PermissionsItem permissionsItem : permissionsItems) {
+            String accessPermission = permissionsItem.getCanAccess();
+            if (accessPermission.equalsIgnoreCase(getString(R.string.create_inventory_in_out_transfer))) {
+                Log.i("Sharvari Inventory",accessPermission);
+            }
+        }
+
         setAdapterForMaterialList();
         return mParentView;
     }

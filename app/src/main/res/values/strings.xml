@@ -108,4 +108,5 @@
     <string name="view_purchase_request">view-purchase-request</string>
     <string name="create_peticash_management">create-peticash-management</string>
     <string name="transfer_request">Transfer Request</string>
+    <string name="create_inventory_in_out_transfer">create-inventory-in-out-transfer</string>
 </resources>
