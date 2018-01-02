@@ -151,7 +151,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
                                 realm.executeTransactionAsync(new Realm.Transaction() {
                                     @Override
                                     public void execute(Realm realm) {
-                                        realm.delete(ChecklistListItem.class);
+//                                        realm.delete(ChecklistListItem.class);
                                         try {
                                             Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
                                         } catch (Exception e) {

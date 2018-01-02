@@ -144,7 +144,7 @@ public class ChecklistList_ReviewFragment extends Fragment {
                                 realm.executeTransactionAsync(new Realm.Transaction() {
                                     @Override
                                     public void execute(Realm realm) {
-                                        realm.delete(ChecklistListItem.class);
+//                                        realm.delete(ChecklistListItem.class);
                                         try {
                                             Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
                                         } catch (Exception e) {
@@ -188,6 +188,7 @@ public class ChecklistList_ReviewFragment extends Fragment {
     private void getLatestCheckLists_setAdapter() {
         realm = Realm.getDefaultInstance();
         checklistItemResults = realm.where(ChecklistListItem.class).equalTo("checklistCurrentStatus", "review").findAllAsync();
+        Timber.d(String.valueOf(checklistItemResults.size()));
         ChecklistListAdapter checklistListAdapter = new ChecklistListAdapter(checklistItemResults, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
