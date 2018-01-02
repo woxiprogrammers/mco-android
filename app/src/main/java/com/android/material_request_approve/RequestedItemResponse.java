@@ -12,6 +12,8 @@ public class RequestedItemResponse extends RealmObject {
     private String message;
     @SerializedName("data")
     private RequestedItemData requestedItemData;
+    @SerializedName("has_approve_access")
+    private boolean isApproveAccess;
 
     public String getMessage() {
         return message;
@@ -23,6 +25,14 @@ public class RequestedItemResponse extends RealmObject {
 
     public RequestedItemData getRequestedItemData() {
         return requestedItemData;
+    }
+
+    public boolean isApproveAccess() {
+        return isApproveAccess;
+    }
+
+    public void setApproveAccess(boolean approveAccess) {
+        isApproveAccess = approveAccess;
     }
 
     public void setRequestedItemData(RequestedItemData requestedItemData) {

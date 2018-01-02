@@ -80,7 +80,7 @@ public class SplashActivity extends BaseActivity {
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-maintainance", InventoryHomeActivity.class.getName());
+        aclKeyValuePair.put("asset-maintainance", ActivityTransferRequest.class.getName());
         aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("inventory-history", ActivityTransferRequest.class.getName());
         //

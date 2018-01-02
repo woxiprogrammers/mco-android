@@ -39,6 +39,7 @@ public class PayAndBillsActivity extends BaseActivity {
     private Realm realm;
     private int primaryKey;
     private String strVendorName;
+    private boolean isCreateAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class PayAndBillsActivity extends BaseActivity {
         if (intent != null) {
             primaryKey = intent.getIntExtra("PONumber", -1);
             strVendorName=intent.getStringExtra("VendorName");
+            isCreateAccess=intent.getBooleanExtra("isCreateAccess",false);
             realm = Realm.getDefaultInstance();
             PurchaseOrderListItem purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", primaryKey).findFirst();
             title = purchaseOrderListItem.getPurchaseOrderFormatId();
@@ -158,7 +160,7 @@ public class PayAndBillsActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PayFragmentNew.newInstance(primaryKey,strVendorName);
+                    return PayFragmentNew.newInstance(primaryKey,strVendorName,isCreateAccess);
                 case 1:
                     return PurchaseTranListFragment.newInstance(false, primaryKey);
                 default:

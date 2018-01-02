@@ -41,12 +41,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="100 KG"
+                android:layout_marginTop="@dimen/dimen_8dp"
                 android:textSize="@dimen/text_14sp"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/textView_rate"
@@ -75,21 +77,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
+                android:layout_marginTop="@dimen/dimen_8dp"
                 android:text="Transfer To :- "
                 android:textSize="@dimen/text_14sp"/>
 
 
-            <TextView
-                android:id="@+id/textViewApprove"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:background="@drawable/background_button_pressed"
-                android:gravity="center"
-                android:padding="@dimen/dimen_5dp"
-                android:text="Approve"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_14sp"/>
+
         </LinearLayout>
+        <TextView
+            android:id="@+id/textViewApprove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_button_pressed"
+            android:gravity="center"
+            android:padding="@dimen/dimen_8dp"
+            android:text="Approve"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/text_14sp"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

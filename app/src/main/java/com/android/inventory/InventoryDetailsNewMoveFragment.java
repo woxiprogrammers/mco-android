@@ -192,7 +192,7 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     private void requestToMoveOut() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("project_site_id_from", AppUtils.getInstance().getCurrentSiteId());
             params.put("name", "user");
             params.put("source_name", edtUserName.getText().toString());
             params.put("type", "OUT");

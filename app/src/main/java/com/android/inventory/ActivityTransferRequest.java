@@ -16,7 +16,7 @@ public class ActivityTransferRequest extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer_request);
         if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle("");
+            getSupportActionBar().setTitle("Request Components");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         getFragment();

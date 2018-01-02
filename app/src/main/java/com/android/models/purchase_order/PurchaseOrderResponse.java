@@ -12,6 +12,8 @@ public class PurchaseOrderResponse extends RealmObject {
     private PurchaseOrderRespData purchaseOrderRespData;
     @SerializedName("message")
     private String message;
+    @SerializedName("has_create_access")
+    private boolean isCreateAccess;
 
     public PurchaseOrderRespData getPurchaseOrderRespData() {
         return purchaseOrderRespData;
@@ -19,6 +21,14 @@ public class PurchaseOrderResponse extends RealmObject {
 
     public void setPurchaseOrderRespData(PurchaseOrderRespData purchaseOrderRespData) {
         this.purchaseOrderRespData = purchaseOrderRespData;
+    }
+
+    public boolean isCreateAccess() {
+        return isCreateAccess;
+    }
+
+    public void setCreateAccess(boolean createAccess) {
+        isCreateAccess = createAccess;
     }
 
     public String getMessage() {

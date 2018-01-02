@@ -164,15 +164,17 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private static String strVendorName;
     private View layout;
     private PurchaseOrderListItem purchaseOrderListItem;
+    private static boolean isHaveCreateAccess;
 
     public PayFragmentNew() {
         // Required empty public constructor
     }
 
-    public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor) {
+    public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor,boolean isHaveAccess) {
         Bundle args = new Bundle();
         orderId = purchaseOrderId;
         strVendorName = strVendor;
+        isHaveCreateAccess=isHaveAccess;
         PayFragmentNew fragment = new PayFragmentNew();
         fragment.setArguments(args);
         return fragment;
@@ -185,47 +187,59 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         unbinder = ButterKnife.bind(this, view);
         layout = view.findViewById(R.id.layoutView);
         mContext = getActivity();
+        initializeViews();
+
+        return view;
+    }
+
+    private void initializeViews() {
         if (strVendorName != null) {
             textViewVendor.setText("Vendor Name : - " + strVendorName);
         }
         realm = Realm.getDefaultInstance();
-        Timber.d(String.valueOf(orderId));
         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
+
         float quantity = Float.parseFloat(purchaseOrderListItem.getRemainingQuantity());
-        if (quantity == 0 || quantity == 0.0) {
-            textViewShowMessage.setVisibility(View.VISIBLE);
-            linearLayoutFirstLayout.setVisibility(View.GONE);
-        } else {
-            String strGrnGenerated = purchaseOrderListItem.getGrnGenerated();
-            Timber.d(strGrnGenerated);
-            if (!TextUtils.isEmpty(strGrnGenerated)) {
-                linearLayoutToVisible.setVisibility(View.VISIBLE);
+        if(isHaveCreateAccess){
+            linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+            if (quantity == 0 || quantity == 0.0) {
+                textViewShowMessage.setVisibility(View.VISIBLE);
                 linearLayoutFirstLayout.setVisibility(View.GONE);
-                editTextGrnNum.setText(strGrnGenerated);
-                requestForMaterialNames();
             } else {
-                linearLayoutToVisible.setVisibility(View.GONE);
-                linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+                String strGrnGenerated = purchaseOrderListItem.getGrnGenerated();
+                Timber.d(strGrnGenerated);
+                if (!TextUtils.isEmpty(strGrnGenerated)) {
+                    linearLayoutToVisible.setVisibility(View.VISIBLE);
+                    linearLayoutFirstLayout.setVisibility(View.GONE);
+                    editTextGrnNum.setText(strGrnGenerated);
+                    requestForMaterialNames();
+                } else {
+                    linearLayoutToVisible.setVisibility(View.GONE);
+                    linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+                }
             }
-        }
-        if (purchaseOrderListItem.getListOfImages().size() > 0) {
-            for (int index = 0; index < purchaseOrderListItem.getListOfImages().size(); index++) {
-                ImageView imageView = new ImageView(getActivity());
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                layoutParams.setMargins(10, 10, 10, 10);
-                imageView.setLayoutParams(layoutParams);
-                linearLayoutShowImg.addView(imageView);
-                final int finalIndex = index;
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        openImageZoomFragment("http://test.mconstruction.co.in" + purchaseOrderListItem.getListOfImages().get(finalIndex).getImageUrl());
-                    }
-                });
-                AppUtils.getInstance().loadImageViaGlide(purchaseOrderListItem.getListOfImages().get(index).getImageUrl(), imageView, mContext);
+            if (purchaseOrderListItem.getListOfImages().size() > 0) {
+                for (int index = 0; index < purchaseOrderListItem.getListOfImages().size(); index++) {
+                    ImageView imageView = new ImageView(getActivity());
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                    layoutParams.setMargins(10, 10, 10, 10);
+                    imageView.setLayoutParams(layoutParams);
+                    linearLayoutShowImg.addView(imageView);
+                    final int finalIndex = index;
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openImageZoomFragment("http://test.mconstruction.co.in" + purchaseOrderListItem.getListOfImages().get(finalIndex).getImageUrl());
+                        }
+                    });
+                    AppUtils.getInstance().loadImageViaGlide(purchaseOrderListItem.getListOfImages().get(index).getImageUrl(), imageView, mContext);
+                }
             }
+        }else {
+            linearLayoutFirstLayout.setVisibility(View.GONE);
         }
-        return view;
+
+
     }
 
     @Override

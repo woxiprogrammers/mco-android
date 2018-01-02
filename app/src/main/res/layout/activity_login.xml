@@ -57,7 +57,7 @@
                 android:inputType="number"
                 android:maxLength="10"
                 android:paddingLeft="@dimen/dimen_40dp"
-                android:text="7777777771"/>
+                android:text="111111111"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
