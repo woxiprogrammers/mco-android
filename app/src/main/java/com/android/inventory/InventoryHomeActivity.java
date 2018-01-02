@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +14,8 @@ import android.view.MenuItem;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
+import com.android.inventory.assets.AssetListFragment;
+import com.android.inventory.material.MaterialListFragment;
 import com.android.models.login_acl.PermissionsItem;
 import com.google.gson.Gson;
 
@@ -24,24 +29,21 @@ public class InventoryHomeActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     MenuItem prevMenuItem;
-    private String subModuleTag;
+    private String strSubModuleTag, permissionsItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigate_view);
         ButterKnife.bind(this);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            strSubModuleTag = bundle.getString("subModuleTag");
+            permissionsItemList = bundle.getString("permissionsItemList");
+        }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             setTitle(getString(R.string.inventory));
-        }
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            String permissionsItemList = bundle.getString("permissionsItemList");
-            PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
-            subModuleTag = bundle.getString("subModuleTag");
-            Timber.d(subModuleTag);
-            Timber.d(String.valueOf(permissionsItems));
         }
         callMaterialFragment();
         bottom_navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -73,11 +75,6 @@ public class InventoryHomeActivity extends BaseActivity {
                 FragmentInterface fragment = (FragmentInterface) inventoryViewPagerAdapter.instantiateItem(viewPagerInventory, position);
                 if (fragment != null) {
                     fragment.fragmentBecameVisible();
-                    /*if (subModuleTag.equalsIgnoreCase("inventory-in-out-transfer")) {
-                        viewPagerInventory.setCurrentItem(0);
-                    } else if(subModuleTag.equalsIgnoreCase("asset-reading")){
-                        viewPagerInventory.setCurrentItem(1);
-                    }*/
                 }
                 if (prevMenuItem != null) {
                     prevMenuItem.setChecked(false);
@@ -113,4 +110,30 @@ public class InventoryHomeActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
+        private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
+
+        public InventoryViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return arrBottomTitle.length;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return MaterialListFragment.newInstance(strSubModuleTag, permissionsItemList);
+                case 1:
+                    return AssetListFragment.newInstance();
+                default:
+                    return null;
+            }
+        }
+    }
 }
+
+

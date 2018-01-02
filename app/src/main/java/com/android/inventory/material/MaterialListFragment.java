@@ -57,7 +57,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         // Required empty public constructor
     }
 
-    public static MaterialListFragment newInstance() {
+    public static MaterialListFragment newInstance(String subModule_Tag, String permissionsItemList) {
         Bundle args = new Bundle();
         MaterialListFragment fragment = new MaterialListFragment();
         fragment.setArguments(args);
