@@ -29,7 +29,7 @@ public class InventoryHomeActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     MenuItem prevMenuItem;
-    private String strSubModuleTag, permissionsItemList;
+    private String strSubModuleTag, permissionsItemList,subModulesItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,8 @@ public class InventoryHomeActivity extends BaseActivity {
         if (bundle != null) {
             strSubModuleTag = bundle.getString("subModuleTag");
             permissionsItemList = bundle.getString("permissionsItemList");
+            subModulesItemList = bundle.getString("subModulesItemList");
+
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -126,7 +128,7 @@ public class InventoryHomeActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return MaterialListFragment.newInstance(strSubModuleTag, permissionsItemList);
+                    return MaterialListFragment.newInstance(strSubModuleTag, subModulesItemList,permissionsItemList                                                                                                         );
                 case 1:
                     return AssetListFragment.newInstance();
                 default:

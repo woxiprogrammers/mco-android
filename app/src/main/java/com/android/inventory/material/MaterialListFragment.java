@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
@@ -19,6 +20,7 @@ import com.android.inventory.MaterialListAdapter;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
 import com.android.models.login_acl.PermissionsItem;
+import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -54,17 +56,19 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     private RealmResults<MaterialListItem> materialListItems;
     private int pageNumber = 0;
     private int oldPageNumber;
-    private String subModuleTag, permissionList;
+    private String subModuleTag, permissionList,subModulesItemList;
+    private boolean isCrateInOutTransfer;
 
     public MaterialListFragment() {
         // Required empty public constructor
     }
 
-    public static MaterialListFragment newInstance(String subModule_Tag, String permissionsItemList) {
+    public static MaterialListFragment newInstance(String subModule_Tag, String subModulesItemList,String permissionList) {
         Bundle args = new Bundle();
         MaterialListFragment fragment = new MaterialListFragment();
         args.putString("subModule_Tag", subModule_Tag);
-        args.putString("permissionsItemList", permissionsItemList);
+        args.putString("subModulesItemList", subModulesItemList);
+        args.putString("permissionsItemList", permissionList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,15 +80,24 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         Bundle bundle = getArguments();
         if (bundle != null) {
             permissionList = bundle.getString("permissionsItemList");
+            subModulesItemList = bundle.getString("subModulesItemList");
             subModuleTag = bundle.getString("subModule_Tag");
         }
-        PermissionsItem[] permissionsItems = new Gson().fromJson(permissionList, PermissionsItem[].class);
-        for (PermissionsItem permissionsItem : permissionsItems) {
-            String accessPermission = permissionsItem.getCanAccess();
-            if (accessPermission.equalsIgnoreCase(getString(R.string.create_inventory_in_out_transfer))) {
-                Log.i("Sharvari Inventory",accessPermission);
-            }
+
+        if(subModulesItemList.contains("create-inventory-in-out-transfer")){
+            isCrateInOutTransfer=true;
         }
+        /*SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
+        for (SubModulesItem subModulesItem : subModulesItems) {
+            String subModuleTag = subModulesItem.getSubModuleTag();
+            if (subModuleTag.equalsIgnoreCase("inventory-in-out-transfer")) {
+                for (PermissionsItem permissionsItem : permissionsItems) {
+                    String accessPermission = permissionsItem.getCanAccess();
+                    if (accessPermission.equalsIgnoreCase(getString(R.string.create_inventory_in_out_transfer))) {
+                    }
+                }
+            }
+        }*/
 
         setAdapterForMaterialList();
         return mParentView;
@@ -187,10 +200,15 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         rv_material_list.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rv_material_list, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-                Intent intent = new Intent(mContext, InventoryDetails.class);
-                intent.putExtra("ClickedMaterialName", materialListItems.get(position).getMaterialName());
-                intent.putExtra("id",materialListItems.get(position).getId());
-                startActivity(intent);
+                if(isCrateInOutTransfer){
+                    Intent intent = new Intent(mContext, InventoryDetails.class);
+                    intent.putExtra("ClickedMaterialName", materialListItems.get(position).getMaterialName());
+                    intent.putExtra("id",materialListItems.get(position).getId());
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(mContext,"You do not have permission to create transfer",Toast.LENGTH_LONG).show();
+
+                }
             }
 
             @Override
