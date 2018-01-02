@@ -56,19 +56,17 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     private RealmResults<MaterialListItem> materialListItems;
     private int pageNumber = 0;
     private int oldPageNumber;
-    private String subModuleTag, permissionList,subModulesItemList;
+    private String subModulesItemList;
     private boolean isCrateInOutTransfer;
 
     public MaterialListFragment() {
         // Required empty public constructor
     }
 
-    public static MaterialListFragment newInstance(String subModule_Tag, String subModulesItemList,String permissionList) {
+    public static MaterialListFragment newInstance(String subModulesItemList) {
         Bundle args = new Bundle();
         MaterialListFragment fragment = new MaterialListFragment();
-        args.putString("subModule_Tag", subModule_Tag);
         args.putString("subModulesItemList", subModulesItemList);
-        args.putString("permissionsItemList", permissionList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,12 +77,10 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         ButterKnife.bind(this, mParentView);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            permissionList = bundle.getString("permissionsItemList");
             subModulesItemList = bundle.getString("subModulesItemList");
-            subModuleTag = bundle.getString("subModule_Tag");
         }
 
-        if(subModulesItemList.contains("create-inventory-in-out-transfer")){
+        if(subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))){
             isCrateInOutTransfer=true;
         }
         /*SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);

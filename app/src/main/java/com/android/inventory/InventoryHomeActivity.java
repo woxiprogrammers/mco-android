@@ -29,7 +29,7 @@ public class InventoryHomeActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     MenuItem prevMenuItem;
-    private String strSubModuleTag, permissionsItemList,subModulesItemList;
+    private String subModulesItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +38,7 @@ public class InventoryHomeActivity extends BaseActivity {
         ButterKnife.bind(this);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            strSubModuleTag = bundle.getString("subModuleTag");
-            permissionsItemList = bundle.getString("permissionsItemList");
             subModulesItemList = bundle.getString("subModulesItemList");
-
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -95,7 +92,10 @@ public class InventoryHomeActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_site_move_in, menu);
+        if(subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))){
+            getMenuInflater().inflate(R.menu.menu_site_move_in, menu);
+
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -128,9 +128,9 @@ public class InventoryHomeActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return MaterialListFragment.newInstance(strSubModuleTag, subModulesItemList,permissionsItemList                                                                                                         );
+                    return MaterialListFragment.newInstance( subModulesItemList);
                 case 1:
-                    return AssetListFragment.newInstance();
+                    return AssetListFragment.newInstance(subModulesItemList);
                 default:
                     return null;
             }
