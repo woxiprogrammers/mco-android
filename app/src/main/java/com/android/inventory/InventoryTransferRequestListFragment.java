@@ -2,7 +2,6 @@ package com.android.inventory;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,15 +16,11 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.models.inventory.MaterialListItem;
 import com.android.models.inventory.RequestComponentData;
 import com.android.models.inventory.RequestComponentListingItem;
 import com.android.models.inventory.RequestComponentResponse;
-import com.android.purchase_details.PayAndBillsActivity;
-import com.android.purchase_request.PurchaseOrdermaterialDetailFragment;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.RecyclerItemClickListener;
 import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -44,7 +39,6 @@ import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
-import timber.log.Timber;
 
 public class InventoryTransferRequestListFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.rv_transfer_request_list)
@@ -60,7 +54,6 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     }
 
     public static InventoryTransferRequestListFragment newInstance() {
-
         Bundle args = new Bundle();
         InventoryTransferRequestListFragment fragment = new InventoryTransferRequestListFragment();
         fragment.setArguments(args);
@@ -72,7 +65,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.fragment_inventory_transfer_request_list, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
-        mContext=getActivity();
+        mContext = getActivity();
         setAdapterForMaterialList();
         return mParentView;
     }
@@ -84,9 +77,11 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
             requestComponentList();
         }
     }
+
     @Override
-    public void fragmentBecameVisible() {
-            requestComponentList();
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     private void setAdapterForMaterialList() {
@@ -120,14 +115,45 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                 }
             }
         };
-        if(requestComponentListingItems != null){
-            TransferRequestAdapter transferRequestAdapter = new TransferRequestAdapter(requestComponentListingItems, true, true,recyclerItemClickListener);
+        if (requestComponentListingItems != null) {
+            TransferRequestAdapter transferRequestAdapter = new TransferRequestAdapter(requestComponentListingItems, true, true, recyclerItemClickListener);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             rvTransferRequestList.setLayoutManager(linearLayoutManager);
             rvTransferRequestList.setAdapter(transferRequestAdapter);
-
         }
+    }
+
+    private void requestToApprove(int id) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("inventory_component_transfer_id", id);
+            params.put("change_status_slug_to", "approved");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHANGE_STATUS_INVENTORY_APPROVE + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToApprove")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            requestComponentList();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
 
     private void requestComponentList() {
@@ -187,49 +213,15 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                 });
     }
 
-    private void requestToApprove(int id) {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("inventory_component_transfer_id", id);
-            params.put("change_status_slug_to", "approved");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_CHANGE_STATUS_INVENTORY_APPROVE + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToApprove")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            requestComponentList();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
-    }
-
-
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    public void fragmentBecameVisible() {
+        requestComponentList();
     }
 
     @SuppressWarnings("WeakerAccess")
     public class TransferRequestAdapter extends RealmRecyclerViewAdapter<RequestComponentListingItem, TransferRequestAdapter.MyViewHolder> {
-        private OrderedRealmCollection<RequestComponentListingItem> requestComponentListingItemOrderedRealmCollection;
         RecyclerViewClickListener recyclerViewClickListener;
+        private OrderedRealmCollection<RequestComponentListingItem> requestComponentListingItemOrderedRealmCollection;
 
         TransferRequestAdapter(@Nullable OrderedRealmCollection<RequestComponentListingItem> data, boolean autoUpdate, boolean updateOnModification, RecyclerViewClickListener recyclerViewClickListener) {
             super(data, autoUpdate, updateOnModification);
@@ -266,7 +258,6 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
             @BindView(R.id.textView_itemName)
             TextView textViewItemName;
             @BindView(R.id.textview_QuantityUnit)
