@@ -27,8 +27,10 @@ import com.android.checklisthome.checklist_model.checklist_users.UsersItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
 import com.android.checklisthome.checklist_model.checkpoints_model.ParentChecklistIdItem;
+import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
 import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsItem;
 import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsResponse;
+import com.android.checklisthome.checklist_model.parent_checkpoints.ParentProjectSiteUserCheckpointImagesItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckPointsItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckpointsResponse;
 import com.android.constro360.R;
@@ -322,9 +324,9 @@ public class CheckListTitleFragment extends Fragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    realm.delete(CheckPointsItem.class);
-//                                    realm.delete(ProjectSiteUserCheckpointImagesItem.class);
-//                                    realm.delete(ParentChecklistIdItem.class);
+                                    realm.delete(CheckPointsItem.class);
+                                    realm.delete(ProjectSiteUserCheckpointImagesItem.class);
+                                    realm.delete(ParentChecklistIdItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -463,8 +465,8 @@ public class CheckListTitleFragment extends Fragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    realm.delete(ParentCheckPointsItem.class);
-//                                    realm.delete(ParentProjectSiteUserCheckpointImagesItem.class);
+                                    realm.delete(ParentCheckPointsItem.class);
+                                    realm.delete(ParentProjectSiteUserCheckpointImagesItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
