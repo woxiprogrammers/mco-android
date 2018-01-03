@@ -161,7 +161,6 @@ public class CheckListVerificationFragment extends Fragment {
             if (isViewOnly) {
                 btnSubmitChecklist.setVisibility(View.GONE);
                 realm = Realm.getDefaultInstance();
-                Timber.d("ParentCheckPointsItem size: " + realm.where(ParentCheckPointsItem.class).findAll().size());
                 ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
                 if (parentCheckPointsItem != null) {
                     textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
