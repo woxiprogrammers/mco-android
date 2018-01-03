@@ -44,14 +44,19 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     private Realm realm;
     private int pageNumber = 0;
     private int oldPageNumber;
+    private String subModulesItemList;
+    private boolean isCrateInOutTransfer;
+
+
 
     public AssetListFragment() {
         // Required empty public constructor
     }
 
-    public static AssetListFragment newInstance() {
+    public static AssetListFragment newInstance(String subModulesItemList) {
         Bundle args = new Bundle();
         AssetListFragment fragment = new AssetListFragment();
+        args.putString("subModulesItemList", subModulesItemList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,6 +76,13 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            subModulesItemList = bundle.getString("subModulesItemList");
+        }
+        if(subModulesItemList.contains("create-inventory-in-out-transfer")){
+            isCrateInOutTransfer=true;
+        }
         setUpAssetListAdapter();
         functionForGettingData();
         return mParentView;
@@ -103,17 +115,20 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        if (assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
-                            Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
-                            startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
-                            startActivity(startIntent);
-                        } else {
-                            Intent intent = new Intent(mContext, AssetDetailsActivity.class);
-                            intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
-                            intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
-                            intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
-                            intent.putExtra("component_type_slug", assetsListItems.get(position).getSlug());
-                            startActivity(intent);
+                        if(isCrateInOutTransfer){
+                            if (assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
+                                Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
+                                startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
+                                startActivity(startIntent);
+                            } else {
+                                Intent intent = new Intent(mContext, AssetDetailsActivity.class);
+                                intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
+                                intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
+                                intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
+                                intent.putExtra("component_type_slug", assetsListItems.get(position).getSlug());
+                                startActivity(intent);
+                            }
+
                         }
                     }
 
