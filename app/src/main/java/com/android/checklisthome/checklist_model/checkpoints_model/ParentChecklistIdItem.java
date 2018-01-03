@@ -9,7 +9,7 @@ import io.realm.RealmObject;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-public class ParentChecklistIdIdem extends RealmObject {
+public class ParentChecklistIdItem extends RealmObject {
     @SerializedName("project_site_user_checklist_assignment_id")
     private int projectSiteUserChecklistAssignmentId;
     private String visibleParentName;

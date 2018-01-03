@@ -26,7 +26,7 @@ import com.android.checklisthome.checklist_model.checklist_users.ChecklistAclUse
 import com.android.checklisthome.checklist_model.checklist_users.UsersItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
-import com.android.checklisthome.checklist_model.checkpoints_model.ParentChecklistIdIdem;
+import com.android.checklisthome.checklist_model.checkpoints_model.ParentChecklistIdItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
 import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsItem;
 import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsResponse;
@@ -326,7 +326,7 @@ public class CheckListTitleFragment extends Fragment {
                                 public void execute(Realm realm) {
                                     realm.delete(CheckPointsItem.class);
                                     realm.delete(ProjectSiteUserCheckpointImagesItem.class);
-                                    realm.delete(ParentChecklistIdIdem.class);
+                                    realm.delete(ParentChecklistIdItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -357,29 +357,29 @@ public class CheckListTitleFragment extends Fragment {
 
     private void setUpParentsSpinnerAdapter() {
         realm = Realm.getDefaultInstance();
-        RealmResults<ParentChecklistIdIdem> parentChecklistIdIdemRealmResults = realm.where(ParentChecklistIdIdem.class).findAll();
-        if (parentChecklistIdIdemRealmResults.isEmpty()) {
+        RealmResults<ParentChecklistIdItem> parentChecklistIdItemRealmResults = realm.where(ParentChecklistIdItem.class).findAll();
+        if (parentChecklistIdItemRealmResults.isEmpty()) {
             isViewOnly = false;
             mLinearLayoutParentsLayout.setVisibility(View.GONE);
         } else {
             mLinearLayoutParentsLayout.setVisibility(View.VISIBLE);
-            ArrayList<ParentChecklistIdIdem> checklistIdIdemArrayList = new ArrayList<ParentChecklistIdIdem>();
-            ParentChecklistIdIdem parentChecklistIdIdem;
-            for (int i = -1; i < parentChecklistIdIdemRealmResults.size(); i++) {
+            ArrayList<ParentChecklistIdItem> checklistIdIdemArrayList = new ArrayList<ParentChecklistIdItem>();
+            ParentChecklistIdItem parentChecklistIdIdem;
+            for (int i = -1; i < parentChecklistIdItemRealmResults.size(); i++) {
                 if (i == -1) {
-                    parentChecklistIdIdem = new ParentChecklistIdIdem();
+                    parentChecklistIdIdem = new ParentChecklistIdItem();
                     parentChecklistIdIdem.setProjectSiteUserChecklistAssignmentId(i);
                     parentChecklistIdIdem.setVisibleParentName("Select Parent");
                     checklistIdIdemArrayList.add(parentChecklistIdIdem);
                 } else {
-                    parentChecklistIdIdem = new ParentChecklistIdIdem();
-                    parentChecklistIdIdem.setProjectSiteUserChecklistAssignmentId(parentChecklistIdIdemRealmResults.get(i).getProjectSiteUserChecklistAssignmentId());
+                    parentChecklistIdIdem = new ParentChecklistIdItem();
+                    parentChecklistIdIdem.setProjectSiteUserChecklistAssignmentId(parentChecklistIdItemRealmResults.get(i).getProjectSiteUserChecklistAssignmentId());
                     parentChecklistIdIdem.setVisibleParentName("Parent " + i);
                     checklistIdIdemArrayList.add(parentChecklistIdIdem);
                 }
             }
-            ArrayAdapter<ParentChecklistIdIdem> checklistParentsAdapter
-                    = new ArrayAdapter<ParentChecklistIdIdem>(mContext, android.R.layout.simple_spinner_item, checklistIdIdemArrayList);
+            ArrayAdapter<ParentChecklistIdItem> checklistParentsAdapter
+                    = new ArrayAdapter<ParentChecklistIdItem>(mContext, android.R.layout.simple_spinner_item, checklistIdIdemArrayList);
             checklistParentsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mSpinnerSelectParent.setAdapter(checklistParentsAdapter);
             mSpinnerSelectParent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -389,7 +389,7 @@ public class CheckListTitleFragment extends Fragment {
                         isViewOnly = true;
                         mLinearLayoutReassignTo.setVisibility(View.GONE);
                         mBtnCheckListCheckpointSubmit.setVisibility(View.GONE);
-                        ParentChecklistIdIdem selectedParentChecklistIdIdem = (ParentChecklistIdIdem) adapterView.getSelectedItem();
+                        ParentChecklistIdItem selectedParentChecklistIdIdem = (ParentChecklistIdItem) adapterView.getSelectedItem();
                         parentProjectSiteUserChecklistAssignmentId = selectedParentChecklistIdIdem.getProjectSiteUserChecklistAssignmentId();
                         getParentsCheckpointsList(parentProjectSiteUserChecklistAssignmentId);
                     } else {
