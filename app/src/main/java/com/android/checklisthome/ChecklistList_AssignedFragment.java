@@ -33,7 +33,6 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -44,11 +43,11 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class ChecklistList_AssignedFragment extends Fragment {
-    @BindView(R.id.btn_checkList_assignNew)
+    //    @BindView(R.id.btn_checkList_assignNew)
     Button mBtnCheckListAssignNew;
-    @BindView(R.id.recyclerView_checkList_assigned)
+    //    @BindView(R.id.recyclerView_checkList_assigned)
     RecyclerView mRecyclerViewCheckListAssigned;
-    Unbinder unbinder;
+    //    Unbinder unbinder;
     private Realm realm;
     private Context mContext;
     private RealmResults<ChecklistListItem> checklistItemResults;
@@ -80,8 +79,8 @@ public class ChecklistList_AssignedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_checklist_list_assigned, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        View viewAssigned = inflater.inflate(R.layout.fragment_checklist_list_assigned, container, false);
+//        unbinder = ButterKnife.bind(this, viewAssigned);
         mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -89,6 +88,8 @@ public class ChecklistList_AssignedFragment extends Fragment {
             subModulesItemList = bundle.getString("subModulesItemList");
             subModuleTag = bundle.getString("subModule_Tag");
         }
+        mBtnCheckListAssignNew = viewAssigned.findViewById(R.id.btn_checkList_assignNew);
+        mRecyclerViewCheckListAssigned = viewAssigned.findViewById(R.id.recyclerView_checkList_assigned);
         SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
         for (SubModulesItem subModulesItem : subModulesItems) {
             String subModuleTag = subModulesItem.getSubModuleTag();
@@ -99,7 +100,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
                 mBtnCheckListAssignNew.setVisibility(View.GONE);
             }
         }
-        return view;
+        return viewAssigned;
     }
 
     @Override
@@ -114,7 +115,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+//        unbinder.unbind();
     }
 
     @Override

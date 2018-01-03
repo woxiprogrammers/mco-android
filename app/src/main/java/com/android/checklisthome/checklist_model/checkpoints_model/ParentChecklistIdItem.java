@@ -3,6 +3,7 @@ package com.android.checklisthome.checklist_model.checkpoints_model;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * <b></b>
@@ -10,6 +11,7 @@ import io.realm.RealmObject;
  * Created by Rohit.
  */
 public class ParentChecklistIdItem extends RealmObject {
+    @PrimaryKey
     @SerializedName("project_site_user_checklist_assignment_id")
     private int projectSiteUserChecklistAssignmentId;
     private String visibleParentName;

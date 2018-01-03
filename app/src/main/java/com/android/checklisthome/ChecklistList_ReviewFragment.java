@@ -28,7 +28,6 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -39,9 +38,9 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class ChecklistList_ReviewFragment extends Fragment {
-    @BindView(R.id.recyclerView_checkList_review)
+    //    @BindView(R.id.recyclerView_checkList_review)
     RecyclerView mRecyclerViewCheckListReview;
-    Unbinder unbinder;
+    //    Unbinder unbinder;
     private Realm realm;
     private Context mContext;
     private RealmResults<ChecklistListItem> checklistItemResults;
@@ -74,8 +73,8 @@ public class ChecklistList_ReviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_checklist_list_review, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        View viewReview = inflater.inflate(R.layout.fragment_checklist_list_review, container, false);
+//        unbinder = ButterKnife.bind(this, viewReview);
         mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -83,6 +82,7 @@ public class ChecklistList_ReviewFragment extends Fragment {
             subModulesItemList = bundle.getString("subModulesItemList");
             subModuleTag = bundle.getString("subModule_Tag");
         }
+        mRecyclerViewCheckListReview = viewReview.findViewById(R.id.recyclerView_checkList_review);
         /*SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
         for (SubModulesItem subModulesItem : subModulesItems) {
             String subModuleTag = subModulesItem.getSubModuleTag();
@@ -92,7 +92,7 @@ public class ChecklistList_ReviewFragment extends Fragment {
             } else {
             }
         }*/
-        return view;
+        return viewReview;
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ChecklistList_ReviewFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+//        unbinder.unbind();
     }
 
     @Override

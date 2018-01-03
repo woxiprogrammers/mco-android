@@ -41,9 +41,9 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class ChecklistList_CompleteFragment extends Fragment {
-    @BindView(R.id.recyclerView_checkList_complete)
+//    @BindView(R.id.recyclerView_checkList_complete)
     RecyclerView mRecyclerViewCheckListComplete;
-    Unbinder unbinder;
+//    Unbinder unbinder;
     private Realm realm;
     private Context mContext;
     private RealmResults<ChecklistListItem> checklistItemResults;
@@ -76,8 +76,8 @@ public class ChecklistList_CompleteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_checklist_list_complete, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        View viewComplete = inflater.inflate(R.layout.fragment_checklist_list_complete, container, false);
+//        unbinder = ButterKnife.bind(this, viewComplete);
         mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -85,6 +85,7 @@ public class ChecklistList_CompleteFragment extends Fragment {
             subModulesItemList = bundle.getString("subModulesItemList");
             subModuleTag = bundle.getString("subModule_Tag");
         }
+        mRecyclerViewCheckListComplete = viewComplete.findViewById(R.id.recyclerView_checkList_complete);
         SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
         for (SubModulesItem subModulesItem : subModulesItems) {
             String subModuleTag = subModulesItem.getSubModuleTag();
@@ -93,7 +94,7 @@ public class ChecklistList_CompleteFragment extends Fragment {
             } else {
             }
         }
-        return view;
+        return viewComplete;
     }
 
     @Override
@@ -108,7 +109,7 @@ public class ChecklistList_CompleteFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+//        unbinder.unbind();
     }
 
     @Override
