@@ -80,6 +80,16 @@ public class ActivitySiteMoveIn extends BaseActivity {
     RadioButton radioButtonAsset;
     @BindView(R.id.radioGroupInventoryComp)
     RadioGroup radioGroupInventoryComp;
+    @BindView(R.id.edtRateForMaterial)
+    EditText edtRateForMaterial;
+    @BindView(R.id.edtTaxForMaterial)
+    EditText edtTaxForMaterial;
+    @BindView(R.id.linearlayoutMaterial)
+    LinearLayout linearlayoutMaterial;
+    @BindView(R.id.edtRentForAsset)
+    EditText edtRentForAsset;
+    @BindView(R.id.linearlayoutAsset)
+    LinearLayout linearlayoutAsset;
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonArray;
@@ -90,7 +100,7 @@ public class ActivitySiteMoveIn extends BaseActivity {
     private Realm realm;
     private boolean isMaterial = false;
     private AutoSuggestdataItem autoSuggestdataItem = null;
-    private int inventoryCompId,intRefId,unitId;
+    private int inventoryCompId, intRefId, unitId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +125,13 @@ public class ActivitySiteMoveIn extends BaseActivity {
                 if (index == R.id.radioButtonMaterial) {
                     isMaterial = true;
                     edtMatAssetName.setText("");
+                    linearlayoutMaterial.setVisibility(View.VISIBLE);
+                    linearlayoutAsset.setVisibility(View.GONE);
                 } else {
                     isMaterial = false;
                     edtMatAssetName.setText("");
+                    linearlayoutAsset.setVisibility(View.VISIBLE);
+                    linearlayoutMaterial.setVisibility(View.GONE);
                 }
             }
         });
@@ -238,7 +252,7 @@ public class ActivitySiteMoveIn extends BaseActivity {
             edtQuantity.setFocusableInTouchMode(true);
             autoSuggestdataItem = realm.where(AutoSuggestdataItem.class).equalTo("name", searchedItemName).findFirst();
             inventoryCompId = autoSuggestdataItem.getInventoryComponentId();
-            intRefId=autoSuggestdataItem.getReferenceId();
+            intRefId = autoSuggestdataItem.getReferenceId();
             if (realm != null) {
                 realm.close();
             }
@@ -345,16 +359,16 @@ public class ActivitySiteMoveIn extends BaseActivity {
             params.put("name", "site");
             params.put("source_name", edtMatAssetName.getText().toString());
             params.put("type", "IN");
-            if(inventoryCompId != 0){
+            if (inventoryCompId != 0) {
                 params.put("inventory_component_id", inventoryCompId);
-            }else {
-                params.put("is_material",isMaterial);
-                params.put("reference_id",intRefId);
+            } else {
+                params.put("is_material", isMaterial);
+                params.put("reference_id", intRefId);
             }
             params.put("component_name", edtMatAssetName.getText().toString());
             params.put("quantity", edtQuantity.getText().toString());
             if (autoSuggestdataItem != null) {
-                unitId=autoSuggestdataItem.getUnit().get(spinnerItemUnit.getSelectedItemPosition()).getUnitId();
+                unitId = autoSuggestdataItem.getUnit().get(spinnerItemUnit.getSelectedItemPosition()).getUnitId();
                 params.put("unit_id", unitId);
             }
             params.put("remark", edtSiteTransferRemark.getText().toString());
@@ -433,7 +447,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
         uploadImages_addItemToLocal();
     }
 
-
     private void setProjectNameFromIndex(String selectedString) {
         int selectedIndex = siteNameArray.indexOf(selectedString);
         try {
@@ -445,6 +458,5 @@ public class ActivitySiteMoveIn extends BaseActivity {
             e.printStackTrace();
         }
     }
-
 
 }
