@@ -6,14 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +23,6 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.material_request_approve.UnitQuantityItem;
 import com.android.models.inventory.AutoSuggestdataItem;
 import com.android.models.inventory.UnitItem;
 import com.android.utils.AppConstants;
@@ -55,11 +52,9 @@ import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class ActivitySiteMoveIn extends BaseActivity {
-
     @BindView(R.id.edtSiteName)
     AutoCompleteTextView edtSiteName;
     @BindView(R.id.edtProjName)
@@ -94,57 +89,7 @@ public class ActivitySiteMoveIn extends BaseActivity {
     private Realm realm;
     private boolean isMaterial = false;
     private AutoSuggestdataItem autoSuggestdataItem = null;
-    private int inventoryCompId,intRefId,unitId;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_site_move_in);
-        ButterKnife.bind(this);
-        initializeViews();
-
-    }
-
-    private void initializeViews() {
-        mContext = ActivitySiteMoveIn.this;
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Move In");
-        }
-        requestToGetSystemSites();
-
-        radioGroupInventoryComp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int index) {
-                if (index == R.id.radioButtonMaterial) {
-                    isMaterial = true;
-                    edtMatAssetName.setText("");
-                } else {
-                    isMaterial = false;
-                    edtMatAssetName.setText("");
-                }
-            }
-        });
-
-        edtSiteName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                edtMatAssetName.setText("");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedString = (String) adapterView.getItemAtPosition(i);
-                setProjectNameFromIndex(selectedString);
-            }
-        });
-    }
+    private int inventoryCompId, intRefId, unitId;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -180,17 +125,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
         }
     }
 
-    private void chooseAction() {
-        Intent intent = new Intent(mContext, MultiCameraActivity.class);
-        Params params = new Params();
-        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setToolbarColor(R.color.colorPrimaryLight);
-        params.setActionButtonColor(R.color.colorAccentDark);
-        params.setButtonTextColor(R.color.colorWhite);
-        intent.putExtra(Constants.KEY_PARAMS, params);
-        startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode != RESULT_OK) {
@@ -223,7 +157,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
                     }
                 }
                 break;
-
             case AppConstants.REQUEST_CODE_AUTO_SUGGEST_INVENTORY:
                 edtQuantity.setText("");
                 functionForProcessingSearchResult(intent);
@@ -242,7 +175,7 @@ public class ActivitySiteMoveIn extends BaseActivity {
             edtQuantity.setFocusableInTouchMode(true);
             autoSuggestdataItem = realm.where(AutoSuggestdataItem.class).equalTo("name", searchedItemName).findFirst();
             inventoryCompId = autoSuggestdataItem.getInventoryComponentId();
-            intRefId=autoSuggestdataItem.getReferenceId();
+            intRefId = autoSuggestdataItem.getReferenceId();
             if (realm != null) {
                 realm.close();
             }
@@ -250,7 +183,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
                 edtMatAssetName.setText(autoSuggestdataItem.getName());
                 spinnerItemUnit.setAdapter(setSpinnerUnits(autoSuggestdataItem.getUnit()));
             }
-
         }
     }
 
@@ -269,6 +201,52 @@ public class ActivitySiteMoveIn extends BaseActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUnitNames);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_site_move_in);
+        ButterKnife.bind(this);
+        initializeViews();
+    }
+
+    private void initializeViews() {
+        mContext = ActivitySiteMoveIn.this;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Move In");
+        }
+        requestToGetSystemSites();
+        radioGroupInventoryComp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int index) {
+                if (index == R.id.radioButtonMaterial) {
+                    isMaterial = true;
+                    edtMatAssetName.setText("");
+                } else {
+                    isMaterial = false;
+                    edtMatAssetName.setText("");
+                }
+            }
+        });
+        edtSiteName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                edtMatAssetName.setText("");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedString = (String) adapterView.getItemAtPosition(i);
+                setProjectNameFromIndex(selectedString);
+            }
+        });
     }
 
     private void requestToGetSystemSites() {
@@ -299,6 +277,29 @@ public class ActivitySiteMoveIn extends BaseActivity {
                         AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
                     }
                 });
+    }
+
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
+            String strProject = jsonObject.getString("project_name");
+            project_site_id = jsonObject.getInt("project_site_id");
+            edtProjName.setText(strProject + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void chooseAction() {
+        Intent intent = new Intent(mContext, MultiCameraActivity.class);
+        Params params = new Params();
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setToolbarColor(R.color.colorPrimaryLight);
+        params.setActionButtonColor(R.color.colorAccentDark);
+        params.setButtonTextColor(R.color.colorWhite);
+        intent.putExtra(Constants.KEY_PARAMS, params);
+        startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
     private void uploadImages_addItemToLocal() {
@@ -349,16 +350,16 @@ public class ActivitySiteMoveIn extends BaseActivity {
             params.put("name", "site");
             params.put("source_name", edtMatAssetName.getText().toString());
             params.put("type", "IN");
-            if(inventoryCompId != 0){
+            if (inventoryCompId != 0) {
                 params.put("inventory_component_id", inventoryCompId);
-            }else {
-                params.put("is_material",isMaterial);
-                params.put("reference_id",intRefId);
+            } else {
+                params.put("is_material", isMaterial);
+                params.put("reference_id", intRefId);
             }
             params.put("component_name", edtMatAssetName.getText().toString());
             params.put("quantity", edtQuantity.getText().toString());
             if (autoSuggestdataItem != null) {
-                unitId=autoSuggestdataItem.getUnit().get(spinnerItemUnit.getSelectedItemPosition()).getUnitId();
+                unitId = autoSuggestdataItem.getUnit().get(spinnerItemUnit.getSelectedItemPosition()).getUnitId();
                 params.put("unit_id", unitId);
             }
             params.put("remark", edtSiteTransferRemark.getText().toString());
@@ -366,7 +367,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
                 .setTag("materialCreateTransfer")
                 .addJSONObjectBody(params)
@@ -397,7 +397,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
         strProjectName = edtProjName.getText().toString();
         strItemName = edtMatAssetName.getText().toString();
         strQuantity = edtQuantity.getText().toString();
-
         //SiteName
         if (TextUtils.isEmpty(strSiteName)) {
             edtSiteName.setError("Please Enter Site Name");
@@ -406,7 +405,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
             edtSiteName.requestFocus();
             edtSiteName.setError(null);
         }
-
         //Project
         if (TextUtils.isEmpty(strProjectName)) {
             edtProjName.setError("Please Enter Project Name");
@@ -415,7 +413,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
             edtProjName.requestFocus();
             edtProjName.setError(null);
         }
-
         //Item Name Mat/Asset
         if (TextUtils.isEmpty(strItemName)) {
             edtMatAssetName.setError("Please Enter Material/Asset");
@@ -424,7 +421,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
             edtMatAssetName.requestFocus();
             edtMatAssetName.setError(null);
         }
-
         //Quantity
         if (TextUtils.isEmpty(strQuantity)) {
             edtQuantity.setError("Please " + getString(R.string.edittext_hint_quantity));
@@ -433,22 +429,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
             edtQuantity.requestFocus();
             edtQuantity.setError(null);
         }
-
         uploadImages_addItemToLocal();
     }
-
-
-    private void setProjectNameFromIndex(String selectedString) {
-        int selectedIndex = siteNameArray.indexOf(selectedString);
-        try {
-            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
-            String strProject = jsonObject.getString("project_name");
-            project_site_id = jsonObject.getInt("project_site_id");
-            edtProjName.setText(strProject + "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }

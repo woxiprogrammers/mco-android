@@ -60,9 +60,8 @@ import static android.app.Activity.RESULT_OK;
 /**
  * Created by woxi-007 on 22/12/17.
  */
-
 public class InventoryDetailsNewMoveFragment extends Fragment implements FragmentInterface {
-
+    private static int inventoryComponentId;
     @BindView(R.id.edt_userName)
     EditText edtUserName;
     @BindView(R.id.edt_quantity)
@@ -78,22 +77,19 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     @BindView(R.id.btnMoveOut)
     Button btnMoveOut;
     Unbinder unbinder;
+    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private View mParentView;
-    private static int inventoryComponentId;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
-    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private int unitId;
     private Context mContext;
     private Realm realm;
 
     @Override
     public void fragmentBecameVisible() {
-
     }
 
     public static InventoryDetailsNewMoveFragment newInstance(int inventoryCompId) {
-
         Bundle args = new Bundle();
         args.putInt("inventoryCompid", inventoryCompId);
         InventoryDetailsNewMoveFragment fragment = new InventoryDetailsNewMoveFragment();
@@ -101,159 +97,16 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
         return fragment;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.fragment_new_inventory_details_move, container, false);
-        initializeViews();
-        unbinder = ButterKnife.bind(this, mParentView);
-        return mParentView;
-    }
-
-    private void initializeViews() {
-        mContext = getActivity();
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            inventoryComponentId = bundle.getInt("inventoryCompid");
-        }
-        checkAvailability(inventoryComponentId);
-
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    private void validateEntries() {
-        String strSourceName = edtUserName.getText().toString();
-        if (TextUtils.isEmpty(strSourceName)) {
-            edtUserName.setError(getString(R.string.please_enter) + " " + " User Name");
-            return;
-        } else {
-            edtUserName.requestFocus();
-            edtUserName.setError(null);
-        }
-
-        //Quantity
-        String strQuantity = edtQuantity.getText().toString();
-        if (TextUtils.isEmpty(strQuantity)) {
-            edtQuantity.setError("Please " + getString(R.string.edittext_hint_quantity));
-            return;
-        } else {
-            edtQuantity.requestFocus();
-            edtQuantity.setError(null);
-        }
-        uploadImages_addItemToLocal();
-
-    }
-
-    private void uploadImages_addItemToLocal() {
-        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
-            File sendImageFile = arrayImageFileList.get(0);
-            File compressedImageFile = sendImageFile;
-            try {
-                compressedImageFile = new Compressor(getActivity()).compressToFile(sendImageFile);
-            } catch (IOException e) {
-                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
-            }
-            String strToken = AppUtils.getInstance().getCurrentToken();
-            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
-                    .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "inventory_transfer")
-                    .addHeaders(AppUtils.getInstance().getApiHeaders())
-                    .setTag("uploadImages_addItemToLocal")
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            arrayImageFileList.remove(0);
-                            try {
-                                String fileName = response.getString("filename");
-                                jsonImageNameArray.put(fileName);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            uploadImages_addItemToLocal();
-                        }
-
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
-                        }
-                    });
-        } else {
-            requestToMoveOut();
-        }
-    }
-
-    private void requestToMoveOut() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id_from", AppUtils.getInstance().getCurrentSiteId());
-            params.put("name", "user");
-            params.put("source_name", edtUserName.getText().toString());
-            params.put("type", "OUT");
-            params.put("inventory_component_id", inventoryComponentId);
-            params.put("quantity", edtQuantity.getText().toString());
-            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unitId = unitQuantityItemRealmResults.get(spinnerUnits.getSelectedItemPosition()).getUnitId();
-                params.put("unit_id", unitId);
-            }
-            params.put("remark", editTextAddNote.getText().toString());
-            params.put("image", jsonImageNameArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
-                .setTag("materialCreateTransfer")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            getActivity().finish();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
-    }
-
     @OnClick({R.id.textView_capture, R.id.btnMoveOut})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textView_capture:
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-
                 break;
             case R.id.btnMoveOut:
                 validateEntries();
                 break;
         }
-    }
-
-    private void chooseAction(int type, Class aClass) {
-        Intent intent = new Intent(mContext, aClass);
-        Params params = new Params();
-        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setToolbarColor(R.color.colorPrimaryLight);
-        params.setActionButtonColor(R.color.colorAccentDark);
-        params.setButtonTextColor(R.color.colorWhite);
-        intent.putExtra(Constants.KEY_PARAMS, params);
-        startActivityForResult(intent, type);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -289,6 +142,24 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
                 }
                 break;
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mParentView = inflater.inflate(R.layout.fragment_new_inventory_details_move, container, false);
+        initializeViews();
+        unbinder = ButterKnife.bind(this, mParentView);
+        return mParentView;
+    }
+
+    private void initializeViews() {
+        mContext = getActivity();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            inventoryComponentId = bundle.getInt("inventoryCompid");
+        }
+        checkAvailability(inventoryComponentId);
     }
 
     private void checkAvailability(int materialRequestComponentId) {
@@ -360,4 +231,123 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
         spinnerUnits.setAdapter(arrayAdapter);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    private void validateEntries() {
+        String strSourceName = edtUserName.getText().toString();
+        if (TextUtils.isEmpty(strSourceName)) {
+            edtUserName.setError(getString(R.string.please_enter) + " " + " User Name");
+            return;
+        } else {
+            edtUserName.requestFocus();
+            edtUserName.setError(null);
+        }
+        //Quantity
+        String strQuantity = edtQuantity.getText().toString();
+        if (TextUtils.isEmpty(strQuantity)) {
+            edtQuantity.setError("Please " + getString(R.string.edittext_hint_quantity));
+            return;
+        } else {
+            edtQuantity.requestFocus();
+            edtQuantity.setError(null);
+        }
+        uploadImages_addItemToLocal();
+    }
+
+    private void uploadImages_addItemToLocal() {
+        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+            File sendImageFile = arrayImageFileList.get(0);
+            File compressedImageFile = sendImageFile;
+            try {
+                compressedImageFile = new Compressor(getActivity()).compressToFile(sendImageFile);
+            } catch (IOException e) {
+                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+            }
+            String strToken = AppUtils.getInstance().getCurrentToken();
+            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                    .setPriority(Priority.MEDIUM)
+                    .addMultipartFile("image", compressedImageFile)
+                    .addMultipartParameter("image_for", "inventory_transfer")
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("uploadImages_addItemToLocal")
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            arrayImageFileList.remove(0);
+                            try {
+                                String fileName = response.getString("filename");
+                                jsonImageNameArray.put(fileName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            uploadImages_addItemToLocal();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                        }
+                    });
+        } else {
+            requestToMoveOut();
+        }
+    }
+
+    private void requestToMoveOut() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id_from", AppUtils.getInstance().getCurrentSiteId());
+            params.put("name", "user");
+            params.put("source_name", edtUserName.getText().toString());
+            params.put("type", "OUT");
+            params.put("inventory_component_id", inventoryComponentId);
+            params.put("quantity", edtQuantity.getText().toString());
+            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                unitId = unitQuantityItemRealmResults.get(spinnerUnits.getSelectedItemPosition()).getUnitId();
+                params.put("unit_id", unitId);
+            }
+            params.put("remark", editTextAddNote.getText().toString());
+            params.put("image", jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
+                .setTag("materialCreateTransfer")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    private void chooseAction(int type, Class aClass) {
+        Intent intent = new Intent(mContext, aClass);
+        Params params = new Params();
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setToolbarColor(R.color.colorPrimaryLight);
+        params.setActionButtonColor(R.color.colorAccentDark);
+        params.setButtonTextColor(R.color.colorWhite);
+        intent.putExtra(Constants.KEY_PARAMS, params);
+        startActivityForResult(intent, type);
+    }
 }

@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,6 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.material_request_approve.AssetSearchResponse;
-import com.android.material_request_approve.AssetSearchResponseData;
-import com.android.material_request_approve.MaterialSearchResponse;
-import com.android.material_request_approve.MaterialSearchResponseData;
-import com.android.material_request_approve.SearchAssetListItem;
-import com.android.material_request_approve.SearchMaterialListItem;
-import com.android.material_request_approve.UnitQuantityItem;
 import com.android.models.inventory.AutoSuggestdataItem;
 import com.android.models.inventory.InventoryAutoSuggestResponse;
 import com.android.models.inventory.UnitItem;
@@ -33,7 +25,6 @@ import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
@@ -43,7 +34,6 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -51,7 +41,6 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class AutoSuggestInventoryComponent extends BaseActivity {
-
     @BindView(R.id.editTextAutoSuggestInvComponent)
     EditText editTextAutoSuggestInvComponent;
     @BindView(R.id.editTextAutoSearchFrame)
@@ -60,9 +49,8 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
     RecyclerView recyclerViewSearchList;
     @BindView(R.id.buttonAddNewItem)
     Button buttonAddNewItem;
-    private Context mContext;
-
     boolean isMaterial = false;
+    private Context mContext;
     private String mStrSearch;
     private Realm realm;
     private RealmResults<AutoSuggestdataItem> autoSuggestdataItemRealmResults;
@@ -75,7 +63,6 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
         setContentView(R.layout.activity_auto_suggest_inventory_component);
         ButterKnife.bind(this);
         initializeViews();
-
     }
 
     private void initializeViews() {
@@ -87,7 +74,7 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             isMaterial = bundle.getBoolean("isMaterial");
-            projectSiteIdFrom=bundle.getInt("siteId");
+            projectSiteIdFrom = bundle.getInt("siteId");
         }
         deletePreviousLocalData();
         editTextAutoSuggestInvComponent.addTextChangedListener(new TextWatcher() {
@@ -108,7 +95,6 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
             }
         });
         setUpSearchResultAdapter();
-
         buttonAddNewItem.setVisibility(View.GONE);
         recyclerViewSearchList.setVisibility(View.VISIBLE);
     }
@@ -116,7 +102,7 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
     private void deletePreviousLocalData() {
         realm = Realm.getDefaultInstance();
         try {
-            realm.executeTransactionAsync( new Realm.Transaction() {
+            realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
                     realm.delete(InventoryAutoSuggestResponse.class);
@@ -256,14 +242,14 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
         }
 
         @Override
-        public int getItemCount() {
-            return autoSuggestdataItemOrderedRealmCollection == null ? 0 : autoSuggestdataItemOrderedRealmCollection.size();
-        }
-
-        @Override
         public void onBindViewHolder(MaterialAutoSuggestAdapter.MyViewHolder holder, int position) {
             AutoSuggestdataItem autoSuggestdataItem = autoSuggestdataItemOrderedRealmCollection.get(position);
             holder.mTextViewResultItem.setText(autoSuggestdataItem.getName());
+        }
+
+        @Override
+        public int getItemCount() {
+            return autoSuggestdataItemOrderedRealmCollection == null ? 0 : autoSuggestdataItemOrderedRealmCollection.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
@@ -275,6 +261,5 @@ public class AutoSuggestInventoryComponent extends BaseActivity {
                 ButterKnife.bind(this, itemView);
             }
         }
-
     }
 }

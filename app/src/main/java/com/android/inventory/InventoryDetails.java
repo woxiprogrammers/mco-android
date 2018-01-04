@@ -15,10 +15,7 @@ import android.view.MenuItem;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.material.InventoryDetailsMoveFragment;
 import com.android.inventory.material.MaterialHistoryFragment;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +31,21 @@ public class InventoryDetails extends BaseActivity {
     private int intCompId;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_view);
@@ -47,7 +59,7 @@ public class InventoryDetails extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null) {
             materialName = intent.getStringExtra("ClickedMaterialName");
-            intCompId=intent.getIntExtra("id",-1);
+            intCompId = intent.getIntExtra("id", -1);
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -110,21 +122,6 @@ public class InventoryDetails extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private class InventoryDetailsViewPagerAdapter extends FragmentPagerAdapter {
