@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +18,6 @@ import com.android.inventory.InventoryDetails;
 import com.android.inventory.MaterialListAdapter;
 import com.android.models.inventory.InventoryResponse;
 import com.android.models.inventory.MaterialListItem;
-import com.android.models.login_acl.PermissionsItem;
-import com.android.models.login_acl.SubModulesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -28,12 +25,9 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,10 +39,8 @@ import timber.log.Timber;
  * Created by Sharvari on 23/8/17.
  */
 public class MaterialListFragment extends Fragment implements FragmentInterface {
-
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
-
     private MaterialListAdapter materialListAdapter;
     private View mParentView;
     private Context mContext;
@@ -70,6 +62,14 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         fragment.setArguments(args);
         return fragment;
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = getActivity();
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,9 +79,8 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         if (bundle != null) {
             subModulesItemList = bundle.getString("subModulesItemList");
         }
-
-        if(subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))){
-            isCrateInOutTransfer=true;
+        if (subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))) {
+            isCrateInOutTransfer = true;
         }
         /*SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
         for (SubModulesItem subModulesItem : subModulesItems) {
@@ -94,15 +93,8 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                 }
             }
         }*/
-
         setAdapterForMaterialList();
         return mParentView;
-    }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mContext = getActivity();
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -119,6 +111,37 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         if (realm != null) {
             realm.close();
         }
+    }
+
+    private void setAdapterForMaterialList() {
+        realm = Realm.getDefaultInstance();
+        materialListItems = realm.where(MaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        materialListAdapter = new MaterialListAdapter(materialListItems, true, true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rv_material_list.setLayoutManager(linearLayoutManager);
+        rv_material_list.setAdapter(materialListAdapter);
+        rv_material_list.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rv_material_list, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, final int position) {
+                if (isCrateInOutTransfer) {
+                    Intent intent = new Intent(mContext, InventoryDetails.class);
+                    intent.putExtra("ClickedMaterialName", materialListItems.get(position).getMaterialName());
+                    intent.putExtra("id", materialListItems.get(position).getId());
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(mContext, "You do not have permission to create transfer", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+            }
+        }));
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
     }
 
     private void functionForGettingData() {
@@ -183,37 +206,5 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
-    }
-
-    private void setAdapterForMaterialList() {
-        realm = Realm.getDefaultInstance();
-        materialListItems = realm.where(MaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
-        materialListAdapter = new MaterialListAdapter(materialListItems, true, true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_material_list.setLayoutManager(linearLayoutManager);
-        rv_material_list.setAdapter(materialListAdapter);
-        rv_material_list.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rv_material_list, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, final int position) {
-                if(isCrateInOutTransfer){
-                    Intent intent = new Intent(mContext, InventoryDetails.class);
-                    intent.putExtra("ClickedMaterialName", materialListItems.get(position).getMaterialName());
-                    intent.putExtra("id",materialListItems.get(position).getId());
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(mContext,"You do not have permission to create transfer",Toast.LENGTH_LONG).show();
-
-                }
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-            }
-        }));
-    }
-
-    @Override
-    public void fragmentBecameVisible() {
     }
 }

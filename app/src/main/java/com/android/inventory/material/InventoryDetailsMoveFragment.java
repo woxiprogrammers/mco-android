@@ -1,7 +1,6 @@
 package com.android.inventory.material;
 
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,14 +19,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.constro360.R;
@@ -43,7 +40,6 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.vlk.multimager.activities.GalleryActivity;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -55,13 +51,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +72,7 @@ import static android.app.Activity.RESULT_OK;
  * A simple {@link Fragment} subclass.
  */
 public class InventoryDetailsMoveFragment extends Fragment implements View.OnClickListener, FragmentInterface {
+    private static int inventoryComponentId;
     @BindView(R.id.destination_spinner)
     Spinner spinnerDestinations;
     @BindView(R.id.text_view_name)
@@ -125,22 +120,20 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     FrameLayout mFrameLayoutFirst;
     @BindView(R.id.frameLayout1)
     FrameLayout mFrameLayout1;
-
+    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private View mParentView;
-    private String strVehicleNumber,strBillAmount,strBillNumber,strQuantity,str,transferType = "OUT",strToDate;
+    private String strVehicleNumber, strBillAmount, strBillNumber, strQuantity, str, transferType = "OUT", strToDate;
     private boolean isChecked;
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
-    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private DatePickerDialog.OnDateSetListener date;
     private Calendar myCalendar;
     private JSONArray jsonArray;
     private ArrayList<String> siteNameArray;
     private ArrayAdapter<String> adapter;
-    private static int inventoryComponentId;
-    private int project_site_id,unitId;
+    private int project_site_id, unitId;
 
     public InventoryDetailsMoveFragment() {
         // Required empty public constructor
@@ -155,17 +148,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
-        unbinder = ButterKnife.bind(this, mParentView);
-        initializeViews();
-        return mParentView;
-    }
-
-    @Override
     public void onClick(View view) {
-
         switch (view.getId()) {
             /*case R.id.textview_materialCount:
                 openMaterialListDialog();
@@ -188,130 +171,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
                 break;
         }
-    }
-
-    private void validateEntries() {
-        String strSourceName = edit_text_selected_dest_name.getText().toString();
-        if (!(sourceMoveInSpinner.getSelectedItemPosition() == 2)) {
-            if (TextUtils.isEmpty(strSourceName)) {
-                edit_text_selected_dest_name.setError(getString(R.string.please_enter) + " " + str);
-                return;
-            } else {
-                edit_text_selected_dest_name.requestFocus();
-                edit_text_selected_dest_name.setError(null);
-            }
-        }
-        //Quantity
-        strQuantity = edittextQuantity.getText().toString();
-        if (TextUtils.isEmpty(strQuantity)) {
-            edittextQuantity.setError("Please " + getString(R.string.edittext_hint_quantity));
-        } else {
-            edittextQuantity.requestFocus();
-            edittextQuantity.setError(null);
-        }
-        if (!checkboxMoveInOut.isChecked()) {
-        }
-        if (isChecked) {
-            //Vehicle Number
-            strVehicleNumber = editTextVehicleNumber.getText().toString();
-            if (TextUtils.isEmpty(strVehicleNumber)) {
-                editTextVehicleNumber.setError(getString(R.string.please_enter) + getString(R.string.vehicle_number));
-                return;
-            } else {
-                editTextVehicleNumber.setError(null);
-                editTextVehicleNumber.requestFocus();
-            }
-            strBillAmount = editTextBillamount.getText().toString();
-            if (TextUtils.isEmpty(strBillAmount)) {
-                editTextBillamount.setError("Please Enter Bill Amount");
-                return;
-            } else {
-                editTextBillamount.requestFocus();
-                editTextBillamount.setError(null);
-            }
-            //Bill
-            strBillNumber = editTextChallanNumber.getText().toString();
-            if (TextUtils.isEmpty(strBillNumber)) {
-                editTextChallanNumber.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
-                return;
-            } else {
-                editTextChallanNumber.setError(null);
-                editTextChallanNumber.requestFocus();
-            }
-        }
-        uploadImages_addItemToLocal();
-    }
-
-    private void requestForMaterial() {
-        JSONObject params = new JSONObject();
-        try {
-            if (checkboxMoveInOut.isChecked()) {
-                params.put("name", spinnerDestinations.getSelectedItem().toString().toLowerCase());
-            } else {
-                if (sourceMoveInSpinner.getSelectedItemPosition() == 1) {
-                    params.put("name", "hand");
-                } else {
-                    params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
-                }
-            }
-            if(spinnerDestinations.getSelectedItemPosition() == 0){
-                params.put("project_site_id",project_site_id);
-            }else {
-                params.put("project_site_id",null);
-
-            }
-            if (str.equalsIgnoreCase("Office")) {
-                params.put("source_name", "");
-            } else {
-                params.put("source_name", edit_text_selected_dest_name.getText().toString());
-            }
-            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unitId = unitQuantityItemRealmResults.get(spinnerMaterialUnits.getSelectedItemPosition()).getUnitId();
-                params.put("unit_id", unitId);
-            }
-            if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
-                params.put("remark", editTextAddNote.getText().toString());
-            } else {
-                params.put("remark", "");
-            }
-            if (str.equalsIgnoreCase(getString(R.string.supplier_name))) {
-                params.put("vehicle_number", strVehicleNumber);
-                params.put("bill_number", strBillNumber);
-                params.put("bill_amount", editTextBillamount.getText().toString());
-            } else if (str.equalsIgnoreCase(getString(R.string.shop_name))) {
-                params.put("bill_number", strBillNumber);
-                params.put("bill_amount", editTextBillamount.getText().toString());
-            }
-            params.put("inventory_component_id", inventoryComponentId);
-            params.put("type", transferType);
-            params.put("quantity", strQuantity);
-            params.put("images", jsonImageNameArray);
-            Log.i("@@MoveParams",params.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
-                .setTag("materialCreateTransfer")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            getActivity().finish();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
     }
 
     private void chooseAction(int type, Class aClass) {
@@ -363,6 +222,15 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
+        unbinder = ButterKnife.bind(this, mParentView);
+        initializeViews();
+        return mParentView;
     }
 
     private void initializeViews() {
@@ -510,64 +378,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
         });
     }
 
-    private void setProjectNameFromIndex(String selectedString) {
-        int selectedIndex = siteNameArray.indexOf(selectedString);
-        try {
-            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
-            String strProject = jsonObject.getString("project_name");
-            project_site_id=jsonObject.getInt("project_site_id");
-            editTexttProjName.setText(strProject + "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    private void uploadImages_addItemToLocal() {
-        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
-            File sendImageFile = arrayImageFileList.get(0);
-            File compressedImageFile = sendImageFile;
-            try {
-                compressedImageFile = new Compressor(getActivity()).compressToFile(sendImageFile);
-            } catch (IOException e) {
-                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
-            }
-            String strToken = AppUtils.getInstance().getCurrentToken();
-            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
-                    .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "inventory_transfer")
-                    .addHeaders(AppUtils.getInstance().getApiHeaders())
-                    .setTag("uploadImages_addItemToLocal")
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            arrayImageFileList.remove(0);
-                            try {
-                                String fileName = response.getString("filename");
-                                jsonImageNameArray.put(fileName);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            uploadImages_addItemToLocal();
-                        }
-
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
-                        }
-                    });
-        } else {
-            requestForMaterial();
-        }
-    }
-
     private void checkAvailability(int materialRequestComponentId) {
         JSONObject params = new JSONObject();
         try {
@@ -619,24 +429,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 });
     }
 
-    private void setUpUnitQuantityChangeListener() {
-        realm = Realm.getDefaultInstance();
-        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
-        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
-    }
-
-    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
-        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
-        ArrayList<String> arrayOfUsers = new ArrayList<String>();
-        for (UnitQuantityItem currentUser : unitQuantityItems) {
-            String strUserName = currentUser.getUnitName();
-            arrayOfUsers.add(strUserName);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMaterialUnits.setAdapter(arrayAdapter);
-    }
-
     private void requestToGetSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
                 .setTag("requestToGetSystemSites")
@@ -665,5 +457,204 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                         AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
                     }
                 });
+    }
+
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
+            String strProject = jsonObject.getString("project_name");
+            project_site_id = jsonObject.getInt("project_site_id");
+            editTexttProjName.setText(strProject + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setUpUnitQuantityChangeListener() {
+        realm = Realm.getDefaultInstance();
+        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
+        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
+    }
+
+    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
+        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (UnitQuantityItem currentUser : unitQuantityItems) {
+            String strUserName = currentUser.getUnitName();
+            arrayOfUsers.add(strUserName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMaterialUnits.setAdapter(arrayAdapter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    private void validateEntries() {
+        String strSourceName = edit_text_selected_dest_name.getText().toString();
+        if (!(sourceMoveInSpinner.getSelectedItemPosition() == 2)) {
+            if (TextUtils.isEmpty(strSourceName)) {
+                edit_text_selected_dest_name.setError(getString(R.string.please_enter) + " " + str);
+                return;
+            } else {
+                edit_text_selected_dest_name.requestFocus();
+                edit_text_selected_dest_name.setError(null);
+            }
+        }
+        //Quantity
+        strQuantity = edittextQuantity.getText().toString();
+        if (TextUtils.isEmpty(strQuantity)) {
+            edittextQuantity.setError("Please " + getString(R.string.edittext_hint_quantity));
+        } else {
+            edittextQuantity.requestFocus();
+            edittextQuantity.setError(null);
+        }
+        if (!checkboxMoveInOut.isChecked()) {
+        }
+        if (isChecked) {
+            //Vehicle Number
+            strVehicleNumber = editTextVehicleNumber.getText().toString();
+            if (TextUtils.isEmpty(strVehicleNumber)) {
+                editTextVehicleNumber.setError(getString(R.string.please_enter) + getString(R.string.vehicle_number));
+                return;
+            } else {
+                editTextVehicleNumber.setError(null);
+                editTextVehicleNumber.requestFocus();
+            }
+            strBillAmount = editTextBillamount.getText().toString();
+            if (TextUtils.isEmpty(strBillAmount)) {
+                editTextBillamount.setError("Please Enter Bill Amount");
+                return;
+            } else {
+                editTextBillamount.requestFocus();
+                editTextBillamount.setError(null);
+            }
+            //Bill
+            strBillNumber = editTextChallanNumber.getText().toString();
+            if (TextUtils.isEmpty(strBillNumber)) {
+                editTextChallanNumber.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
+                return;
+            } else {
+                editTextChallanNumber.setError(null);
+                editTextChallanNumber.requestFocus();
+            }
+        }
+        uploadImages_addItemToLocal();
+    }
+
+    private void requestForMaterial() {
+        JSONObject params = new JSONObject();
+        try {
+            if (checkboxMoveInOut.isChecked()) {
+                params.put("name", spinnerDestinations.getSelectedItem().toString().toLowerCase());
+            } else {
+                if (sourceMoveInSpinner.getSelectedItemPosition() == 1) {
+                    params.put("name", "hand");
+                } else {
+                    params.put("name", sourceMoveInSpinner.getSelectedItem().toString().toLowerCase());
+                }
+            }
+            if (spinnerDestinations.getSelectedItemPosition() == 0) {
+                params.put("project_site_id", project_site_id);
+            } else {
+                params.put("project_site_id", null);
+            }
+            if (str.equalsIgnoreCase("Office")) {
+                params.put("source_name", "");
+            } else {
+                params.put("source_name", edit_text_selected_dest_name.getText().toString());
+            }
+            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                unitId = unitQuantityItemRealmResults.get(spinnerMaterialUnits.getSelectedItemPosition()).getUnitId();
+                params.put("unit_id", unitId);
+            }
+            if (!TextUtils.isEmpty(editTextAddNote.getText().toString())) {
+                params.put("remark", editTextAddNote.getText().toString());
+            } else {
+                params.put("remark", "");
+            }
+            if (str.equalsIgnoreCase(getString(R.string.supplier_name))) {
+                params.put("vehicle_number", strVehicleNumber);
+                params.put("bill_number", strBillNumber);
+                params.put("bill_amount", editTextBillamount.getText().toString());
+            } else if (str.equalsIgnoreCase(getString(R.string.shop_name))) {
+                params.put("bill_number", strBillNumber);
+                params.put("bill_amount", editTextBillamount.getText().toString());
+            }
+            params.put("inventory_component_id", inventoryComponentId);
+            params.put("type", transferType);
+            params.put("quantity", strQuantity);
+            params.put("images", jsonImageNameArray);
+            Log.i("@@MoveParams", params.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
+                .setTag("materialCreateTransfer")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            getActivity().finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    private void uploadImages_addItemToLocal() {
+        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+            File sendImageFile = arrayImageFileList.get(0);
+            File compressedImageFile = sendImageFile;
+            try {
+                compressedImageFile = new Compressor(getActivity()).compressToFile(sendImageFile);
+            } catch (IOException e) {
+                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+            }
+            String strToken = AppUtils.getInstance().getCurrentToken();
+            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                    .setPriority(Priority.MEDIUM)
+                    .addMultipartFile("image", compressedImageFile)
+                    .addMultipartParameter("image_for", "inventory_transfer")
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("uploadImages_addItemToLocal")
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            arrayImageFileList.remove(0);
+                            try {
+                                String fileName = response.getString("filename");
+                                jsonImageNameArray.put(fileName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            uploadImages_addItemToLocal();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                        }
+                    });
+        } else {
+            requestForMaterial();
+        }
     }
 }
