@@ -123,6 +123,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private FrameLayout frameLayoutSpinnerUnitDialog;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private int unitIDForDialog;
+    private boolean isEditClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -883,7 +884,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 if (primaryKeyInIndent == purchaseMaterialListItem.getPrimaryKey()) {
                     holder.mTextViewHeader_purchaseRequestList.setVisibility(View.VISIBLE);
                     holder.mTextViewHeader_purchaseRequestList.setText("In Indent");
-                    holder.imageView_edit.setVisibility(View.VISIBLE);
+                    holder.imageView_edit.setVisibility(View.GONE);
                 } else {
                     holder.mTextViewHeader_purchaseRequestList.setVisibility(View.GONE);
                 }
@@ -908,7 +909,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     recyclerViewClickListener.onItemClick(view, position);
                 }
             });
-            holder.imageView_edit.setOnClickListener(new View.OnClickListener() {
+            holder.imageView_edit.setOnClickListener(
+                    new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(mContext, "Hii", Toast.LENGTH_SHORT).show();
@@ -994,7 +996,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     editextDialogRemark.clearFocus();
                 }
                 realm = Realm.getDefaultInstance();
-                unitIDForDialog = unitQuantityItemRealmResults.get(spinner_select_units.getSelectedItemPosition()).getUnitId();
                 try {
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
@@ -1004,7 +1005,12 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                                 purchaseMaterialListItem.setInIndentMaterialUpdated(true);
                                 purchaseMaterialListItem.setRemark(editextDialogRemark.getText().toString());
                                 purchaseMaterialListItem.setItem_quantity(Float.parseFloat(editText_quantity_material_asset.getText().toString()));
-                                purchaseMaterialListItem.setItem_unit_id(unitIDForDialog);
+                                if(isEditClicked){
+                                    if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                                        unitIDForDialog = unitQuantityItemRealmResults.get(spinner_select_units.getSelectedItemPosition()).getUnitId();
+                                        purchaseMaterialListItem.setItem_unit_id(unitIDForDialog);
+                                    }
+                                }
                                 realm.insertOrUpdate(purchaseMaterialListItem);
                             } else {
                                 Timber.d("purchaseMaterialListItem null");
@@ -1035,6 +1041,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 editText_name_material_asset.setEnabled(true);
                 edittext_unit.setEnabled(true);
                 editText_quantity_material_asset.setEnabled(true);
+                isEditClicked=true;
                 checkAvailability(arrPurchaseMaterialListItems.get(position).getMaterialRequestComponentId());
             }
         });

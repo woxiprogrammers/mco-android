@@ -6,14 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +23,6 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.material_request_approve.UnitQuantityItem;
 import com.android.models.inventory.AutoSuggestdataItem;
 import com.android.models.inventory.UnitItem;
 import com.android.utils.AppConstants;
@@ -55,7 +52,6 @@ import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class ActivitySiteMoveIn extends BaseActivity {
