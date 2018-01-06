@@ -35,6 +35,7 @@ import com.android.dummy.UnitsResponse;
 import com.android.models.login_acl.PermissionsItem;
 import com.android.purchase_request.MaterialImageItem;
 import com.android.purchase_request.PurchaseMaterialListItem;
+import com.android.purchase_request.PurchaseOrdermaterialDetailFragment;
 import com.android.purchase_request.models_purchase_request.AvailableUsersItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -1387,7 +1388,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         break;
                     case R.id.textViewMaterialHistory:
                         Toast.makeText(mContext,"Hiii",Toast.LENGTH_LONG).show();
-                        break;
+                        MaterialRequestHistoryFragment purchaseOrdermaterialDetailFragment = new MaterialRequestHistoryFragment();
+                        Bundle bundleArgs = new Bundle();
+//                        bundleArgs.putInt("purchase_order_id", purchaseOrderListItems.get(position).getId());
+                        purchaseOrdermaterialDetailFragment.setArguments(bundleArgs);
+                        purchaseOrdermaterialDetailFragment.show(getSupportFragmentManager(), "Transactions");                        break;
                 }
             }
         }

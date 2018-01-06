@@ -1,11 +1,14 @@
 package com.android.material_request_approve;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +16,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.inventory.InventoryDetails;
+import com.android.inventory.MaterialListAdapter;
+import com.android.models.inventory.MaterialListItem;
+import com.android.models.purchase_order.MaterialsItem;
+import com.android.models.purchase_order.PurchaseOrderDetailData;
+import com.android.purchase_request.PurchaseOrdermaterialDetailFragment;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -29,7 +40,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -45,6 +58,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
     private int materialRequestCompId;
     private TextView textViewMaterialName, textViewMobNum;
     private Button buttonOk;
+    private Context mContext;
 
     @NonNull
     @Override
@@ -57,6 +71,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
         if (bundle != null) {
             materialRequestCompId = bundle.getInt("material_request_comp_id");
         }
+        mContext=getActivity();
         recyclerviewHistory = dialog.findViewById(R.id.recyclerviewTransaction);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
         buttonOk = dialog.findViewById(R.id.btnOk);
@@ -82,17 +97,25 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
     }
 
     private void setUpAdapter() {
+        realm = Realm.getDefaultInstance();
+         RealmResults<MaterialhistorydataItem> materialListItems = realm.where(MaterialhistorydataItem.class)/*.equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())*/.findAllAsync();
+        MaterialRequestHistoryAdapter materialListAdapter = new MaterialRequestHistoryAdapter(materialListItems, true, true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerviewHistory.setLayoutManager(linearLayoutManager);
+        recyclerviewHistory.setAdapter(materialListAdapter);
+
     }
 
     private void requestToGetHistory() {
-        JSONObject params = new JSONObject();
+        /*JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_id", materialRequestCompId);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_MATERIAL_REQUEST_HISTORY + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
+        }*/
+        AndroidNetworking.get(AppURL.API_MATERIAL_REQUEST_HISTORY /*+ AppUtils.getInstance().getCurrentToken()*/)
+//                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestToGetHistory")
@@ -153,7 +176,8 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-//            final Ma
+            final MaterialhistorydataItem materialhistorydataItem=materialsItemOrderedRealmCollection.get(position);
+            holder.textViewMaterialStatus.setText(materialhistorydataItem.getMessage());
 
         }
 
