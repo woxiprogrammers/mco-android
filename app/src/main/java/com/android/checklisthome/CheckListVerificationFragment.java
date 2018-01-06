@@ -160,7 +160,9 @@ public class CheckListVerificationFragment extends Fragment {
             if (isViewOnly) {
                 btnSubmitChecklist.setVisibility(View.GONE);
                 realm = Realm.getDefaultInstance();
-                ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).equalTo("isFromState", isFromState).findFirst();
+                ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class)
+                        .equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId)
+                        .equalTo("isFromState", isFromState).findFirst();
                 if (parentCheckPointsItem != null) {
                     textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
                     if (TextUtils.isEmpty(parentCheckPointsItem.getProjectSiteUserCheckpointRemark())) {
@@ -186,7 +188,9 @@ public class CheckListVerificationFragment extends Fragment {
                 }
             } else {
                 realm = Realm.getDefaultInstance();
-                checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).equalTo("isFromState", isFromState).findFirst();
+                checkPointsItem = realm.where(CheckPointsItem.class)
+                        .equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId)
+                        .equalTo("isFromState", isFromState).findFirst();
                 textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
                 if (TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointRemark())) {
                     editextChecklistRemark.setText("");
