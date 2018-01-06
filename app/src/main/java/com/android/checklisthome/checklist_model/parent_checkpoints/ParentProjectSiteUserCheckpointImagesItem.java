@@ -12,8 +12,6 @@ public class ParentProjectSiteUserCheckpointImagesItem extends RealmObject {
     private boolean projectSiteChecklistCheckpointImageIsRequired;
     @SerializedName("project_site_checklist_checkpoint_image_id")
     private int projectSiteChecklistCheckpointImageId;
-    //    @SerializedName("project_site_user_checkpoint_image_id")
-//    private int projectSiteUserCheckpointImageId;
     @SerializedName("project_site_user_checkpoint_image_url")
     private String projectSiteUserCheckpointImageUrl;
 

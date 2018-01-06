@@ -51,7 +51,6 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -161,7 +160,7 @@ public class CheckListVerificationFragment extends Fragment {
             if (isViewOnly) {
                 btnSubmitChecklist.setVisibility(View.GONE);
                 realm = Realm.getDefaultInstance();
-                ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
+                ParentCheckPointsItem parentCheckPointsItem = realm.where(ParentCheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).equalTo("isFromState", isFromState).findFirst();
                 if (parentCheckPointsItem != null) {
                     textViewChecklistTitle.setText(parentCheckPointsItem.getProjectSiteUserCheckpointDescription());
                     if (TextUtils.isEmpty(parentCheckPointsItem.getProjectSiteUserCheckpointRemark())) {
@@ -370,8 +369,6 @@ public class CheckListVerificationFragment extends Fragment {
                                         ProjectSiteUserCheckpointImagesItem projectSiteUserCheckpointImagesItem = checkPointsItem.getProjectSiteUserCheckpointImages().get(index);
                                         if (projectSiteUserCheckpointImagesItem.getProjectSiteChecklistCheckpointImageId() == Integer.parseInt(projectSiteChecklistCheckpointImageId)) {
                                             projectSiteUserCheckpointImagesItem.setThisImageCaptured(true);
-                                            RealmResults<ProjectSiteUserCheckpointImagesItem> projectSiteUserCheckpointImagesItemRealmResults = realm.where(ProjectSiteUserCheckpointImagesItem.class).equalTo("projectSiteChecklistCheckpointImageId", Integer.parseInt(projectSiteChecklistCheckpointImageId)).findAll();
-                                            Timber.d("projectSiteUserCheckpointImagesItemRealmResults Size: " + String.valueOf(projectSiteUserCheckpointImagesItemRealmResults.size()));
                                         }
                                     }
                                 });

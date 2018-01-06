@@ -30,7 +30,6 @@ import com.android.checklisthome.checklist_model.checkpoints_model.ParentCheckli
 import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
 import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsItem;
 import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsResponse;
-import com.android.checklisthome.checklist_model.parent_checkpoints.ParentProjectSiteUserCheckpointImagesItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckPointsItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckpointsResponse;
 import com.android.constro360.R;
@@ -465,8 +464,12 @@ public class CheckListTitleFragment extends Fragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(ParentCheckPointsItem.class);
-                                    realm.delete(ParentProjectSiteUserCheckpointImagesItem.class);
+//                                    realm.delete(ParentCheckPointsItem.class);
+//                                    realm.delete(ParentProjectSiteUserCheckpointImagesItem.class);
+                                    for (ParentCheckPointsItem parentsCheckPointsItem :
+                                            response.getCheckPointsdata().getCheckPoints()) {
+                                        parentsCheckPointsItem.setIsForState(isFromState);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
