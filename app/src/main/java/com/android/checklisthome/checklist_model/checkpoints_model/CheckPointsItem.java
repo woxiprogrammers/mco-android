@@ -7,6 +7,8 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class CheckPointsItem extends RealmObject {
+    private String isFromState;
+    private int projectSiteUserChecklistAssignmentId;
     @SerializedName("project_site_user_checkpoint_images")
     private RealmList<ProjectSiteUserCheckpointImagesItem> projectSiteUserCheckpointImages;
     @PrimaryKey
@@ -22,6 +24,22 @@ public class CheckPointsItem extends RealmObject {
     private boolean projectSiteUserCheckpointIsChecked;
     @SerializedName("project_site_user_checkpoint_remark")
     private String projectSiteUserCheckpointRemark;
+
+    public String getIsFromState() {
+        return isFromState;
+    }
+
+    public void setIsFromState(String isFromState) {
+        this.isFromState = isFromState;
+    }
+
+    public int getProjectSiteUserChecklistAssignmentId() {
+        return projectSiteUserChecklistAssignmentId;
+    }
+
+    public void setProjectSiteUserChecklistAssignmentId(int projectSiteUserChecklistAssignmentId) {
+        this.projectSiteUserChecklistAssignmentId = projectSiteUserChecklistAssignmentId;
+    }
 
     public RealmList<ProjectSiteUserCheckpointImagesItem> getProjectSiteUserCheckpointImages() {
         return projectSiteUserCheckpointImages;

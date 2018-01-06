@@ -186,7 +186,7 @@ public class CheckListVerificationFragment extends Fragment {
                 }
             } else {
                 realm = Realm.getDefaultInstance();
-                checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).findFirst();
+                checkPointsItem = realm.where(CheckPointsItem.class).equalTo("projectSiteUserCheckpointId", projectSiteUserCheckpointId).equalTo("isFromState", isFromState).findFirst();
                 textViewChecklistTitle.setText(checkPointsItem.getProjectSiteUserCheckpointDescription());
                 if (TextUtils.isEmpty(checkPointsItem.getProjectSiteUserCheckpointRemark())) {
                     editextChecklistRemark.setText("");

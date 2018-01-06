@@ -27,7 +27,6 @@ import com.android.checklisthome.checklist_model.checklist_users.UsersItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsItem;
 import com.android.checklisthome.checklist_model.checkpoints_model.CheckPointsResponse;
 import com.android.checklisthome.checklist_model.checkpoints_model.ParentChecklistIdItem;
-import com.android.checklisthome.checklist_model.checkpoints_model.ProjectSiteUserCheckpointImagesItem;
 import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsItem;
 import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckPointsResponse;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckPointsItem;
@@ -323,9 +322,19 @@ public class CheckListTitleFragment extends Fragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(CheckPointsItem.class);
-                                    realm.delete(ProjectSiteUserCheckpointImagesItem.class);
+//                                    realm.delete(CheckPointsItem.class);
+//                                    realm.delete(ProjectSiteUserCheckpointImagesItem.class);
                                     realm.delete(ParentChecklistIdItem.class);
+                                    for (CheckPointsItem checkPointsItem :
+                                            response.getCheckPointsdata().getCheckPoints()) {
+                                        checkPointsItem.setIsFromState(isFromState);
+                                        checkPointsItem.setProjectSiteUserChecklistAssignmentId(projectSiteUserChecklistAssignmentId);
+                                    }
+                                    for (ParentChecklistIdItem parentChecklistIdItem :
+                                            response.getCheckPointsdata().getParentChecklist()) {
+                                        parentChecklistIdItem.setIsFromState(isFromState);
+                                        parentChecklistIdItem.setForeignProjectSiteUserChecklistAssignmentId(projectSiteUserChecklistAssignmentId);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -356,7 +365,9 @@ public class CheckListTitleFragment extends Fragment {
 
     private void setUpParentsSpinnerAdapter() {
         realm = Realm.getDefaultInstance();
-        RealmResults<ParentChecklistIdItem> parentChecklistIdItemRealmResults = realm.where(ParentChecklistIdItem.class).findAll();
+        RealmResults<ParentChecklistIdItem> parentChecklistIdItemRealmResults = realm.where(ParentChecklistIdItem.class)
+                .equalTo("foreignProjectSiteUserChecklistAssignmentId", projectSiteUserChecklistAssignmentId)
+                .equalTo("isFromState", isFromState).findAll();
         if (parentChecklistIdItemRealmResults.isEmpty()) {
             isViewOnly = false;
             mLinearLayoutParentsLayout.setVisibility(View.GONE);
@@ -412,7 +423,7 @@ public class CheckListTitleFragment extends Fragment {
 
     private void setUpCheckpointsAdapter() {
         realm = Realm.getDefaultInstance();
-        checkPointsItemRealmResults = realm.where(CheckPointsItem.class).findAll();
+        checkPointsItemRealmResults = realm.where(CheckPointsItem.class).equalTo("isFromState", isFromState).findAll();
         CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(checkPointsItemRealmResults, true, true);
         rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
         rvChecklistTitle.setHasFixedSize(true);
@@ -468,14 +479,14 @@ public class CheckListTitleFragment extends Fragment {
 //                                    realm.delete(ParentProjectSiteUserCheckpointImagesItem.class);
                                     for (ParentCheckPointsItem parentsCheckPointsItem :
                                             response.getCheckPointsdata().getCheckPoints()) {
-                                        parentsCheckPointsItem.setIsForState(isFromState);
+                                        parentsCheckPointsItem.setIsFromState(isFromState);
                                     }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class).findAll();
+                                    parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class).equalTo("isFromState", isFromState).findAll();
                                     for (ParentCheckPointsItem parent :
                                             parentCheckPointsItemRealmResults) {
                                         Timber.d("ID: " + parent.getProjectSiteUserCheckpointId());

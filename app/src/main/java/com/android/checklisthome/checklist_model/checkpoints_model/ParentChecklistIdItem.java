@@ -11,10 +11,28 @@ import io.realm.annotations.PrimaryKey;
  * Created by Rohit.
  */
 public class ParentChecklistIdItem extends RealmObject {
+    private String isFromState;
+    private int foreignProjectSiteUserChecklistAssignmentId;
     @PrimaryKey
     @SerializedName("project_site_user_checklist_assignment_id")
     private int projectSiteUserChecklistAssignmentId;
     private String visibleParentName;
+
+    public String getIsFromState() {
+        return isFromState;
+    }
+
+    public void setIsFromState(String isFromState) {
+        this.isFromState = isFromState;
+    }
+
+    public int getForeignProjectSiteUserChecklistAssignmentId() {
+        return foreignProjectSiteUserChecklistAssignmentId;
+    }
+
+    public void setForeignProjectSiteUserChecklistAssignmentId(int foreignProjectSiteUserChecklistAssignmentId) {
+        this.foreignProjectSiteUserChecklistAssignmentId = foreignProjectSiteUserChecklistAssignmentId;
+    }
 
     public int getProjectSiteUserChecklistAssignmentId() {
         return projectSiteUserChecklistAssignmentId;
