@@ -120,7 +120,11 @@ public class ActivitySiteMoveIn extends BaseActivity {
                 chooseAction();
                 break;
             case R.id.btnSubmit:
-                validateEntries();
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    validateEntries();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("ActivitySiteMoveIn");
+                }
                 break;
         }
     }
