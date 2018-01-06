@@ -27,6 +27,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.purchase_module.material_request_approve.AutoSuggestActivity;
 import com.android.purchase_module.material_request_approve.SearchAssetListItem;
@@ -342,7 +343,7 @@ public class PeticashFormActivity extends BaseActivity {
                 uploadImages_addItemToLocal("billPayment", "peticash_purchase_payment_transaction");
                 break;
             case R.id.imageViewProfilePicture:
-                openImageZoomFragment("https://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture());
+                openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + employeesearchdataItem.getEmployeeProfilePicture());
                 break;
         }
     }

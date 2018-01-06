@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.constro360.BuildConfig;
 import com.android.login_mvp.login_model.LoginResponse;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -232,7 +233,7 @@ public class AppUtils {
 
     public void loadImageViaGlide(String strUrl, ImageView imageView, Context mContext) {
         //ToDo Imp Sharvari unComment
-        Glide.with(mContext).load("https://test.mconstruction.co.in" + strUrl)
+        Glide.with(mContext).load(BuildConfig.BASE_URL_MEDIA + strUrl)
                 .thumbnail(0.1f)
                 .crossFade()
                 .skipMemoryCache(true)
