@@ -113,6 +113,8 @@
         </activity>
         <activity android:name="com.android.inventory.AutoSuggestInventoryComponent">
         </activity>
+        <activity android:name="com.android.purchase_order_approve.PurchaseOrderApproveActivity">
+        </activity>
     </application>
 
 </manifest>

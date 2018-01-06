@@ -56,6 +56,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
     private RecyclerView recyclerviewHistory;
     private ProgressBar progressBar;
     private int materialRequestCompId;
+    private String itemName;
     private TextView textViewMaterialName, textViewMobNum;
     private Button buttonOk;
     private Context mContext;
@@ -69,7 +70,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
         builder.setView(dialog);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            materialRequestCompId = bundle.getInt("material_request_comp_id");
+            itemName = bundle.getString("item_name");
         }
         mContext=getActivity();
         recyclerviewHistory = dialog.findViewById(R.id.recyclerviewTransaction);
@@ -114,6 +115,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }*/
+        //ToDO change get to post, add params,token
         AndroidNetworking.get(AppURL.API_MATERIAL_REQUEST_HISTORY /*+ AppUtils.getInstance().getCurrentToken()*/)
 //                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -136,6 +138,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
                                     progressBar.setVisibility(View.GONE);
                                     if (response.getMaterialhistorydata().size() > 0) {
                                         setUpAdapter();
+                                        textViewMaterialName.setText("Name :- " + itemName);
                                     }
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -159,7 +162,6 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
     }
 
     public class MaterialRequestHistoryAdapter extends RealmRecyclerViewAdapter<MaterialhistorydataItem, MaterialRequestHistoryAdapter.MyViewHolder> {
-        //ToDo Item Class
         private OrderedRealmCollection<MaterialhistorydataItem> materialsItemOrderedRealmCollection;
 
         public MaterialRequestHistoryAdapter(@Nullable OrderedRealmCollection<MaterialhistorydataItem> data, boolean autoUpdate, boolean updateOnModification) {

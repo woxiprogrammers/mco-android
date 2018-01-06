@@ -122,7 +122,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     private void setUpPOAdapter() {
         realm = Realm.getDefaultInstance();
-        Timber.d("Adapter setup called");
         if (isFromPurchaseRequest) {
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class)
                     .equalTo("purchaseRequestId", purchaseRequestId)

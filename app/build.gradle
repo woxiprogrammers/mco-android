@@ -27,7 +27,7 @@ android {
         dev {
             applicationIdSuffix ".debug"
             versionNameSuffix '-dev'
-            buildConfigField "String", "BASE_URL", '"http://testapi.mconstruction.co.in/"'
+            buildConfigField "String", "BASE_URL", '"https://testapi.mconstruction.co.in/"'
             buildConfigField "String", "BASE_URL_MEDIA", '"http://test.mconstruction.co.in"'
             resValue "string", "app_name", "MConDev"
         }
