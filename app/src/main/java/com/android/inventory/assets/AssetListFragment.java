@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
@@ -35,7 +35,6 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class AssetListFragment extends Fragment implements FragmentInterface {
-
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     private Unbinder unbinder;
@@ -46,8 +45,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     private int oldPageNumber;
     private String subModulesItemList;
     private boolean isCrateInOutTransfer;
-
-
 
     public AssetListFragment() {
         // Required empty public constructor
@@ -80,11 +77,13 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         if (bundle != null) {
             subModulesItemList = bundle.getString("subModulesItemList");
         }
-        if(subModulesItemList.contains("create-inventory-in-out-transfer")){
-            isCrateInOutTransfer=true;
+        if (subModulesItemList != null) {
+            if (subModulesItemList.contains("create-inventory-in-out-transfer")) {
+                isCrateInOutTransfer = true;
+            }
         }
         setUpAssetListAdapter();
-        functionForGettingData();
+        requestAssetListOnline(pageNumber);
         return mParentView;
     }
 
@@ -115,7 +114,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        if(isCrateInOutTransfer){
+                        if (isCrateInOutTransfer) {
                             if (assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
                                 Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
                                 startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
@@ -128,7 +127,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                                 intent.putExtra("component_type_slug", assetsListItems.get(position).getSlug());
                                 startActivity(intent);
                             }
-
                         }
                     }
 
@@ -136,29 +134,10 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        /*if (assetsListItems != null) {
-            assetsListItems.addChangeListener(new RealmChangeListener<RealmResults<AssetsListItem>>() {
-                @Override
-                public void onChange(RealmResults<AssetsListItem> assetsListItemRealmResults) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }*/
-    }
-
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestAssetListOnline(pageNumber);
-        } else {
-            //Get data from local DB
-//            setUpAssetListAdapter();
-        }
     }
 
     private void requestAssetListOnline(int pageId) {
-        final JSONObject params = new JSONObject();
+        JSONObject params = new JSONObject();
         try {
             params.put("page", pageId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -175,7 +154,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 .getAsObject(AssetListResponse.class, new ParsedRequestListener<AssetListResponse>() {
                     @Override
                     public void onResponse(final AssetListResponse response) {
-                        if (!response.getPageid().equalsIgnoreCase("")) {
+                        if (!TextUtils.isEmpty(response.getPageid())) {
                             pageNumber = Integer.parseInt(response.getPageid());
                         }
                         realm = Realm.getDefaultInstance();

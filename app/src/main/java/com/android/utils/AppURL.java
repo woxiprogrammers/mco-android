@@ -8,13 +8,10 @@ import com.android.constro360.BuildConfig;
  * Created by Rohit.
  */
 public class AppURL {
-    public static final String API_PURCHASE_ORDER = "http://www.mocky.io/v2/59ba5d100f000094016227ea";
-    //http://www.mocky.io/v2/59a67e10100000e30408fc23
     private static final String BASE_URL = BuildConfig.BASE_URL;
     public static final String API_PURCHASE_REQUEST_LIST = BASE_URL + "purchase/purchase-request/listing?token=";
     public static final String API_USER_LOGIN = BASE_URL + "login";
     public static final String API_USER_DASHBOARD = BASE_URL + "dashboard?token=";
-    //    public static final String API_USER_LOGIN = "http://www.mocky.io/v2/599c5b5729000020012110ad";
     public static final String API_PURCHASE_ORDER_LIST = BASE_URL + "purchase/purchase-order/listing?token=";
     public static final String API_PURCHASE_BILL_LIST = BASE_URL + "purchase/purchase-order/transaction-listing?token=";
     public static final String API_MATERIAL_LISTING_URL = BASE_URL + "inventory/material/listing?token=";
@@ -63,7 +60,6 @@ public class AppURL {
     public static final String API_AWARENES_CATEGORY_DATA = BASE_URL + "awareness/get-main-categories?token=";
     public static final String API_AWARENES_SUB_CATEGORY_DATA = BASE_URL + "awareness/get-sub-categories?token=";
     public static final String API_AWARENES_LISTING = BASE_URL + "awareness/listing?token=";
-    //public static final String API_CHECKLIST_ASSIGNED_LIST = "http://www.mocky.io/v2/5a17cb0a2c00000714596c11";
     public static final String API_CHECKLIST_ASSIGNED_LIST = BASE_URL + "checklist/listing?token=";
     public static final String API_CHECKLIST_FLOOR_LIST = BASE_URL + "checklist/floor?token=";
     public static final String API_CHECKLIST_TITLE_LIST = BASE_URL + "checklist/title?token=";

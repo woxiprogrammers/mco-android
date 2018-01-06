@@ -82,27 +82,9 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         if (subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))) {
             isCrateInOutTransfer = true;
         }
-        /*SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
-        for (SubModulesItem subModulesItem : subModulesItems) {
-            String subModuleTag = subModulesItem.getSubModuleTag();
-            if (subModuleTag.equalsIgnoreCase("inventory-in-out-transfer")) {
-                for (PermissionsItem permissionsItem : permissionsItems) {
-                    String accessPermission = permissionsItem.getCanAccess();
-                    if (accessPermission.equalsIgnoreCase(getString(R.string.create_inventory_in_out_transfer))) {
-                    }
-                }
-            }
-        }*/
         setAdapterForMaterialList();
+        requestInventoryResponse(pageNumber);
         return mParentView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint()) {
-            functionForGettingData();
-        }
     }
 
     @Override
@@ -142,14 +124,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     @Override
     public void fragmentBecameVisible() {
-    }
-
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            requestInventoryResponse(pageNumber);
-        } else {
-            setAdapterForMaterialList();
-        }
     }
 
     private void requestInventoryResponse(int pageId) {

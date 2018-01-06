@@ -27,28 +27,7 @@ public class InventoryHomeActivity extends BaseActivity {
     ViewPager viewPagerInventory;
     MenuItem prevMenuItem;
     private String subModulesItemList;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))) {
-            getMenuInflater().inflate(R.menu.menu_site_move_in, menu);
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            case R.id.action_move_in:
-                Intent intent = new Intent(this, ActivitySiteMoveIn.class);
-                startActivity(intent);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    private InventoryViewPagerAdapter inventoryViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +60,7 @@ public class InventoryHomeActivity extends BaseActivity {
     }
 
     private void callMaterialFragment() {
-        final InventoryViewPagerAdapter inventoryViewPagerAdapter = new InventoryViewPagerAdapter(getSupportFragmentManager());
+        inventoryViewPagerAdapter = new InventoryViewPagerAdapter(getSupportFragmentManager());
         viewPagerInventory.setAdapter(inventoryViewPagerAdapter);
         viewPagerInventory.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -109,10 +88,32 @@ public class InventoryHomeActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))) {
+            getMenuInflater().inflate(R.menu.menu_site_move_in, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.action_move_in:
+                Intent intent = new Intent(this, ActivitySiteMoveIn.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
         private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
 
-        public InventoryViewPagerAdapter(FragmentManager fm) {
+        InventoryViewPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
