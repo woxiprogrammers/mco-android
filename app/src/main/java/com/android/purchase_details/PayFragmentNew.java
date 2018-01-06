@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_order.PurchaseOrderListItem;
@@ -229,7 +230,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            openImageZoomFragment("http://test.mconstruction.co.in" + purchaseOrderListItem.getListOfImages().get(finalIndex).getImageUrl());
+                            openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + purchaseOrderListItem.getListOfImages().get(finalIndex).getImageUrl());
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(purchaseOrderListItem.getListOfImages().get(index).getImageUrl(), imageView, mContext);
@@ -717,7 +718,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openImageZoomFragment("http://test.mconstruction.co.in" + strUrl);
+                openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + strUrl);
             }
         });
         AppUtils.getInstance().loadImageViaGlide(strUrl, imageView, mContext);

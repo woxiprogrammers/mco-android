@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.models.awarenessmodels.AwarenesListData;
 import com.android.models.awarenessmodels.AwarenessFileDetailsResponse;
@@ -385,7 +386,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                 if (view.getId() == R.id.imageviewDownload) {
                     try {
                         encodedString = java.net.URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
-                        getFileName="http://test.mconstruction.co.in" + getPath + "/" + encodedString;
+                        getFileName= BuildConfig.BASE_URL_MEDIA + getPath + "/" + encodedString;
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }

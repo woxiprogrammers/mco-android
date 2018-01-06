@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.peticashautosearchemployee.EmpSalaryTransactionDetailData;
 import com.android.peticashautosearchemployee.EmpSalaryTransactionDetailResponse;
@@ -173,7 +174,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openImageZoomFragment("http://test.mconstruction.co.in" + empSalaryTransactionDetailData.getListOfImages().get(finalIndex).getImageUrl());
+                        openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + empSalaryTransactionDetailData.getListOfImages().get(finalIndex).getImageUrl());
                     }
                 });
                 AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView,mContext);

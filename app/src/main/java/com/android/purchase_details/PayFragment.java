@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
 import com.android.models.purchase_bill.PurchaseBillListItem;
@@ -753,7 +754,7 @@ public class PayFragment extends Fragment implements FragmentInterface {
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 llIm.addView(imageView);
-                Glide.with(mContext).load("http://test.mconstruction.co.in" + strMaterialImageUrl)
+                Glide.with(mContext).load(BuildConfig.BASE_URL_MEDIA + strMaterialImageUrl)
                         .thumbnail(0.1f)
                         .crossFade()
                         .skipMemoryCache(true)

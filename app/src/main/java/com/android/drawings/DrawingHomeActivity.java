@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.models.awarenessmodels.AwarenessMainCategoryResponse;
 import com.android.models.awarenessmodels.AwarenessSubCategoriesItem;
@@ -454,7 +455,7 @@ public class DrawingHomeActivity extends BaseActivity {
             imagesListDrawingItem = imagesListDrawingItemOrderedRealmCollection.get(position);
 
             holder.textviewImageTitle.setText(imagesListDrawingItem.getTitle());
-            Glide.with(mContext).load("http://test.mconstruction.co.in" + imagesListDrawingItem.getImageUrl())
+            Glide.with(mContext).load(BuildConfig.BASE_URL_MEDIA + imagesListDrawingItem.getImageUrl())
                     .thumbnail(0.1f)
                     .crossFade()
                     .skipMemoryCache(true)

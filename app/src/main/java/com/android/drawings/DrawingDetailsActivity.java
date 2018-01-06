@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppURL;
@@ -79,7 +80,7 @@ public class DrawingDetailsActivity extends BaseActivity {
         imageViewPreview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                openImageZoomFragment("http://test.mconstruction.co.in" + imageUrl);
+                openImageZoomFragment(BuildConfig.BASE_URL_MEDIA  + imageUrl);
                 return true;
             }
         });

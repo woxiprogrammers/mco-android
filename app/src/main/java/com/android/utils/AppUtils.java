@@ -232,7 +232,7 @@ public class AppUtils {
 
     public void loadImageViaGlide(String strUrl, ImageView imageView, Context mContext) {
         //ToDo Imp Sharvari unComment
-        Glide.with(mContext).load("http://test.mconstruction.co.in" + strUrl)
+        Glide.with(mContext).load("https://test.mconstruction.co.in" + strUrl)
                 .thumbnail(0.1f)
                 .crossFade()
                 .skipMemoryCache(true)

@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.models.purchase_order.MaterialsItem;
 import com.android.models.purchase_order.PurchaseOrderDetailData;
@@ -211,7 +212,7 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                         @Override
                         public void onClick(View view) {
                             int index = view.getId();
-                            openImageZoomFragment("http://test.mconstruction.co.in" + materialsItem.getQuotationImages().get(index).getImageUrl());
+                            openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + materialsItem.getQuotationImages().get(index).getImageUrl());
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getQuotationImages().get(index).getImageUrl(), imageView, getActivity());
@@ -231,7 +232,7 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                         @Override
                         public void onClick(View view) {
                             int index = view.getId();
-                            openImageZoomFragment("http://test.mconstruction.co.in" + materialsItem.getClientApprovalImages().get(index).getImageUrl());
+                            openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + materialsItem.getClientApprovalImages().get(index).getImageUrl());
                         }
                     });
                     AppUtils.getInstance().loadImageViaGlide(materialsItem.getClientApprovalImages().get(index).getImageUrl(), imageView, getActivity());
