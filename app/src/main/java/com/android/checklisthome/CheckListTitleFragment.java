@@ -423,7 +423,9 @@ public class CheckListTitleFragment extends Fragment {
 
     private void setUpCheckpointsAdapter() {
         realm = Realm.getDefaultInstance();
-        checkPointsItemRealmResults = realm.where(CheckPointsItem.class).equalTo("isFromState", isFromState).findAll();
+        checkPointsItemRealmResults = realm.where(CheckPointsItem.class)
+                .equalTo("projectSiteUserChecklistAssignmentId", projectSiteUserChecklistAssignmentId)
+                .equalTo("isFromState", isFromState).findAll();
         CheckListTitleAdapter checkListTitleAdapter = new CheckListTitleAdapter(checkPointsItemRealmResults, true, true);
         rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
         rvChecklistTitle.setHasFixedSize(true);
@@ -448,7 +450,7 @@ public class CheckListTitleFragment extends Fragment {
         rvChecklistTitle.addOnItemTouchListener(recyclerCurrentItemClickListener);
     }
 
-    private void getParentsCheckpointsList(int parentProjectSiteUserChecklistAssignmentId) {
+    private void getParentsCheckpointsList(final int parentProjectSiteUserChecklistAssignmentId) {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_user_checklist_assignment_id", parentProjectSiteUserChecklistAssignmentId);
@@ -486,11 +488,9 @@ public class CheckListTitleFragment extends Fragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class).equalTo("isFromState", isFromState).findAll();
-                                    for (ParentCheckPointsItem parent :
-                                            parentCheckPointsItemRealmResults) {
-                                        Timber.d("ID: " + parent.getProjectSiteUserCheckpointId());
-                                    }
+                                    parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class)
+                                            .equalTo("parentProjectSiteUserChecklistAssignmentId", parentProjectSiteUserChecklistAssignmentId)
+                                            .equalTo("isFromState", isFromState).findAll();
                                     ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
                                     rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
                                     rvChecklistTitle.setHasFixedSize(true);

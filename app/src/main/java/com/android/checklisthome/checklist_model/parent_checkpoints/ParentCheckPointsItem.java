@@ -8,6 +8,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class ParentCheckPointsItem extends RealmObject {
     private String isFromState;
+    private int parentProjectSiteUserChecklistAssignmentId;
     @PrimaryKey
     @SerializedName("project_site_user_checkpoint_id")
     private int projectSiteUserCheckpointId;
@@ -30,6 +31,14 @@ public class ParentCheckPointsItem extends RealmObject {
 
     public void setIsFromState(String isFromState) {
         this.isFromState = isFromState;
+    }
+
+    public int getParentProjectSiteUserChecklistAssignmentId() {
+        return parentProjectSiteUserChecklistAssignmentId;
+    }
+
+    public void setParentProjectSiteUserChecklistAssignmentId(int parentProjectSiteUserChecklistAssignmentId) {
+        this.parentProjectSiteUserChecklistAssignmentId = parentProjectSiteUserChecklistAssignmentId;
     }
 
     public RealmList<ParentProjectSiteUserCheckpointImagesItem> getProjectSiteUserCheckpointImages() {
