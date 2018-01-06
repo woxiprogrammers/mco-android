@@ -24,6 +24,9 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
@@ -58,6 +61,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             itemName = bundle.getString("item_name");
+            materialRequestCompId=bundle.getInt("materialRequestCompId");
         }
         mContext=getActivity();
         recyclerviewHistory = dialog.findViewById(R.id.recyclerviewTransaction);
@@ -96,15 +100,15 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
     }
 
     private void requestToGetHistory() {
-        /*JSONObject params = new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("purchase_order_id", materialRequestCompId);
+            params.put("material_request_component_id", materialRequestCompId);
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
+        }
         //ToDO change get to post, add params,token
-        AndroidNetworking.get(AppURL.API_MATERIAL_REQUEST_HISTORY /*+ AppUtils.getInstance().getCurrentToken()*/)
-//                .addJSONObjectBody(params)
+        AndroidNetworking.post(AppURL.API_MATERIAL_REQUEST_HISTORY + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestToGetHistory")

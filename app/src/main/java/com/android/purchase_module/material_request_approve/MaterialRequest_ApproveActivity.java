@@ -1393,6 +1393,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         MaterialRequestHistoryFragment materialRequestHistoryFragment = new MaterialRequestHistoryFragment();
                         Bundle bundleArgs = new Bundle();
                         bundleArgs.putString("item_name", arrPurchaseMaterialListItems.get(getAdapterPosition()).getItem_name());
+                        bundleArgs.putInt("materialRequestCompId",arrPurchaseMaterialListItems.get(getAdapterPosition()).getMaterialRequestComponentId());
                         materialRequestHistoryFragment.setArguments(bundleArgs);
                         materialRequestHistoryFragment.show(getSupportFragmentManager(), "MaterialRequestHistoryFragment");
                         break;
