@@ -1358,6 +1358,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             TextView textviewApprovedBy;
             @BindView(R.id.textviewCreatedBy)
             TextView textviewCreatedBy;
+            @BindView(R.id.textViewMaterialHistory)
+            TextView textViewMaterialHistory;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
@@ -1365,6 +1367,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 imageViewApproveMaterial.setOnClickListener(this);
                 imageViewDisapproveMaterial.setOnClickListener(this);
                 buttonMoveToIndent.setOnClickListener(this);
+                textViewMaterialHistory.setOnClickListener(this);
             }
 
             @Override
@@ -1381,6 +1384,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     case R.id.button_move_to_indent:
                         slug = "Move To Indent";
                         openDialog(getAdapterPosition(), arrPurchaseMaterialListItems);
+                        break;
+                    case R.id.textViewMaterialHistory:
+                        Toast.makeText(mContext,"Hiii",Toast.LENGTH_LONG).show();
                         break;
                 }
             }
@@ -1414,7 +1420,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
 
-                if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) ) {
+                if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved"))) {
                     holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
                 } else {
                     holder.buttonMoveToIndent.setVisibility(View.GONE);
