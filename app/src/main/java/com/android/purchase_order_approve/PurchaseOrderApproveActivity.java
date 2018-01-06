@@ -3,6 +3,7 @@ package com.android.purchase_order_approve;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.android.constro360.BaseActivity;
@@ -27,7 +28,19 @@ public class PurchaseOrderApproveActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = PurchaseOrderApproveActivity.this;
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle("");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         getFragment();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getFragment() {
