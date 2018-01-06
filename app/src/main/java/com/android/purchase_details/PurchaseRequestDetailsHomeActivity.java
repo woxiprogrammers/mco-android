@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.models.login_acl.PermissionsItem;
+import com.android.dashboard.login_acl.PermissionsItem;
 import com.android.purchase_request.PurchaseOrderListFragment;
 import com.android.purchase_request.models_purchase_request.PurchaseRequestListItem;
 import com.android.utils.AppURL;

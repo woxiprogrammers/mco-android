@@ -32,7 +32,7 @@ import com.android.checklisthome.checklist_model.parent_checkpoints.ParentCheckP
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckPointsItem;
 import com.android.checklisthome.checklist_model.reassign_checkpoints.ReassignCheckpointsResponse;
 import com.android.constro360.R;
-import com.android.models.login_acl.SubModulesItem;
+import com.android.dashboard.login_acl.SubModulesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;

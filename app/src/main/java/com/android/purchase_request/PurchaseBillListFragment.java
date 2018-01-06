@@ -13,10 +13,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.constro360.R;
-import com.android.dummy.BillDataItem;
-import com.android.dummy.PurchaseOrderBillListingResponse;
-import com.android.dummy.PurchaseOrderBillListingData;
-import com.android.dummy.PurchaseOrderBillListingItem;
+import com.android.bill_model.BillDataItem;
+import com.android.bill_model.PurchaseOrderBillListingResponse;
+import com.android.bill_model.PurchaseOrderBillListingItem;
 import com.android.interfaces.FragmentInterface;
 import com.android.purchase_details.PayAndBillsActivity;
 import com.android.utils.AppConstants;

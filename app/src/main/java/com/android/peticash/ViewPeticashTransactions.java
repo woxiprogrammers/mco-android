@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.peticashautosearchemployee.ListOfImagesItem;
 import com.android.peticashautosearchemployee.TransactionDetailData;
@@ -217,7 +218,7 @@ public class ViewPeticashTransactions extends BaseActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openImageZoomFragment("http://test.mconstruction.co.in" + transactionDetailData.getListOfImages().get(finalI).getImageUrl());
+                        openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + transactionDetailData.getListOfImages().get(finalI).getImageUrl());
                     }
                 });
                 AppUtils.getInstance().loadImageViaGlide(strMaterialImageUrl, imageView, mContext);

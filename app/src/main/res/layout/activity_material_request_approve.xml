@@ -53,6 +53,28 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/editTextSearchMaterial"
+                android:layout_width="0dp"
+                android:hint="Search Material"
+                android:background="@null"
+                android:layout_weight="0.6"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:id="@+id/imageViewSearchMaterial"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:background="@drawable/ic_autosearch_"/>
+
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/linerLayoutItemForMaterialRequest"
             android:layout_width="match_parent"

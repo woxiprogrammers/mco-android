@@ -18,9 +18,9 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.models.inventory.AutoSuggestdataItem;
-import com.android.models.inventory.InventoryAutoSuggestResponse;
-import com.android.models.inventory.UnitItem;
+import com.android.inventory.inventory_model.AutoSuggestdataItem;
+import com.android.inventory.inventory_model.InventoryAutoSuggestResponse;
+import com.android.inventory.inventory_model.UnitItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;

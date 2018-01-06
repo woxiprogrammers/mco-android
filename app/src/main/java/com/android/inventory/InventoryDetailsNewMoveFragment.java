@@ -20,8 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.dummy.UnitsResponse;
-import com.android.dummy.UnitsResponseData;
+import com.android.bill_model.UnitsResponse;
+import com.android.bill_model.UnitsResponseData;
 import com.android.interfaces.FragmentInterface;
 import com.android.material_request_approve.UnitQuantityItem;
 import com.android.utils.AppConstants;

@@ -1,7 +1,6 @@
 package com.android.dashboard;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -14,8 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
-import com.android.models.login_acl.ModulesItem;
-import com.android.models.login_acl.SubModulesItem;
+import com.android.dashboard.login_acl.ModulesItem;
+import com.android.dashboard.login_acl.SubModulesItem;
 import com.android.utils.SlideAnimationUtil;
 
 import io.realm.OrderedRealmCollection;

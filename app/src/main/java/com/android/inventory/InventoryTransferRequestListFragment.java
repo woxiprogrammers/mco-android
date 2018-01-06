@@ -16,9 +16,9 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.models.inventory.RequestComponentData;
-import com.android.models.inventory.RequestComponentListingItem;
-import com.android.models.inventory.RequestComponentResponse;
+import com.android.inventory.inventory_model.RequestComponentData;
+import com.android.inventory.inventory_model.RequestComponentListingItem;
+import com.android.inventory.inventory_model.RequestComponentResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerViewClickListener;

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.android.checklisthome.checklist_model.AssignedChecklistResponse;
 import com.android.checklisthome.checklist_model.ChecklistListItem;
 import com.android.constro360.R;
-import com.android.models.login_acl.SubModulesItem;
+import com.android.dashboard.login_acl.SubModulesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;

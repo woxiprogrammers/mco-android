@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.android.constro360.R;
-import com.android.models.inventory.MaterialListItem;
+import com.android.inventory.inventory_model.MaterialListItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

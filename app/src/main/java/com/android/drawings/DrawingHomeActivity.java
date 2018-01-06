@@ -6,30 +6,27 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
-import com.android.models.awarenessmodels.AwarenessMainCategoryResponse;
-import com.android.models.awarenessmodels.AwarenessSubCategoriesItem;
-import com.android.models.awarenessmodels.MainCategoriesData;
-import com.android.models.awarenessmodels.MainCategoriesItem;
-import com.android.models.awarenessmodels.SubCatedata;
-import com.android.models.awarenessmodels.SubCategoriesResponse;
-import com.android.models.drawing.DrawingImagesResponse;
-import com.android.models.drawing.ImageListDrawing;
-import com.android.models.drawing.ImagesListDrawingItem;
+import com.android.awareness.awarenessmodels.AwarenessMainCategoryResponse;
+import com.android.awareness.awarenessmodels.AwarenessSubCategoriesItem;
+import com.android.awareness.awarenessmodels.MainCategoriesData;
+import com.android.awareness.awarenessmodels.MainCategoriesItem;
+import com.android.awareness.awarenessmodels.SubCatedata;
+import com.android.awareness.awarenessmodels.SubCategoriesResponse;
+import com.android.drawings.drawing_model.DrawingImagesResponse;
+import com.android.drawings.drawing_model.ImageListDrawing;
+import com.android.drawings.drawing_model.ImagesListDrawingItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.MySpinner;
@@ -51,7 +48,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -454,7 +450,7 @@ public class DrawingHomeActivity extends BaseActivity {
             imagesListDrawingItem = imagesListDrawingItemOrderedRealmCollection.get(position);
 
             holder.textviewImageTitle.setText(imagesListDrawingItem.getTitle());
-            Glide.with(mContext).load("http://test.mconstruction.co.in" + imagesListDrawingItem.getImageUrl())
+            Glide.with(mContext).load(BuildConfig.BASE_URL_MEDIA + imagesListDrawingItem.getImageUrl())
                     .thumbnail(0.1f)
                     .crossFade()
                     .skipMemoryCache(true)

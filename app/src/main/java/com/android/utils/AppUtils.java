@@ -10,7 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.models.login_acl.LoginResponse;
+import com.android.dashboard.login_acl.LoginResponse;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -232,7 +232,7 @@ public class AppUtils {
 
     public void loadImageViaGlide(String strUrl, ImageView imageView, Context mContext) {
         //ToDo Imp Sharvari unComment
-        Glide.with(mContext).load("http://test.mconstruction.co.in" + strUrl)
+        Glide.with(mContext).load("https://test.mconstruction.co.in" + strUrl)
                 .thumbnail(0.1f)
                 .crossFade()
                 .skipMemoryCache(true)

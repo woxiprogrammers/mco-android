@@ -7,17 +7,16 @@ import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.android.awareness.AwarenessHomeActivity;
 import com.android.checklisthome.ChecklistHomeActivity;
 import com.android.dashboard.DashBoardActivity;
-import com.android.dpr_module.DPRHomeActivity;
 import com.android.drawings.DrawingHomeActivity;
 import com.android.inventory.ActivityTransferRequest;
 import com.android.inventory.InventoryHomeActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.material_request_approve.MaterialRequest_ApproveActivity;
-import com.android.models.login_acl.LoginResponse;
+import com.android.dashboard.login_acl.LoginResponse;
 import com.android.peticash.PetiCashHomeActivity;
+import com.android.purchase_order_approve.PurchaseOrderApproveActivity;
 import com.android.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
@@ -76,7 +75,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("vendor-assignment", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("manage-amendment", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("manage-amendment", PurchaseOrderApproveActivity.class.getName());
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());

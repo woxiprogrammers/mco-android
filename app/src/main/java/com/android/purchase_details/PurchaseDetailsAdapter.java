@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -51,7 +52,7 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 holder.llImage.addView(imageView);
-                glideRequestManager.load("http://test.mconstruction.co.in" + itemListItem.getListOfImages().get(index).getImageUrl())
+                glideRequestManager.load(BuildConfig.BASE_URL_MEDIA + itemListItem.getListOfImages().get(index).getImageUrl())
                         .thumbnail(0.1f)
                         .crossFade()
                         .skipMemoryCache(true)

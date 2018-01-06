@@ -1,7 +1,6 @@
 package com.android.drawings;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,13 +14,9 @@ import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.interfaces.FragmentInterface;
-import com.android.inventory.assets.ActivityAssetMoveInOutTransfer;
-import com.android.inventory.assets.AssetDetailsActivity;
-import com.android.inventory.assets.AssetsListAdapter;
-import com.android.inventory.assets.AssetsListItem;
-import com.android.models.drawing.CommentsData;
-import com.android.models.drawing.CommentsListItem;
-import com.android.models.drawing.DrawingCommentsResponse;
+import com.android.drawings.drawing_model.CommentsData;
+import com.android.drawings.drawing_model.CommentsListItem;
+import com.android.drawings.drawing_model.DrawingCommentsResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -38,7 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;

@@ -155,8 +155,85 @@
                     </FrameLayout>
                 </LinearLayout>
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearlayoutMaterial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                android:orientation="horizontal">
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rate:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edtRateForMaterial"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:digits="1234567890."
+                        android:inputType="number"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tax:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edtTaxForMaterial"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:digits="1234567890."
+                        android:inputType="number"/>
+                </LinearLayout>
+            </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearlayoutAsset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rate:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/edtRentForAsset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:digits="1234567890."
+                    android:inputType="number"/>
+            </LinearLayout>
+        </LinearLayout>
             <include
                 layout="@layout/layout_multi_capture_select"/>
 

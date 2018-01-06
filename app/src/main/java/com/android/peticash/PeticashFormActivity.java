@@ -343,7 +343,7 @@ public class PeticashFormActivity extends BaseActivity {
                 uploadImages_addItemToLocal("billPayment", "peticash_purchase_payment_transaction");
                 break;
             case R.id.imageViewProfilePicture:
-                openImageZoomFragment("http://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture());
+                openImageZoomFragment("https://test.mconstruction.co.in" + employeesearchdataItem.getEmployeeProfilePicture());
                 break;
         }
     }

@@ -31,8 +31,8 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.dummy.UnitsResponse;
-import com.android.models.login_acl.PermissionsItem;
+import com.android.bill_model.UnitsResponse;
+import com.android.dashboard.login_acl.PermissionsItem;
 import com.android.purchase_request.MaterialImageItem;
 import com.android.purchase_request.PurchaseMaterialListItem;
 import com.android.purchase_request.models_purchase_request.AvailableUsersItem;
@@ -93,6 +93,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     RecyclerView mRvMaterialListMaterialRequestApprove;
     @BindView(R.id.button_submit_purchase_request)
     Button buttonSubmitPurchaseRequest;
+    @BindView(R.id.editTextSearchMaterial)
+    EditText editTextSearchMaterial;
+    @BindView(R.id.imageViewSearchMaterial)
+    ImageView imageViewSearchMaterial;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
@@ -1358,6 +1362,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             TextView textviewApprovedBy;
             @BindView(R.id.textviewCreatedBy)
             TextView textviewCreatedBy;
+            @BindView(R.id.textViewMaterialHistory)
+            TextView textViewMaterialHistory;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
@@ -1365,6 +1371,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 imageViewApproveMaterial.setOnClickListener(this);
                 imageViewDisapproveMaterial.setOnClickListener(this);
                 buttonMoveToIndent.setOnClickListener(this);
+                textViewMaterialHistory.setOnClickListener(this);
             }
 
             @Override
@@ -1381,6 +1388,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     case R.id.button_move_to_indent:
                         slug = "Move To Indent";
                         openDialog(getAdapterPosition(), arrPurchaseMaterialListItems);
+                        break;
+                    case R.id.textViewMaterialHistory:
+                        MaterialRequestHistoryFragment materialRequestHistoryFragment = new MaterialRequestHistoryFragment();
+                        Bundle bundleArgs = new Bundle();
+                        bundleArgs.putString("item_name", arrPurchaseMaterialListItems.get(getAdapterPosition()).getItem_name());
+                        materialRequestHistoryFragment.setArguments(bundleArgs);
+                        materialRequestHistoryFragment.show(getSupportFragmentManager(), "MaterialRequestHistoryFragment");
                         break;
                 }
             }
@@ -1414,7 +1428,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
 
-                if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved")) ) {
+                if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved"))) {
                     holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
                 } else {
                     holder.buttonMoveToIndent.setVisibility(View.GONE);

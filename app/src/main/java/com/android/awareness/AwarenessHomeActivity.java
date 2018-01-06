@@ -19,7 +19,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,16 +35,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
-import com.android.models.awarenessmodels.AwarenesListData;
-import com.android.models.awarenessmodels.AwarenessFileDetailsResponse;
-import com.android.models.awarenessmodels.AwarenessMainCategoryResponse;
-import com.android.models.awarenessmodels.AwarenessSubCategoriesItem;
-import com.android.models.awarenessmodels.FileDetailsItem;
-import com.android.models.awarenessmodels.MainCategoriesData;
-import com.android.models.awarenessmodels.MainCategoriesItem;
-import com.android.models.awarenessmodels.SubCatedata;
-import com.android.models.awarenessmodels.SubCategoriesResponse;
+import com.android.awareness.awarenessmodels.AwarenesListData;
+import com.android.awareness.awarenessmodels.AwarenessFileDetailsResponse;
+import com.android.awareness.awarenessmodels.AwarenessMainCategoryResponse;
+import com.android.awareness.awarenessmodels.AwarenessSubCategoriesItem;
+import com.android.awareness.awarenessmodels.FileDetailsItem;
+import com.android.awareness.awarenessmodels.MainCategoriesData;
+import com.android.awareness.awarenessmodels.MainCategoriesItem;
+import com.android.awareness.awarenessmodels.SubCatedata;
+import com.android.awareness.awarenessmodels.SubCategoriesResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerViewClickListener;
@@ -57,7 +57,6 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,22 +65,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-import static io.reactivex.schedulers.Schedulers.start;
-
 public class AwarenessHomeActivity extends BaseActivity {
-
     @BindView(R.id.spinnerAwarenesCategory)
     Spinner spinnerAwarenesCategory;
     @BindView(R.id.spinnerAwarenesSubcategory)
     Spinner spinnerAwarenesSubcategory;
     @BindView(R.id.rvFiles)
     RecyclerView rvFiles;
-
     @BindView(R.id.progressBar1)
     ProgressBar mProgressBar;
     @BindView(R.id.linearLayoutSubCategory)
@@ -115,28 +109,24 @@ public class AwarenessHomeActivity extends BaseActivity {
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
         }
-
         spinnerAwarenesCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
                 realm = Realm.getDefaultInstance();
                 mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
                 requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
         spinnerAwarenesSubcategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
                 realm = Realm.getDefaultInstance();
                 subCategoriesItems = realm.where(AwarenessSubCategoriesItem.class).findAll();
                 requestToGetFiles(subCategoriesItems.get(selectedItemIndex).getId());
-
             }
 
             @Override
@@ -148,7 +138,6 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onReceive(Context context, Intent intent) {
             }
         };
-
     }
 
     @Override
@@ -192,7 +181,6 @@ public class AwarenessHomeActivity extends BaseActivity {
 //                                    setUpPrAdapter();
                                     Timber.d("Success");
                                     setUpUsersSpinnerValueChangeListener();
-
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -248,7 +236,6 @@ public class AwarenessHomeActivity extends BaseActivity {
                                     Timber.d("Success");
                                     linearLayoutSubCategory.setVisibility(View.VISIBLE);
                                     setUpUsersSubCatSpinnerValueChangeListener();
-
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -327,7 +314,6 @@ public class AwarenessHomeActivity extends BaseActivity {
                         AppUtils.getInstance().logApiError(anError, "requestToGetFiles");
                     }
                 });
-
     }
 
     private void setUpUsersSpinnerValueChangeListener() {
@@ -385,18 +371,16 @@ public class AwarenessHomeActivity extends BaseActivity {
                 if (view.getId() == R.id.imageviewDownload) {
                     try {
                         encodedString = java.net.URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
-                        getFileName="http://test.mconstruction.co.in" + getPath + "/" + encodedString;
+                        getFileName = BuildConfig.BASE_URL_MEDIA + getPath + "/" + encodedString;
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-
                     if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         isGrant = true;
                         ActivityCompat.requestPermissions(AwarenessHomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
                     } else {
                         downloadFile(getFileName);
                     }
-
                 }
             }
         };
@@ -406,11 +390,7 @@ public class AwarenessHomeActivity extends BaseActivity {
         rvFiles.setAdapter(awarenessListAdapter);
     }
 
-
-
-
     private void downloadFile(String url) {
-
         Uri Download_Uri = Uri.parse(url);
         DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
@@ -427,9 +407,7 @@ public class AwarenessHomeActivity extends BaseActivity {
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
         mProgressBar.setVisibility(View.VISIBLE);
         registerReceiver(downloadRecevier, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 boolean downloading = true;
@@ -454,48 +432,40 @@ public class AwarenessHomeActivity extends BaseActivity {
                     statusMessage(cursor);
                     cursor.close();
                 }
-
             }
         }).start();
     }
+
     private String statusMessage(Cursor c) {
         String msg = "???";
-
         switch (c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
             case DownloadManager.STATUS_FAILED:
                 msg = "Download failed!";
                 startThread(msg);
                 break;
-
             case DownloadManager.STATUS_PAUSED:
                 msg = "Download paused!";
                 break;
-
             case DownloadManager.STATUS_PENDING:
                 msg = "Download pending!";
                 break;
-
             case DownloadManager.STATUS_RUNNING:
                 msg = "Download in progress!";
                 break;
-
             case DownloadManager.STATUS_SUCCESSFUL:
                 msg = "Download complete!";
                 startThread(msg);
                 break;
-
             default:
                 msg = "Download is nowhere in sight";
                 break;
         }
-
         return (msg);
     }
 
-    private void startThread(final String strMessage){
+    private void startThread(final String strMessage) {
         Thread timer = new Thread() { //new thread
             public void run() {
-
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -503,10 +473,9 @@ public class AwarenessHomeActivity extends BaseActivity {
                         mProgressBar.setVisibility(View.GONE);
                     }
                 });
+            }
 
-
-
-            };
+            ;
         };
         timer.start();
     }
@@ -519,7 +488,6 @@ public class AwarenessHomeActivity extends BaseActivity {
                 /*if (isGrant) {
                     downloadFile(getFileName);
                 }*/
-
             } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -577,10 +545,8 @@ public class AwarenessHomeActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             fileDetailsItem = detailsItemOrderedRealmCollection.get(position);
-
             separatedString = fileDetailsItem.getName().split("#");
             holder.textviewFileName.setText(separatedString[0]);
-
             if (fileDetailsItem.getExtension().equalsIgnoreCase("jpg")) {
                 holder.textviewFileType.setText("Format : JPG");
             } else if (fileDetailsItem.getExtension().equalsIgnoreCase("png")) {
@@ -590,7 +556,6 @@ public class AwarenessHomeActivity extends BaseActivity {
             } else if (fileDetailsItem.getExtension().equalsIgnoreCase("mp4")) {
                 holder.textviewFileType.setText("Format : Video");
             }
-
         }
 
         @Override
@@ -604,7 +569,6 @@ public class AwarenessHomeActivity extends BaseActivity {
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
             @BindView(R.id.textviewFileName)
             TextView textviewFileName;
             @BindView(R.id.textviewFileType)
@@ -624,5 +588,4 @@ public class AwarenessHomeActivity extends BaseActivity {
             }
         }
     }
-
 }
