@@ -2,7 +2,7 @@ package com.android.login_mvp;
 
 import android.text.TextUtils;
 
-import com.android.dashboard.login_acl.LoginResponse;
+import com.android.login_mvp.login_model.LoginResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;

@@ -2,7 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.android.inventory.assets.AssetsHistoryFragment">
+             tools:context="com.android.inventory_module.assets.AssetsHistoryFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

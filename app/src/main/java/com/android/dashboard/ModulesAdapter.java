@@ -13,8 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
-import com.android.dashboard.login_acl.ModulesItem;
-import com.android.dashboard.login_acl.SubModulesItem;
+import com.android.login_mvp.login_model.ModulesItem;
+import com.android.login_mvp.login_model.SubModulesItem;
 import com.android.utils.SlideAnimationUtil;
 
 import io.realm.OrderedRealmCollection;

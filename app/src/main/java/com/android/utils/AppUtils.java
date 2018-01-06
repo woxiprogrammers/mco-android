@@ -10,7 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.dashboard.login_acl.LoginResponse;
+import com.android.login_mvp.login_model.LoginResponse;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;

@@ -33,65 +33,65 @@
             android:name="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name="com.android.peticash.PetiCashHomeActivity"
+            android:name="com.android.peticash_module.peticash.PetiCashHomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name="com.android.purchase_request.PurchaseHomeActivity"
+            android:name="com.android.purchase_module.purchase_request.PurchaseHomeActivity"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name="com.android.inventory.InventoryDetails">
+        <activity android:name="com.android.inventory_module.InventoryDetails">
         </activity>
-        <activity android:name="com.android.inventory.InventoryHomeActivity"/>
-        <activity android:name="com.android.inventory.assets.ActivityRequestMaintanance">
+        <activity android:name="com.android.inventory_module.InventoryHomeActivity"/>
+        <activity android:name="com.android.inventory_module.assets.ActivityRequestMaintanance">
         </activity>
         <activity
-            android:name="com.android.purchase_request.PurchaseMaterialListActivity"
+            android:name="com.android.purchase_module.purchase_request.PurchaseMaterialListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name="com.android.inventory.assets.AssetDetailsActivity"
+            android:name="com.android.inventory_module.assets.AssetDetailsActivity"
             android:label="@string/title_activity_asset_details"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name="com.android.inventory.assets.ActivityAssetsReadings">
+        <activity android:name="com.android.inventory_module.assets.ActivityAssetsReadings">
         </activity>
-        <activity android:name="com.android.purchase_details.PurchaseRequestDetailsHomeActivity">
+        <activity android:name="com.android.purchase_module.purchase_details.PurchaseRequestDetailsHomeActivity">
         </activity>
         <activity
-            android:name="com.android.purchase_details.PayAndBillsActivity"
+            android:name="com.android.purchase_module.purchase_details.PayAndBillsActivity"
             android:label="@string/title_activity_pay_and_bills">
         </activity>
         <activity
-            android:name="com.android.material_request_approve.MaterialRequest_ApproveActivity"
+            android:name="com.android.purchase_module.material_request_approve.MaterialRequest_ApproveActivity"
             android:label="@string/title_activity_material_request"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name="com.android.material_request_approve.AutoSuggestActivity">
+        <activity android:name="com.android.purchase_module.material_request_approve.AutoSuggestActivity">
         </activity>
-        <activity android:name="com.android.peticash.AutoSuggestEmployee">
+        <activity android:name="com.android.peticash_module.peticash.AutoSuggestEmployee">
         </activity>
-        <activity android:name="com.android.peticash.PeticashFormActivity">
+        <activity android:name="com.android.peticash_module.peticash.PeticashFormActivity">
         </activity>
-        <activity android:name="com.android.inventory.assets.ActivityAssetMoveInOutTransfer">
+        <activity android:name="com.android.inventory_module.assets.ActivityAssetMoveInOutTransfer">
         </activity>
-        <activity android:name="com.android.peticash.ViewPeticashTransactions">
+        <activity android:name="com.android.peticash_module.peticash.ViewPeticashTransactions">
         </activity>
-        <activity android:name="com.android.inventory.assets.AssetSummaryActivity"/>
-        <activity android:name="com.android.peticash.ActivityEmpSalaryTransactionDetails">
+        <activity android:name="com.android.inventory_module.assets.AssetSummaryActivity"/>
+        <activity android:name="com.android.peticash_module.peticash.ActivityEmpSalaryTransactionDetails">
         </activity>
         <activity
-            android:name="com.android.checklisthome.ChecklistHomeActivity"
+            android:name="com.android.checklist_module.ChecklistHomeActivity"
             android:label="@string/title_activity_checklist"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name="com.android.checklisthome.CheckListActionActivity">
+        <activity android:name="com.android.checklist_module.CheckListActionActivity">
         </activity>
-        <activity android:name="com.android.awareness.AwarenessHomeActivity">
+        <activity android:name="com.android.awareness_module.AwarenessHomeActivity">
         </activity>
-        <activity android:name="com.android.drawings.DrawingHomeActivity">
+        <activity android:name="com.android.drawings_module.DrawingHomeActivity">
         </activity>
-        <activity android:name="com.android.drawings.DrawingDetailsActivity">
+        <activity android:name="com.android.drawings_module.DrawingDetailsActivity">
         </activity>
         <activity android:name="com.android.dpr_module.DPRHomeActivity">
         </activity>
@@ -107,13 +107,13 @@
             </intent-filter>
         </service>
 
-        <activity android:name="com.android.inventory.ActivityTransferRequest">
+        <activity android:name="com.android.inventory_module.ActivityTransferRequest">
         </activity>
-        <activity android:name="com.android.inventory.ActivitySiteMoveIn">
+        <activity android:name="com.android.inventory_module.ActivitySiteMoveIn">
         </activity>
-        <activity android:name="com.android.inventory.AutoSuggestInventoryComponent">
+        <activity android:name="com.android.inventory_module.AutoSuggestInventoryComponent">
         </activity>
-        <activity android:name="com.android.purchase_order_approve.PurchaseOrderApproveActivity">
+        <activity android:name="com.android.purchase_module.purchase_order_approve.PurchaseOrderApproveActivity">
         </activity>
     </application>
 

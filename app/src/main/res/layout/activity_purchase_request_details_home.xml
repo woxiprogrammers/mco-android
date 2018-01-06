@@ -5,7 +5,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.android.purchase_details.PurchaseRequestDetailsHomeActivity">
+              tools:context="com.android.purchase_module.purchase_details.PurchaseRequestDetailsHomeActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager_purchase_details"
