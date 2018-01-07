@@ -28,10 +28,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.purchase_module.bill_model.UnitsResponse;
-import com.android.purchase_module.bill_model.UnitsResponseData;
+import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponse;
+import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponseData;
 import com.android.utils.FragmentInterface;
-import com.android.purchase_module.material_request_approve.UnitQuantityItem;
+import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;

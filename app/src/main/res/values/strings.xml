@@ -91,7 +91,6 @@
     <string name="add_as_new_item">add %s as new item</string>
     <string name="tag_new">new</string>
     <string name="create_material_request">create-material-request</string>
-    <string name="approve_material_request">approve-material-request</string>
     <string name="shop_name">Shop Name</string>
     <string name="bill_amount">Bill Amount</string>
     <string name="approve_purchase_request">approve-purchase-request</string>
@@ -105,8 +104,6 @@
     <string name="amount">Amount</string>
     <string name="tap_too_add_remark">Tap To Add Remark</string>
     <string name="title_activity_checklist">Checklist Management</string>
-    <string name="view_purchase_request">view-purchase-request</string>
     <string name="create_peticash_management">create-peticash-management</string>
-    <string name="transfer_request">Transfer Request</string>
     <string name="create_inventory_in_out_transfer">create-inventory-in-out-transfer</string>
 </resources>

@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.android.checklist_module.checklist_model.AssignedChecklistResponse;
-import com.android.checklist_module.checklist_model.ChecklistListItem;
+import com.android.checklist_module.checklist_model.checklist_assign.AssignedChecklistResponse;
+import com.android.checklist_module.checklist_model.checklist_assign.ChecklistListItem;
 import com.android.constro360.R;
 import com.android.login_mvp.login_model.SubModulesItem;
 import com.android.utils.AppURL;

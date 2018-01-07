@@ -36,7 +36,7 @@
             android:name="com.android.peticash_module.peticash.PetiCashHomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name="com.android.purchase_module.purchase_request.PurchaseHomeActivity"
+            android:name="com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseHomeActivity"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -46,7 +46,7 @@
         <activity android:name="com.android.inventory_module.assets.ActivityRequestMaintanance">
         </activity>
         <activity
-            android:name="com.android.purchase_module.purchase_request.PurchaseMaterialListActivity"
+            android:name="com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseMaterialListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
@@ -56,18 +56,18 @@
         </activity>
         <activity android:name="com.android.inventory_module.assets.ActivityAssetsReadings">
         </activity>
-        <activity android:name="com.android.purchase_module.purchase_details.PurchaseRequestDetailsHomeActivity">
+        <activity android:name="com.android.purchase_module.purchase_request.PurchaseRequestDetailsHomeActivity">
         </activity>
         <activity
-            android:name="com.android.purchase_module.purchase_details.PayAndBillsActivity"
+            android:name="com.android.purchase_module.purchase_request.PayAndBillsActivity"
             android:label="@string/title_activity_pay_and_bills">
         </activity>
         <activity
-            android:name="com.android.purchase_module.material_request_approve.MaterialRequest_ApproveActivity"
+            android:name="com.android.purchase_module.material_request.MaterialRequest_ApproveActivity"
             android:label="@string/title_activity_material_request"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name="com.android.purchase_module.material_request_approve.AutoSuggestActivity">
+        <activity android:name="com.android.purchase_module.material_request.AutoSuggestActivity">
         </activity>
         <activity android:name="com.android.peticash_module.peticash.AutoSuggestEmployee">
         </activity>
@@ -113,7 +113,7 @@
         </activity>
         <activity android:name="com.android.inventory_module.AutoSuggestInventoryComponent">
         </activity>
-        <activity android:name="com.android.purchase_module.purchase_order_approve.PurchaseOrderApproveActivity">
+        <activity android:name="com.android.purchase_module.purchase_request.PurchaseOrderApproveActivity">
         </activity>
     </application>
 

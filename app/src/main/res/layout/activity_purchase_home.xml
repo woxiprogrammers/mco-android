@@ -54,7 +54,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.android.purchase_module.purchase_request.PurchaseHomeActivity"
+            tools:context="com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseHomeActivity"
             tools:mContext="com.woxi.home.HomeActivity">
 
             <android.support.design.widget.TabLayout

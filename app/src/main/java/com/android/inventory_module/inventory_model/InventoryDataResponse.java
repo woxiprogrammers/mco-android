@@ -1,6 +1,6 @@
 package com.android.inventory_module.inventory_model;
 
-import com.android.purchase_module.material_request_approve.UnitQuantityItem;
+import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;

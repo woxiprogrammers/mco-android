@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.inventory_module.assets.asset_model.AssetsListItem;
-import com.android.purchase_module.material_request_approve.UnitQuantityItem;
+import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
