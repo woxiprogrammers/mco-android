@@ -652,9 +652,7 @@ public class PeticashFormActivity extends BaseActivity {
                 editTextSelectedSourceName.clearFocus();
             }
         }
-        /*
-
-        if (TextUtils.isEmpty(strItemName)) {
+        /*if (TextUtils.isEmpty(strItemName)) {
             editTextItemName.setFocusableInTouchMode(true);
             editTextItemName.requestFocus();
             editTextItemName.setError(getString(R.string.please_enter) + " " + strSelectedItemName);
@@ -1017,7 +1015,16 @@ public class PeticashFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            finish();
+                            edittextDay.setEnabled(false);
+                            editTextSalaryAmount.setEnabled(false);
+                            editTextPT.setEnabled(false);
+                            editTextPF.setEnabled(false);
+                            editTextESIC.setEnabled(false);
+                            editTextTDS.setEnabled(false);
+                            editTextSiteName.setEnabled(false);
+                            linearPayableAmount.setVisibility(View.VISIBLE);
+                            textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
+                            editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1280,15 +1287,10 @@ public class PeticashFormActivity extends BaseActivity {
 
     @OnClick(R.id.button_view_amount)
     public void onViewClickedAmount() {
-        edittextDay.setEnabled(false);
-        editTextSalaryAmount.setEnabled(false);
-        editTextPT.setEnabled(false);
-        editTextPF.setEnabled(false);
-        editTextESIC.setEnabled(false);
-        editTextTDS.setEnabled(false);
-        linearPayableAmount.setVisibility(View.VISIBLE);
-        textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
-        editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
+        if(TextUtils.isEmpty(editTextSiteName.getText().toString())){
+            editTextSiteName.setError("Please enter site name");
+            return;
+        }
 
     }
 

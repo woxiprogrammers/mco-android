@@ -301,7 +301,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
             TextView textviewDieselConsume;
             @BindView(R.id.linearLayoutForOtherAssets)
             LinearLayout linearLayoutForOtherAssets;
-            //        @BindView(R.id.textviewInQuantityAsset)
+            //@BindView(R.id.textviewInQuantityAsset)
 //        TextView textviewInQuantityAsset;
 //        @BindView(R.id.textviewOutQuantityAsset)
 //        TextView textviewOutQuantityAsset;
