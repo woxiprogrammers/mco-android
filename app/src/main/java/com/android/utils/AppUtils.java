@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -241,9 +242,14 @@ public class AppUtils {
                 .into(imageView);
     }
 
-    public void hideKeyboard(View view, Context context) {
+    public void hideKeyboard(View view, Context context, EditText EditText,boolean isShow) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if(isShow){
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }else {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
     }
 
     public String getCurrentToken() {

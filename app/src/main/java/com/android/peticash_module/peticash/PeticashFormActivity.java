@@ -805,7 +805,6 @@ public class PeticashFormActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("@Pa",params.toString());
         AndroidNetworking.post(AppURL.API_CREATE_SALARY_FOR_EMPLOYEE + AppUtils.getInstance().getCurrentToken())
                 .setTag("API_CREATE_SALARY_FOR_EMPLOYEE")
                 .addJSONObjectBody(params)

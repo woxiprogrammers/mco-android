@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,9 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,6 +64,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             itemName = bundle.getString("item_name");
+            materialRequestCompId=bundle.getInt("compId");
         }
         mContext=getActivity();
         recyclerviewHistory = dialog.findViewById(R.id.recyclerviewTransaction);
@@ -98,15 +103,14 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
     }
 
     private void requestToGetHistory() {
-        /*JSONObject params = new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("purchase_order_id", materialRequestCompId);
+            params.put("material_request_component_id", materialRequestCompId);
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
-        //ToDO change get to post, add params,token
-        AndroidNetworking.get(AppURL.API_MATERIAL_REQUEST_HISTORY /*+ AppUtils.getInstance().getCurrentToken()*/)
-//                .addJSONObjectBody(params)
+        }
+        AndroidNetworking.post(AppURL.API_MATERIAL_REQUEST_HISTORY + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestToGetHistory")
@@ -119,6 +123,8 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(MaterialRequestHistoryResponse.class);
+                                    realm.delete(MaterialhistorydataItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -168,6 +174,7 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             final MaterialhistorydataItem materialhistorydataItem=materialsItemOrderedRealmCollection.get(position);
+            Log.i("@@History",materialhistorydataItem.getMessage());
             holder.textViewMaterialStatus.setText(materialhistorydataItem.getMessage());
 
         }

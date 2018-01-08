@@ -7,7 +7,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class MaterialhistorydataItem extends RealmObject{
 
-	@SerializedName("message")
+	@SerializedName("display_message")
 	private String message;
 
 	@PrimaryKey

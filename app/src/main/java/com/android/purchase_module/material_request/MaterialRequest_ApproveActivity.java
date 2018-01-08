@@ -140,8 +140,9 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private int unitIDForDialog;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private LinearLayout linearLayoutUnit;
-    private String slug = "";
+    private String slug = "",strSearchKeyword;
     private boolean isApproveAccess;
+    private boolean isSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +192,41 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
             }*/
         }
+
+
+
+        imageViewSearchMaterial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(TextUtils.isEmpty(editTextSearchMaterial.getText().toString())){
+                        editTextSearchMaterial.setError("Please enter search keyword");
+                        return;
+                }else {
+                    isSearch=true;
+                    strSearchKeyword=editTextSearchMaterial.getText().toString();
+                    getRequestedItemList();
+                }
+            }
+        });
+        editTextSearchMaterial.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (TextUtils.isEmpty(charSequence.toString())) {
+                    isSearch=false;
+                    getRequestedItemList();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+
     }
 
     @Override
@@ -384,8 +420,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void getRequestedItemList() {
         JSONObject params = new JSONObject();
         try {
-//            params.put("user_id", 2);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            if(isSearch){
+                params.put("keyword",strSearchKeyword);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1401,6 +1439,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         MaterialRequestHistoryFragment materialRequestHistoryFragment = new MaterialRequestHistoryFragment();
                         Bundle bundleArgs = new Bundle();
                         bundleArgs.putString("item_name", arrPurchaseMaterialListItems.get(getAdapterPosition()).getItem_name());
+                        bundleArgs.putInt("compId",arrPurchaseMaterialListItems.get(getAdapterPosition()).getMaterialRequestComponentId());;
                         materialRequestHistoryFragment.setArguments(bundleArgs);
                         materialRequestHistoryFragment.show(getSupportFragmentManager(), "MaterialRequestHistoryFragment");
                         break;
