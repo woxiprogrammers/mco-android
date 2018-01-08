@@ -59,12 +59,17 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         RealmList<SubModulesItem> modulesItemRealmList = modulesItem.getSubModules();
         holder.moduleName.setText(modulesItem.getModuleName());
         String moduleName=modulesItem.getModuleName();
-        /*if(moduleName.equalsIgnoreCase("Purchase")){
-            holder.imageViewModule.setBackgroundResource(R.drawable.action_button_bg);
+        if(moduleName.equalsIgnoreCase("Purchase")){
+            holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
+        }else if(moduleName.equalsIgnoreCase("Peticash")){
+            holder.imageViewModule.setBackgroundResource(R.drawable.ic_peticash);
+        }else if(moduleName.equalsIgnoreCase("Inventory")) {
+            holder.imageViewModule.setBackgroundResource(R.drawable.ic_inventory2);
+        }else if(moduleName.equalsIgnoreCase("Checklist")) {
+            holder.imageViewModule.setBackgroundResource(R.drawable.ic_checklist);
         }else {
-            holder.imageViewModule.setBackgroundResource(R.drawable.ic_action_more_vert);
-
-        }*/
+            holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
+        }
 //       holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
         int noOfTextViews = holder.ll_sub_modules.getChildCount();
         int noOfSubModules = modulesItemRealmList.size();
