@@ -32,7 +32,6 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -89,6 +88,23 @@ public class ChecklistList_AssignedFragment extends Fragment {
             subModuleTag = bundle.getString("subModule_Tag");
         }
         mBtnCheckListAssignNew = viewAssigned.findViewById(R.id.btn_checkList_assignNew);
+        mBtnCheckListAssignNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = AssignNewCheckListDialogFragment.newInstance();
+                    assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
+                        @Override
+                        public void onAssignClickListener() {
+                            requestToGetAssignCheckedListData();
+                        }
+                    });
+                    assignNewCheckListDialogFragment.show(getActivity().getSupportFragmentManager(), "assignNewCheckListDialogFragment");
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("ChecklistList_AssignedFragment");
+                }
+            }
+        });
         mRecyclerViewCheckListAssigned = viewAssigned.findViewById(R.id.recyclerView_checkList_assigned);
         SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
         for (SubModulesItem subModulesItem : subModulesItems) {
@@ -222,22 +238,6 @@ public class ChecklistList_AssignedFragment extends Fragment {
             public void onLongItemClick(View view, int position) {
             }
         }));
-    }
-
-    @OnClick(R.id.btn_checkList_assignNew)
-    public void onViewClicked() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            AssignNewCheckListDialogFragment assignNewCheckListDialogFragment = AssignNewCheckListDialogFragment.newInstance();
-            assignNewCheckListDialogFragment.setUpAssignmentDialogListener(new AssignNewCheckListDialogFragment.AssignmentDialogListener() {
-                @Override
-                public void onAssignClickListener() {
-                    requestToGetAssignCheckedListData();
-                }
-            });
-            assignNewCheckListDialogFragment.show(getActivity().getSupportFragmentManager(), "assignNewCheckListDialogFragment");
-        } else {
-            AppUtils.getInstance().showOfflineMessage("ChecklistList_AssignedFragment");
-        }
     }
 
     public class AssignedChecklistListAdapter extends RealmRecyclerViewAdapter<ChecklistListItem,
