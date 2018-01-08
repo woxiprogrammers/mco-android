@@ -1,7 +1,5 @@
 package com.android.inventory_module.assets;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,20 +14,17 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.inventory_module.assets.asset_model.AssetsListItem;
-import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -48,26 +43,18 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View.OnClickListener {
-
     @BindView(R.id.checkboxMoveInOut)
     CheckBox checkboxMoveInOut;
-
     @BindView(R.id.assetDestSpinner)
     Spinner assetDestSpinner;
     @BindView(R.id.assetSourceSpinner)
@@ -109,31 +96,18 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     @BindView(R.id.frameLayoutAsset)
     FrameLayout frameLayoutAsset;
     private JSONArray jsonImageNameArray = new JSONArray();
-
     private Context mContext;
     private String transferType = "OUT", str = "";
     private boolean isChecked;
-
-    private String strDate;
     private String strVehicleNumber;
-    private String strInTime;
-    private String strOutTime;
     private String strBillNumber;
     private String strQuantity;
-    private String strUnit;
-    private DatePickerDialog.OnDateSetListener date;
-    private String strBillAmount;
     private ArrayList<File> arrayImageFileList;
     private Realm realm;
-    private Calendar myCalendar;
-    private int indexItemUnit, unidId;
-    private String strToDate;
     private JSONArray jsonArray;
     private int unitId;
-
     private ArrayAdapter<String> adapter;
     private ArrayList<String> siteNameArray;
-    RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private int intComponentId;
 
     @Override
@@ -156,7 +130,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
 
     private void initializeViews() {
         mContext = ActivityAssetMoveInOutTransfer.this;
-
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             intComponentId = bundle.getInt("inventoryCompId");
@@ -171,11 +144,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             }
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        myCalendar = Calendar.getInstance();
-        Date curDate = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        strToDate = format.format(curDate);
-
         getSystemSites();
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -286,7 +254,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
         editTextDestSourcename.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -310,35 +277,28 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     private void requestForMaterial() {
         JSONObject params = new JSONObject();
         try {
-
             if (checkboxMoveInOut.isChecked()) {
                 params.put("name", assetDestSpinner.getSelectedItem().toString().toLowerCase());
             } else {
                 if (assetSourceSpinner.getSelectedItemPosition() == 1) {
                     params.put("name", "hand");
-
                 } else {
                     params.put("name", assetSourceSpinner.getSelectedItem().toString().toLowerCase());
-
                 }
             }
             if (str.equalsIgnoreCase("Office")) {
                 params.put("source_name", "");
-
             } else {
                 params.put("source_name", editTextDestSourcename.getText().toString());
             }
             params.put("inventory_component_id", intComponentId);
             params.put("type", transferType);
             params.put("quantity", strQuantity);
-
             params.put("unit_id", unitId);
-
 //            params.put("date", strDate);
             if (!TextUtils.isEmpty(editTextAssetRemark.getText().toString())) {
                 params.put("remark", editTextAssetRemark.getText().toString());
             } else {
-
                 params.put("remark", "");
             }
             params.put("images", jsonImageNameArray);
@@ -371,10 +331,10 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                                 realm.executeTransactionAsync(new Realm.Transaction() {
                                     @Override
                                     public void execute(Realm realm) {
-                                       AssetsListItem assetsListItem=realm.where(AssetsListItem.class).equalTo("",intComponentId).findFirst();
-                                       assetsListItem.setIn(Float.parseFloat(strQuantity));
-                                       assetsListItem.setOut(Float.parseFloat(strQuantity));
-                                       assetsListItem.setAvailable(Float.parseFloat(strQuantity));
+                                        AssetsListItem assetsListItem = realm.where(AssetsListItem.class).equalTo("", intComponentId).findFirst();
+                                        assetsListItem.setIn(Float.parseFloat(strQuantity));
+                                        assetsListItem.setOut(Float.parseFloat(strQuantity));
+                                        assetsListItem.setAvailable(Float.parseFloat(strQuantity));
                                         realm.insertOrUpdate(assetsListItem);
                                         //TODO Need to refresh UI according to local realm changes
                                     }
@@ -411,7 +371,11 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buttonMoveAsset:
-                validateEntries();
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    validateEntries();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("ActivityAssetMoveInOutTransfer");
+                }
                 break;
         }
     }
@@ -427,7 +391,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                 editTextDestSourcename.setError(null);
             }
         }
-
         //Quantity
         strQuantity = edittextAssetQuantity.getText().toString();
         if (TextUtils.isEmpty(strQuantity)) {
@@ -435,10 +398,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         } else {
             edittextAssetQuantity.requestFocus();
             edittextAssetQuantity.setError(null);
-        }
-        if (!checkboxMoveInOut.isChecked()) {
-            //Bill
-
         }
         if (isChecked) {
             strBillNumber = edittextBillNum.getText().toString();
@@ -449,7 +408,7 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                 edittextBillNum.setError(null);
                 edittextBillNum.requestFocus();
             }
-            strBillAmount = edittextBillAmountAssetAsset.getText().toString();
+            String strBillAmount = edittextBillAmountAssetAsset.getText().toString();
             if (TextUtils.isEmpty(strBillAmount)) {
                 edittextBillAmountAssetAsset.setError("Please Enter Bill Amount");
                 return;
@@ -469,8 +428,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         }
         uploadImages_addItemToLocal();
     }
-
-    /////////////////////////////Image/////////////////
 
     @OnClick({R.id.textViewCaptureAsset})
     public void onViewClicked(View view) {
@@ -568,7 +525,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     }
 
     private void checkAvailability() {
-
         AndroidNetworking.get(AppURL.API_SYSTEM_UNITS)
                 .setPriority(Priority.MEDIUM)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -585,7 +541,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                                     unitId = jsonObject.getInt("id");
                                 }
                             }
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -594,74 +549,9 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     @Override
                     public void onError(ANError anError) {
                         anError.printStackTrace();
-
                     }
                 });
     }
-
-    private void setUpUnitQuantityChangeListener() {
-        realm = Realm.getDefaultInstance();
-        unitQuantityItemRealmResults = realm.where(UnitQuantityItem.class).findAll();
-        setUpSpinnerUnitAdapterForDialogUnit(unitQuantityItemRealmResults);
-    }
-
-    private void setUpSpinnerUnitAdapterForDialogUnit(RealmResults<UnitQuantityItem> unitQuantityItemRealmResults) {
-        List<UnitQuantityItem> unitQuantityItems = realm.copyFromRealm(unitQuantityItemRealmResults);
-        ArrayList<String> arrayOfUsers = new ArrayList<String>();
-        for (UnitQuantityItem currentUser : unitQuantityItems) {
-            String strUserName = currentUser.getUnitName();
-            arrayOfUsers.add(strUserName);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerAssetUnits.setAdapter(arrayAdapter);
-    }
-
-    private void setInOutDate(final EditText editext_updateDate) {
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText(editext_updateDate);
-            }
-        };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
-    }
-
-    private void updateEditText(EditText editTextUpdateDate) {
-        String myFormat = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
-        editTextUpdateDate.setError(null);
-    }
-
-    private void setInOutTime(final EditText currentEditText) {
-        final Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = mcurrentTime.get(Calendar.MINUTE);
-        final int seconds = mcurrentTime.get(Calendar.SECOND);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.SECOND, seconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
-
-
 
     private void getSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
@@ -693,5 +583,4 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                     }
                 });
     }
-
 }

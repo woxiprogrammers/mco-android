@@ -5,7 +5,6 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-
     <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -37,7 +36,6 @@
                     android:text="@string/move_out"
                     android:textSize="16dp"/>
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -132,11 +130,12 @@
                     android:layout_height="wrap_content"
                     android:text="Project Name:"
                     android:textColor="@color/colorTextLight"/>
+
                 <EditText
                     android:id="@+id/text_view_project_name"
                     android:layout_width="match_parent"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
             <LinearLayout
@@ -215,8 +214,6 @@
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
-
-
             <LinearLayout
                 android:id="@+id/linearLayoutBillNum"
                 android:layout_width="match_parent"
@@ -275,7 +272,6 @@
                     android:drawableTop="@android:drawable/ic_menu_camera"
                     android:gravity="center_horizontal"
                     android:text="Capture Images"/>
-
             </LinearLayout>
 
             <HorizontalScrollView

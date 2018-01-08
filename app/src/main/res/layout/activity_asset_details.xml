@@ -8,10 +8,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.android.inventory_module.assets.AssetDetailsActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,6 +52,7 @@
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -77,7 +80,6 @@
                 app:menu="@menu/navigation"/>
         </LinearLayout>
     </LinearLayout>
-
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floating_add_button"

@@ -81,6 +81,7 @@ public class AssetDetailsActivity extends BaseActivity {
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
         textViewReadingsAppBarTitle.setText(strMonth + ", " + passYear);
     }
+
     private void initializeViews() {
         ButterKnife.bind(this);
         toolbarAssetDetails.setTitle("");
@@ -97,7 +98,6 @@ public class AssetDetailsActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("");
         }
-
     }
 
     private void setAdapter() {
@@ -144,13 +144,11 @@ public class AssetDetailsActivity extends BaseActivity {
             case R.id.action_request_maintaianance:
                 startRequestMaintainanceActivity();
                 break;
-
             case R.id.action_move_in_out:
                 Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
                 startIntent.putExtra("inventoryCompId", inventoryComponentId);
                 startActivity(startIntent);
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
