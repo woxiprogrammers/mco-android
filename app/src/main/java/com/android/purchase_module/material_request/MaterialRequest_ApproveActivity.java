@@ -242,6 +242,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     @OnClick(R.id.textView_purchaseMaterialList_addNew)
     public void onAddClicked() {
         if (AppUtils.getInstance().checkNetworkState()) {
+            editTextSearchMaterial.setVisibility(View.GONE);
+            imageViewSearchMaterial.setVisibility(View.GONE);
             setUpCurrentMaterialListAdapter();
             linerLayoutItemForMaterialRequest.setVisibility(View.VISIBLE);
             mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.GONE);
