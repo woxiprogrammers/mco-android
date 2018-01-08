@@ -45,7 +45,6 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     RecyclerView rvTransferRequestList;
     Unbinder unbinder;
     private RealmResults<RequestComponentListingItem> requestComponentListingItems;
-    private View mParentView;
     private Realm realm;
     private Context mContext;
 
@@ -63,7 +62,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.fragment_inventory_transfer_request_list, container, false);
+        View mParentView = inflater.inflate(R.layout.fragment_inventory_transfer_request_list, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
         setAdapterForMaterialList();

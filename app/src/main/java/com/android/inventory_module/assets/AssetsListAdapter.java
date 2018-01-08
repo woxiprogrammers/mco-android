@@ -24,7 +24,7 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
     private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
     private AssetsListItem assetsListItem;
 
-    public AssetsListAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
+    AssetsListAdapter(@Nullable OrderedRealmCollection<AssetsListItem> data, boolean autoUpdate, boolean updateOnModification) {
         super(data, autoUpdate, updateOnModification);
         Timber.d(String.valueOf(data));
         assetsListItemCollection = data;

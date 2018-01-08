@@ -1,6 +1,5 @@
 package com.android.inventory_module.material;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,13 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponse;
 import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponseData;
-import com.android.utils.FragmentInterface;
-import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -51,10 +50,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -121,15 +117,16 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @BindView(R.id.frameLayout1)
     FrameLayout mFrameLayout1;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
-    private View mParentView;
-    private String strVehicleNumber, strBillAmount, strBillNumber, strQuantity, str, transferType = "OUT", strToDate;
+    private String strVehicleNumber;
+    private String strBillNumber;
+    private String strQuantity;
+    private String str;
+    private String transferType = "OUT";
     private boolean isChecked;
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Realm realm;
-    private DatePickerDialog.OnDateSetListener date;
-    private Calendar myCalendar;
     private JSONArray jsonArray;
     private ArrayList<String> siteNameArray;
     private ArrayAdapter<String> adapter;
@@ -155,7 +152,11 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 Toast.makeText(mContext, "onClick", Toast.LENGTH_SHORT).show();
                 break;*/
             case R.id.button_move:
-                validateEntries();
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    validateEntries();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("InventoryDetailsMoveFragment");
+                }
                 break;
         }
     }
@@ -227,18 +228,14 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
+        View mParentView = inflater.inflate(R.layout.fragment_inventory_details_move, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         initializeViews();
         return mParentView;
     }
 
     private void initializeViews() {
-        myCalendar = Calendar.getInstance();
         mContext = getActivity();
-        Date curDate = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        strToDate = format.format(curDate);
         checkAvailability(inventoryComponentId);
         buttonMove.setOnClickListener(this);
         checkboxMoveInOut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -514,8 +511,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             edittextQuantity.requestFocus();
             edittextQuantity.setError(null);
         }
-        if (!checkboxMoveInOut.isChecked()) {
-        }
         if (isChecked) {
             //Vehicle Number
             strVehicleNumber = editTextVehicleNumber.getText().toString();
@@ -526,7 +521,7 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
                 editTextVehicleNumber.setError(null);
                 editTextVehicleNumber.requestFocus();
             }
-            strBillAmount = editTextBillamount.getText().toString();
+            String strBillAmount = editTextBillamount.getText().toString();
             if (TextUtils.isEmpty(strBillAmount)) {
                 editTextBillamount.setError("Please Enter Bill Amount");
                 return;

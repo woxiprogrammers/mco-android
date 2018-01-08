@@ -13,13 +13,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.utils.FragmentInterface;
 import com.android.inventory_module.InventoryDetails;
 import com.android.inventory_module.MaterialListAdapter;
 import com.android.inventory_module.inventory_model.InventoryResponse;
 import com.android.inventory_module.inventory_model.MaterialListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;

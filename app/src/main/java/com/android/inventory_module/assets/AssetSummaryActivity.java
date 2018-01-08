@@ -61,10 +61,8 @@ public class AssetSummaryActivity extends BaseActivity {
             inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
             strDate = bundleArgs.getString("getDate");
             component_type_slug = bundleArgs.getString("component_type_slug");
-
         }
         if (AppUtils.getInstance().checkNetworkState()) {
-
             requestAssetReadingList();
         }
     }
@@ -150,7 +148,6 @@ public class AssetSummaryActivity extends BaseActivity {
     }
 
     public class AssetsReadingListingAdapter extends RealmRecyclerViewAdapter<AssetReadingsSummaryDataItem, AssetsReadingListingAdapter.MyViewHolder> {
-
         private OrderedRealmCollection<AssetReadingsSummaryDataItem> assetReadingsListDataItemOrderedRealmCollection;
         private AssetReadingsSummaryDataItem assetReadingsListDataItem;
 
@@ -187,7 +184,6 @@ public class AssetSummaryActivity extends BaseActivity {
                 } else {
                     Log.i("@@CHeck", "sharvari1");
                     holder.linearLayoutSetTopUp.setVisibility(View.GONE);
-
                 }
                 ////Top Up Time
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUpTime())) {
@@ -195,7 +191,6 @@ public class AssetSummaryActivity extends BaseActivity {
                     holder.editTextSetTopUpTime.setText(assetReadingsListDataItem.getTopUpTime());
                 } else {
                     holder.linearLayoutSetTopUpTime.setVisibility(View.GONE);
-
                 }
                 ///Ele
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getFuelPerUnit())) {
@@ -203,7 +198,6 @@ public class AssetSummaryActivity extends BaseActivity {
                     holder.editTextSetLtrPerUnit.setText(assetReadingsListDataItem.getFuelPerUnit());
                 } else {
                     holder.linearLayoutSetLtrPerUnit.setVisibility(View.GONE);
-
                 }
             } else if (component_type_slug.equalsIgnoreCase("electricity_dependent")) {
                 holder.linearLayoutSetTopUp.setVisibility(View.GONE);
@@ -217,28 +211,24 @@ public class AssetSummaryActivity extends BaseActivity {
                     holder.editTextSetTopUp.setText(assetReadingsListDataItem.getTopUp());
                 } else {
                     holder.linearLayoutSetTopUp.setVisibility(View.GONE);
-
                 }
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUpTime())) {
                     holder.linearLayoutSetTopUpTime.setVisibility(View.VISIBLE);
                     holder.editTextSetTopUpTime.setText(assetReadingsListDataItem.getTopUpTime());
                 } else {
                     holder.linearLayoutSetTopUpTime.setVisibility(View.GONE);
-
                 }
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getElectricityPerUnit())) {
                     holder.linearLayoutSetElePerUnit.setVisibility(View.VISIBLE);
                     holder.editTextSetElePerUnit.setText(assetReadingsListDataItem.getElectricityPerUnit());
                 } else {
                     holder.linearLayoutSetElePerUnit.setVisibility(View.GONE);
-
                 }
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getFuelPerUnit())) {
                     holder.linearLayoutSetLtrPerUnit.setVisibility(View.VISIBLE);
                     holder.editTextSetLtrPerUnit.setText(assetReadingsListDataItem.getFuelPerUnit());
                 } else {
                     holder.linearLayoutSetLtrPerUnit.setVisibility(View.GONE);
-
                 }
             }
         }
