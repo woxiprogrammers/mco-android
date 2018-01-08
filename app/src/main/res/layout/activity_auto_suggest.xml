@@ -14,7 +14,6 @@
             android:id="@+id/editTextAutoSuggest"
             android:layout_width="match_parent"
             android:background="@null"
-            android:hint="Search Material/Asset"
             android:drawableLeft="@drawable/ic_autosearch_"
             android:layout_height="@dimen/dimen_44dp"/>
     </FrameLayout>
