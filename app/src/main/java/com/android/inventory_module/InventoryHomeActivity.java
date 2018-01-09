@@ -13,9 +13,9 @@ import android.view.MenuItem;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.utils.FragmentInterface;
 import com.android.inventory_module.assets.AssetListFragment;
 import com.android.inventory_module.material.MaterialListFragment;
+import com.android.utils.FragmentInterface;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +28,28 @@ public class InventoryHomeActivity extends BaseActivity {
     MenuItem prevMenuItem;
     private String subModulesItemList;
     private InventoryViewPagerAdapter inventoryViewPagerAdapter;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))) {
+            getMenuInflater().inflate(R.menu.menu_site_move_in, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.action_move_in:
+                Intent intent = new Intent(this, ActivitySiteMoveIn.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,28 +108,6 @@ public class InventoryHomeActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))) {
-            getMenuInflater().inflate(R.menu.menu_site_move_in, menu);
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            case R.id.action_move_in:
-                Intent intent = new Intent(this, ActivitySiteMoveIn.class);
-                startActivity(intent);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {

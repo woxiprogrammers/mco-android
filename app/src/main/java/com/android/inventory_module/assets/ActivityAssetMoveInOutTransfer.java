@@ -111,6 +111,82 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
     private int intComponentId;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.buttonMoveAsset:
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    validateEntries();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("ActivityAssetMoveInOutTransfer");
+                }
+                break;
+        }
+    }
+
+    @OnClick({R.id.textViewCaptureAsset})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textViewCaptureAsset:
+                chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
+                break;
+        }
+    }
+
+    private void chooseAction(int type, Class aClass) {
+        Intent intent = new Intent(mContext, aClass);
+        Params params = new Params();
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setToolbarColor(R.color.colorPrimaryLight);
+        params.setActionButtonColor(R.color.colorAccentDark);
+        params.setButtonTextColor(R.color.colorWhite);
+        intent.putExtra(Constants.KEY_PARAMS, params);
+        startActivityForResult(intent, type);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList));
+                linearLayoutFirstImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
+                File currentImageFile;
+                for (Image currentImage : imagesList) {
+                    if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                        ImageView imageView = new ImageView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                        layoutParams.setMargins(10, 10, 10, 10);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setImageBitmap(myBitmap);
+                        linearLayoutFirstImage.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_asset_move_in_out);
@@ -118,14 +194,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         buttonMove.setOnClickListener(this);
         initializeViews();
         checkAvailability();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void initializeViews() {
@@ -263,6 +331,66 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         });
     }
 
+    private void checkAvailability() {
+        AndroidNetworking.get(AppURL.API_SYSTEM_UNITS)
+                .setPriority(Priority.MEDIUM)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("checkAvailability")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                if (jsonObject.getString("slug").equalsIgnoreCase("nos")) {
+                                    unitId = jsonObject.getInt("id");
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        anError.printStackTrace();
+                    }
+                });
+    }
+
+    private void getSystemSites() {
+        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
+                .setTag("getSystemSites")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArray = response.getJSONArray("data");
+                            siteNameArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
+                            editTextDestSourcename.setAdapter(adapter);
+//                            setProjectNameFromIndex(editTextDestSourcename.getListSelection());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                    }
+                });
+    }
+
     private void setProjectNameFromIndex(String selectedString) {
         int selectedIndex = siteNameArray.indexOf(selectedString);
         try {
@@ -367,19 +495,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
                 });
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.buttonMoveAsset:
-                if (AppUtils.getInstance().checkNetworkState()) {
-                    validateEntries();
-                } else {
-                    AppUtils.getInstance().showOfflineMessage("ActivityAssetMoveInOutTransfer");
-                }
-                break;
-        }
-    }
-
     private void validateEntries() {
         String strSourceName = editTextDestSourcename.getText().toString();
         if (!(assetSourceSpinner.getSelectedItemPosition() == 2)) {
@@ -429,61 +544,6 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         uploadImages_addItemToLocal();
     }
 
-    @OnClick({R.id.textViewCaptureAsset})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textViewCaptureAsset:
-                chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
-                break;
-        }
-    }
-
-    private void chooseAction(int type, Class aClass) {
-        Intent intent = new Intent(mContext, aClass);
-        Params params = new Params();
-        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setToolbarColor(R.color.colorPrimaryLight);
-        params.setActionButtonColor(R.color.colorAccentDark);
-        params.setButtonTextColor(R.color.colorWhite);
-        intent.putExtra(Constants.KEY_PARAMS, params);
-        startActivityForResult(intent, type);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        switch (requestCode) {
-            case Constants.TYPE_MULTI_CAPTURE:
-                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList));
-                linearLayoutFirstImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                File currentImageFile;
-                for (Image currentImage : imagesList) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        linearLayoutFirstImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-        }
-    }
-
     private void uploadImages_addItemToLocal() {
         if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
             File sendImageFile = arrayImageFileList.get(0);
@@ -522,65 +582,5 @@ public class ActivityAssetMoveInOutTransfer extends BaseActivity implements View
         } else {
             requestForMaterial();
         }
-    }
-
-    private void checkAvailability() {
-        AndroidNetworking.get(AppURL.API_SYSTEM_UNITS)
-                .setPriority(Priority.MEDIUM)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("checkAvailability")
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("data");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                if (jsonObject.getString("slug").equalsIgnoreCase("nos")) {
-                                    unitId = jsonObject.getInt("id");
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        anError.printStackTrace();
-                    }
-                });
-    }
-
-    private void getSystemSites() {
-        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
-                .setTag("getSystemSites")
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            jsonArray = response.getJSONArray("data");
-                            siteNameArray = new ArrayList<>();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
-                            }
-                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
-                            editTextDestSourcename.setAdapter(adapter);
-//                            setProjectNameFromIndex(editTextDestSourcename.getListSelection());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
-                    }
-                });
     }
 }

@@ -46,6 +46,7 @@ public class ActivityAssetsReadings extends BaseActivity {
     LinearLayout linearLayoutLtrPerUnit;
     EditText editTextElePerUnit;
     LinearLayout linearLayoutElePerUnit;
+    FrameLayout frameLayoutTypeForAsset;
     private EditText editTextStartReading;
     private EditText editTextStartTime;
     private EditText editTextStopReading;
@@ -59,118 +60,9 @@ public class ActivityAssetsReadings extends BaseActivity {
     private String strStartReading, strStartTime, strStopReading, strStopTime, strTopUp, strTopUpTime, strFuelPerUnit, strLtrPerUnit;
     private Realm realm;
     private String slug;
-    FrameLayout frameLayoutTypeForAsset;
     private Spinner spinnerSelectType;
     private boolean isExceed;
     private float elePerUnit, ltrPerUnit;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_assets_readings);
-        ButterKnife.bind(this);
-        initializeViews();
-        inflateReadingLayout();
-    }
-
-    private void initializeViews() {
-        mContext = ActivityAssetsReadings.this;
-        Intent intent = getIntent();
-        if (intent != null) {
-            setAssetTitle = intent.getStringExtra("asset_name");
-            intComponentId = intent.getIntExtra("componentId", -1);
-        }
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(setAssetTitle);
-        }
-        realm = Realm.getDefaultInstance();
-        AssetsListItem assetsListItem = realm.where(AssetsListItem.class).equalTo("id", intComponentId).findFirst();
-        slug = assetsListItem.getSlug();
-        elePerUnit = assetsListItem.getElectricityPerUnit();
-        ltrPerUnit = assetsListItem.getLitrePerUnit();
-    }
-
-    private void inflateReadingLayout() {
-        View child = getLayoutInflater().inflate(R.layout.item_add_asset_readings, null);
-        frameLayoutTypeForAsset = child.findViewById(R.id.frameLayoutTypeForAsset);
-        editTextStartReading = child.findViewById(R.id.editTextStartReading);
-        editTextStartTime = child.findViewById(R.id.editTextStartTime);
-        spinnerSelectType = child.findViewById(R.id.spinnerSelectType);
-        editTextStopReading = child.findViewById(R.id.editTextStopReading);
-        editTextStopTime = child.findViewById(R.id.editTextStopTime);
-        editTextTopUp = child.findViewById(R.id.editTextTopUp);
-        editTextTopUpTime = child.findViewById(R.id.editTextTopUpTime);
-        editTextLtrPerUnit = child.findViewById(R.id.editTextLtrPerUnit);
-        linearLayoutTopUp = child.findViewById(R.id.linearLayoutTopUp);
-        linearLayoutTopUpTime = child.findViewById(R.id.linearLayoutTopUpTime);
-        linearLayoutLtrPerUnit = child.findViewById(R.id.linearLayoutLtrPerUnit);
-        editTextElePerUnit = child.findViewById(R.id.editTextElePerUnit);
-        linearLayoutElePerUnit = child.findViewById(R.id.linearLayoutElePerUnit);
-        spinnerSelectType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i) {
-                    case 0:
-                        //Fuel
-                        linearLayoutTopUp.setVisibility(View.VISIBLE);
-                        linearLayoutTopUpTime.setVisibility(View.VISIBLE);
-                        linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
-                        linearLayoutElePerUnit.setVisibility(View.GONE);
-                        editTextLtrPerUnit.setText(String.valueOf(ltrPerUnit));
-                        break;
-                    case 1:
-                        linearLayoutTopUp.setVisibility(View.GONE);
-                        linearLayoutTopUpTime.setVisibility(View.GONE);
-                        linearLayoutLtrPerUnit.setVisibility(View.GONE);
-                        linearLayoutElePerUnit.setVisibility(View.VISIBLE);
-                        editTextElePerUnit.setText(String.valueOf(elePerUnit));
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-        llAddReadings.addView(child);
-        if (slug.equalsIgnoreCase("fuel_dependent")) {
-            linearLayoutElePerUnit.setVisibility(View.GONE);
-            linearLayoutTopUp.setVisibility(View.VISIBLE);
-            linearLayoutTopUpTime.setVisibility(View.VISIBLE);
-            linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
-            frameLayoutTypeForAsset.setVisibility(View.GONE);
-            editTextLtrPerUnit.setText(String.valueOf(ltrPerUnit));
-        } else if (slug.equalsIgnoreCase("electricity_dependent")) {
-            linearLayoutElePerUnit.setVisibility(View.VISIBLE);
-            linearLayoutLtrPerUnit.setVisibility(View.GONE);
-            linearLayoutTopUp.setVisibility(View.GONE);
-            linearLayoutTopUpTime.setVisibility(View.GONE);
-            frameLayoutTypeForAsset.setVisibility(View.GONE);
-            editTextElePerUnit.setText(String.valueOf(elePerUnit));
-        } else if (slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
-            frameLayoutTypeForAsset.setVisibility(View.VISIBLE);
-            linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
-        }
-        editTextStartTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setInOutTime(editTextStartTime);
-            }
-        });
-        editTextStopTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setInOutTime(editTextStopTime);
-            }
-        });
-        editTextTopUpTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setInOutTime(editTextTopUpTime);
-            }
-        });
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -331,6 +223,114 @@ public class ActivityAssetsReadings extends BaseActivity {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_assets_readings);
+        ButterKnife.bind(this);
+        initializeViews();
+        inflateReadingLayout();
+    }
+
+    private void initializeViews() {
+        mContext = ActivityAssetsReadings.this;
+        Intent intent = getIntent();
+        if (intent != null) {
+            setAssetTitle = intent.getStringExtra("asset_name");
+            intComponentId = intent.getIntExtra("componentId", -1);
+        }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(setAssetTitle);
+        }
+        realm = Realm.getDefaultInstance();
+        AssetsListItem assetsListItem = realm.where(AssetsListItem.class).equalTo("id", intComponentId).findFirst();
+        slug = assetsListItem.getSlug();
+        elePerUnit = assetsListItem.getElectricityPerUnit();
+        ltrPerUnit = assetsListItem.getLitrePerUnit();
+    }
+
+    private void inflateReadingLayout() {
+        View child = getLayoutInflater().inflate(R.layout.item_add_asset_readings, null);
+        frameLayoutTypeForAsset = child.findViewById(R.id.frameLayoutTypeForAsset);
+        editTextStartReading = child.findViewById(R.id.editTextStartReading);
+        editTextStartTime = child.findViewById(R.id.editTextStartTime);
+        spinnerSelectType = child.findViewById(R.id.spinnerSelectType);
+        editTextStopReading = child.findViewById(R.id.editTextStopReading);
+        editTextStopTime = child.findViewById(R.id.editTextStopTime);
+        editTextTopUp = child.findViewById(R.id.editTextTopUp);
+        editTextTopUpTime = child.findViewById(R.id.editTextTopUpTime);
+        editTextLtrPerUnit = child.findViewById(R.id.editTextLtrPerUnit);
+        linearLayoutTopUp = child.findViewById(R.id.linearLayoutTopUp);
+        linearLayoutTopUpTime = child.findViewById(R.id.linearLayoutTopUpTime);
+        linearLayoutLtrPerUnit = child.findViewById(R.id.linearLayoutLtrPerUnit);
+        editTextElePerUnit = child.findViewById(R.id.editTextElePerUnit);
+        linearLayoutElePerUnit = child.findViewById(R.id.linearLayoutElePerUnit);
+        spinnerSelectType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i) {
+                    case 0:
+                        //Fuel
+                        linearLayoutTopUp.setVisibility(View.VISIBLE);
+                        linearLayoutTopUpTime.setVisibility(View.VISIBLE);
+                        linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
+                        linearLayoutElePerUnit.setVisibility(View.GONE);
+                        editTextLtrPerUnit.setText(String.valueOf(ltrPerUnit));
+                        break;
+                    case 1:
+                        linearLayoutTopUp.setVisibility(View.GONE);
+                        linearLayoutTopUpTime.setVisibility(View.GONE);
+                        linearLayoutLtrPerUnit.setVisibility(View.GONE);
+                        linearLayoutElePerUnit.setVisibility(View.VISIBLE);
+                        editTextElePerUnit.setText(String.valueOf(elePerUnit));
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        llAddReadings.addView(child);
+        if (slug.equalsIgnoreCase("fuel_dependent")) {
+            linearLayoutElePerUnit.setVisibility(View.GONE);
+            linearLayoutTopUp.setVisibility(View.VISIBLE);
+            linearLayoutTopUpTime.setVisibility(View.VISIBLE);
+            linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
+            frameLayoutTypeForAsset.setVisibility(View.GONE);
+            editTextLtrPerUnit.setText(String.valueOf(ltrPerUnit));
+        } else if (slug.equalsIgnoreCase("electricity_dependent")) {
+            linearLayoutElePerUnit.setVisibility(View.VISIBLE);
+            linearLayoutLtrPerUnit.setVisibility(View.GONE);
+            linearLayoutTopUp.setVisibility(View.GONE);
+            linearLayoutTopUpTime.setVisibility(View.GONE);
+            frameLayoutTypeForAsset.setVisibility(View.GONE);
+            editTextElePerUnit.setText(String.valueOf(elePerUnit));
+        } else if (slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
+            frameLayoutTypeForAsset.setVisibility(View.VISIBLE);
+            linearLayoutLtrPerUnit.setVisibility(View.VISIBLE);
+        }
+        editTextStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInOutTime(editTextStartTime);
+            }
+        });
+        editTextStopTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInOutTime(editTextStopTime);
+            }
+        });
+        editTextTopUpTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInOutTime(editTextTopUpTime);
+            }
+        });
     }
 
     private void setInOutTime(final EditText currentEditText) {

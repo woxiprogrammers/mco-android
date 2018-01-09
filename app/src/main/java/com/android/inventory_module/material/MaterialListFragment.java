@@ -95,6 +95,10 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         }
     }
 
+    @Override
+    public void fragmentBecameVisible() {
+    }
+
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
         materialListItems = realm.where(MaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
@@ -120,10 +124,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             public void onLongItemClick(View view, int position) {
             }
         }));
-    }
-
-    @Override
-    public void fragmentBecameVisible() {
     }
 
     private void requestInventoryResponse(int pageId) {

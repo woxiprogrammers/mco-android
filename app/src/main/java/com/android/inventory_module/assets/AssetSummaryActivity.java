@@ -49,6 +49,13 @@ public class AssetSummaryActivity extends BaseActivity {
     private String component_type_slug, strDate;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) onBackPressed();
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recyclerview_lsiting_for_asset_summary);
@@ -66,13 +73,6 @@ public class AssetSummaryActivity extends BaseActivity {
         if (AppUtils.getInstance().checkNetworkState()) {
             requestAssetReadingList();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) onBackPressed();
-        return super.onOptionsItemSelected(item);
     }
 
     private void setAdapter() {

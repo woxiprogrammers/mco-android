@@ -13,27 +13,27 @@ public class AssetReadingsListResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setInventoryComponentId(int inventoryComponentId) {
-        this.inventoryComponentId = inventoryComponentId;
-    }
-
     public int getInventoryComponentId() {
         return inventoryComponentId;
     }
 
-    public void setReadingsListDataItems(RealmList<AssetReadingsListDataItem> readingsListDataItems) {
-        this.readingsListDataItems = readingsListDataItems;
+    public void setInventoryComponentId(int inventoryComponentId) {
+        this.inventoryComponentId = inventoryComponentId;
     }
 
     public RealmList<AssetReadingsListDataItem> getReadingsListDataItems() {
         return readingsListDataItems;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setReadingsListDataItems(RealmList<AssetReadingsListDataItem> readingsListDataItems) {
+        this.readingsListDataItems = readingsListDataItems;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

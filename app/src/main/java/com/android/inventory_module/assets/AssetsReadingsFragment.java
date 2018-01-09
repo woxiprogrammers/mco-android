@@ -92,12 +92,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
     private void initializeViews(View view) {
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
@@ -190,16 +184,22 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     }
 
     @Override
-    public void fragmentBecameVisible() {
-        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
             ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
     }
 
     public void onDatePickerClicked_purchaseRequest() {
@@ -267,6 +267,16 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
             }
         }
 
+        @Override
+        public int getItemCount() {
+            return summaryListItems == null ? 0 : summaryListItems.size();
+        }
+
+    /*@Override
+    public long getItemId(int index) {
+        return summaryListItems.get(index).getPrimaryKey();
+    }*/
+
         private void setTime(String strParse, TextView textView) {
             final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date dateObj;
@@ -279,16 +289,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
                 e.printStackTrace();
             }
             textView.setText(newDateStr);
-        }
-
-    /*@Override
-    public long getItemId(int index) {
-        return summaryListItems.get(index).getPrimaryKey();
-    }*/
-
-        @Override
-        public int getItemCount() {
-            return summaryListItems == null ? 0 : summaryListItems.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {

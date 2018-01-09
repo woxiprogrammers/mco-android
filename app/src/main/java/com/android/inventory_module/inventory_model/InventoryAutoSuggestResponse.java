@@ -5,27 +5,25 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
-public class InventoryAutoSuggestResponse extends RealmObject{
+public class InventoryAutoSuggestResponse extends RealmObject {
+    @SerializedName("message")
+    private String message;
+    @SerializedName("data")
+    private RealmList<AutoSuggestdataItem> autoSuggestdata;
 
-	@SerializedName("message")
-	private String message;
+    public String getMessage() {
+        return message;
+    }
 
-	@SerializedName("data")
-	private RealmList<AutoSuggestdataItem> autoSuggestdata;
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-	public void setMessage(String message){
-		this.message = message;
-	}
+    public RealmList<AutoSuggestdataItem> getAutoSuggestdata() {
+        return autoSuggestdata;
+    }
 
-	public String getMessage(){
-		return message;
-	}
-
-	public void setAutoSuggestdata(RealmList<AutoSuggestdataItem> autoSuggestdata){
-		this.autoSuggestdata = autoSuggestdata;
-	}
-
-	public RealmList<AutoSuggestdataItem> getAutoSuggestdata(){
-		return autoSuggestdata;
-	}
+    public void setAutoSuggestdata(RealmList<AutoSuggestdataItem> autoSuggestdata) {
+        this.autoSuggestdata = autoSuggestdata;
+    }
 }

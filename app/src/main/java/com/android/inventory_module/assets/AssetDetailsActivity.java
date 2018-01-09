@@ -66,6 +66,57 @@ public class AssetDetailsActivity extends BaseActivity {
         }
     };
 
+    public void setDateInAppBar(int passMonth, int passYear) {
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        textViewReadingsAppBarTitle.setText(strMonth + ", " + passYear);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.action_request_maintaianance:
+                startRequestMaintainanceActivity();
+                break;
+            case R.id.action_move_in_out:
+                Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
+                startIntent.putExtra("inventoryCompId", inventoryComponentId);
+                startActivity(startIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void startRequestMaintainanceActivity() {
+        Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
+        startIntent.putExtra("key", strAssetName);
+        startIntent.putExtra("key1", strModelNumber);
+        startIntent.putExtra("ComponentId", inventoryComponentId);
+        startActivity(startIntent);
+    }
+
+    @OnClick(R.id.relative_layout_datePicker_readings)
+    public void onDatePickerPurchaseRequestClicked() {
+        AssetsReadingsFragment assetsReadingsFragment = (AssetsReadingsFragment) viewPagerAssets.getAdapter().instantiateItem(viewPagerAssets, 0);
+        assetsReadingsFragment.onDatePickerClicked_purchaseRequest();
+    }
+
+    @OnClick(R.id.floating_add_button)
+    public void onViewClicked() {
+        Intent intent = new Intent(mContext, ActivityAssetsReadings.class);
+        intent.putExtra("asset_name", strAssetName);
+        intent.putExtra("componentId", inventoryComponentId);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,11 +126,6 @@ public class AssetDetailsActivity extends BaseActivity {
         setAdapter();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.assets_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    }
-
-    public void setDateInAppBar(int passMonth, int passYear) {
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        textViewReadingsAppBarTitle.setText(strMonth + ", " + passYear);
     }
 
     private void initializeViews() {
@@ -127,52 +173,6 @@ public class AssetDetailsActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.options_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            case R.id.action_request_maintaianance:
-                startRequestMaintainanceActivity();
-                break;
-            case R.id.action_move_in_out:
-                Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
-                startIntent.putExtra("inventoryCompId", inventoryComponentId);
-                startActivity(startIntent);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @OnClick(R.id.relative_layout_datePicker_readings)
-    public void onDatePickerPurchaseRequestClicked() {
-        AssetsReadingsFragment assetsReadingsFragment = (AssetsReadingsFragment) viewPagerAssets.getAdapter().instantiateItem(viewPagerAssets, 0);
-        assetsReadingsFragment.onDatePickerClicked_purchaseRequest();
-    }
-
-    private void startRequestMaintainanceActivity() {
-        Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
-        startIntent.putExtra("key", strAssetName);
-        startIntent.putExtra("key1", strModelNumber);
-        startIntent.putExtra("ComponentId", inventoryComponentId);
-        startActivity(startIntent);
-    }
-
-    @OnClick(R.id.floating_add_button)
-    public void onViewClicked() {
-        Intent intent = new Intent(mContext, ActivityAssetsReadings.class);
-        intent.putExtra("asset_name", strAssetName);
-        intent.putExtra("componentId", inventoryComponentId);
-        startActivity(intent);
     }
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {

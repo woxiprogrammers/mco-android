@@ -66,33 +66,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private JSONArray jsonImageNameArray = new JSONArray();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_asset_maintenance);
-        ButterKnife.bind(this);
-        initializeViews();
-    }
-
-    private void initializeViews() {
-        ButterKnife.bind(this);
-        mContext = ActivityRequestMaintanance.this;
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.asset_maintainance);
-        }
-        Intent extras = getIntent();
-        if (extras != null) {
-            strAssetName = extras.getStringExtra("key");
-            strModelNumber = extras.getStringExtra("key1");
-            componentId = extras.getIntExtra("ComponentId", -1);
-        }
-        editTextAssetName.setText(strAssetName);
-        editTextAssetName.setEnabled(false);
-        editTextModelName.setText(strModelNumber);
-        editTextModelName.setEnabled(false);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -100,43 +73,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @OnClick(R.id.button_request)
-    void onClicked(View view) {
-        if (view.getId() == R.id.button_request) {
-            if (AppUtils.getInstance().checkNetworkState()) {
-                validateEntries();
-            } else {
-                AppUtils.getInstance().showOfflineMessage("ActivityRequestMaintanance");
-            }
-        }
-    }
-
-    private void validateEntries() {
-        String strExpiryDate = editTextMaintainanceHours.getText().toString();
-        String strRemark = editTextRemark.getText().toString();
-        //For ExpiryDate
-        if (TextUtils.isEmpty(strExpiryDate)) {
-            editTextMaintainanceHours.setFocusableInTouchMode(true);
-            editTextMaintainanceHours.requestFocus();
-            editTextMaintainanceHours.setError(getString(R.string.please_enter_expiry_eate));
-            return;
-        } else {
-            editTextMaintainanceHours.requestFocus();
-            editTextMaintainanceHours.setError(null);
-        }
-        //For Remark
-        if (TextUtils.isEmpty(strRemark)) {
-            editTextRemark.setFocusableInTouchMode(true);
-            editTextRemark.requestFocus();
-            editTextRemark.setError(getString(R.string.please_enter_remark));
-            return;
-        } else {
-            editTextRemark.requestFocus();
-            editTextRemark.setError(null);
-        }
-        uploadImages_addItemToLocal();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -192,6 +128,70 @@ public class ActivityRequestMaintanance extends BaseActivity {
         params.setButtonTextColor(R.color.colorWhite);
         intent.putExtra(Constants.KEY_PARAMS, params);
         startActivityForResult(intent, type);
+    }
+
+    @OnClick(R.id.button_request)
+    void onClicked(View view) {
+        if (view.getId() == R.id.button_request) {
+            if (AppUtils.getInstance().checkNetworkState()) {
+                validateEntries();
+            } else {
+                AppUtils.getInstance().showOfflineMessage("ActivityRequestMaintanance");
+            }
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_asset_maintenance);
+        ButterKnife.bind(this);
+        initializeViews();
+    }
+
+    private void initializeViews() {
+        ButterKnife.bind(this);
+        mContext = ActivityRequestMaintanance.this;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.asset_maintainance);
+        }
+        Intent extras = getIntent();
+        if (extras != null) {
+            strAssetName = extras.getStringExtra("key");
+            strModelNumber = extras.getStringExtra("key1");
+            componentId = extras.getIntExtra("ComponentId", -1);
+        }
+        editTextAssetName.setText(strAssetName);
+        editTextAssetName.setEnabled(false);
+        editTextModelName.setText(strModelNumber);
+        editTextModelName.setEnabled(false);
+    }
+
+    private void validateEntries() {
+        String strExpiryDate = editTextMaintainanceHours.getText().toString();
+        String strRemark = editTextRemark.getText().toString();
+        //For ExpiryDate
+        if (TextUtils.isEmpty(strExpiryDate)) {
+            editTextMaintainanceHours.setFocusableInTouchMode(true);
+            editTextMaintainanceHours.requestFocus();
+            editTextMaintainanceHours.setError(getString(R.string.please_enter_expiry_eate));
+            return;
+        } else {
+            editTextMaintainanceHours.requestFocus();
+            editTextMaintainanceHours.setError(null);
+        }
+        //For Remark
+        if (TextUtils.isEmpty(strRemark)) {
+            editTextRemark.setFocusableInTouchMode(true);
+            editTextRemark.requestFocus();
+            editTextRemark.setError(getString(R.string.please_enter_remark));
+            return;
+        } else {
+            editTextRemark.requestFocus();
+            editTextRemark.setError(null);
+        }
+        uploadImages_addItemToLocal();
     }
 
     private void requestAssetMaintenance() {

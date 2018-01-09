@@ -77,11 +77,6 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     }
 
     @Override
-    public void fragmentBecameVisible() {
-        requestComponentList();
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -220,6 +215,11 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                                 AppUtils.getInstance().logRealmExecutionError(anError);
                             }
                         });
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+        requestComponentList();
     }
 
     @SuppressWarnings("WeakerAccess")

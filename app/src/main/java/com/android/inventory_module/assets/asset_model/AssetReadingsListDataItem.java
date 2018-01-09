@@ -24,52 +24,52 @@ public class AssetReadingsListDataItem extends RealmObject {
     private int totalTopUp;
     ///////////////////
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getDate() {
         return date;
     }
 
-    public void setFuelUsed(float fuelUsed) {
-        this.fuelUsed = fuelUsed;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public float getFuelUsed() {
         return fuelUsed;
     }
 
-    public void setUnitsUsed(int unitsUsed) {
-        this.unitsUsed = unitsUsed;
+    public void setFuelUsed(float fuelUsed) {
+        this.fuelUsed = fuelUsed;
     }
 
     public int getUnitsUsed() {
         return unitsUsed;
     }
 
-    public void setElectricityUsed(int electricityUsed) {
-        this.electricityUsed = electricityUsed;
+    public void setUnitsUsed(int unitsUsed) {
+        this.unitsUsed = unitsUsed;
     }
 
     public int getElectricityUsed() {
         return electricityUsed;
     }
 
-    public void setTotalWorkingHours(int totalWorkingHours) {
-        this.totalWorkingHours = totalWorkingHours;
+    public void setElectricityUsed(int electricityUsed) {
+        this.electricityUsed = electricityUsed;
     }
 
     public int getTotalWorkingHours() {
         return totalWorkingHours;
     }
 
-    public void setTotalTopUp(int totalTopUp) {
-        this.totalTopUp = totalTopUp;
+    public void setTotalWorkingHours(int totalWorkingHours) {
+        this.totalWorkingHours = totalWorkingHours;
     }
 
     public int getTotalTopUp() {
         return totalTopUp;
+    }
+
+    public void setTotalTopUp(int totalTopUp) {
+        this.totalTopUp = totalTopUp;
     }
 
     public int getInventoryComponentId() {

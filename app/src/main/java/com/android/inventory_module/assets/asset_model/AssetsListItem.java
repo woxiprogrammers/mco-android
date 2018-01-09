@@ -13,8 +13,6 @@ public class AssetsListItem extends RealmObject {
             "in": 0,
             "out": 0,
             "available": 0*/
-
-
     @SerializedName("assets_name")
     private String assetsName;
     @PrimaryKey
@@ -30,22 +28,16 @@ public class AssetsListItem extends RealmObject {
     private String totalDieselConsume;
     @SerializedName("litre_per_unit")
     private float litrePerUnit;
-
     @SerializedName("electricity_per_unit")
     private float electricityPerUnit;
-
     @SerializedName("slug")
     private String slug;
-
     @SerializedName("total_electricity_consumed")
     private float totalElectricityConsumed;
-
     @SerializedName("in")
     private float in;
-
     @SerializedName("out")
     private float out;
-
     @SerializedName("available")
     private float available;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);

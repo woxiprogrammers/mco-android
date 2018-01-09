@@ -8,7 +8,6 @@ import io.realm.RealmObject;
 /**
  * Created by woxi-007 on 9/11/17.
  */
-
 public class AssetReadingsSummaryResponse extends RealmObject {
     @SerializedName("inventory_component_id")
     private int inventoryComponentId;
@@ -17,27 +16,27 @@ public class AssetReadingsSummaryResponse extends RealmObject {
     @SerializedName("message")
     private String message;
 
-    public void setInventoryComponentId(int inventoryComponentId) {
-        this.inventoryComponentId = inventoryComponentId;
-    }
-
     public int getInventoryComponentId() {
         return inventoryComponentId;
     }
 
-    public void setReadingsListDataItems(RealmList<AssetReadingsSummaryDataItem> readingsListDataItems) {
-        this.readingsListDataItems = readingsListDataItems;
+    public void setInventoryComponentId(int inventoryComponentId) {
+        this.inventoryComponentId = inventoryComponentId;
     }
 
     public RealmList<AssetReadingsSummaryDataItem> getReadingsListDataItems() {
         return readingsListDataItems;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setReadingsListDataItems(RealmList<AssetReadingsSummaryDataItem> readingsListDataItems) {
+        this.readingsListDataItems = readingsListDataItems;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
