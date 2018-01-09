@@ -99,7 +99,8 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
+        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
         Timber.d(String.valueOf(assetsListItems));
         AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));

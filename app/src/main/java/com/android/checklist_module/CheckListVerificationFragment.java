@@ -235,6 +235,9 @@ public class CheckListVerificationFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        if (realm != null) {
+            realm.close();
+        }
     }
 
     private void addViewOnlyCaptionsTemplate(ParentCheckPointsItem parentCheckPointsItem) {

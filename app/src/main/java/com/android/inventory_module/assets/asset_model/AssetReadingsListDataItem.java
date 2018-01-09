@@ -8,6 +8,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class AssetReadingsListDataItem extends RealmObject {
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
+    private int inventoryComponentId, passMonth, passYear;
     @PrimaryKey
     @SerializedName("date")
     private String date;
@@ -69,5 +70,29 @@ public class AssetReadingsListDataItem extends RealmObject {
 
     public int getTotalTopUp() {
         return totalTopUp;
+    }
+
+    public int getInventoryComponentId() {
+        return inventoryComponentId;
+    }
+
+    public void setInventoryComponentId(int inventoryComponentId) {
+        this.inventoryComponentId = inventoryComponentId;
+    }
+
+    public int getPassMonth() {
+        return passMonth;
+    }
+
+    public void setPassMonth(int passMonth) {
+        this.passMonth = passMonth;
+    }
+
+    public int getPassYear() {
+        return passYear;
+    }
+
+    public void setPassYear(int passYear) {
+        this.passYear = passYear;
     }
 }

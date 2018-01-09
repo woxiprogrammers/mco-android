@@ -57,6 +57,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     private int inventoryComponentId;
     private String component_type_slug;
     private int passYear, passMonth;
+    private RealmResults<AssetReadingsListDataItem> assetReadingsListDataItems;
 
     public AssetsReadingsFragment() {
         // Required empty public constructor
@@ -85,7 +86,9 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         }
         initializeViews(view);
         setUpAssetListAdapter();
-        functionForGettingData();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestAssetSummaryList();
+        }
         return view;
     }
 
@@ -102,7 +105,11 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetReadingsListDataItem> assetReadingsListDataItems = realm.where(AssetReadingsListDataItem.class).findAllAsync();
+        assetReadingsListDataItems = realm.where(AssetReadingsListDataItem.class)
+                .equalTo("inventoryComponentId", inventoryComponentId)
+                .equalTo("passMonth", passMonth)
+                .equalTo("passYear", passYear)
+                .findAllAsync();
         AssetReadingsAdapter assetReadingAdapter = new AssetReadingsAdapter(assetReadingsListDataItems, true, true, component_type_slug);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
@@ -126,24 +133,15 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
                 }));
     }
 
-    private void functionForGettingData() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            //Get data from Server
-            requestAssetSummaryList();
-        }
-    }
-
     private void requestAssetSummaryList() {
         JSONObject params = new JSONObject();
         try {
             params.put("inventory_component_id", inventoryComponentId);
-//            params.put("date", 3);
             params.put("month", passMonth);
             params.put("year", passYear);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Timber.d(AppURL.API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL + AppUtils.getInstance().getCurrentToken());
         AndroidNetworking.post(AppURL.API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -158,6 +156,12 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    for (AssetReadingsListDataItem assetReadingsItem :
+                                            response.getReadingsListDataItems()) {
+                                        assetReadingsItem.setInventoryComponentId(inventoryComponentId);
+                                        assetReadingsItem.setPassMonth(passMonth);
+                                        assetReadingsItem.setPassYear(passYear);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -215,6 +219,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         passYear = year;
         passMonth = month;
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        setUpAssetListAdapter();
         requestAssetSummaryList();
     }
 
@@ -319,6 +324,3 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         }
     }
 }
-
-
-

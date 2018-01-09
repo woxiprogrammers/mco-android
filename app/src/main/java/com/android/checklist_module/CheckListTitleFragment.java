@@ -99,7 +99,7 @@ public class CheckListTitleFragment extends Fragment {
     private int projectSiteChecklistId;
     private RealmResults<CheckPointsItem> checkPointsItemRealmResults;
     private RealmResults<ParentCheckPointsItem> parentCheckPointsItemRealmResults;
-    private String isFromState, subModulesItemList;
+    private String isFromState;
     private boolean isUsersAvailable;
     private RealmList<UsersItem> usersItemRealmList;
     private CheckBoxGroup<String> checkBoxGroup;
@@ -107,7 +107,7 @@ public class CheckListTitleFragment extends Fragment {
     private int parentProjectSiteUserChecklistAssignmentId;
     private boolean isViewOnly;
     private boolean isUserViewOnly;
-    private int assignedTo;
+    private String subModuleTag;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -136,13 +136,13 @@ public class CheckListTitleFragment extends Fragment {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
             projectSiteChecklistId = bundleArgs.getInt("projectSiteChecklistId");
             isUserViewOnly = bundleArgs.getBoolean("isUserViewOnly");
-            subModulesItemList = bundleArgs.getString("subModulesItemList");
+            String subModulesItemList = bundleArgs.getString("subModulesItemList");
             isFromState = bundleArgs.getString("isFromState");
-            assignedTo = bundleArgs.getInt("assignedTo");
+            int assignedTo = bundleArgs.getInt("assignedTo");
 ///////////////
             SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
             for (SubModulesItem subModulesItem : subModulesItems) {
-                String subModuleTag = subModulesItem.getSubModuleTag();
+                subModuleTag = subModulesItem.getSubModuleTag();
                 if (subModuleTag.contains("recheck")) {
                     mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
                     mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
@@ -164,7 +164,11 @@ public class CheckListTitleFragment extends Fragment {
                 } else if (isFromState.equalsIgnoreCase("progress")) {
                     mLinearLayoutReassignTo.setVisibility(View.GONE);
                 } else if (isFromState.equalsIgnoreCase("review")) {
-                    mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
+                    if (subModuleTag.contains("recheck")) {
+                        mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
+                    } else {
+                        mLinearLayoutReassignTo.setVisibility(View.GONE);
+                    }
                     mLinearLayoutReassignTo_innerLayout.setVisibility(View.GONE);
                     mCheckboxIsReassignTo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
@@ -537,11 +541,18 @@ public class CheckListTitleFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        if (realm != null) {
+            realm.close();
+        }
     }
 
     @OnClick(R.id.btn_checkList_checkpointSubmit)
     public void onCheckpointSubmitClicked() {
-        requestToChangeChecklistStatus(true);
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestToChangeChecklistStatus(true);
+        } else {
+            AppUtils.getInstance().showOfflineMessage("CheckListTitleFragment");
+        }
     }
 
     public void requestToChangeChecklistStatus(final boolean isExitScreen) {
