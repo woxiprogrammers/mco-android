@@ -523,7 +523,7 @@ public class PeticashFormActivity extends BaseActivity {
                     editTextSalaryAmount.setText(String.valueOf(floatAmount));
                     payableAmountForSalary = floatAmount - intAdvanceAmount;//intadvanceampunt
 
-                    if (payableAmountForSalary < 0) {
+                    /*if (payableAmountForSalary < 0) {
                         edittextPayableAmountSalary.setText(String.valueOf(0));
                     } else {
                         edittextPayableAmountSalary.setText(String.valueOf(payableAmountForSalary));
@@ -537,7 +537,7 @@ public class PeticashFormActivity extends BaseActivity {
                             textViewDenyTransaction.setVisibility(View.GONE);
                             buttonSalarySubmit.setVisibility(View.VISIBLE);
                         }
-                    }
+                    }*/
                 } else {
                     editTextSalaryAmount.setText("");
                     edittextPayableAmountSalary.setText("");
@@ -619,7 +619,6 @@ public class PeticashFormActivity extends BaseActivity {
         if (bundleExtras != null) {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
-            approvedSalaryAmount = bundleExtras.getString("approvedSalaryAmount");
             employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
@@ -990,16 +989,31 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void requestForViewPament() {
+        /*employee_id => 3
+        per_day_wages => 500
+        working_days =>25
+        advance_after_last_salary =>1000
+        pt =>5
+        pf =>5
+        esic=>5
+        tds => 5*/
         JSONObject params = new JSONObject();
         try {
-            params.put("employee_id", primaryKey);
-            params.put("advance_amount",intAdvanceAmount);//ToDo Ask for amount
-            params.put("peticash_transaction_id", peticashTransactionId);
-            if (!editTextRefNumber.getText().toString().isEmpty()) {
-                params.put("reference_number", editTextRefNumber.getText().toString());
-
+            if(spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Salary")){
+                params.put("type","salary");
+                params.put("employee_id", primaryKey);
+                params.put("per_day_wages",getPerWeges);
+                params.put("working_days",edittextDay.getText().toString());
+                params.put("advance_after_last_salary",intAdvanceAmount);//ToDo Ask for amount
+                params.put("peticash_transaction_id", peticashTransactionId);
+                params.put("pt",editTextPT.getText().toString());
+                params.put("pf",editTextPF.getText().toString());
+                params.put("esic",editTextESIC.getText().toString());
+                params.put("tds",editTextTDS.getText().toString());
+            }else if(spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Advance")){
+                params.put("type","advance");
             }
-            params.put("images", jsonImageNameArray);
+            params.put("project_site_id",project_site_id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1015,6 +1029,9 @@ public class PeticashFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            JSONObject jsonObject=response.getJSONObject("data");
+                            String amount=jsonObject.getString("payable_amount");
+                            edittextPayableAmountSalary.setText(amount);
                             edittextDay.setEnabled(false);
                             editTextSalaryAmount.setEnabled(false);
                             editTextPT.setEnabled(false);
@@ -1194,43 +1211,6 @@ public class PeticashFormActivity extends BaseActivity {
         editTextUpdateDate.setError(null);
     }
 
-    private void setInOutDate(final EditText editext_updateDate) {
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText(editext_updateDate);
-            }
-        };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
-    }
-
-    private void setInOutTime(final EditText currentEditText) {
-        final Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = mcurrentTime.get(Calendar.MINUTE);
-        final int seconds = mcurrentTime.get(Calendar.SECOND);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.SECOND, seconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
-
     private void setEnabledFalse() {
         spinnerCategoryArray.setEnabled(false);
         spinnerMaterialOrAsset.setEnabled(false);
@@ -1291,6 +1271,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSiteName.setError("Please enter site name");
             return;
         }
+        requestForViewPament();
 
     }
 

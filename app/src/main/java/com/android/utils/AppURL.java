@@ -81,5 +81,5 @@ public class AppURL {
     public static final String API_CHANGE_STATUS_INVENTORY_APPROVE=BASE_URL + "inventory/change-status?token=";
     public static final String API_INVENTORY_COMPONENT_AUTO_SUGGEST=BASE_URL+ "inventory/component/auto-suggest?token=";
     public static final String API_MATERIAL_REQUEST_HISTORY = BASE_URL + "purchase/get-history?token=";
-    public static final String API_SALARY_VIEW_PAYMENT =BASE_URL + "" ;
+    public static final String API_SALARY_VIEW_PAYMENT =BASE_URL + "peticash/employee-salary/calulate-payable-amount?token=" ;
 }

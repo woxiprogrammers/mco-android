@@ -244,7 +244,6 @@
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789."
-                        android:enabled="false"
                         android:inputType="number"
                         android:textColor="@color/black"/>
                 </LinearLayout>
@@ -300,7 +299,6 @@
                         android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789."
-                        android:enabled="false"
                         android:inputType="number"
                         android:textColor="@color/black"/>
                 </LinearLayout>
