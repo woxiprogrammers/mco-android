@@ -173,14 +173,19 @@ public class CheckListTitleFragment extends Fragment {
                     mCheckboxIsReassignTo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            if (isChecked) {
-                                mLinearLayoutReassignTo_innerLayout.setVisibility(View.VISIBLE);
-                                rvChecklistTitle.setVisibility(View.GONE);
-                                getAndSet_reassignCheckpointsList();
-                                getUsersWithChecklistAssignAcl();
+                            if (AppUtils.getInstance().checkNetworkState()) {
+                                if (isChecked) {
+                                    mLinearLayoutReassignTo_innerLayout.setVisibility(View.VISIBLE);
+                                    rvChecklistTitle.setVisibility(View.GONE);
+                                    getAndSet_reassignCheckpointsList();
+                                    getUsersWithChecklistAssignAcl();
+                                } else {
+                                    rvChecklistTitle.setVisibility(View.VISIBLE);
+                                    mLinearLayoutReassignTo_innerLayout.setVisibility(View.GONE);
+                                }
                             } else {
-                                rvChecklistTitle.setVisibility(View.VISIBLE);
-                                mLinearLayoutReassignTo_innerLayout.setVisibility(View.GONE);
+                                mCheckboxIsReassignTo.setChecked(false);
+                                AppUtils.getInstance().showOfflineMessage("CheckListTitleFragment");
                             }
                         }
                     });
@@ -197,14 +202,21 @@ public class CheckListTitleFragment extends Fragment {
         mCheckboxShowParents.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    mFrameLayoutSpinnerLayout.setVisibility(View.VISIBLE);
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    if (isChecked) {
+                        mFrameLayoutSpinnerLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        mFrameLayoutSpinnerLayout.setVisibility(View.INVISIBLE);
+                    }
                 } else {
-                    mFrameLayoutSpinnerLayout.setVisibility(View.INVISIBLE);
+                    mCheckboxShowParents.setChecked(false);
+                    AppUtils.getInstance().showOfflineMessage("CheckListTitleFragment");
                 }
             }
         });
         mLinearLayoutParentsLayout.setVisibility(View.GONE);
+        setUpParentsSpinnerAdapter();
+        setUpCheckpointsAdapter();
         requestToGetCheckpoints();
         return view;
     }
@@ -432,8 +444,6 @@ public class CheckListTitleFragment extends Fragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    realm.delete(CheckPointsItem.class);
-//                                    realm.delete(ProjectSiteUserCheckpointImagesItem.class);
                                     realm.delete(ParentChecklistIdItem.class);
                                     for (CheckPointsItem checkPointsItem :
                                             response.getCheckPointsdata().getCheckPoints()) {
@@ -450,8 +460,6 @@ public class CheckListTitleFragment extends Fragment {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    setUpParentsSpinnerAdapter();
-                                    setUpCheckpointsAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -489,70 +497,70 @@ public class CheckListTitleFragment extends Fragment {
                 .build()
                 .getAsObject(ParentCheckPointsResponse.class,
                         new ParsedRequestListener<ParentCheckPointsResponse>() {
-                    @Override
-                    public void onResponse(final ParentCheckPointsResponse response) {
-                        try {
-                            Timber.d(String.valueOf(response.getCheckPointsdata().getCheckPoints().size()));
-                        } catch (Exception e) {
-                            Timber.e(e.getMessage());
-                        }
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    for (ParentCheckPointsItem parentsCheckPointsItem :
-                                            response.getCheckPointsdata().getCheckPoints()) {
-                                        parentsCheckPointsItem.setIsFromState(isFromState);
-                                    }
-                                    realm.insertOrUpdate(response);
+                            @Override
+                            public void onResponse(final ParentCheckPointsResponse response) {
+                                try {
+                                    Timber.d(String.valueOf(response.getCheckPointsdata().getCheckPoints().size()));
+                                } catch (Exception e) {
+                                    Timber.e(e.getMessage());
                                 }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class)
-                                            .equalTo("parentProjectSiteUserChecklistAssignmentId", parentProjectSiteUserChecklistAssignmentId)
-                                            .equalTo("isFromState", isFromState).findAll();
-                                    ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
-                                    rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
-                                    rvChecklistTitle.setHasFixedSize(true);
-                                    rvChecklistTitle.setAdapter(parentCheckListTitleAdapter);
-                                    if (recyclerCurrentItemClickListener != null) {
-                                        rvChecklistTitle.removeOnItemTouchListener(recyclerCurrentItemClickListener);
-                                    }
-                                    recyclerParentItemClickListener = new RecyclerItemClickListener(mContext, rvChecklistTitle,
-                                            new RecyclerItemClickListener.OnItemClickListener() {
-                                                @Override
-                                                public void onItemClick(View view, final int position) {
-                                                    Timber.d("Parent Enabled: isViewOnly " + isViewOnly);
-                                                    Timber.d("Parent projectSiteUserCheckpointId: " + parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
-                                                    ((CheckListActionActivity) mContext).getCheckListVerificationFragment(parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
-                                                }
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            for (ParentCheckPointsItem parentsCheckPointsItem :
+                                                    response.getCheckPointsdata().getCheckPoints()) {
+                                                parentsCheckPointsItem.setIsFromState(isFromState);
+                                            }
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
+                                            parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class)
+                                                    .equalTo("parentProjectSiteUserChecklistAssignmentId", parentProjectSiteUserChecklistAssignmentId)
+                                                    .equalTo("isFromState", isFromState).findAll();
+                                            ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
+                                            rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
+                                            rvChecklistTitle.setHasFixedSize(true);
+                                            rvChecklistTitle.setAdapter(parentCheckListTitleAdapter);
+                                            if (recyclerCurrentItemClickListener != null) {
+                                                rvChecklistTitle.removeOnItemTouchListener(recyclerCurrentItemClickListener);
+                                            }
+                                            recyclerParentItemClickListener = new RecyclerItemClickListener(mContext, rvChecklistTitle,
+                                                    new RecyclerItemClickListener.OnItemClickListener() {
+                                                        @Override
+                                                        public void onItemClick(View view, final int position) {
+                                                            Timber.d("Parent Enabled: isViewOnly " + isViewOnly);
+                                                            Timber.d("Parent projectSiteUserCheckpointId: " + parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
+                                                            ((CheckListActionActivity) mContext).getCheckListVerificationFragment(parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
+                                                        }
 
-                                                @Override
-                                                public void onLongItemClick(View view, int position) {
-                                                }
-                                            });
-                                    rvChecklistTitle.addOnItemTouchListener(recyclerParentItemClickListener);
+                                                        @Override
+                                                        public void onLongItemClick(View view, int position) {
+                                                        }
+                                                    });
+                                            rvChecklistTitle.addOnItemTouchListener(recyclerParentItemClickListener);
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
                                 }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getParentsCheckpointsList");
-                    }
-                });
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "getParentsCheckpointsList");
+                            }
+                        });
     }
 
     public void requestToChangeChecklistStatus(final boolean isExitScreen) {

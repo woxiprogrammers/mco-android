@@ -398,7 +398,11 @@ public class CheckListVerificationFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.buttonSubmitChecklist:
-                submitCheckpointDetails();
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    submitCheckpointDetails();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("CheckListVerificationFragment");
+                }
                 break;
         }
     }
