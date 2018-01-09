@@ -40,6 +40,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
+                    android:text="GRN20180115"
                     android:background="@android:drawable/editbox_background_normal"/>
 
                 <TextView
@@ -60,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             android:padding="@dimen/dimen_8dp">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,6 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
+                    android:textColor="@color/black"
                     android:background="@android:drawable/editbox_background_normal"
                     android:focusable="false"/>
             </LinearLayout>
@@ -125,6 +128,7 @@
                         android:id="@+id/edtQuantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="1234567890."
                         android:inputType="number"/>
@@ -146,6 +150,8 @@
                         android:id="@+id/editTextUnit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:textColor="@color/black"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
 

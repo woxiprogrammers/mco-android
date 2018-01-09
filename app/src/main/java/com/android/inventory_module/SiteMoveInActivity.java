@@ -1,5 +1,6 @@
 package com.android.inventory_module;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -78,7 +79,9 @@ public class SiteMoveInActivity extends BaseActivity {
     private JSONArray jsonArray;
     private JSONArray jsonImageNameArray = new JSONArray();
     private boolean isMaterial;
-    private int unitId,projectSiteIdFrom;
+    private int unitId,projectSiteIdFrom,inventoryComponentId;
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +93,7 @@ public class SiteMoveInActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = SiteMoveInActivity.this;
+        progressDialog=new ProgressDialog(mContext);
     }
 
     private void uploadImages_addItemToLocal() {
@@ -134,6 +138,23 @@ public class SiteMoveInActivity extends BaseActivity {
 
     private void requestToMoveIn() {
 
+        showProgressDialog();
+        JSONObject params=new JSONObject();
+        try {
+            params.put("project_site_id_from",projectSiteIdFrom);
+            params.put("project_site_id_to",AppUtils.getInstance().getCurrentSiteId());
+            params.put("name","site");
+            params.put("type","IN");
+            params.put("inventory_component_id",inventoryComponentId);
+            params.put("component_name",editTextSiteName.getText().toString());
+            params.put("is_material",isMaterial);
+            params.put("quantity",edtQuantity.getText().toString());
+            params.put("unit_id",unitId);
+            params.put("remark",edtSiteTransferRemark.getText().toString());
+            params.put("images",jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
                 .setTag("materialCreateTransfer")
 //                .addJSONObjectBody(params)
@@ -145,6 +166,7 @@ public class SiteMoveInActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -172,6 +194,15 @@ public class SiteMoveInActivity extends BaseActivity {
                 chooseAction();
                 break;
             case R.id.btnSubmit:
+                if(TextUtils.isEmpty(editTextName.getText().toString())){
+                    editTextName.setError("Please enter name");
+                    return;
+                }
+                if(TextUtils.isEmpty(edtQuantity.getText().toString())){
+                    edtQuantity.setError("Please enter quantity");
+                    return;
+                }
+                uploadImages_addItemToLocal();
                 break;
         }
     }
@@ -223,6 +254,7 @@ public class SiteMoveInActivity extends BaseActivity {
     }
 
     private void getDetails(){
+        showProgressDialog();
         JSONObject params=new JSONObject();
         try {
             params.put("project_site_id_to",AppUtils.getInstance().getCurrentSiteId());
@@ -240,6 +272,7 @@ public class SiteMoveInActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            progressDialog.dismiss();
                             JSONObject jsonObject=response.getJSONObject("data");
                             linearLayoutDetails.setVisibility(View.VISIBLE);
                             isMaterial=jsonObject.getBoolean("is_material");
@@ -248,10 +281,14 @@ public class SiteMoveInActivity extends BaseActivity {
                             }else {
                                 textviewName.setText("Asset Name");
                             }
+                            editTextEnteredGrn.setEnabled(false);
                             unitId=jsonObject.getInt("unit_id");
                             projectSiteIdFrom=jsonObject.getInt("project_site_id_from");
+                            inventoryComponentId=jsonObject.getInt("inventory_component_id");
                             String projectSiteNameFrom=jsonObject.getString("project_site_name_from");
                             editTextSiteName.setText(projectSiteNameFrom);
+                            String material_name=jsonObject.getString("material_name");
+                            editTextName.setText(material_name);
                             String quantity=jsonObject.getString("quantity");
                             edtQuantity.setText(quantity);
                             String unitName=jsonObject.getString("unit_name");
@@ -266,5 +303,14 @@ public class SiteMoveInActivity extends BaseActivity {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
+    }
+
+    private void showProgressDialog(){
+        progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage("Loading....");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show(); // Display Progress Dialog
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 }

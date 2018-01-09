@@ -103,7 +103,7 @@ public class InventoryHomeActivity extends BaseActivity {
                 onBackPressed();
                 break;
             case R.id.action_move_in:
-                Intent intent = new Intent(this, ActivitySiteMoveIn.class);
+                Intent intent = new Intent(this, SiteMoveInActivity.class);
                 startActivity(intent);
                 break;
         }
