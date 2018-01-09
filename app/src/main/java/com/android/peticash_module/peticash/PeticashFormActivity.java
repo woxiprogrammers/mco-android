@@ -311,13 +311,23 @@ public class PeticashFormActivity extends BaseActivity {
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (!TextUtils.isEmpty(charSequence.toString())) {
                 if (Float.parseFloat(charSequence.toString()) > Float.parseFloat(approved_amount)) {
-                    textViewAdvAmountCheck.setVisibility(View.VISIBLE);
                     buttonSalarySubmit.setVisibility(View.GONE);
-                    textViewAdvAmountCheck.setText("Amount should be less than " + approved_amount);
+                    if(isSalary){
+                        textViewDenyTransaction.setVisibility(View.VISIBLE);
+                        textViewDenyTransaction.setText("Amount should be less than " + approved_amount);
+                    }else {
+                        textViewAdvAmountCheck.setVisibility(View.VISIBLE);
+                        textViewAdvAmountCheck.setText("Amount should be less than " + approved_amount);
+                    }
                 } else {
-                    textViewAdvAmountCheck.setVisibility(View.GONE);
                     buttonSalarySubmit.setVisibility(View.VISIBLE);
-                    textViewAdvAmountCheck.setText("");
+                    if(isSalary){
+                        textViewDenyTransaction.setText("");
+                        textViewDenyTransaction.setVisibility(View.GONE);
+                    }else {
+                        textViewAdvAmountCheck.setText("");
+                        textViewAdvAmountCheck.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -824,10 +834,32 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("project_site_id", project_site_id);
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
                 params.put("days", edittextDay.getText().toString());
-                params.put("pf",editTextPF.getText().toString());
-                params.put("pt",editTextPT.getText().toString());
-                params.put("esic",editTextESIC.getText().toString());
-                params.put("tds",editTextTDS.getText().toString());
+                if(TextUtils.isEmpty(editTextPT.getText().toString())){
+
+                    params.put("pt",0);
+                }else {
+                    params.put("pt",editTextPT.getText().toString());
+                }
+                if(TextUtils.isEmpty(editTextPF.getText().toString())){
+
+                    params.put("pf",0);
+                }else {
+                    params.put("pf",editTextPF.getText().toString());
+                }
+                if(TextUtils.isEmpty(editTextESIC.getText().toString())){
+                    params.put("esic",0);
+
+                }else {
+                    params.put("esic",editTextESIC.getText().toString());
+
+                }
+                if(TextUtils.isEmpty(editTextTDS.getText().toString())){
+                    params.put("tds",0);
+
+                }else {
+                    params.put("tds",editTextTDS.getText().toString());
+
+                }
 
                 if (payableAmountForSalary < 0) {
                     params.put("payable_amount", 0);
