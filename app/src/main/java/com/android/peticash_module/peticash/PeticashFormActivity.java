@@ -819,12 +819,16 @@ public class PeticashFormActivity extends BaseActivity {
         try {
             params.put("employee_id", primaryKey);
             params.put("type", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
-            //ToDo Sharvari date
             params.put("date", currentDate);
             params.put("amount", editTextSalaryAmount.getText().toString());
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("project_site_id", project_site_id);
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
                 params.put("days", edittextDay.getText().toString());
+                params.put("pf",editTextPF.getText().toString());
+                params.put("pt",editTextPT.getText().toString());
+                params.put("esic",editTextESIC.getText().toString());
+                params.put("tds",editTextTDS.getText().toString());
+
                 if (payableAmountForSalary < 0) {
                     params.put("payable_amount", 0);
                 } else {
@@ -1013,11 +1017,32 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("per_day_wages",getPerWeges);
                 params.put("working_days",edittextDay.getText().toString());
                 params.put("advance_after_last_salary",intAdvanceAmount);//ToDo Ask for amount
-                params.put("peticash_transaction_id", peticashTransactionId);
-                params.put("pt",editTextPT.getText().toString());
-                params.put("pf",editTextPF.getText().toString());
-                params.put("esic",editTextESIC.getText().toString());
-                params.put("tds",editTextTDS.getText().toString());
+                if(TextUtils.isEmpty(editTextPT.getText().toString())){
+
+                    params.put("pt",0);
+                }else {
+                    params.put("pt",editTextPT.getText().toString());
+                }
+                if(TextUtils.isEmpty(editTextPF.getText().toString())){
+
+                    params.put("pf",0);
+                }else {
+                    params.put("pf",editTextPF.getText().toString());
+                }
+                if(TextUtils.isEmpty(editTextESIC.getText().toString())){
+                    params.put("esic",0);
+
+                }else {
+                    params.put("esic",editTextESIC.getText().toString());
+
+                }
+                if(TextUtils.isEmpty(editTextTDS.getText().toString())){
+                    params.put("tds",0);
+
+                }else {
+                    params.put("tds",editTextTDS.getText().toString());
+
+                }
             }else {
                 params.put("type","advance");
             }
@@ -1036,24 +1061,23 @@ public class PeticashFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONObject jsonObject=response.getJSONObject("data");
-                            String amount=jsonObject.getString("payable_amount");
                             approved_amount=jsonObject.getString("approved_amount");
                             Log.i("#@approved_amount",approved_amount);
-                            Log.i("#@amount",amount);
                             editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
-                            edittextPayableAmountSalary.setText(amount);
-                            editTextSalaryAmount.setEnabled(false);
                             editTextSiteName.setEnabled(false);
                             editTextEmpIdName.setEnabled(false);
                             spinnerCategoryArray.setEnabled(false);
                             if(isSalary) {
                                 Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                                String amount=jsonObject.getString("payable_amount");
+                                edittextPayableAmountSalary.setText(amount);
                                 progressDialog.dismiss();
                                 editTextPT.setEnabled(false);
                                 editTextPF.setEnabled(false);
                                 editTextESIC.setEnabled(false);
                                 editTextTDS.setEnabled(false);
                                 edittextDay.setEnabled(false);
+                                editTextSalaryAmount.setEnabled(false);
                                 linearPayableAmount.setVisibility(View.VISIBLE);
                                 textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
                                 editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
