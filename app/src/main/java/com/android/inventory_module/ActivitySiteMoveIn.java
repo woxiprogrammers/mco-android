@@ -170,10 +170,14 @@ public class ActivitySiteMoveIn extends BaseActivity {
                     Toast.makeText(mContext, "Please select either Material/Asset", Toast.LENGTH_LONG).show();
                     return;
                 } else {
-                    Intent intent = new Intent(ActivitySiteMoveIn.this, AutoSuggestInventoryComponent.class);
-                    intent.putExtra("isMaterial", isMaterial);
-                    intent.putExtra("siteId", project_site_id);
-                    startActivityForResult(intent, AppConstants.REQUEST_CODE_AUTO_SUGGEST_INVENTORY);
+                    if (AppUtils.getInstance().checkNetworkState()) {
+                        Intent intent = new Intent(ActivitySiteMoveIn.this, AutoSuggestInventoryComponent.class);
+                        intent.putExtra("isMaterial", isMaterial);
+                        intent.putExtra("siteId", project_site_id);
+                        startActivityForResult(intent, AppConstants.REQUEST_CODE_AUTO_SUGGEST_INVENTORY);
+                    } else {
+                        AppUtils.getInstance().showOfflineMessage("ActivitySiteMoveIn");
+                    }
                 }
                 break;
             case R.id.textView_capture:

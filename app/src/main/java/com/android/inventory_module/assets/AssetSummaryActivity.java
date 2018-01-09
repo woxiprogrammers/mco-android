@@ -62,6 +62,7 @@ public class AssetSummaryActivity extends BaseActivity {
             strDate = bundleArgs.getString("getDate");
             component_type_slug = bundleArgs.getString("component_type_slug");
         }
+        setAdapter();
         if (AppUtils.getInstance().checkNetworkState()) {
             requestAssetReadingList();
         }
@@ -76,13 +77,16 @@ public class AssetSummaryActivity extends BaseActivity {
 
     private void setAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetReadingsSummaryDataItem> assetReadingsListDataItems = realm.where(AssetReadingsSummaryDataItem.class).findAll();
+        RealmResults<AssetReadingsSummaryDataItem> assetReadingsListDataItems;
+        assetReadingsListDataItems = realm.where(AssetReadingsSummaryDataItem.class)
+                .equalTo("inventoryComponentId", inventoryComponentId)
+                .equalTo("strDate", strDate)
+                .findAllAsync();
         AssetsReadingListingAdapter assetReadingAdapter = new AssetsReadingListingAdapter(assetReadingsListDataItems, true, true, component_type_slug);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
         rvMaterialList.setAdapter(assetReadingAdapter);
-        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                rvMaterialList,
+        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvMaterialList,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
@@ -99,12 +103,9 @@ public class AssetSummaryActivity extends BaseActivity {
         try {
             params.put("inventory_component_id", inventoryComponentId);
             params.put("date", strDate);
-//            params.put("month", 11);
-//            params.put("year", 2017);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Timber.d(AppURL.API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL + AppUtils.getInstance().getCurrentToken());
         AndroidNetworking.post(AppURL.API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -119,13 +120,17 @@ public class AssetSummaryActivity extends BaseActivity {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    for (AssetReadingsSummaryDataItem assetReadingsSummaryDataItem :
+                                            response.getReadingsListDataItems()) {
+                                        assetReadingsSummaryDataItem.setStrDate(strDate);
+                                        assetReadingsSummaryDataItem.setInventoryComponentId(inventoryComponentId);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d(String.valueOf(response));
-                                    setAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

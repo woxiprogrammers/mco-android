@@ -9,12 +9,12 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Sharvari on 9/11/17.
  */
-
 public class AssetReadingsSummaryDataItem extends RealmObject {
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
+    private int inventoryComponentId;
+    private String strDate;
     @SerializedName("date")
     private String date;
-    ///////////////////
     @SerializedName("start_reading")
     private String startReading;
     @SerializedName("start_time")
@@ -114,5 +114,21 @@ public class AssetReadingsSummaryDataItem extends RealmObject {
 
     public String getDate() {
         return date;
+    }
+
+    public int getInventoryComponentId() {
+        return inventoryComponentId;
+    }
+
+    public void setInventoryComponentId(int inventoryComponentId) {
+        this.inventoryComponentId = inventoryComponentId;
+    }
+
+    public String getStrDate() {
+        return strDate;
+    }
+
+    public void setStrDate(String strDate) {
+        this.strDate = strDate;
     }
 }
