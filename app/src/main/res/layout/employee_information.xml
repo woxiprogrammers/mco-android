@@ -356,6 +356,8 @@
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:textColor="@color/black"/>
+
+
                 <TextView
                     android:id="@+id/textViewDenyTransaction"
                     android:layout_width="match_parent"
