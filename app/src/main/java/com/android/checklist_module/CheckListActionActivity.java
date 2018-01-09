@@ -15,23 +15,7 @@ import timber.log.Timber;
 public class CheckListActionActivity extends BaseActivity {
     @BindView(R.id.frameLayoutChecklistAction)
     FrameLayout frameLayoutChecklistAction;
-    private String isFromState, subModulesItemList;
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void getCheckListVerificationFragment(int projectSiteUserCheckpointId, boolean isViewOnly, boolean isUserViewOnly) {
-        CheckListVerificationFragment checkListVerificationFragment = CheckListVerificationFragment.newInstance(projectSiteUserCheckpointId, isFromState, isViewOnly, isUserViewOnly);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayoutChecklistAction, checkListVerificationFragment, "checkListVerificationFragment");
-        fragmentTransaction.addToBackStack("checkListTitleFragment");
-        fragmentTransaction.commit();
-    }
+    private String isFromState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +31,7 @@ public class CheckListActionActivity extends BaseActivity {
             int projectSiteUserChecklistAssignmentId = bundleExtras.getInt("projectSiteUserChecklistAssignmentId");
             int projectSiteChecklistId = Integer.parseInt(bundleExtras.getString("projectSiteChecklistId"));
             isFromState = bundleExtras.getString("isFromState");
-            subModulesItemList = bundleExtras.getString("subModulesItemList");
+            String subModulesItemList = bundleExtras.getString("subModulesItemList");
             int assignedTo = bundleExtras.getInt("assignedTo");
             boolean isUserViewOnly = bundleExtras.getBoolean("isUserViewOnly");
             CheckListTitleFragment checkListTitleFragment = CheckListTitleFragment.newInstance(projectSiteUserChecklistAssignmentId, projectSiteChecklistId, isFromState, isUserViewOnly, subModulesItemList, assignedTo);
@@ -57,5 +41,21 @@ public class CheckListActionActivity extends BaseActivity {
         } else {
             Timber.d("bundleExtras: null");
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void getCheckListVerificationFragment(int projectSiteUserCheckpointId, boolean isViewOnly, boolean isUserViewOnly) {
+        CheckListVerificationFragment checkListVerificationFragment = CheckListVerificationFragment.newInstance(projectSiteUserCheckpointId, isFromState, isViewOnly, isUserViewOnly);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayoutChecklistAction, checkListVerificationFragment, "checkListVerificationFragment");
+        fragmentTransaction.addToBackStack("checkListTitleFragment");
+        fragmentTransaction.commit();
     }
 }

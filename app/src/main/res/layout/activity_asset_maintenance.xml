@@ -5,14 +5,6 @@
               android:layout_margin="@dimen/dimen_16dp"
               android:orientation="vertical">
 
-    <!-- <CheckBox
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_gravity="center_vertical"
-         android:layout_marginBottom="8dp"
-         android:text="@string/diesel_powered"
-         android:textSize="18sp"/>-->
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -129,5 +121,4 @@
                 android:textColor="@color/colorWhite"/>
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

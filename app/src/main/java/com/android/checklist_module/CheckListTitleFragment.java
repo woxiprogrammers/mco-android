@@ -99,7 +99,7 @@ public class CheckListTitleFragment extends Fragment {
     private int projectSiteChecklistId;
     private RealmResults<CheckPointsItem> checkPointsItemRealmResults;
     private RealmResults<ParentCheckPointsItem> parentCheckPointsItemRealmResults;
-    private String isFromState, subModulesItemList;
+    private String isFromState;
     private boolean isUsersAvailable;
     private RealmList<UsersItem> usersItemRealmList;
     private CheckBoxGroup<String> checkBoxGroup;
@@ -107,7 +107,7 @@ public class CheckListTitleFragment extends Fragment {
     private int parentProjectSiteUserChecklistAssignmentId;
     private boolean isViewOnly;
     private boolean isUserViewOnly;
-    private int assignedTo;
+    private String subModuleTag;
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -136,13 +136,13 @@ public class CheckListTitleFragment extends Fragment {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
             projectSiteChecklistId = bundleArgs.getInt("projectSiteChecklistId");
             isUserViewOnly = bundleArgs.getBoolean("isUserViewOnly");
-            subModulesItemList = bundleArgs.getString("subModulesItemList");
+            String subModulesItemList = bundleArgs.getString("subModulesItemList");
             isFromState = bundleArgs.getString("isFromState");
-            assignedTo = bundleArgs.getInt("assignedTo");
+            int assignedTo = bundleArgs.getInt("assignedTo");
 ///////////////
             SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
             for (SubModulesItem subModulesItem : subModulesItems) {
-                String subModuleTag = subModulesItem.getSubModuleTag();
+                subModuleTag = subModulesItem.getSubModuleTag();
                 if (subModuleTag.contains("recheck")) {
                     mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
                     mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
@@ -164,19 +164,28 @@ public class CheckListTitleFragment extends Fragment {
                 } else if (isFromState.equalsIgnoreCase("progress")) {
                     mLinearLayoutReassignTo.setVisibility(View.GONE);
                 } else if (isFromState.equalsIgnoreCase("review")) {
-                    mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
+                    if (subModuleTag.contains("recheck")) {
+                        mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
+                    } else {
+                        mLinearLayoutReassignTo.setVisibility(View.GONE);
+                    }
                     mLinearLayoutReassignTo_innerLayout.setVisibility(View.GONE);
                     mCheckboxIsReassignTo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            if (isChecked) {
-                                mLinearLayoutReassignTo_innerLayout.setVisibility(View.VISIBLE);
-                                rvChecklistTitle.setVisibility(View.GONE);
-                                getAndSet_reassignCheckpointsList();
-                                getUsersWithChecklistAssignAcl();
+                            if (AppUtils.getInstance().checkNetworkState()) {
+                                if (isChecked) {
+                                    mLinearLayoutReassignTo_innerLayout.setVisibility(View.VISIBLE);
+                                    rvChecklistTitle.setVisibility(View.GONE);
+                                    getAndSet_reassignCheckpointsList();
+                                    getUsersWithChecklistAssignAcl();
+                                } else {
+                                    rvChecklistTitle.setVisibility(View.VISIBLE);
+                                    mLinearLayoutReassignTo_innerLayout.setVisibility(View.GONE);
+                                }
                             } else {
-                                rvChecklistTitle.setVisibility(View.VISIBLE);
-                                mLinearLayoutReassignTo_innerLayout.setVisibility(View.GONE);
+                                mCheckboxIsReassignTo.setChecked(false);
+                                AppUtils.getInstance().showOfflineMessage("CheckListTitleFragment");
                             }
                         }
                     });
@@ -193,174 +202,23 @@ public class CheckListTitleFragment extends Fragment {
         mCheckboxShowParents.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    mFrameLayoutSpinnerLayout.setVisibility(View.VISIBLE);
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    if (isChecked) {
+                        mFrameLayoutSpinnerLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        mFrameLayoutSpinnerLayout.setVisibility(View.INVISIBLE);
+                    }
                 } else {
-                    mFrameLayoutSpinnerLayout.setVisibility(View.INVISIBLE);
+                    mCheckboxShowParents.setChecked(false);
+                    AppUtils.getInstance().showOfflineMessage("CheckListTitleFragment");
                 }
             }
         });
         mLinearLayoutParentsLayout.setVisibility(View.GONE);
+        setUpParentsSpinnerAdapter();
+        setUpCheckpointsAdapter();
         requestToGetCheckpoints();
         return view;
-    }
-
-    private void getAndSet_reassignCheckpointsList() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_checklist_id", projectSiteChecklistId);
-            Timber.d(String.valueOf(params));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_GET_CHECKPOINTS_URL + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("getAndSet_reassignCheckpointsList")
-                .build()
-                .getAsObject(ReassignCheckpointsResponse.class, new ParsedRequestListener<ReassignCheckpointsResponse>() {
-                    @Override
-                    public void onResponse(final ReassignCheckpointsResponse response) {
-                        Timber.d(String.valueOf(response));
-                        if (response.getReassignCheckpointsData() != null && !response.getReassignCheckpointsData().getReassignCheckPoints().isEmpty()) {
-                            RealmList<ReassignCheckPointsItem> reassignCheckpointsList = response.getReassignCheckpointsData().getReassignCheckPoints();
-                            checkBoxMap = new HashMap<>();
-                            mLinearLayoutChecklistAssignTo.removeAllViews();
-                            for (int i = 0; i < reassignCheckpointsList.size(); i++) {
-                                ReassignCheckPointsItem reassignCheckPointsItem = reassignCheckpointsList.get(i);
-                                CheckBox checkBox = new CheckBox(mContext);
-                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                layoutParams.setMargins(0, 0, 0, 4);
-                                checkBox.setLayoutParams(layoutParams);
-                                checkBox.setId(reassignCheckPointsItem.getProjectSiteChecklistCheckpointId());
-                                checkBox.setText(reassignCheckPointsItem.getProjectSiteChecklistCheckpointDescription());
-                                mLinearLayoutChecklistAssignTo.addView(checkBox);
-                                checkBoxMap.put(checkBox, String.valueOf(reassignCheckPointsItem.getProjectSiteChecklistCheckpointId()));
-                            }
-                            checkBoxGroup = new CheckBoxGroup<>(checkBoxMap, new CheckBoxGroup.CheckedChangeListener<String>() {
-                                @Override
-                                public void onCheckedChange(ArrayList<String> arrayList) {
-                                }
-                            });
-                        } else {
-                            Toast.makeText(mContext, "Failed to load Checkpoints", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getAndSet_reassignCheckpointsList");
-                    }
-                });
-    }
-
-    private void getUsersWithChecklistAssignAcl() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            Timber.d(String.valueOf(params));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_CHECKLIST_USERS_WITH_ACL + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("getUsersWithChecklistAssignAcl")
-                .build()
-                .getAsObject(ChecklistAclUsersResponse.class, new ParsedRequestListener<ChecklistAclUsersResponse>() {
-                    @Override
-                    public void onResponse(ChecklistAclUsersResponse response) {
-                        if (response.getChecklistAclUsersData() != null && !response.getChecklistAclUsersData().getUsers().isEmpty()) {
-                            usersItemRealmList = response.getChecklistAclUsersData().getUsers();
-                            ArrayList<String> arrayListOfUserNames = new ArrayList<>();
-                            for (int i = 0; i < usersItemRealmList.size(); i++) {
-                                UsersItem currentUsersItem = usersItemRealmList.get(i);
-                                arrayListOfUserNames.add(currentUsersItem.getFirstName() + " " + currentUsersItem.getLastName());
-                                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayListOfUserNames);
-                                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                mSpinnerReassignTo.setAdapter(arrayAdapter);
-                                isUsersAvailable = true;
-                            }
-                        } else {
-                            isUsersAvailable = false;
-                            Toast.makeText(mContext, "Failed to load Users", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getUsersWithChecklistAssignAcl");
-                    }
-                });
-    }
-
-    private void requestToGetCheckpoints() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_user_checklist_assignment_id", projectSiteUserChecklistAssignmentId);
-            Timber.d(String.valueOf(params));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_GET_CHECKPOINTS_URL + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestToGetCheckpoints")
-                .build()
-                .getAsObject(CheckPointsResponse.class, new ParsedRequestListener<CheckPointsResponse>() {
-                    @Override
-                    public void onResponse(final CheckPointsResponse response) {
-                        try {
-                            Timber.d(String.valueOf(response.getCheckPointsdata().getCheckPoints().size()));
-                        } catch (Exception e) {
-                            Timber.e(e.getMessage());
-                        }
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-//                                    realm.delete(CheckPointsItem.class);
-//                                    realm.delete(ProjectSiteUserCheckpointImagesItem.class);
-                                    realm.delete(ParentChecklistIdItem.class);
-                                    for (CheckPointsItem checkPointsItem :
-                                            response.getCheckPointsdata().getCheckPoints()) {
-                                        checkPointsItem.setIsFromState(isFromState);
-                                        checkPointsItem.setProjectSiteUserChecklistAssignmentId(projectSiteUserChecklistAssignmentId);
-                                    }
-                                    for (ParentChecklistIdItem parentChecklistIdItem :
-                                            response.getCheckPointsdata().getParentChecklist()) {
-                                        parentChecklistIdItem.setIsFromState(isFromState);
-                                        parentChecklistIdItem.setForeignProjectSiteUserChecklistAssignmentId(projectSiteUserChecklistAssignmentId);
-                                    }
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    setUpParentsSpinnerAdapter();
-                                    setUpCheckpointsAdapter();
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestToGetCheckpoints");
-                    }
-                });
     }
 
     private void setUpParentsSpinnerAdapter() {
@@ -450,10 +308,28 @@ public class CheckListTitleFragment extends Fragment {
         rvChecklistTitle.addOnItemTouchListener(recyclerCurrentItemClickListener);
     }
 
-    private void getParentsCheckpointsList(final int parentProjectSiteUserChecklistAssignmentId) {
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+        if (realm != null) {
+            realm.close();
+        }
+    }
+
+    @OnClick(R.id.btn_checkList_checkpointSubmit)
+    public void onCheckpointSubmitClicked() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestToChangeChecklistStatus(true);
+        } else {
+            AppUtils.getInstance().showOfflineMessage("CheckListTitleFragment");
+        }
+    }
+
+    private void getAndSet_reassignCheckpointsList() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_user_checklist_assignment_id", parentProjectSiteUserChecklistAssignmentId);
+            params.put("project_site_checklist_id", projectSiteChecklistId);
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -462,11 +338,102 @@ public class CheckListTitleFragment extends Fragment {
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("getParentsCheckpointsList")
+                .setTag("getAndSet_reassignCheckpointsList")
                 .build()
-                .getAsObject(ParentCheckPointsResponse.class, new ParsedRequestListener<ParentCheckPointsResponse>() {
+                .getAsObject(ReassignCheckpointsResponse.class,
+                        new ParsedRequestListener<ReassignCheckpointsResponse>() {
+                            @Override
+                            public void onResponse(final ReassignCheckpointsResponse response) {
+                                Timber.d(String.valueOf(response));
+                                if (response.getReassignCheckpointsData() != null && !response.getReassignCheckpointsData().getReassignCheckPoints().isEmpty()) {
+                                    RealmList<ReassignCheckPointsItem> reassignCheckpointsList = response.getReassignCheckpointsData().getReassignCheckPoints();
+                                    checkBoxMap = new HashMap<>();
+                                    mLinearLayoutChecklistAssignTo.removeAllViews();
+                                    for (int i = 0; i < reassignCheckpointsList.size(); i++) {
+                                        ReassignCheckPointsItem reassignCheckPointsItem = reassignCheckpointsList.get(i);
+                                        CheckBox checkBox = new CheckBox(mContext);
+                                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                        layoutParams.setMargins(0, 0, 0, 4);
+                                        checkBox.setLayoutParams(layoutParams);
+                                        checkBox.setId(reassignCheckPointsItem.getProjectSiteChecklistCheckpointId());
+                                        checkBox.setText(reassignCheckPointsItem.getProjectSiteChecklistCheckpointDescription());
+                                        mLinearLayoutChecklistAssignTo.addView(checkBox);
+                                        checkBoxMap.put(checkBox, String.valueOf(reassignCheckPointsItem.getProjectSiteChecklistCheckpointId()));
+                                    }
+                                    checkBoxGroup = new CheckBoxGroup<>(checkBoxMap, new CheckBoxGroup.CheckedChangeListener<String>() {
+                                        @Override
+                                        public void onCheckedChange(ArrayList<String> arrayList) {
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(mContext, "Failed to load Checkpoints", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "getAndSet_reassignCheckpointsList");
+                            }
+                        });
+    }
+
+    private void getUsersWithChecklistAssignAcl() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECKLIST_USERS_WITH_ACL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getUsersWithChecklistAssignAcl")
+                .build()
+                .getAsObject(ChecklistAclUsersResponse.class, new ParsedRequestListener<ChecklistAclUsersResponse>() {
                     @Override
-                    public void onResponse(final ParentCheckPointsResponse response) {
+                    public void onResponse(ChecklistAclUsersResponse response) {
+                        if (response.getChecklistAclUsersData() != null && !response.getChecklistAclUsersData().getUsers().isEmpty()) {
+                            usersItemRealmList = response.getChecklistAclUsersData().getUsers();
+                            ArrayList<String> arrayListOfUserNames = new ArrayList<>();
+                            for (int i = 0; i < usersItemRealmList.size(); i++) {
+                                UsersItem currentUsersItem = usersItemRealmList.get(i);
+                                arrayListOfUserNames.add(currentUsersItem.getFirstName() + " " + currentUsersItem.getLastName());
+                                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayListOfUserNames);
+                                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                mSpinnerReassignTo.setAdapter(arrayAdapter);
+                                isUsersAvailable = true;
+                            }
+                        } else {
+                            isUsersAvailable = false;
+                            Toast.makeText(mContext, "Failed to load Users", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getUsersWithChecklistAssignAcl");
+                    }
+                });
+    }
+
+    private void requestToGetCheckpoints() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_user_checklist_assignment_id", projectSiteUserChecklistAssignmentId);
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_GET_CHECKPOINTS_URL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("requestToGetCheckpoints")
+                .build()
+                .getAsObject(CheckPointsResponse.class, new ParsedRequestListener<CheckPointsResponse>() {
+                    @Override
+                    public void onResponse(final CheckPointsResponse response) {
                         try {
                             Timber.d(String.valueOf(response.getCheckPointsdata().getCheckPoints().size()));
                         } catch (Exception e) {
@@ -477,41 +444,22 @@ public class CheckListTitleFragment extends Fragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    realm.delete(ParentCheckPointsItem.class);
-//                                    realm.delete(ParentProjectSiteUserCheckpointImagesItem.class);
-                                    for (ParentCheckPointsItem parentsCheckPointsItem :
+                                    realm.delete(ParentChecklistIdItem.class);
+                                    for (CheckPointsItem checkPointsItem :
                                             response.getCheckPointsdata().getCheckPoints()) {
-                                        parentsCheckPointsItem.setIsFromState(isFromState);
+                                        checkPointsItem.setIsFromState(isFromState);
+                                        checkPointsItem.setProjectSiteUserChecklistAssignmentId(projectSiteUserChecklistAssignmentId);
+                                    }
+                                    for (ParentChecklistIdItem parentChecklistIdItem :
+                                            response.getCheckPointsdata().getParentChecklist()) {
+                                        parentChecklistIdItem.setIsFromState(isFromState);
+                                        parentChecklistIdItem.setForeignProjectSiteUserChecklistAssignmentId(projectSiteUserChecklistAssignmentId);
                                     }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class)
-                                            .equalTo("parentProjectSiteUserChecklistAssignmentId", parentProjectSiteUserChecklistAssignmentId)
-                                            .equalTo("isFromState", isFromState).findAll();
-                                    ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
-                                    rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
-                                    rvChecklistTitle.setHasFixedSize(true);
-                                    rvChecklistTitle.setAdapter(parentCheckListTitleAdapter);
-                                    if (recyclerCurrentItemClickListener != null) {
-                                        rvChecklistTitle.removeOnItemTouchListener(recyclerCurrentItemClickListener);
-                                    }
-                                    recyclerParentItemClickListener = new RecyclerItemClickListener(mContext, rvChecklistTitle,
-                                            new RecyclerItemClickListener.OnItemClickListener() {
-                                                @Override
-                                                public void onItemClick(View view, final int position) {
-                                                    Timber.d("Parent Enabled: isViewOnly " + isViewOnly);
-                                                    Timber.d("Parent projectSiteUserCheckpointId: " + parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
-                                                    ((CheckListActionActivity) mContext).getCheckListVerificationFragment(parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
-                                                }
-
-                                                @Override
-                                                public void onLongItemClick(View view, int position) {
-                                                }
-                                            });
-                                    rvChecklistTitle.addOnItemTouchListener(recyclerParentItemClickListener);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -528,20 +476,91 @@ public class CheckListTitleFragment extends Fragment {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getParentsCheckpointsList");
+                        AppUtils.getInstance().logApiError(anError, "requestToGetCheckpoints");
                     }
                 });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
+    private void getParentsCheckpointsList(final int parentProjectSiteUserChecklistAssignmentId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_user_checklist_assignment_id", parentProjectSiteUserChecklistAssignmentId);
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_GET_CHECKPOINTS_URL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("getParentsCheckpointsList")
+                .build()
+                .getAsObject(ParentCheckPointsResponse.class,
+                        new ParsedRequestListener<ParentCheckPointsResponse>() {
+                            @Override
+                            public void onResponse(final ParentCheckPointsResponse response) {
+                                try {
+                                    Timber.d(String.valueOf(response.getCheckPointsdata().getCheckPoints().size()));
+                                } catch (Exception e) {
+                                    Timber.e(e.getMessage());
+                                }
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            for (ParentCheckPointsItem parentsCheckPointsItem :
+                                                    response.getCheckPointsdata().getCheckPoints()) {
+                                                parentsCheckPointsItem.setIsFromState(isFromState);
+                                            }
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
+                                            parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class)
+                                                    .equalTo("parentProjectSiteUserChecklistAssignmentId", parentProjectSiteUserChecklistAssignmentId)
+                                                    .equalTo("isFromState", isFromState).findAll();
+                                            ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
+                                            rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
+                                            rvChecklistTitle.setHasFixedSize(true);
+                                            rvChecklistTitle.setAdapter(parentCheckListTitleAdapter);
+                                            if (recyclerCurrentItemClickListener != null) {
+                                                rvChecklistTitle.removeOnItemTouchListener(recyclerCurrentItemClickListener);
+                                            }
+                                            recyclerParentItemClickListener = new RecyclerItemClickListener(mContext, rvChecklistTitle,
+                                                    new RecyclerItemClickListener.OnItemClickListener() {
+                                                        @Override
+                                                        public void onItemClick(View view, final int position) {
+                                                            Timber.d("Parent Enabled: isViewOnly " + isViewOnly);
+                                                            Timber.d("Parent projectSiteUserCheckpointId: " + parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId());
+                                                            ((CheckListActionActivity) mContext).getCheckListVerificationFragment(parentCheckPointsItemRealmResults.get(position).getProjectSiteUserCheckpointId(), isViewOnly, isUserViewOnly);
+                                                        }
 
-    @OnClick(R.id.btn_checkList_checkpointSubmit)
-    public void onCheckpointSubmitClicked() {
-        requestToChangeChecklistStatus(true);
+                                                        @Override
+                                                        public void onLongItemClick(View view, int position) {
+                                                        }
+                                                    });
+                                            rvChecklistTitle.addOnItemTouchListener(recyclerParentItemClickListener);
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "getParentsCheckpointsList");
+                            }
+                        });
     }
 
     public void requestToChangeChecklistStatus(final boolean isExitScreen) {

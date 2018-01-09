@@ -8,6 +8,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class AssetReadingsListDataItem extends RealmObject {
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
+    private int inventoryComponentId, passMonth, passYear;
     @PrimaryKey
     @SerializedName("date")
     private String date;
@@ -23,51 +24,75 @@ public class AssetReadingsListDataItem extends RealmObject {
     private int totalTopUp;
     ///////////////////
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getDate() {
         return date;
     }
 
-    public void setFuelUsed(float fuelUsed) {
-        this.fuelUsed = fuelUsed;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public float getFuelUsed() {
         return fuelUsed;
     }
 
-    public void setUnitsUsed(int unitsUsed) {
-        this.unitsUsed = unitsUsed;
+    public void setFuelUsed(float fuelUsed) {
+        this.fuelUsed = fuelUsed;
     }
 
     public int getUnitsUsed() {
         return unitsUsed;
     }
 
-    public void setElectricityUsed(int electricityUsed) {
-        this.electricityUsed = electricityUsed;
+    public void setUnitsUsed(int unitsUsed) {
+        this.unitsUsed = unitsUsed;
     }
 
     public int getElectricityUsed() {
         return electricityUsed;
     }
 
-    public void setTotalWorkingHours(int totalWorkingHours) {
-        this.totalWorkingHours = totalWorkingHours;
+    public void setElectricityUsed(int electricityUsed) {
+        this.electricityUsed = electricityUsed;
     }
 
     public int getTotalWorkingHours() {
         return totalWorkingHours;
     }
 
-    public void setTotalTopUp(int totalTopUp) {
-        this.totalTopUp = totalTopUp;
+    public void setTotalWorkingHours(int totalWorkingHours) {
+        this.totalWorkingHours = totalWorkingHours;
     }
 
     public int getTotalTopUp() {
         return totalTopUp;
+    }
+
+    public void setTotalTopUp(int totalTopUp) {
+        this.totalTopUp = totalTopUp;
+    }
+
+    public int getInventoryComponentId() {
+        return inventoryComponentId;
+    }
+
+    public void setInventoryComponentId(int inventoryComponentId) {
+        this.inventoryComponentId = inventoryComponentId;
+    }
+
+    public int getPassMonth() {
+        return passMonth;
+    }
+
+    public void setPassMonth(int passMonth) {
+        this.passMonth = passMonth;
+    }
+
+    public int getPassYear() {
+        return passYear;
+    }
+
+    public void setPassYear(int passYear) {
+        this.passYear = passYear;
     }
 }

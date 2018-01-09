@@ -13,13 +13,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.utils.FragmentInterface;
 import com.android.inventory_module.InventoryDetails;
 import com.android.inventory_module.MaterialListAdapter;
 import com.android.inventory_module.inventory_model.InventoryResponse;
 import com.android.inventory_module.inventory_model.MaterialListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -95,6 +95,10 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         }
     }
 
+    @Override
+    public void fragmentBecameVisible() {
+    }
+
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
         materialListItems = realm.where(MaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
@@ -120,10 +124,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             public void onLongItemClick(View view, int position) {
             }
         }));
-    }
-
-    @Override
-    public void fragmentBecameVisible() {
     }
 
     private void requestInventoryResponse(int pageId) {

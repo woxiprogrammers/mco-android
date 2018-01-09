@@ -96,8 +96,8 @@
                     android:id="@+id/frameLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:background="@android:drawable/editbox_background">
+                    android:background="@android:drawable/editbox_background"
+                    android:visibility="gone">
 
                     <Spinner
                         android:id="@+id/source_spinner"
@@ -173,9 +173,9 @@
                         android:id="@+id/edittext_quantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
+                        android:background="@android:drawable/editbox_background_normal"
                         android:digits="1234567890."
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:inputType="number"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -227,8 +227,6 @@
                     android:layout_marginTop="@dimen/dimen_5dp"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
-
-
 
             <LinearLayout
                 android:id="@+id/ll_challanNumber"

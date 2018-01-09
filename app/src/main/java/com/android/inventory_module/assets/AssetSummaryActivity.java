@@ -49,6 +49,13 @@ public class AssetSummaryActivity extends BaseActivity {
     private String component_type_slug, strDate;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) onBackPressed();
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recyclerview_lsiting_for_asset_summary);
@@ -61,30 +68,25 @@ public class AssetSummaryActivity extends BaseActivity {
             inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
             strDate = bundleArgs.getString("getDate");
             component_type_slug = bundleArgs.getString("component_type_slug");
-
         }
+        setAdapter();
         if (AppUtils.getInstance().checkNetworkState()) {
-
             requestAssetReadingList();
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) onBackPressed();
-        return super.onOptionsItemSelected(item);
-    }
-
     private void setAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetReadingsSummaryDataItem> assetReadingsListDataItems = realm.where(AssetReadingsSummaryDataItem.class).findAll();
+        RealmResults<AssetReadingsSummaryDataItem> assetReadingsListDataItems;
+        assetReadingsListDataItems = realm.where(AssetReadingsSummaryDataItem.class)
+                .equalTo("inventoryComponentId", inventoryComponentId)
+                .equalTo("strDate", strDate)
+                .findAllAsync();
         AssetsReadingListingAdapter assetReadingAdapter = new AssetsReadingListingAdapter(assetReadingsListDataItems, true, true, component_type_slug);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
         rvMaterialList.setAdapter(assetReadingAdapter);
-        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                rvMaterialList,
+        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvMaterialList,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
@@ -101,12 +103,9 @@ public class AssetSummaryActivity extends BaseActivity {
         try {
             params.put("inventory_component_id", inventoryComponentId);
             params.put("date", strDate);
-//            params.put("month", 11);
-//            params.put("year", 2017);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Timber.d(AppURL.API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL + AppUtils.getInstance().getCurrentToken());
         AndroidNetworking.post(AppURL.API_ASSET_READINGS_DAY_MONTHWISE_LIST_URL + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -121,13 +120,17 @@ public class AssetSummaryActivity extends BaseActivity {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    for (AssetReadingsSummaryDataItem assetReadingsSummaryDataItem :
+                                            response.getReadingsListDataItems()) {
+                                        assetReadingsSummaryDataItem.setStrDate(strDate);
+                                        assetReadingsSummaryDataItem.setInventoryComponentId(inventoryComponentId);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d(String.valueOf(response));
-                                    setAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -150,7 +153,6 @@ public class AssetSummaryActivity extends BaseActivity {
     }
 
     public class AssetsReadingListingAdapter extends RealmRecyclerViewAdapter<AssetReadingsSummaryDataItem, AssetsReadingListingAdapter.MyViewHolder> {
-
         private OrderedRealmCollection<AssetReadingsSummaryDataItem> assetReadingsListDataItemOrderedRealmCollection;
         private AssetReadingsSummaryDataItem assetReadingsListDataItem;
 
@@ -187,7 +189,6 @@ public class AssetSummaryActivity extends BaseActivity {
                 } else {
                     Log.i("@@CHeck", "sharvari1");
                     holder.linearLayoutSetTopUp.setVisibility(View.GONE);
-
                 }
                 ////Top Up Time
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUpTime())) {
@@ -195,7 +196,6 @@ public class AssetSummaryActivity extends BaseActivity {
                     holder.editTextSetTopUpTime.setText(assetReadingsListDataItem.getTopUpTime());
                 } else {
                     holder.linearLayoutSetTopUpTime.setVisibility(View.GONE);
-
                 }
                 ///Ele
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getFuelPerUnit())) {
@@ -203,7 +203,6 @@ public class AssetSummaryActivity extends BaseActivity {
                     holder.editTextSetLtrPerUnit.setText(assetReadingsListDataItem.getFuelPerUnit());
                 } else {
                     holder.linearLayoutSetLtrPerUnit.setVisibility(View.GONE);
-
                 }
             } else if (component_type_slug.equalsIgnoreCase("electricity_dependent")) {
                 holder.linearLayoutSetTopUp.setVisibility(View.GONE);
@@ -217,28 +216,24 @@ public class AssetSummaryActivity extends BaseActivity {
                     holder.editTextSetTopUp.setText(assetReadingsListDataItem.getTopUp());
                 } else {
                     holder.linearLayoutSetTopUp.setVisibility(View.GONE);
-
                 }
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUpTime())) {
                     holder.linearLayoutSetTopUpTime.setVisibility(View.VISIBLE);
                     holder.editTextSetTopUpTime.setText(assetReadingsListDataItem.getTopUpTime());
                 } else {
                     holder.linearLayoutSetTopUpTime.setVisibility(View.GONE);
-
                 }
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getElectricityPerUnit())) {
                     holder.linearLayoutSetElePerUnit.setVisibility(View.VISIBLE);
                     holder.editTextSetElePerUnit.setText(assetReadingsListDataItem.getElectricityPerUnit());
                 } else {
                     holder.linearLayoutSetElePerUnit.setVisibility(View.GONE);
-
                 }
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getFuelPerUnit())) {
                     holder.linearLayoutSetLtrPerUnit.setVisibility(View.VISIBLE);
                     holder.editTextSetLtrPerUnit.setText(assetReadingsListDataItem.getFuelPerUnit());
                 } else {
                     holder.linearLayoutSetLtrPerUnit.setVisibility(View.GONE);
-
                 }
             }
         }

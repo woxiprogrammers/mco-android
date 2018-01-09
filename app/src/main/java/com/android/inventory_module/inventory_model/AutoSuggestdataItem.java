@@ -5,49 +5,45 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
-public class AutoSuggestdataItem extends RealmObject{
+public class AutoSuggestdataItem extends RealmObject {
+    @SerializedName("unit")
+    private RealmList<UnitItem> unit;
+    @SerializedName("reference_id")
+    private int referenceId;
+    @SerializedName("inventory_component_id")
+    private int inventoryComponentId;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("unit")
-	private RealmList<UnitItem> unit;
+    public RealmList<UnitItem> getUnit() {
+        return unit;
+    }
 
-	@SerializedName("reference_id")
-	private int referenceId;
+    public void setUnit(RealmList<UnitItem> unit) {
+        this.unit = unit;
+    }
 
-	@SerializedName("inventory_component_id")
-	private int inventoryComponentId;
+    public int getReferenceId() {
+        return referenceId;
+    }
 
-	@SerializedName("name")
-	private String name;
+    public void setReferenceId(int referenceId) {
+        this.referenceId = referenceId;
+    }
 
-	public void setUnit(RealmList<UnitItem> unit){
-		this.unit = unit;
-	}
+    public int getInventoryComponentId() {
+        return inventoryComponentId;
+    }
 
-	public RealmList<UnitItem> getUnit(){
-		return unit;
-	}
+    public void setInventoryComponentId(int inventoryComponentId) {
+        this.inventoryComponentId = inventoryComponentId;
+    }
 
-	public void setReferenceId(int referenceId){
-		this.referenceId = referenceId;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getReferenceId(){
-		return referenceId;
-	}
-
-	public void setInventoryComponentId(int inventoryComponentId){
-		this.inventoryComponentId = inventoryComponentId;
-	}
-
-	public int getInventoryComponentId(){
-		return inventoryComponentId;
-	}
-
-	public void setName(String name){
-		this.name = name;
-	}
-
-	public String getName(){
-		return name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -15,12 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.utils.FragmentInterface;
-import com.android.inventory_module.inventory_model.RequestComponentData;
 import com.android.inventory_module.inventory_model.RequestComponentListingItem;
 import com.android.inventory_module.inventory_model.RequestComponentResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -45,7 +44,6 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     RecyclerView rvTransferRequestList;
     Unbinder unbinder;
     private RealmResults<RequestComponentListingItem> requestComponentListingItems;
-    private View mParentView;
     private Realm realm;
     private Context mContext;
 
@@ -63,7 +61,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.fragment_inventory_transfer_request_list, container, false);
+        View mParentView = inflater.inflate(R.layout.fragment_inventory_transfer_request_list, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
         setAdapterForMaterialList();
@@ -82,11 +80,16 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        if (realm != null) {
+            realm.close();
+        }
     }
 
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
-        requestComponentListingItems = realm.where(RequestComponentListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        requestComponentListingItems = realm.where(RequestComponentListingItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .findAllAsync();
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
@@ -170,47 +173,48 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                 .setTag("requestInventoryData")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsObject(RequestComponentResponse.class, new ParsedRequestListener<RequestComponentResponse>() {
-                    @Override
-                    public void onResponse(final RequestComponentResponse response) {
+                .getAsObject(RequestComponentResponse.class,
+                        new ParsedRequestListener<RequestComponentResponse>() {
+                            @Override
+                            public void onResponse(final RequestComponentResponse response) {
                         /*if (!response.getPageid().equalsIgnoreCase("")) {
                             pageNumber = Integer.parseInt(response.getPageid());
                         }*/
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(RequestComponentResponse.class);
-                                    realm.delete(RequestComponentData.class);
-                                    realm.delete(RequestComponentListingItem.class);
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+//                                    realm.delete(RequestComponentResponse.class);
+//                                    realm.delete(RequestComponentData.class);
+//                                    realm.delete(RequestComponentListingItem.class);
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
                                     /*if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
                                         requestInventoryResponse(pageNumber);
                                     }*/
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
                                 }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logRealmExecutionError(anError);
+                            }
+                        });
     }
 
     @Override

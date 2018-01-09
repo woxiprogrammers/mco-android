@@ -102,56 +102,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
     private int inventoryCompId, intRefId, unitId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_site_move_in);
-        ButterKnife.bind(this);
-        initializeViews();
-    }
-
-    private void initializeViews() {
-        mContext = ActivitySiteMoveIn.this;
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Move In");
-        }
-        requestToGetSystemSites();
-        radioGroupInventoryComp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int index) {
-                if (index == R.id.radioButtonMaterial) {
-                    isMaterial = true;
-                    edtMatAssetName.setText("");
-                    linearlayoutMaterial.setVisibility(View.VISIBLE);
-                    linearlayoutAsset.setVisibility(View.GONE);
-                } else {
-                    isMaterial = false;
-                    edtMatAssetName.setText("");
-                    linearlayoutAsset.setVisibility(View.VISIBLE);
-                    linearlayoutMaterial.setVisibility(View.GONE);
-                }
-            }
-        });
-        edtSiteName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                edtMatAssetName.setText("");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-        edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedString = (String) adapterView.getItemAtPosition(i);
-                setProjectNameFromIndex(selectedString);
-            }
-        });
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
@@ -170,10 +120,14 @@ public class ActivitySiteMoveIn extends BaseActivity {
                     Toast.makeText(mContext, "Please select either Material/Asset", Toast.LENGTH_LONG).show();
                     return;
                 } else {
-                    Intent intent = new Intent(ActivitySiteMoveIn.this, AutoSuggestInventoryComponent.class);
-                    intent.putExtra("isMaterial", isMaterial);
-                    intent.putExtra("siteId", project_site_id);
-                    startActivityForResult(intent, AppConstants.REQUEST_CODE_AUTO_SUGGEST_INVENTORY);
+                    if (AppUtils.getInstance().checkNetworkState()) {
+                        Intent intent = new Intent(ActivitySiteMoveIn.this, AutoSuggestInventoryComponent.class);
+                        intent.putExtra("isMaterial", isMaterial);
+                        intent.putExtra("siteId", project_site_id);
+                        startActivityForResult(intent, AppConstants.REQUEST_CODE_AUTO_SUGGEST_INVENTORY);
+                    } else {
+                        AppUtils.getInstance().showOfflineMessage("ActivitySiteMoveIn");
+                    }
                 }
                 break;
             case R.id.textView_capture:
@@ -187,17 +141,6 @@ public class ActivitySiteMoveIn extends BaseActivity {
                 }
                 break;
         }
-    }
-
-    private void chooseAction() {
-        Intent intent = new Intent(mContext, MultiCameraActivity.class);
-        Params params = new Params();
-        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setToolbarColor(R.color.colorPrimaryLight);
-        params.setActionButtonColor(R.color.colorAccentDark);
-        params.setButtonTextColor(R.color.colorWhite);
-        intent.putExtra(Constants.KEY_PARAMS, params);
-        startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -278,6 +221,56 @@ public class ActivitySiteMoveIn extends BaseActivity {
         return arrayAdapter;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_site_move_in);
+        ButterKnife.bind(this);
+        initializeViews();
+    }
+
+    private void initializeViews() {
+        mContext = ActivitySiteMoveIn.this;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Move In");
+        }
+        requestToGetSystemSites();
+        radioGroupInventoryComp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int index) {
+                if (index == R.id.radioButtonMaterial) {
+                    isMaterial = true;
+                    edtMatAssetName.setText("");
+                    linearlayoutMaterial.setVisibility(View.VISIBLE);
+                    linearlayoutAsset.setVisibility(View.GONE);
+                } else {
+                    isMaterial = false;
+                    edtMatAssetName.setText("");
+                    linearlayoutAsset.setVisibility(View.VISIBLE);
+                    linearlayoutMaterial.setVisibility(View.GONE);
+                }
+            }
+        });
+        edtSiteName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                edtMatAssetName.setText("");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        edtSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedString = (String) adapterView.getItemAtPosition(i);
+                setProjectNameFromIndex(selectedString);
+            }
+        });
+    }
+
     private void requestToGetSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
                 .setTag("requestToGetSystemSites")
@@ -306,6 +299,29 @@ public class ActivitySiteMoveIn extends BaseActivity {
                         AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
                     }
                 });
+    }
+
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
+            String strProject = jsonObject.getString("project_name");
+            project_site_id = jsonObject.getInt("project_site_id");
+            edtProjName.setText(strProject + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void chooseAction() {
+        Intent intent = new Intent(mContext, MultiCameraActivity.class);
+        Params params = new Params();
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setToolbarColor(R.color.colorPrimaryLight);
+        params.setActionButtonColor(R.color.colorAccentDark);
+        params.setButtonTextColor(R.color.colorWhite);
+        intent.putExtra(Constants.KEY_PARAMS, params);
+        startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
     private void uploadImages_addItemToLocal() {
@@ -436,17 +452,5 @@ public class ActivitySiteMoveIn extends BaseActivity {
             edtQuantity.setError(null);
         }
         uploadImages_addItemToLocal();
-    }
-
-    private void setProjectNameFromIndex(String selectedString) {
-        int selectedIndex = siteNameArray.indexOf(selectedString);
-        try {
-            JSONObject jsonObject = jsonArray.getJSONObject(selectedIndex);
-            String strProject = jsonObject.getString("project_name");
-            project_site_id = jsonObject.getInt("project_site_id");
-            edtProjName.setText(strProject + "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 }

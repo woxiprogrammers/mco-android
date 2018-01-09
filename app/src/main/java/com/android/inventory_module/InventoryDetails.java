@@ -1,6 +1,5 @@
 package com.android.inventory_module;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +13,8 @@ import android.view.MenuItem;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.utils.FragmentInterface;
 import com.android.inventory_module.material.MaterialHistoryFragment;
+import com.android.utils.FragmentInterface;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +25,6 @@ public class InventoryDetails extends BaseActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPagerInventory;
     private MenuItem prevMenuItem;
-    private Context mContext;
     private String materialName;
     private int intCompId;
 
@@ -55,7 +53,6 @@ public class InventoryDetails extends BaseActivity {
 
     private void initializeViews() {
         ButterKnife.bind(this);
-        mContext = InventoryDetails.this;
         Intent intent = getIntent();
         if (intent != null) {
             materialName = intent.getStringExtra("ClickedMaterialName");

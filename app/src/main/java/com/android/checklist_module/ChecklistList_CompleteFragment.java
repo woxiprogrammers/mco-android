@@ -40,14 +40,12 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class ChecklistList_CompleteFragment extends Fragment {
-//    @BindView(R.id.recyclerView_checkList_complete)
     RecyclerView mRecyclerViewCheckListComplete;
-//    Unbinder unbinder;
     private Realm realm;
     private Context mContext;
     private RealmResults<ChecklistListItem> checklistItemResults;
     private boolean notFirstTime;
-    private String subModuleTag, permissionList, subModulesItemList;
+    private String subModulesItemList;
 
     public ChecklistList_CompleteFragment() {
         // Required empty public constructor
@@ -64,25 +62,16 @@ public class ChecklistList_CompleteFragment extends Fragment {
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && notFirstTime) {
-            requestToGetInProgressCheckList();
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View viewComplete = inflater.inflate(R.layout.fragment_checklist_list_complete, container, false);
-//        unbinder = ButterKnife.bind(this, viewComplete);
         mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            permissionList = bundle.getString("permissionsItemList");
+            String permissionList = bundle.getString("permissionsItemList");
             subModulesItemList = bundle.getString("subModulesItemList");
-            subModuleTag = bundle.getString("subModule_Tag");
+            String subModuleTag = bundle.getString("subModule_Tag");
         }
         mRecyclerViewCheckListComplete = viewComplete.findViewById(R.id.recyclerView_checkList_complete);
         SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
@@ -97,23 +86,27 @@ public class ChecklistList_CompleteFragment extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && notFirstTime) {
+            requestToGetInProgressCheckList();
+            getLatestCheckLists_setAdapter();
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         notFirstTime = true;
         if (getUserVisibleHint()) {
             requestToGetInProgressCheckList();
+            getLatestCheckLists_setAdapter();
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        unbinder.unbind();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         if (realm != null) {
             realm.close();
         }
@@ -145,7 +138,6 @@ public class ChecklistList_CompleteFragment extends Fragment {
                                 realm.executeTransactionAsync(new Realm.Transaction() {
                                     @Override
                                     public void execute(Realm realm) {
-//                                        realm.delete(ChecklistListItem.class);
                                         try {
                                             Timber.d("Checklist Count: " + response.getAssignedChecklistData().getAssignedChecklistList().size());
                                         } catch (Exception e) {
@@ -156,11 +148,10 @@ public class ChecklistList_CompleteFragment extends Fragment {
                                 }, new Realm.Transaction.OnSuccess() {
                                     @Override
                                     public void onSuccess() {
-                                    /*if (oldPageNumber != pageNumber) {
-                                        oldPageNumber = pageNumber;
-                                        requestAssetListOnline(pageNumber);
-                                    }*/
-                                        getLatestCheckLists_setAdapter();
+                                        /*if (oldPageNumber != pageNumber) {
+                                            oldPageNumber = pageNumber;
+                                            requestAssetListOnline(pageNumber);
+                                        }*/
                                     }
                                 }, new Realm.Transaction.OnError() {
                                     @Override
@@ -181,7 +172,6 @@ public class ChecklistList_CompleteFragment extends Fragment {
                         }
                     });
         } else {
-            getLatestCheckLists_setAdapter();
             AppUtils.getInstance().showOfflineMessage("ChecklistList_InProgressFragment");
         }
     }

@@ -1,6 +1,5 @@
 package com.android.inventory_module.assets;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,7 +9,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,10 +35,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,59 +59,11 @@ public class ActivityRequestMaintanance extends BaseActivity {
     @BindView(R.id.ll_addImage)
     LinearLayout llAddImage;
     private Context mContext;
-    private String strExpiryDate, strRemark;
-    private Calendar myCalendar;
-    private DatePickerDialog.OnDateSetListener date;
     private String strAssetName;
     private String strModelNumber;
     private int componentId;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_asset_maintenance);
-        ButterKnife.bind(this);
-        initializeViews();
-    }
-
-    private void initializeViews() {
-        ButterKnife.bind(this);
-        mContext = ActivityRequestMaintanance.this;
-        myCalendar = Calendar.getInstance();
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.asset_maintainance);
-        }
-        Intent extras = getIntent();
-        if (extras != null) {
-            strAssetName = extras.getStringExtra("key");
-            strModelNumber = extras.getStringExtra("key1");
-            componentId = extras.getIntExtra("ComponentId", -1);
-        }
-        editTextAssetName.setText(strAssetName);
-        editTextAssetName.setEnabled(false);
-        editTextModelName.setText(strModelNumber);
-        editTextModelName.setEnabled(false);
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText();
-            }
-        };
-    }
-
-    private void updateEditText() {
-        String myFormat = "dd/MM/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextMaintainanceHours.setText(sdf.format(myCalendar.getTime()));
-        editTextMaintainanceHours.setError(null);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -126,39 +73,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @OnClick(R.id.button_request)
-    void onClicked(View view) {
-        if (view.getId() == R.id.button_request) {
-            validateEntries();
-        }
-    }
-
-    private void validateEntries() {
-        strExpiryDate = editTextMaintainanceHours.getText().toString();
-        strRemark = editTextRemark.getText().toString();
-        //For ExpiryDate
-        if (TextUtils.isEmpty(strExpiryDate)) {
-            editTextMaintainanceHours.setFocusableInTouchMode(true);
-            editTextMaintainanceHours.requestFocus();
-            editTextMaintainanceHours.setError(getString(R.string.please_enter_expiry_eate));
-            return;
-        } else {
-            editTextMaintainanceHours.requestFocus();
-            editTextMaintainanceHours.setError(null);
-        }
-        //For Remark
-        if (TextUtils.isEmpty(strRemark)) {
-            editTextRemark.setFocusableInTouchMode(true);
-            editTextRemark.requestFocus();
-            editTextRemark.setError(getString(R.string.please_enter_remark));
-            return;
-        } else {
-            editTextRemark.requestFocus();
-            editTextRemark.setError(null);
-        }
-        uploadImages_addItemToLocal();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -214,6 +128,70 @@ public class ActivityRequestMaintanance extends BaseActivity {
         params.setButtonTextColor(R.color.colorWhite);
         intent.putExtra(Constants.KEY_PARAMS, params);
         startActivityForResult(intent, type);
+    }
+
+    @OnClick(R.id.button_request)
+    void onClicked(View view) {
+        if (view.getId() == R.id.button_request) {
+            if (AppUtils.getInstance().checkNetworkState()) {
+                validateEntries();
+            } else {
+                AppUtils.getInstance().showOfflineMessage("ActivityRequestMaintanance");
+            }
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_asset_maintenance);
+        ButterKnife.bind(this);
+        initializeViews();
+    }
+
+    private void initializeViews() {
+        ButterKnife.bind(this);
+        mContext = ActivityRequestMaintanance.this;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.asset_maintainance);
+        }
+        Intent extras = getIntent();
+        if (extras != null) {
+            strAssetName = extras.getStringExtra("key");
+            strModelNumber = extras.getStringExtra("key1");
+            componentId = extras.getIntExtra("ComponentId", -1);
+        }
+        editTextAssetName.setText(strAssetName);
+        editTextAssetName.setEnabled(false);
+        editTextModelName.setText(strModelNumber);
+        editTextModelName.setEnabled(false);
+    }
+
+    private void validateEntries() {
+        String strExpiryDate = editTextMaintainanceHours.getText().toString();
+        String strRemark = editTextRemark.getText().toString();
+        //For ExpiryDate
+        if (TextUtils.isEmpty(strExpiryDate)) {
+            editTextMaintainanceHours.setFocusableInTouchMode(true);
+            editTextMaintainanceHours.requestFocus();
+            editTextMaintainanceHours.setError(getString(R.string.please_enter_expiry_eate));
+            return;
+        } else {
+            editTextMaintainanceHours.requestFocus();
+            editTextMaintainanceHours.setError(null);
+        }
+        //For Remark
+        if (TextUtils.isEmpty(strRemark)) {
+            editTextRemark.setFocusableInTouchMode(true);
+            editTextRemark.requestFocus();
+            editTextRemark.setError(getString(R.string.please_enter_remark));
+            return;
+        } else {
+            editTextRemark.requestFocus();
+            editTextRemark.setError(null);
+        }
+        uploadImages_addItemToLocal();
     }
 
     private void requestAssetMaintenance() {

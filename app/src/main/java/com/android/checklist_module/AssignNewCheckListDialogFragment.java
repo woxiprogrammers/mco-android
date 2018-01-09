@@ -119,9 +119,6 @@ public class AssignNewCheckListDialogFragment extends DialogFragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                /*if (!receivedCategoryResponse.getChecklistCategoryData().getCategories().isEmpty()) {
-                    mSpinnerChecklistSubCategories.setAdapter(getSubCategoryArrayAdapter(receivedCategoryResponse.getChecklistCategoryData().getCategories().get(mSpinnerChecklistCategories.getSelectedItemPosition()).getSubCategories()));
-                }*/
             }
         });
         //

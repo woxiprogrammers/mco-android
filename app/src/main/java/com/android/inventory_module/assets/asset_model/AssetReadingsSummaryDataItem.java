@@ -9,12 +9,12 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Sharvari on 9/11/17.
  */
-
 public class AssetReadingsSummaryDataItem extends RealmObject {
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
+    private int inventoryComponentId;
+    private String strDate;
     @SerializedName("date")
     private String date;
-    ///////////////////
     @SerializedName("start_reading")
     private String startReading;
     @SerializedName("start_time")
@@ -35,84 +35,100 @@ public class AssetReadingsSummaryDataItem extends RealmObject {
     @SerializedName("fuel_per_unit")
     private String fuelPerUnit;
 
-    public void setStartReading(String startReading) {
-        this.startReading = startReading;
-    }
-
     public String getStartReading() {
         return startReading;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setStartReading(String startReading) {
+        this.startReading = startReading;
     }
 
     public String getStartTime() {
         return startTime;
     }
 
-    public void setStopReading(String stopReading) {
-        this.stopReading = stopReading;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
     public String getStopReading() {
         return stopReading;
     }
 
-    public void setStopTime(String stopTime) {
-        this.stopTime = stopTime;
+    public void setStopReading(String stopReading) {
+        this.stopReading = stopReading;
     }
 
     public String getStopTime() {
         return stopTime;
     }
 
-    public void setElectricityPerUnit(String electricityPerUnit) {
-        this.electricityPerUnit = electricityPerUnit;
+    public void setStopTime(String stopTime) {
+        this.stopTime = stopTime;
     }
 
     public String getElectricityPerUnit() {
         return electricityPerUnit;
     }
 
-    public void setTopUpTime(String topUpTime) {
-        this.topUpTime = topUpTime;
+    public void setElectricityPerUnit(String electricityPerUnit) {
+        this.electricityPerUnit = electricityPerUnit;
     }
 
     public String getTopUpTime() {
         return topUpTime;
     }
 
-    public void setTopUp(String topUp) {
-        this.topUp = topUp;
+    public void setTopUpTime(String topUpTime) {
+        this.topUpTime = topUpTime;
     }
 
     public String getTopUp() {
         return topUp;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTopUp(String topUp) {
+        this.topUp = topUp;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setFuelPerUnit(String fuelPerUnit) {
-        this.fuelPerUnit = fuelPerUnit;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFuelPerUnit() {
         return fuelPerUnit;
     }
+
+    public void setFuelPerUnit(String fuelPerUnit) {
+        this.fuelPerUnit = fuelPerUnit;
+    }
     ///////////////////
+
+    public String getDate() {
+        return date;
+    }
 
     public void setDate(String date) {
         this.date = date;
     }
 
-    public String getDate() {
-        return date;
+    public int getInventoryComponentId() {
+        return inventoryComponentId;
+    }
+
+    public void setInventoryComponentId(int inventoryComponentId) {
+        this.inventoryComponentId = inventoryComponentId;
+    }
+
+    public String getStrDate() {
+        return strDate;
+    }
+
+    public void setStrDate(String strDate) {
+        this.strDate = strDate;
     }
 }

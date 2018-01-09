@@ -20,13 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponse;
 import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponseData;
-import com.android.utils.FragmentInterface;
-import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -78,10 +78,8 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     Button btnMoveOut;
     Unbinder unbinder;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
-    private View mParentView;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
-    private int unitId;
     private Context mContext;
     private Realm realm;
 
@@ -104,7 +102,11 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
                 break;
             case R.id.btnMoveOut:
-                validateEntries();
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    validateEntries();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("InventoryDetailsNewMoveFragment");
+                }
                 break;
         }
     }
@@ -147,7 +149,7 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.fragment_new_inventory_details_move, container, false);
+        View mParentView = inflater.inflate(R.layout.fragment_new_inventory_details_move, container, false);
         initializeViews();
         unbinder = ButterKnife.bind(this, mParentView);
         return mParentView;
@@ -308,7 +310,7 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
             params.put("inventory_component_id", inventoryComponentId);
             params.put("quantity", edtQuantity.getText().toString());
             if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unitId = unitQuantityItemRealmResults.get(spinnerUnits.getSelectedItemPosition()).getUnitId();
+                int unitId = unitQuantityItemRealmResults.get(spinnerUnits.getSelectedItemPosition()).getUnitId();
                 params.put("unit_id", unitId);
             }
             params.put("remark", editTextAddNote.getText().toString());

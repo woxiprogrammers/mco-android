@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import com.android.constro360.R;
 import com.android.inventory_module.assets.asset_model.AssetListResponse;
 import com.android.inventory_module.assets.asset_model.AssetsListItem;
-import com.android.utils.FragmentInterface;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -41,7 +41,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     RecyclerView rvMaterialList;
     private Unbinder unbinder;
     private Context mContext;
-    private View mParentView;
     private Realm realm;
     private int pageNumber = 0;
     private int oldPageNumber;
@@ -72,26 +71,21 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
             subModulesItemList = bundle.getString("subModulesItemList");
-        }
-        if (subModulesItemList != null) {
-            if (subModulesItemList.contains("create-inventory-in-out-transfer")) {
-                isCrateInOutTransfer = true;
+            if (subModulesItemList != null) {
+                if (subModulesItemList.contains("create-inventory-in-out-transfer")) {
+                    isCrateInOutTransfer = true;
+                }
             }
         }
         setUpAssetListAdapter();
         requestAssetListOnline(pageNumber);
         return mParentView;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override
@@ -105,7 +99,8 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
+        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
         Timber.d(String.valueOf(assetsListItems));
         AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
