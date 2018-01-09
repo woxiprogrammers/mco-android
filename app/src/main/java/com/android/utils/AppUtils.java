@@ -1,5 +1,6 @@
 package com.android.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -415,5 +416,14 @@ public class AppUtils {
             return "Purchase Requested";
         }
         return "";
+    }
+
+    public void showProgressDialog(ProgressDialog progressDialog,Context context){
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Loading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show(); // Display Progress Dialog
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 }

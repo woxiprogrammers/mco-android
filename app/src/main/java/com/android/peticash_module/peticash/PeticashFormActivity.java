@@ -1110,6 +1110,7 @@ public class PeticashFormActivity extends BaseActivity {
                                 editTextTDS.setEnabled(false);
                                 edittextDay.setEnabled(false);
                                 editTextSalaryAmount.setEnabled(false);
+                                edittextPayableAmountSalary.setEnabled(false);
                                 linearPayableAmount.setVisibility(View.VISIBLE);
                                 textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
                                 editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
