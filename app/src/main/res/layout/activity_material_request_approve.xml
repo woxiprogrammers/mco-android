@@ -57,21 +57,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_5dp"
+            android:layout_margin="@dimen/dimen_5dp"
+            android:padding="@dimen/dimen_2dp"
             android:orientation="horizontal">
             <EditText
                 android:id="@+id/editTextSearchMaterial"
                 android:layout_width="0dp"
                 android:hint="Search Material"
-                android:background="@null"
+                android:background="@drawable/background_edittext_search_border"
                 android:layout_weight="0.6"
+                android:padding="@dimen/dimen_2dp"
                 android:layout_height="wrap_content"/>
             <ImageView
                 android:id="@+id/imageViewSearchMaterial"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:layout_marginTop="@dimen/dimen_5dp"
+                android:layout_weight="0.05"
+                android:layout_marginTop="@dimen/dimen_2dp"
                 android:background="@drawable/ic_autosearch_"/>
 
         </LinearLayout>

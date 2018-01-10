@@ -115,6 +115,8 @@
         </activity>
         <activity android:name="com.android.purchase_module.purchase_request.PurchaseOrderApproveActivity">
         </activity>
+        <activity android:name="com.android.inventory_module.SiteMoveInActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.android.peticash_module.peticash;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -29,11 +31,11 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
+import com.android.peticash_module.peticashautosearchemployee.EmployeesearchdataItem;
 import com.android.purchase_module.material_request.AutoSuggestActivity;
 import com.android.purchase_module.material_request.material_request_model.SearchAssetListItem;
 import com.android.purchase_module.material_request.material_request_model.SearchMaterialListItem;
 import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
-import com.android.peticash_module.peticashautosearchemployee.EmployeesearchdataItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -232,10 +234,25 @@ public class PeticashFormActivity extends BaseActivity {
 
     @BindView(R.id.textViewAdvAmountCheck)
     TextView textViewAdvAmountCheck;
+    @BindView(R.id.editTextPT)
+    EditText editTextPT;
+    @BindView(R.id.editTextPF)
+    EditText editTextPF;
+    @BindView(R.id.editTextESIC)
+    EditText editTextESIC;
+    @BindView(R.id.editTextTDS)
+    EditText editTextTDS;
+    @BindView(R.id.button_view_amount)
+    Button buttonViewAmount;
+    @BindView(R.id.linearLayoutPTPF)
+    LinearLayout linearLayoutPTPF;
+    @BindView(R.id.linearLayoutESICTDS)
+    LinearLayout linearLayoutESICTDS;
+    @BindView(R.id.editTextSiteName)
+    AutoCompleteTextView editTextSiteName;
 
     private View layoutEmployeeInfo;
     private int primaryKey;
-    private String approvedSalaryAmount;
     private JSONArray jsonImageNameArray = new JSONArray();
 
     @BindView(R.id.linearLayoutEmployeInfo)
@@ -277,8 +294,14 @@ public class PeticashFormActivity extends BaseActivity {
     private boolean isNewType;
     private String amountLimit;
     private boolean isapprovedAmountForAdv;
-    private int passYear, passMonth,passDay;
+    private int passYear, passMonth, passDay;
     private String currentDate;
+    private JSONArray jsonArrayForSite;
+    private ArrayList<String> siteNameArray;
+    private int project_site_id;
+    private ProgressDialog progressDialog;
+    private String approved_amount;
+    private boolean isSalary;
     private TextWatcher textWatcherSalaryAmount = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -287,14 +310,24 @@ public class PeticashFormActivity extends BaseActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (!TextUtils.isEmpty(charSequence.toString())) {
-                if (Float.parseFloat(charSequence.toString()) > Float.parseFloat(approvedSalaryAmount)) {
-                    textViewAdvAmountCheck.setVisibility(View.VISIBLE);
+                if (Float.parseFloat(charSequence.toString()) > Float.parseFloat(approved_amount)) {
                     buttonSalarySubmit.setVisibility(View.GONE);
-                    textViewAdvAmountCheck.setText("Amount should be less than " + approvedSalaryAmount);
+                    if(isSalary){
+                        textViewDenyTransaction.setVisibility(View.VISIBLE);
+                        textViewDenyTransaction.setText("Amount should be less than " + approved_amount);
+                    }else {
+                        textViewAdvAmountCheck.setVisibility(View.VISIBLE);
+                        textViewAdvAmountCheck.setText("Amount should be less than " + approved_amount);
+                    }
                 } else {
-                    textViewAdvAmountCheck.setVisibility(View.GONE);
                     buttonSalarySubmit.setVisibility(View.VISIBLE);
-                    textViewAdvAmountCheck.setText("");
+                    if(isSalary){
+                        textViewDenyTransaction.setText("");
+                        textViewDenyTransaction.setVisibility(View.GONE);
+                    }else {
+                        textViewAdvAmountCheck.setText("");
+                        textViewAdvAmountCheck.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -315,6 +348,7 @@ public class PeticashFormActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Peticash");
         }
+        requestToGetSystemSites();
         initializeviews();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -380,8 +414,8 @@ public class PeticashFormActivity extends BaseActivity {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
-        passDay=calendar.get(Calendar.DAY_OF_MONTH);
-        currentDate=String.valueOf(passYear) + "-" +String.valueOf(passMonth) + "-" + String.valueOf(passDay);
+        passDay = calendar.get(Calendar.DAY_OF_MONTH);
+        currentDate = String.valueOf(passYear) + "-" + String.valueOf(passMonth) + "-" + String.valueOf(passDay);
         spinnerCategoryArray.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
@@ -395,25 +429,35 @@ public class PeticashFormActivity extends BaseActivity {
                         textViewAdvAmountCheck.setVisibility(View.GONE);
                         break;
                     case 1:
+                        isSalary=true;
                         linearLayoutForSalary.setVisibility(View.VISIBLE);
                         layoutEmployeeInfo.setVisibility(View.VISIBLE);
                         linearLayoutForCategoryPurchase.setVisibility(View.GONE);
                         buttonGenerateGrn.setVisibility(View.GONE);
-                        linearPayableAmount.setVisibility(View.VISIBLE);
+                        linearPayableAmount.setVisibility(View.GONE);
+                        buttonViewAmount.setVisibility(View.VISIBLE);
+                        linearLayoutESICTDS.setVisibility(View.VISIBLE);
+                        linearLayoutPTPF.setVisibility(View.VISIBLE);
                         editTextSalaryAmount.setEnabled(false);
                         textViewAdvAmountCheck.setVisibility(View.GONE);
-                        editTextSalaryAmount.removeTextChangedListener(textWatcherSalaryAmount);
+                        textViewCaptureSalaryImage.setVisibility(View.GONE);
+                        editTextAddtonoteforsalary.setVisibility(View.GONE);
 
                         break;
                     case 2:
+                        isSalary=false;
                         linearLayoutForSalary.setVisibility(View.GONE);
+                        buttonViewAmount.setVisibility(View.GONE);
                         layoutEmployeeInfo.setVisibility(View.VISIBLE);
                         linearLayoutForCategoryPurchase.setVisibility(View.GONE);
                         buttonGenerateGrn.setVisibility(View.GONE);
+                        linearLayoutESICTDS.setVisibility(View.GONE);
+                        linearLayoutPTPF.setVisibility(View.GONE);
                         linearPayableAmount.setVisibility(View.GONE);
                         editTextSalaryAmount.setEnabled(true);
                         textViewAdvAmountCheck.setVisibility(View.GONE);
-                        editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
+                        textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
+                        editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -488,17 +532,16 @@ public class PeticashFormActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //ToDO Check here
                 if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
                     floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
                     editTextSalaryAmount.setText(String.valueOf(floatAmount));
                     payableAmountForSalary = floatAmount - intAdvanceAmount;//intadvanceampunt
 
-                    if (payableAmountForSalary < 0) {
+                    /*if (payableAmountForSalary < 0) {
                         edittextPayableAmountSalary.setText(String.valueOf(0));
                     } else {
                         edittextPayableAmountSalary.setText(String.valueOf(payableAmountForSalary));
-                        if (payableAmountForSalary > Float.parseFloat(approvedSalaryAmount) ) {
+                        if (payableAmountForSalary > Float.parseFloat(approvedSalaryAmount)) {
                             textViewDenyTransaction.setVisibility(View.VISIBLE);
                             buttonSalarySubmit.setVisibility(View.GONE);
                             textViewDenyTransaction.setText("Amount should be less than " + Float.parseFloat(approvedSalaryAmount));
@@ -508,8 +551,7 @@ public class PeticashFormActivity extends BaseActivity {
                             textViewDenyTransaction.setVisibility(View.GONE);
                             buttonSalarySubmit.setVisibility(View.VISIBLE);
                         }
-
-                    }
+                    }*/
                 } else {
                     editTextSalaryAmount.setText("");
                     edittextPayableAmountSalary.setText("");
@@ -535,6 +577,16 @@ public class PeticashFormActivity extends BaseActivity {
             public void afterTextChanged(Editable editable) {
             }
         });*/
+        editTextSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedString = (String) adapterView.getItemAtPosition(i);
+                setProjectNameFromIndex(selectedString);
+                if(spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Advance")){
+                    requestForViewPament();
+                }
+            }
+        });
 
         editTextBillamount.addTextChangedListener(new TextWatcher() {
             @Override
@@ -584,7 +636,6 @@ public class PeticashFormActivity extends BaseActivity {
         if (bundleExtras != null) {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
-            approvedSalaryAmount = bundleExtras.getString("approvedSalaryAmount");
             employeesearchdataItem = realm.where(EmployeesearchdataItem.class).equalTo("employeeId", primaryKey).findFirst();
             textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
             textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
@@ -617,9 +668,7 @@ public class PeticashFormActivity extends BaseActivity {
                 editTextSelectedSourceName.clearFocus();
             }
         }
-        /*
-
-        if (TextUtils.isEmpty(strItemName)) {
+        /*if (TextUtils.isEmpty(strItemName)) {
             editTextItemName.setFocusableInTouchMode(true);
             editTextItemName.requestFocus();
             editTextItemName.setError(getString(R.string.please_enter) + " " + strSelectedItemName);
@@ -780,12 +829,38 @@ public class PeticashFormActivity extends BaseActivity {
         try {
             params.put("employee_id", primaryKey);
             params.put("type", spinnerCategoryArray.getSelectedItem().toString().toLowerCase());
-            //ToDo Sharvari date
             params.put("date", currentDate);
             params.put("amount", editTextSalaryAmount.getText().toString());
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("project_site_id", project_site_id);
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
                 params.put("days", edittextDay.getText().toString());
+                if(TextUtils.isEmpty(editTextPT.getText().toString())){
+
+                    params.put("pt",0);
+                }else {
+                    params.put("pt",editTextPT.getText().toString());
+                }
+                if(TextUtils.isEmpty(editTextPF.getText().toString())){
+
+                    params.put("pf",0);
+                }else {
+                    params.put("pf",editTextPF.getText().toString());
+                }
+                if(TextUtils.isEmpty(editTextESIC.getText().toString())){
+                    params.put("esic",0);
+
+                }else {
+                    params.put("esic",editTextESIC.getText().toString());
+
+                }
+                if(TextUtils.isEmpty(editTextTDS.getText().toString())){
+                    params.put("tds",0);
+
+                }else {
+                    params.put("tds",editTextTDS.getText().toString());
+
+                }
+
                 if (payableAmountForSalary < 0) {
                     params.put("payable_amount", 0);
                 } else {
@@ -805,7 +880,6 @@ public class PeticashFormActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("@Pa",params.toString());
         AndroidNetworking.post(AppURL.API_CREATE_SALARY_FOR_EMPLOYEE + AppUtils.getInstance().getCurrentToken())
                 .setTag("API_CREATE_SALARY_FOR_EMPLOYEE")
                 .addJSONObjectBody(params)
@@ -945,6 +1019,104 @@ public class PeticashFormActivity extends BaseActivity {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    private void requestForViewPament() {
+        if(isSalary){
+            progressDialog = new ProgressDialog(mContext);
+            progressDialog.setMessage("Loading..."); // Setting Message
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+            progressDialog.show(); // Display Progress Dialog
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id",project_site_id);
+            if(isSalary){
+                params.put("type","salary");
+                params.put("employee_id", primaryKey);
+                params.put("per_day_wages",getPerWeges);
+                params.put("working_days",edittextDay.getText().toString());
+                params.put("advance_after_last_salary",intAdvanceAmount);//ToDo Ask for amount
+                if(TextUtils.isEmpty(editTextPT.getText().toString())){
+
+                    params.put("pt",0);
+                }else {
+                    params.put("pt",editTextPT.getText().toString());
+                }
+                if(TextUtils.isEmpty(editTextPF.getText().toString())){
+
+                    params.put("pf",0);
+                }else {
+                    params.put("pf",editTextPF.getText().toString());
+                }
+                if(TextUtils.isEmpty(editTextESIC.getText().toString())){
+                    params.put("esic",0);
+
+                }else {
+                    params.put("esic",editTextESIC.getText().toString());
+
+                }
+                if(TextUtils.isEmpty(editTextTDS.getText().toString())){
+                    params.put("tds",0);
+
+                }else {
+                    params.put("tds",editTextTDS.getText().toString());
+
+                }
+            }else {
+                params.put("type","advance");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_SALARY_VIEW_PAYMENT + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_SALARY_VIEW_PAYMENT")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject jsonObject=response.getJSONObject("data");
+                            approved_amount=jsonObject.getString("approved_amount");
+                            Log.i("#@approved_amount",approved_amount);
+                            editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
+                            editTextSiteName.setEnabled(false);
+                            editTextEmpIdName.setEnabled(false);
+                            spinnerCategoryArray.setEnabled(false);
+                            if(isSalary) {
+                                Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                                String amount=jsonObject.getString("payable_amount");
+                                edittextPayableAmountSalary.setText(amount);
+                                progressDialog.dismiss();
+                                editTextPT.setEnabled(false);
+                                editTextPF.setEnabled(false);
+                                editTextESIC.setEnabled(false);
+                                editTextTDS.setEnabled(false);
+                                edittextDay.setEnabled(false);
+                                editTextSalaryAmount.setEnabled(false);
+                                edittextPayableAmountSalary.setEnabled(false);
+                                linearPayableAmount.setVisibility(View.VISIBLE);
+                                textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
+                                editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
+                                buttonViewAmount.setVisibility(View.GONE);
+                                edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1114,43 +1286,6 @@ public class PeticashFormActivity extends BaseActivity {
         editTextUpdateDate.setError(null);
     }
 
-    private void setInOutDate(final EditText editext_updateDate) {
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateEditText(editext_updateDate);
-            }
-        };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        datePickerDialog.show();
-    }
-
-    private void setInOutTime(final EditText currentEditText) {
-        final Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        final int minute = mcurrentTime.get(Calendar.MINUTE);
-        final int seconds = mcurrentTime.get(Calendar.SECOND);
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
-                mcurrentTime.set(Calendar.SECOND, seconds);
-                currentEditText.setText(selectedHour + ":" + selectedMinute + ":" + seconds);
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
-
     private void setEnabledFalse() {
         spinnerCategoryArray.setEnabled(false);
         spinnerMaterialOrAsset.setEnabled(false);
@@ -1201,6 +1336,63 @@ public class PeticashFormActivity extends BaseActivity {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                    }
+                });
+    }
+
+    @OnClick(R.id.button_view_amount)
+    public void onViewClickedAmount() {
+        if(TextUtils.isEmpty(editTextEmpIdName.getText().toString())){
+            editTextEmpIdName.setError("Please enter employee name");
+            return;
+        }
+        if(TextUtils.isEmpty(editTextSiteName.getText().toString())){
+            editTextSiteName.setError("Please enter site name");
+            return;
+        }
+        if(TextUtils.isEmpty(edittextDay.getText().toString())){
+            edittextDay.setError("Please enter days");
+            return;
+        }
+        requestForViewPament();
+
+    }
+
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArrayForSite.getJSONObject(selectedIndex);
+            project_site_id = jsonObject.getInt("project_site_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private void requestToGetSystemSites() {
+        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
+                .setTag("requestToGetSystemSites")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArrayForSite = response.getJSONArray("data");
+                            siteNameArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArrayForSite.length(); i++) {
+                                JSONObject jsonObject = jsonArrayForSite.getJSONObject(i);
+                                siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
+                            editTextSiteName.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
                     }
                 });
     }

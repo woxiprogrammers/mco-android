@@ -59,7 +59,6 @@ public class AutoSuggestEmployee extends BaseActivity {
     private RealmResults<EmployeesearchdataItem> employeesearchdataItemsResult;
     private EmployeesearchdataItem employeesearchdataItem;
     private String mStrSearch = "";
-    private String approvedAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +131,6 @@ public class AutoSuggestEmployee extends BaseActivity {
     private void setResultAndFinish(int employeeId) {
         Intent intentData = getIntent();
         intentData.putExtra("employeeId", employeeId);
-        intentData.putExtra("approvedSalaryAmount",approvedAmount);
         setResult(RESULT_OK, intentData);
         finish();
     }
@@ -185,7 +183,6 @@ public class AutoSuggestEmployee extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     setUpAdapter();
-                                    approvedAmount=response.getApproved_amount();
                                     Timber.d("Realm Execution Successful");
                                 }
                             }, new Realm.Transaction.OnError() {

@@ -80,5 +80,7 @@ public class AppURL {
     public static final String API_REQUEST_COMPONENT_LIST = BASE_URL + "inventory/request-component-listing?token=";
     public static final String API_CHANGE_STATUS_INVENTORY_APPROVE=BASE_URL + "inventory/change-status?token=";
     public static final String API_INVENTORY_COMPONENT_AUTO_SUGGEST=BASE_URL+ "inventory/component/auto-suggest?token=";
-    public static final String API_MATERIAL_REQUEST_HISTORY = "http://www.mocky.io/v2/5a5087692f0000240c8d52be"/*BASE_URL + ""*/;
+    public static final String API_MATERIAL_REQUEST_HISTORY = BASE_URL + "purchase/get-history?token=";
+    public static final String API_SALARY_VIEW_PAYMENT =BASE_URL + "peticash/employee-salary/calulate-payable-amount?token=" ;
+    public static final String API_INVENTORY_GET_GRN_DETAILS = BASE_URL + "inventory/component/get-grn-details?token=";
 }
