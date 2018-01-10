@@ -395,6 +395,97 @@ public class PeticashFormActivity extends BaseActivity {
         requestForViewPament();
     }
 
+    private void requestForViewPament() {
+        if (isSalary) {
+            progressDialog = new ProgressDialog(mContext);
+            progressDialog.setMessage("Loading..."); // Setting Message
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+            progressDialog.show(); // Display Progress Dialog
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", project_site_id);
+            if (isSalary) {
+                params.put("type", "salary");
+                params.put("employee_id", primaryKey);
+                params.put("per_day_wages", getPerWeges);
+                params.put("working_days", edittextDay.getText().toString());
+                params.put("advance_after_last_salary", intAdvanceAmount);//ToDo Ask for amount
+                if (TextUtils.isEmpty(editTextPT.getText().toString())) {
+                    params.put("pt", 0);
+                } else {
+                    params.put("pt", editTextPT.getText().toString());
+                }
+                if (TextUtils.isEmpty(editTextPF.getText().toString())) {
+                    params.put("pf", 0);
+                } else {
+                    params.put("pf", editTextPF.getText().toString());
+                }
+                if (TextUtils.isEmpty(editTextESIC.getText().toString())) {
+                    params.put("esic", 0);
+                } else {
+                    params.put("esic", editTextESIC.getText().toString());
+                }
+                if (TextUtils.isEmpty(editTextTDS.getText().toString())) {
+                    params.put("tds", 0);
+                } else {
+                    params.put("tds", editTextTDS.getText().toString());
+                }
+            } else {
+                params.put("type", "advance");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_SALARY_VIEW_PAYMENT + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_SALARY_VIEW_PAYMENT")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            approved_amount = jsonObject.getString("approved_amount");
+                            Log.i("#@approved_amount", approved_amount);
+                            editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
+                            editTextSiteName.setEnabled(false);
+                            editTextEmpIdName.setEnabled(false);
+                            spinnerCategoryArray.setEnabled(false);
+                            if (isSalary) {
+                                Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                                String amount = jsonObject.getString("payable_amount");
+                                edittextPayableAmountSalary.setText(amount);
+                                progressDialog.dismiss();
+                                editTextPT.setEnabled(false);
+                                editTextPF.setEnabled(false);
+                                editTextESIC.setEnabled(false);
+                                editTextTDS.setEnabled(false);
+                                edittextDay.setEnabled(false);
+                                editTextSalaryAmount.setEnabled(false);
+                                edittextPayableAmountSalary.setEnabled(false);
+                                linearPayableAmount.setVisibility(View.VISIBLE);
+                                textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
+                                editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
+                                buttonViewAmount.setVisibility(View.GONE);
+                                edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -443,6 +534,7 @@ public class PeticashFormActivity extends BaseActivity {
                     }
                 });
     }
+    /////API Calls//////////////////////////////////////////////////
 
     private void initializeViews() {
         myCalendar = Calendar.getInstance();
@@ -641,7 +733,6 @@ public class PeticashFormActivity extends BaseActivity {
             }
         });
     }
-    /////API Calls//////////////////////////////////////////////////
 
     private void setProjectNameFromIndex(String selectedString) {
         int selectedIndex = siteNameArray.indexOf(selectedString);
@@ -651,97 +742,6 @@ public class PeticashFormActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private void requestForViewPament() {
-        if (isSalary) {
-            progressDialog = new ProgressDialog(mContext);
-            progressDialog.setMessage("Loading..."); // Setting Message
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
-            progressDialog.show(); // Display Progress Dialog
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", project_site_id);
-            if (isSalary) {
-                params.put("type", "salary");
-                params.put("employee_id", primaryKey);
-                params.put("per_day_wages", getPerWeges);
-                params.put("working_days", edittextDay.getText().toString());
-                params.put("advance_after_last_salary", intAdvanceAmount);//ToDo Ask for amount
-                if (TextUtils.isEmpty(editTextPT.getText().toString())) {
-                    params.put("pt", 0);
-                } else {
-                    params.put("pt", editTextPT.getText().toString());
-                }
-                if (TextUtils.isEmpty(editTextPF.getText().toString())) {
-                    params.put("pf", 0);
-                } else {
-                    params.put("pf", editTextPF.getText().toString());
-                }
-                if (TextUtils.isEmpty(editTextESIC.getText().toString())) {
-                    params.put("esic", 0);
-                } else {
-                    params.put("esic", editTextESIC.getText().toString());
-                }
-                if (TextUtils.isEmpty(editTextTDS.getText().toString())) {
-                    params.put("tds", 0);
-                } else {
-                    params.put("tds", editTextTDS.getText().toString());
-                }
-            } else {
-                params.put("type", "advance");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_SALARY_VIEW_PAYMENT + AppUtils.getInstance().getCurrentToken())
-                .setTag("API_SALARY_VIEW_PAYMENT")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONObject jsonObject = response.getJSONObject("data");
-                            approved_amount = jsonObject.getString("approved_amount");
-                            Log.i("#@approved_amount", approved_amount);
-                            editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
-                            editTextSiteName.setEnabled(false);
-                            editTextEmpIdName.setEnabled(false);
-                            spinnerCategoryArray.setEnabled(false);
-                            if (isSalary) {
-                                Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                                String amount = jsonObject.getString("payable_amount");
-                                edittextPayableAmountSalary.setText(amount);
-                                progressDialog.dismiss();
-                                editTextPT.setEnabled(false);
-                                editTextPF.setEnabled(false);
-                                editTextESIC.setEnabled(false);
-                                editTextTDS.setEnabled(false);
-                                edittextDay.setEnabled(false);
-                                editTextSalaryAmount.setEnabled(false);
-                                edittextPayableAmountSalary.setEnabled(false);
-                                linearPayableAmount.setVisibility(View.VISIBLE);
-                                textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
-                                editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
-                                buttonViewAmount.setVisibility(View.GONE);
-                                edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
