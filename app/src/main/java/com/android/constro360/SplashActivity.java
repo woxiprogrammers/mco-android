@@ -9,6 +9,7 @@ import android.view.WindowManager;
 
 import com.android.checklist_module.ChecklistHomeActivity;
 import com.android.dashboard.DashBoardActivity;
+import com.android.dpr_module.DPRHomeActivity;
 import com.android.drawings_module.DrawingHomeActivity;
 import com.android.inventory_module.ActivityTransferRequest;
 import com.android.inventory_module.InventoryHomeActivity;
@@ -75,14 +76,14 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("vendor-assignment", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("manage-amendment", PurchaseOrderApproveActivity.class.getName());
+        aclKeyValuePair.put("manage-amendment", DPRHomeActivity.class.getName());
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-maintainance", ActivityTransferRequest.class.getName());
         aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("inventory-history", ActivityTransferRequest.class.getName());
-        //
+        //bh
         aclKeyValuePair.put("peticash-management", PetiCashHomeActivity.class.getName());
         //
         aclKeyValuePair.put("checklist-user-assignment", ChecklistHomeActivity.class.getName());
