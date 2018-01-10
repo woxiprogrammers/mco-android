@@ -320,16 +320,6 @@ public class AwarenessHomeActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         RealmResults<MainCategoriesItem> mainCategoriesItemRealmResults = realm.where(MainCategoriesItem.class).findAll();
         setUpSpinnerAdapter(mainCategoriesItemRealmResults);
-        /*if (mainCategoriesItemRealmResults != null) {
-            mainCategoriesItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<MainCategoriesItem>>() {
-                @Override
-                public void onChange(RealmResults<MainCategoriesItem> availableUsersItems) {
-                    setUpSpinnerAdapter(availableUsersItems);
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseMaterialListActivity");
-        }*/
     }
 
     private void setUpSpinnerAdapter(RealmResults<MainCategoriesItem> mainCategoriesItems) {

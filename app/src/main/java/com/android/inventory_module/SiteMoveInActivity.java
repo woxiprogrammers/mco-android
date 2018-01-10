@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -94,6 +95,18 @@ public class SiteMoveInActivity extends BaseActivity {
     private void initializeViews() {
         mContext = SiteMoveInActivity.this;
         progressDialog=new ProgressDialog(mContext);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle("Site In");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void uploadImages_addItemToLocal() {
@@ -281,6 +294,7 @@ public class SiteMoveInActivity extends BaseActivity {
                             }else {
                                 textviewName.setText("Asset Name");
                             }
+                            textViewItemDetails.setVisibility(View.GONE);
                             editTextEnteredGrn.setEnabled(false);
                             unitId=jsonObject.getInt("unit_id");
                             projectSiteIdFrom=jsonObject.getInt("project_site_id_from");

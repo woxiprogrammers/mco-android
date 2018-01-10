@@ -1100,6 +1100,7 @@ public class PeticashFormActivity extends BaseActivity {
                             editTextEmpIdName.setEnabled(false);
                             spinnerCategoryArray.setEnabled(false);
                             if(isSalary) {
+                                edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
                                 Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                                 String amount=jsonObject.getString("payable_amount");
                                 edittextPayableAmountSalary.setText(amount);
@@ -1115,7 +1116,6 @@ public class PeticashFormActivity extends BaseActivity {
                                 textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
                                 editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
                                 buttonViewAmount.setVisibility(View.GONE);
-                                edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1343,6 +1343,9 @@ public class PeticashFormActivity extends BaseActivity {
     @OnClick(R.id.button_view_amount)
     public void onViewClickedAmount() {
         if(TextUtils.isEmpty(editTextEmpIdName.getText().toString())){
+            editTextEmpIdName.requestFocus();
+            editTextEmpIdName.setFocusable(true);
+            editTextEmpIdName.setFocusableInTouchMode(true);
             editTextEmpIdName.setError("Please enter employee name");
             return;
         }

@@ -27,12 +27,12 @@
     <item
         android:id="@+id/action_request_maintaianance"
         android:orderInCategory="100"
-        android:title="Request Maintainance"
+        android:title="Request Maintenance"
         app:showAsAction="never"/>
-
+<!--
     <item
         android:id="@+id/action_move_in_out"
         app:showAsAction="never"
         android:title="Move In/Out"
-          />
+          />-->
 </menu>

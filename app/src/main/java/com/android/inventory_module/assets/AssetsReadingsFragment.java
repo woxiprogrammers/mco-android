@@ -188,6 +188,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         super.onResume();
         if (getUserVisibleHint()) {
             ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+            requestAssetSummaryList();
         }
     }
 
@@ -200,6 +201,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     @Override
     public void fragmentBecameVisible() {
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        requestAssetSummaryList();
     }
 
     public void onDatePickerClicked_purchaseRequest() {

@@ -86,11 +86,11 @@ public class AssetDetailsActivity extends BaseActivity {
             case R.id.action_request_maintaianance:
                 startRequestMaintainanceActivity();
                 break;
-            case R.id.action_move_in_out:
+            /*case R.id.action_move_in_out:
                 Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
                 startIntent.putExtra("inventoryCompId", inventoryComponentId);
                 startActivity(startIntent);
-                break;
+                break;*/
         }
         return super.onOptionsItemSelected(item);
     }
