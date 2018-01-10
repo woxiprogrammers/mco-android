@@ -45,7 +45,6 @@ public class EmployeeTransactionFragment extends DialogFragment {
     private Realm realm;
     private RecyclerView recyclerviewTransaction;
     private int employeeId;
-    private Button buttonOk;
     private ProgressBar progressBar;
     private TextView textViewNoTransactions;
 
@@ -61,7 +60,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
             employeeId = bundle.getInt("empId");
         }
         recyclerviewTransaction = dialog.findViewById(R.id.recyclerviewTransaction);
-        buttonOk = dialog.findViewById(R.id.btnOk);
+        Button buttonOk = dialog.findViewById(R.id.btnOk);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
         textViewNoTransactions = dialog.findViewById(R.id.textViewNoTransactions);
         requestForEmpTransactions();
@@ -73,16 +72,6 @@ public class EmployeeTransactionFragment extends DialogFragment {
         });
         alertDialog = builder.create();
         return alertDialog;
-    }
-
-    private void setUpAdapter() {
-        realm = Realm.getDefaultInstance();
-        final RealmResults<EmployeeTransactionsItem> employeeTransactionsItemRealmResults = realm.where(EmployeeTransactionsItem.class).findAllAsync();
-        Timber.d(String.valueOf(employeeTransactionsItemRealmResults));
-        EmpTransactionAdapter empTransactionAdapter = new EmpTransactionAdapter(employeeTransactionsItemRealmResults, true, true);
-        recyclerviewTransaction.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerviewTransaction.setHasFixedSize(true);
-        recyclerviewTransaction.setAdapter(empTransactionAdapter);
     }
 
     public void requestForEmpTransactions() {
@@ -140,13 +129,23 @@ public class EmployeeTransactionFragment extends DialogFragment {
                     }
                 });
     }
+
+    private void setUpAdapter() {
+        realm = Realm.getDefaultInstance();
+        final RealmResults<EmployeeTransactionsItem> employeeTransactionsItemRealmResults = realm.where(EmployeeTransactionsItem.class).findAllAsync();
+        Timber.d(String.valueOf(employeeTransactionsItemRealmResults));
+        EmpTransactionAdapter empTransactionAdapter = new EmpTransactionAdapter(employeeTransactionsItemRealmResults, true, true);
+        recyclerviewTransaction.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerviewTransaction.setHasFixedSize(true);
+        recyclerviewTransaction.setAdapter(empTransactionAdapter);
+    }
     ///////Adapter
 
     public class EmpTransactionAdapter extends RealmRecyclerViewAdapter<EmployeeTransactionsItem, EmpTransactionAdapter.MyViewHolder> {
         private OrderedRealmCollection<EmployeeTransactionsItem> employeeTransactionsItemOrderedRealmCollection;
         private EmployeeTransactionsItem employeeTransactionsItem;
 
-        public EmpTransactionAdapter(@Nullable OrderedRealmCollection<EmployeeTransactionsItem> data, boolean autoUpdate, boolean updateOnModification) {
+        EmpTransactionAdapter(@Nullable OrderedRealmCollection<EmployeeTransactionsItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             Timber.d(String.valueOf(data));
             employeeTransactionsItemOrderedRealmCollection = data;

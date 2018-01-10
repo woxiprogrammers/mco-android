@@ -29,9 +29,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 
-
 public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
-
+    public Context mContext;
     @BindView(R.id.edittextSetEmpName)
     EditText edittextSetEmpName;
     @BindView(R.id.linerLayoutSetSelectedNames)
@@ -58,11 +57,9 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
     EditText editTextSetSalaryRemark;
     @BindView(R.id.setStatus)
     TextView textViewSetStatus;
-
     private int transactionTypeId;
     private Realm realm;
     private String transactionDetailType;
-    public static Context mContext;
     private EmpSalaryTransactionDetailData empSalaryTransactionDetailData;
 
     @Override
@@ -70,22 +67,27 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_employee_salary_details);
         ButterKnife.bind(this);
-        mContext=ActivityEmpSalaryTransactionDetails.this;
+        mContext = ActivityEmpSalaryTransactionDetails.this;
         Bundle bundle = getIntent().getExtras();
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Transaction Details");
         }
         if (bundle != null) {
             transactionTypeId = bundle.getInt("idForTransactionDetails");
-            transactionDetailType=bundle.getString("transactionDetailType");
-            requestForData();
+            transactionDetailType = bundle.getString("transactionDetailType");
+            setDetailsData();
+            if (AppUtils.getInstance().checkNetworkState()) {
+                requestForData();
+            } else {
+                AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
+            }
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
@@ -117,7 +119,6 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    setData();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -139,29 +140,29 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 });
     }
 
-    private void setData() {
+    private void setDetailsData() {
         realm = Realm.getDefaultInstance();
-         empSalaryTransactionDetailData = realm.where(EmpSalaryTransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
+        empSalaryTransactionDetailData = realm.where(EmpSalaryTransactionDetailData.class)
+                .equalTo("peticashTransactionId", transactionTypeId).findFirst();
         edittextSetEmpName.setText(empSalaryTransactionDetailData.getEmployeeName());
         editTextSetSalaryDate.setText(empSalaryTransactionDetailData.getDate());
-        if(transactionDetailType.equalsIgnoreCase("Salary")){
+        if (transactionDetailType.equalsIgnoreCase("Salary")) {
             edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
             edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
             linearSetLayoutForSalary.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             linearPayableAmount.setVisibility(View.GONE);
             linearSetLayoutForSalary.setVisibility(View.GONE);
         }
-        if(!empSalaryTransactionDetailData.getPayableAmount().isEmpty()){
+        if (!empSalaryTransactionDetailData.getPayableAmount().isEmpty()) {
             edittextSetPayableAmount.setText(empSalaryTransactionDetailData.getPayableAmount());
             linearPayableAmount.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             linearPayableAmount.setVisibility(View.GONE);
         }
         editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
         editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());
         textViewSetStatus.setText(empSalaryTransactionDetailData.getPeticashStatusName());
-
         if (empSalaryTransactionDetailData.getListOfImages().size() > 0) {
             for (int index = 0; index < empSalaryTransactionDetailData.getListOfImages().size(); index++) {
                 ImageView imageView = new ImageView(mContext);
@@ -176,12 +177,11 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                         openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + empSalaryTransactionDetailData.getListOfImages().get(finalIndex).getImageUrl());
                     }
                 });
-                AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView,mContext);
-
-
+                AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView, mContext);
             }
         }
     }
+
     private void openImageZoomFragment(String url) {
         ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
         imageZoomDialogFragment.setCancelable(true);

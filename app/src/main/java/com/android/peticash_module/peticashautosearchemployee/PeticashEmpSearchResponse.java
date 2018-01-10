@@ -8,16 +8,16 @@ import io.realm.RealmObject;
 public class PeticashEmpSearchResponse extends RealmObject{
 
 	@SerializedName("data")
-	private RealmList<EmployeesearchdataItem> employeesearchdata;
+	private RealmList<EmployeeSearchDataItem> employeesearchdata;
 
 	@SerializedName("message")
 	private String message;
 
-	public void setEmployeesearchdata(RealmList<EmployeesearchdataItem> employeesearchdata){
+	public void setEmployeesearchdata(RealmList<EmployeeSearchDataItem> employeesearchdata){
 		this.employeesearchdata = employeesearchdata;
 	}
 
-	public RealmList<EmployeesearchdataItem> getEmployeesearchdata(){
+	public RealmList<EmployeeSearchDataItem> getEmployeesearchdata(){
 		return employeesearchdata;
 	}
 

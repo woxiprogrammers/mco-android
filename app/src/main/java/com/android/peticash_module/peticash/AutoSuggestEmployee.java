@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.peticash_module.peticashautosearchemployee.EmployeesearchdataItem;
+import com.android.peticash_module.peticashautosearchemployee.EmployeeSearchDataItem;
 import com.android.peticash_module.peticashautosearchemployee.PeticashEmpSearchResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -42,22 +42,17 @@ import timber.log.Timber;
 /**
  * Created by Sharvari on 31/10/17.
  */
-
 public class AutoSuggestEmployee extends BaseActivity {
-
     @BindView(R.id.editTextAutoSuggest)
     EditText editTextAutoSuggest;
-
     @BindView(R.id.recyclerViewSearchResultList)
     RecyclerView recyclerViewSearchResultList;
-
     @BindView(R.id.buttonAddAsNewItem)
     Button buttonAddAsNewItem;
-
     private Context mContext;
     private Realm realm;
-    private RealmResults<EmployeesearchdataItem> employeesearchdataItemsResult;
-    private EmployeesearchdataItem employeesearchdataItem;
+    private RealmResults<EmployeeSearchDataItem> employeeSearchDataItemRealmResults;
+    private EmployeeSearchDataItem employeesearchdataItem;
     private String mStrSearch = "";
 
     @Override
@@ -69,19 +64,10 @@ public class AutoSuggestEmployee extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Search Employee");
         }
-        initializeviews();
+        initializeViews();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void initializeviews() {
-
+    private void initializeViews() {
         mContext = AutoSuggestEmployee.this;
         deletePreviousLocalData();
         editTextAutoSuggest.addTextChangedListener(new TextWatcher() {
@@ -102,37 +88,6 @@ public class AutoSuggestEmployee extends BaseActivity {
             }
         });
         buttonAddAsNewItem.setVisibility(View.GONE);
-
-    }
-
-    private void setUpAdapter() {
-        realm = Realm.getDefaultInstance();
-        employeesearchdataItemsResult = realm.where(EmployeesearchdataItem.class).findAllAsync();
-        EmployeeAutoSuggestAdapter materialAutoSuggestAdapter = new EmployeeAutoSuggestAdapter(employeesearchdataItemsResult, true, true);
-        recyclerViewSearchResultList.setLayoutManager(new LinearLayoutManager(mContext));
-        recyclerViewSearchResultList.setHasFixedSize(true);
-        recyclerViewSearchResultList.setAdapter(materialAutoSuggestAdapter);
-        recyclerViewSearchResultList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                recyclerViewSearchResultList,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, final int position) {
-                        employeesearchdataItem = employeesearchdataItemsResult.get(position);
-                        setResultAndFinish(employeesearchdataItem.getEmployeeId());
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                }));
-
-    }
-
-    private void setResultAndFinish(int employeeId) {
-        Intent intentData = getIntent();
-        intentData.putExtra("employeeId", employeeId);
-        setResult(RESULT_OK, intentData);
-        finish();
     }
 
     private void deletePreviousLocalData() {
@@ -142,8 +97,7 @@ public class AutoSuggestEmployee extends BaseActivity {
                 @Override
                 public void execute(Realm realm) {
                     realm.delete(PeticashEmpSearchResponse.class);
-                    realm.delete(EmployeesearchdataItem.class);
-
+                    realm.delete(EmployeeSearchDataItem.class);
                 }
             });
         } finally {
@@ -151,6 +105,14 @@ public class AutoSuggestEmployee extends BaseActivity {
                 realm.close();
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void requestAutoSearchEmployee(String searchKeyword) {
@@ -161,7 +123,6 @@ public class AutoSuggestEmployee extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         AndroidNetworking.post(AppURL.API_AUTO_SUGGEST_FOR_PETICASH_EMPLOYEE)
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
@@ -176,7 +137,7 @@ public class AutoSuggestEmployee extends BaseActivity {
                                 @Override
                                 public void execute(Realm realm) {
                                     realm.delete(PeticashEmpSearchResponse.class);
-                                    realm.delete(EmployeesearchdataItem.class);
+                                    realm.delete(EmployeeSearchDataItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -196,7 +157,6 @@ public class AutoSuggestEmployee extends BaseActivity {
                                 realm.close();
                             }
                         }
-
                     }
 
                     @Override
@@ -206,15 +166,60 @@ public class AutoSuggestEmployee extends BaseActivity {
                 });
     }
 
+    private void setUpAdapter() {
+        realm = Realm.getDefaultInstance();
+        employeeSearchDataItemRealmResults = realm.where(EmployeeSearchDataItem.class).findAllAsync();
+        EmployeeAutoSuggestAdapter materialAutoSuggestAdapter = new EmployeeAutoSuggestAdapter(employeeSearchDataItemRealmResults, true, true);
+        recyclerViewSearchResultList.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerViewSearchResultList.setHasFixedSize(true);
+        recyclerViewSearchResultList.setAdapter(materialAutoSuggestAdapter);
+        recyclerViewSearchResultList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                recyclerViewSearchResultList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        employeesearchdataItem = employeeSearchDataItemRealmResults.get(position);
+                        setResultAndFinish(employeesearchdataItem.getEmployeeId());
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+    }
+
+    private void setResultAndFinish(int employeeId) {
+        Intent intentData = getIntent();
+        intentData.putExtra("employeeId", employeeId);
+        setResult(RESULT_OK, intentData);
+        finish();
+    }
+
     @SuppressWarnings("WeakerAccess")
-    protected class EmployeeAutoSuggestAdapter extends RealmRecyclerViewAdapter<EmployeesearchdataItem, EmployeeAutoSuggestAdapter.MyViewHolder> {
+    protected class EmployeeAutoSuggestAdapter extends RealmRecyclerViewAdapter<EmployeeSearchDataItem, EmployeeAutoSuggestAdapter.MyViewHolder> {
+        private OrderedRealmCollection<EmployeeSearchDataItem> employeesearchdataItemOrderedRealmCollection;
 
-        private OrderedRealmCollection<EmployeesearchdataItem> employeesearchdataItemOrderedRealmCollection;
-
-        EmployeeAutoSuggestAdapter(@Nullable OrderedRealmCollection<EmployeesearchdataItem> data, boolean autoUpdate, boolean updateOnModification) {
+        EmployeeAutoSuggestAdapter(@Nullable OrderedRealmCollection<EmployeeSearchDataItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             employeesearchdataItemOrderedRealmCollection = data;
+        }
 
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_result_list, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            EmployeeSearchDataItem employeesearchdataItem = employeesearchdataItemOrderedRealmCollection.get(position);
+            holder.mTextViewResultItem.setText(employeesearchdataItem.getEmployeeName() +
+                    " (" + employeesearchdataItem.getFormatEmployeeId() + ")");
+        }
+
+        @Override
+        public int getItemCount() {
+            return employeesearchdataItemOrderedRealmCollection == null ? 0 : employeesearchdataItemOrderedRealmCollection.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
@@ -226,25 +231,5 @@ public class AutoSuggestEmployee extends BaseActivity {
                 ButterKnife.bind(this, itemView);
             }
         }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_result_list, parent, false);
-            return new MyViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            EmployeesearchdataItem employeesearchdataItem = employeesearchdataItemOrderedRealmCollection.get(position);
-            holder.mTextViewResultItem.setText(employeesearchdataItem.getEmployeeName() +
-            " (" + employeesearchdataItem.getFormatEmployeeId() + ")");
-        }
-
-        @Override
-        public int getItemCount() {
-            return employeesearchdataItemOrderedRealmCollection == null ? 0 : employeesearchdataItemOrderedRealmCollection.size();
-
-        }
-
     }
 }
