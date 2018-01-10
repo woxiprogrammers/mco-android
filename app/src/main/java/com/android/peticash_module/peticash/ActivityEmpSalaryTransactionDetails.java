@@ -144,40 +144,42 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         realm = Realm.getDefaultInstance();
         empSalaryTransactionDetailData = realm.where(EmpSalaryTransactionDetailData.class)
                 .equalTo("peticashTransactionId", transactionTypeId).findFirst();
-        edittextSetEmpName.setText(empSalaryTransactionDetailData.getEmployeeName());
-        editTextSetSalaryDate.setText(empSalaryTransactionDetailData.getDate());
-        if (transactionDetailType.equalsIgnoreCase("Salary")) {
-            edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
-            edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
-            linearSetLayoutForSalary.setVisibility(View.VISIBLE);
-        } else {
-            linearPayableAmount.setVisibility(View.GONE);
-            linearSetLayoutForSalary.setVisibility(View.GONE);
-        }
-        if (!empSalaryTransactionDetailData.getPayableAmount().isEmpty()) {
-            edittextSetPayableAmount.setText(empSalaryTransactionDetailData.getPayableAmount());
-            linearPayableAmount.setVisibility(View.VISIBLE);
-        } else {
-            linearPayableAmount.setVisibility(View.GONE);
-        }
-        editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
-        editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());
-        textViewSetStatus.setText(empSalaryTransactionDetailData.getPeticashStatusName());
-        if (empSalaryTransactionDetailData.getListOfImages().size() > 0) {
-            for (int index = 0; index < empSalaryTransactionDetailData.getListOfImages().size(); index++) {
-                ImageView imageView = new ImageView(mContext);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(150, 150);
-                layoutParams.setMargins(10, 10, 10, 10);
-                imageView.setLayoutParams(layoutParams);
-                linearLayoutSetImage.addView(imageView);
-                final int finalIndex = index;
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + empSalaryTransactionDetailData.getListOfImages().get(finalIndex).getImageUrl());
-                    }
-                });
-                AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView, mContext);
+        if (empSalaryTransactionDetailData != null) {
+            edittextSetEmpName.setText(empSalaryTransactionDetailData.getEmployeeName());
+            editTextSetSalaryDate.setText(empSalaryTransactionDetailData.getDate());
+            if (transactionDetailType.equalsIgnoreCase("Salary")) {
+                edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
+                edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
+                linearSetLayoutForSalary.setVisibility(View.VISIBLE);
+            } else {
+                linearPayableAmount.setVisibility(View.GONE);
+                linearSetLayoutForSalary.setVisibility(View.GONE);
+            }
+            if (!empSalaryTransactionDetailData.getPayableAmount().isEmpty()) {
+                edittextSetPayableAmount.setText(empSalaryTransactionDetailData.getPayableAmount());
+                linearPayableAmount.setVisibility(View.VISIBLE);
+            } else {
+                linearPayableAmount.setVisibility(View.GONE);
+            }
+            editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
+            editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());
+            textViewSetStatus.setText(empSalaryTransactionDetailData.getPeticashStatusName());
+            if (empSalaryTransactionDetailData.getListOfImages().size() > 0) {
+                for (int index = 0; index < empSalaryTransactionDetailData.getListOfImages().size(); index++) {
+                    ImageView imageView = new ImageView(mContext);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(150, 150);
+                    layoutParams.setMargins(10, 10, 10, 10);
+                    imageView.setLayoutParams(layoutParams);
+                    linearLayoutSetImage.addView(imageView);
+                    final int finalIndex = index;
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + empSalaryTransactionDetailData.getListOfImages().get(finalIndex).getImageUrl());
+                        }
+                    });
+                    AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView, mContext);
+                }
             }
         }
     }

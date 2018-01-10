@@ -51,11 +51,9 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -280,7 +278,7 @@ public class PeticashFormActivity extends BaseActivity {
             getSupportActionBar().setTitle("Peticash");
         }
         requestToGetSystemSites();
-        initializeviews();
+        initializeViews();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             amountLimit = bundle.getString("amountLimit");
@@ -309,10 +307,18 @@ public class PeticashFormActivity extends BaseActivity {
                 }
                 break;
             case R.id.button_pay_with_peticash:
-                uploadImages_addItemToLocal("billPayment", "peticash_purchase_payment_transaction");
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    uploadImages_addItemToLocal("billPayment", "peticash_purchase_payment_transaction");
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PeticashFormActivity");
+                }
                 break;
             case R.id.imageViewProfilePicture:
-                openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + employeesearchdataItem.getEmployeeProfilePicture());
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + employeesearchdataItem.getEmployeeProfilePicture());
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PeticashFormActivity");
+                }
                 break;
         }
     }
@@ -320,7 +326,11 @@ public class PeticashFormActivity extends BaseActivity {
     //Salary
     @OnClick(R.id.button_salary_submit)
     public void onViewClicked() {
-        validationForSalaryAdvance();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            validationForSalaryAdvance();
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PeticashFormActivity");
+        }
     }
 
     @OnClick(R.id.edit_text_emp_id_name)
@@ -335,11 +345,15 @@ public class PeticashFormActivity extends BaseActivity {
 
     @OnClick(R.id.imageviewEmpTransactions)
     public void transactionClicked() {
-        EmployeeTransactionFragment employeeTransactionFragment = new EmployeeTransactionFragment();
-        Bundle bundleArgs = new Bundle();
-        bundleArgs.putInt("empId", primaryKey);
-        employeeTransactionFragment.setArguments(bundleArgs);
-        employeeTransactionFragment.show(getSupportFragmentManager(), "Transactions");
+        if (AppUtils.getInstance().checkNetworkState()) {
+            EmployeeTransactionFragment employeeTransactionFragment = new EmployeeTransactionFragment();
+            Bundle bundleArgs = new Bundle();
+            bundleArgs.putInt("empId", primaryKey);
+            employeeTransactionFragment.setArguments(bundleArgs);
+            employeeTransactionFragment.show(getSupportFragmentManager(), "Transactions");
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PeticashFormActivity");
+        }
     }
 
     private void openImageZoomFragment(String url) {
@@ -348,7 +362,7 @@ public class PeticashFormActivity extends BaseActivity {
         imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
     }
 
-    private void initializeviews() {
+    private void initializeViews() {
         myCalendar = Calendar.getInstance();
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int passMonth = calendar.get(Calendar.MONTH) + 1;
@@ -534,10 +548,14 @@ public class PeticashFormActivity extends BaseActivity {
         editTextItemName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentSearch = new Intent(mContext, AutoSuggestActivity.class);
-                intentSearch.putExtra("isMaterial", isMaterial);
-                intentSearch.putExtra("moduleName", "peticash");
-                startActivityForResult(intentSearch, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_PETICASH);
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    Intent intentSearch = new Intent(mContext, AutoSuggestActivity.class);
+                    intentSearch.putExtra("isMaterial", isMaterial);
+                    intentSearch.putExtra("moduleName", "peticash");
+                    startActivityForResult(intentSearch, AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_PETICASH);
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PeticashFormActivity");
+                }
             }
         });
     }
@@ -580,16 +598,6 @@ public class PeticashFormActivity extends BaseActivity {
                 editTextSelectedSourceName.clearFocus();
             }
         }
-        /*if (TextUtils.isEmpty(strItemName)) {
-            editTextItemName.setFocusableInTouchMode(true);
-            editTextItemName.requestFocus();
-            editTextItemName.setError(getString(R.string.please_enter) + " " + strSelectedItemName);
-            return;
-
-        } else {
-            editTextItemName.setError(null);
-            editTextItemName.clearFocus();
-        }*/
         if (TextUtils.isEmpty(strItemQuantity)) {
             edittextQuantity.setFocusableInTouchMode(true);
             edittextQuantity.requestFocus();
@@ -617,12 +625,10 @@ public class PeticashFormActivity extends BaseActivity {
             editTextBillamount.setError(null);
             editTextBillamount.clearFocus();
         }
-//        Toast.makeText(mContext, "GRN Generated", Toast.LENGTH_SHORT).show();
         uploadImages_addItemToLocal("requestToGrnGeneration", "peticash_purchase_transaction");
     }
 
     private void validationForSalaryAdvance() {
-//
         String strEmployeeIDOrName = editTextEmpIdName.getText().toString();
         String strSalaryAmount = editTextSalaryAmount.getText().toString();
         String strTotalDays = edittextDay.getText().toString();
@@ -1148,13 +1154,6 @@ public class PeticashFormActivity extends BaseActivity {
                 requestForPurchasePayment();
             }
         }
-    }
-
-    private void updateEditText(EditText editTextUpdateDate) {
-        String myFormat = "yyyy-MM-dd";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editTextUpdateDate.setText(sdf.format(myCalendar.getTime()));
-        editTextUpdateDate.setError(null);
     }
 
     private void setEnabledFalse() {

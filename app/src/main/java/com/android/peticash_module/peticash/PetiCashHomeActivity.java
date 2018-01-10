@@ -17,14 +17,13 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.purchase_module.purchase_request.MonthYearPickerDialog;
 import com.android.login_mvp.login_model.PermissionsItem;
 import com.android.peticash_module.peticash.peticash_models.DatewiseTransactionsListItem;
-import com.android.peticash_module.peticash.peticash_models.PeticashTransactionData;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionStatsData;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionStatsResponse;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionsResponse;
 import com.android.peticash_module.peticash.peticash_models.TransactionListItem;
+import com.android.purchase_module.purchase_request.MonthYearPickerDialog;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -75,9 +74,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     private int pageNumber = 0;
     private Realm realm;
     private RealmResults<DatewiseTransactionsListItem> peticashTransactionsRealmResult;
-    private PeticashTransactionsListAdapter peticashTransactionsListAdapter;
     private String permissionList;
-
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
@@ -128,6 +125,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
         }
         return super.onOptionsItemSelected(item);
     }
+
     private String purchaseAmountLimit;
 
     @OnClick(R.id.relative_layout_datePicker_peticash)
@@ -145,7 +143,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
 
     @OnClick(R.id.floating_add_button_peticash)
     public void onFloatingAddButtonPeticashClicked() {
-        startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit",purchaseAmountLimit));
+        startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit", purchaseAmountLimit));
     }
 
     /**
@@ -155,7 +153,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
      */
     private void initializeViews() {
         mContext = PetiCashHomeActivity.this;
-        Bundle bundle=getIntent().getExtras();
+        Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             permissionList = bundle.getString("permissionsItemList");
         }
@@ -165,6 +163,30 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
             if (accessPermission.equalsIgnoreCase(getString(R.string.create_peticash_management))) {
                 mFloatingAddButtonPeticash.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    private void setUpAppBarDatePicker() {
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passYear = calendar.get(Calendar.YEAR);
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
+    }
+
+    private void setUpTransactionStatsData_inAppBar() {
+        try {
+            realm = Realm.getDefaultInstance();
+            PeticashTransactionStatsData peticashTransactionStatsData = realm.where(PeticashTransactionStatsData.class).findFirst();
+            if (peticashTransactionStatsData != null && peticashTransactionStatsData.isValid()) {
+                mTextViewAllocatedAmount.setText("₹" + peticashTransactionStatsData.getAllocatedAmount());
+                mTextViewSalaryAmount.setText("₹" + peticashTransactionStatsData.getTotalSalaryAmount());
+                mTextViewAdvanceAmount.setText("₹" + peticashTransactionStatsData.getTotalAdvanceAmount());
+                mTextViewPurchaseAmount.setText("₹" + peticashTransactionStatsData.getTotalPurchaseAmount());
+                mTextViewRemainingAmount.setText("₹" + peticashTransactionStatsData.getRemainingAmount());
+            }
+        } finally {
+            if (realm != null) realm.close();
         }
     }
 
@@ -217,28 +239,38 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                 });
     }
 
-    private void setUpTransactionStatsData_inAppBar() {
-        try {
-            realm = Realm.getDefaultInstance();
-            PeticashTransactionStatsData peticashTransactionStatsData = realm.where(PeticashTransactionStatsData.class).findFirst();
-            if (peticashTransactionStatsData != null && peticashTransactionStatsData.isValid()) {
-                mTextViewAllocatedAmount.setText("₹" + peticashTransactionStatsData.getAllocatedAmount());
-                mTextViewSalaryAmount.setText("₹" + peticashTransactionStatsData.getTotalSalaryAmount());
-                mTextViewAdvanceAmount.setText("₹" + peticashTransactionStatsData.getTotalAdvanceAmount());
-                mTextViewPurchaseAmount.setText("₹" + peticashTransactionStatsData.getTotalPurchaseAmount());
-                mTextViewRemainingAmount.setText("₹" + peticashTransactionStatsData.getRemainingAmount());
-            }
-        } finally {
-            if (realm != null) realm.close();
-        }
-    }
-
-    private void setUpAppBarDatePicker() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        passMonth = calendar.get(Calendar.MONTH) + 1;
-        passYear = calendar.get(Calendar.YEAR);
+    private void setUpPeticashTransactionsListAdapter() {
+        realm = Realm.getDefaultInstance();
+        Timber.d("Adapter setup called");
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
+        peticashTransactionsRealmResult = realm.where(DatewiseTransactionsListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .contains("date", String.valueOf(passYear))
+                .contains("date", strMonth).findAllAsync();
+        PeticashTransactionsListAdapter peticashTransactionsListAdapter = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
+        mRecyclerViewPeticashList.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerViewPeticashList.setHasFixedSize(true);
+        peticashTransactionsListAdapter.setOnItemClickListener(new PeticashTransactionsListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int modulePosition) {
+                int subModuleIndex = itemView.getId();
+                TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
+                if (transactionListItem.isValid()) {
+                    if (transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Salary") || transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Advance")) {
+                        Intent intent = new Intent(mContext, ActivityEmpSalaryTransactionDetails.class);
+                        intent.putExtra("idForTransactionDetails", transactionListItem.getPeticashTransactionId());
+                        intent.putExtra("transactionDetailType", transactionListItem.getPeticashTransactionType());
+                        startActivity(intent);
+                    } else {
+                        Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
+                        formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
+                        formIntent.putExtra("transactionType", transactionListItem.getPeticashTransactionType());
+                        startActivity(formIntent);
+                    }
+                }
+            }
+        });
+        mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
     }
 
     private void requestPeticashTransactionsOnline(int currentPageNumber) {
@@ -268,19 +300,19 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    if (pageNumber == 0) {
-                                        realm.delete(PeticashTransactionsResponse.class);
-                                        realm.delete(PeticashTransactionData.class);
-                                        realm.delete(DatewiseTransactionsListItem.class);
-                                        realm.delete(TransactionListItem.class);
-                                    }
+//                                    if (pageNumber == 0) {
+//                                        realm.delete(PeticashTransactionsResponse.class);
+//                                        realm.delete(PeticashTransactionData.class);
+//                                        realm.delete(DatewiseTransactionsListItem.class);
+//                                        realm.delete(TransactionListItem.class);
+//                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
                                     setUpPeticashTransactionsListAdapter();
-                                    purchaseAmountLimit=response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
+                                    purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -306,68 +338,5 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                         AppUtils.getInstance().logApiError(anError, "requestPeticashTransactionsOnline");
                     }
                 });
-    }
-
-    private void setUpPeticashTransactionsListAdapter() {
-        realm = Realm.getDefaultInstance();
-        Timber.d("Adapter setup called");
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        peticashTransactionsRealmResult = realm.where(DatewiseTransactionsListItem.class)
-                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .contains("date", String.valueOf(passYear))
-                .contains("date", strMonth).findAllAsync();
-        peticashTransactionsListAdapter = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
-        mRecyclerViewPeticashList.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerViewPeticashList.setHasFixedSize(true);
-        peticashTransactionsListAdapter.setOnItemClickListener(new PeticashTransactionsListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int modulePosition) {
-                int subModuleIndex = itemView.getId();
-                TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
-//                Toast.makeText(mContext, "" + transactionListItem.getPeticashTransactionId() + " " + transactionListItem.getPeticashTransactionType(), Toast.LENGTH_SHORT).show();
-                if (transactionListItem.isValid()) {
-                    if (transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Salary") || transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Advance")) {
-                        Intent intent = new Intent(mContext, ActivityEmpSalaryTransactionDetails.class);
-                        intent.putExtra("idForTransactionDetails", transactionListItem.getPeticashTransactionId());
-                        intent.putExtra("transactionDetailType", transactionListItem.getPeticashTransactionType());
-                        startActivity(intent);
-                    } else {
-                        Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
-                        formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
-                        formIntent.putExtra("transactionType", transactionListItem.getPeticashTransactionType());
-                        startActivity(formIntent);
-                    }
-                }
-            }
-        });
-        mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
-        /*if (peticashTransactionsRealmResult != null) {
-            peticashTransactionsRealmResult.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<DatewiseTransactionsListItem>>() {
-                @Override
-                public void onChange(RealmResults<DatewiseTransactionsListItem> purchaseRequestListItems, OrderedCollectionChangeSet changeSet) {
-                    // `null`  means the async query returns the first time.
-                    if (changeSet == null) {
-                        peticashTransactionsListAdapter.notifyDataSetChanged();
-                        return;
-                    }
-                    // For deletions, the adapter has to be notified in reverse order.
-                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
-                    for (int i = deletions.length - 1; i >= 0; i--) {
-                        OrderedCollectionChangeSet.Range range = deletions[i];
-                        peticashTransactionsListAdapter.notifyItemRangeRemoved(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
-                    for (OrderedCollectionChangeSet.Range range : insertions) {
-                        peticashTransactionsListAdapter.notifyItemRangeInserted(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
-                    for (OrderedCollectionChangeSet.Range range : modifications) {
-                        peticashTransactionsListAdapter.notifyItemRangeChanged(range.startIndex, range.length);
-                    }
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
-        }*/
     }
 }
