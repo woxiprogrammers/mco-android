@@ -170,7 +170,7 @@ public class SiteMoveInActivity extends BaseActivity {
         }
         AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
                 .setTag("materialCreateTransfer")
-//                .addJSONObjectBody(params)
+                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -327,4 +327,6 @@ public class SiteMoveInActivity extends BaseActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
+
+
 }

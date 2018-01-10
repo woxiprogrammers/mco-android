@@ -247,7 +247,7 @@ public class DPRHomeActivity extends BaseActivity {
                 });
     }
 
-    private void name(){
+    private void requestToSaveDetails(){
 
     }
 }
