@@ -3,13 +3,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
     <android.support.v4.widget.NestedScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </android.support.v4.widget.NestedScrollView>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,8 +38,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    android:text="GRN20180115"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:text="GRN20180115"/>
 
                 <TextView
                     android:id="@+id/textViewItemDetails"
@@ -61,8 +59,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
-            android:padding="@dimen/dimen_8dp">
+            android:padding="@dimen/dimen_8dp"
+            android:visibility="gone">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -80,11 +79,12 @@
                     android:id="@+id/editTextSiteName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:textColor="@color/black"
                     android:background="@android:drawable/editbox_background_normal"
-                    android:focusable="false"/>
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:textColor="@color/black"/>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,10 +128,10 @@
                         android:id="@+id/edtQuantity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="1234567890."
-                        android:inputType="number"/>
+                        android:inputType="number"
+                        android:textColor="@color/black"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -150,15 +150,16 @@
                         android:id="@+id/editTextUnit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:textColor="@color/black"
                         android:background="@android:drawable/editbox_background_normal"
-                        android:focusable="false"/>
-
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:textColor="@color/black"/>
                 </LinearLayout>
             </LinearLayout>
+
             <include
                 layout="@layout/layout_multi_capture_select"/>
+
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

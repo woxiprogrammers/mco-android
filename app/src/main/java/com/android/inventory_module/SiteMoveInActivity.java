@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +32,6 @@ import com.vlk.multimager.utils.Params;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +44,6 @@ import id.zelory.compressor.Compressor;
 import timber.log.Timber;
 
 public class SiteMoveInActivity extends BaseActivity {
-
     @BindView(R.id.editTextEnteredGrn)
     EditText editTextEnteredGrn;
     @BindView(R.id.textViewItemDetails)
@@ -73,15 +70,12 @@ public class SiteMoveInActivity extends BaseActivity {
     TextView siteName;
     @BindView(R.id.editTextSiteName)
     EditText editTextSiteName;
-
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
-    private JSONArray jsonArray;
     private JSONArray jsonImageNameArray = new JSONArray();
     private boolean isMaterial;
-    private int unitId,projectSiteIdFrom,inventoryComponentId;
+    private int unitId, projectSiteIdFrom, inventoryComponentId;
     private ProgressDialog progressDialog;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +87,7 @@ public class SiteMoveInActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = SiteMoveInActivity.this;
-        progressDialog=new ProgressDialog(mContext);
+        progressDialog = new ProgressDialog(mContext);
     }
 
     private void uploadImages_addItemToLocal() {
@@ -137,21 +131,20 @@ public class SiteMoveInActivity extends BaseActivity {
     }
 
     private void requestToMoveIn() {
-
         showProgressDialog();
-        JSONObject params=new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id_from",projectSiteIdFrom);
-            params.put("project_site_id_to",AppUtils.getInstance().getCurrentSiteId());
-            params.put("name","site");
-            params.put("type","IN");
-            params.put("inventory_component_id",inventoryComponentId);
-            params.put("component_name",editTextSiteName.getText().toString());
-            params.put("is_material",isMaterial);
-            params.put("quantity",edtQuantity.getText().toString());
-            params.put("unit_id",unitId);
-            params.put("remark",edtSiteTransferRemark.getText().toString());
-            params.put("images",jsonImageNameArray);
+            params.put("project_site_id_from", projectSiteIdFrom);
+            params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
+            params.put("name", "site");
+            params.put("type", "IN");
+            params.put("inventory_component_id", inventoryComponentId);
+            params.put("component_name", editTextSiteName.getText().toString());
+            params.put("is_material", isMaterial);
+            params.put("quantity", edtQuantity.getText().toString());
+            params.put("unit_id", unitId);
+            params.put("remark", edtSiteTransferRemark.getText().toString());
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -184,25 +177,33 @@ public class SiteMoveInActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewItemDetails:
-                if(TextUtils.isEmpty(editTextEnteredGrn.getText().toString())){
-                    editTextEnteredGrn.setError("Please enter GRN");
-                    return;
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    if (TextUtils.isEmpty(editTextEnteredGrn.getText().toString())) {
+                        editTextEnteredGrn.setError("Please enter GRN");
+                        return;
+                    }
+                    getDetails();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
                 }
-                getDetails();
                 break;
             case R.id.textView_capture:
                 chooseAction();
                 break;
             case R.id.btnSubmit:
-                if(TextUtils.isEmpty(editTextName.getText().toString())){
-                    editTextName.setError("Please enter name");
-                    return;
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    if (TextUtils.isEmpty(editTextName.getText().toString())) {
+                        editTextName.setError("Please enter name");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(edtQuantity.getText().toString())) {
+                        edtQuantity.setError("Please enter quantity");
+                        return;
+                    }
+                    uploadImages_addItemToLocal();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
                 }
-                if(TextUtils.isEmpty(edtQuantity.getText().toString())){
-                    edtQuantity.setError("Please enter quantity");
-                    return;
-                }
-                uploadImages_addItemToLocal();
                 break;
         }
     }
@@ -253,12 +254,12 @@ public class SiteMoveInActivity extends BaseActivity {
         }
     }
 
-    private void getDetails(){
+    private void getDetails() {
         showProgressDialog();
-        JSONObject params=new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id_to",AppUtils.getInstance().getCurrentSiteId());
-            params.put("grn",editTextEnteredGrn.getText().toString());
+            params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
+            params.put("grn", editTextEnteredGrn.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -273,25 +274,25 @@ public class SiteMoveInActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             progressDialog.dismiss();
-                            JSONObject jsonObject=response.getJSONObject("data");
+                            JSONObject jsonObject = response.getJSONObject("data");
                             linearLayoutDetails.setVisibility(View.VISIBLE);
-                            isMaterial=jsonObject.getBoolean("is_material");
-                            if(isMaterial){
+                            isMaterial = jsonObject.getBoolean("is_material");
+                            if (isMaterial) {
                                 textviewName.setText("Material Name");
-                            }else {
+                            } else {
                                 textviewName.setText("Asset Name");
                             }
                             editTextEnteredGrn.setEnabled(false);
-                            unitId=jsonObject.getInt("unit_id");
-                            projectSiteIdFrom=jsonObject.getInt("project_site_id_from");
-                            inventoryComponentId=jsonObject.getInt("inventory_component_id");
-                            String projectSiteNameFrom=jsonObject.getString("project_site_name_from");
+                            unitId = jsonObject.getInt("unit_id");
+                            projectSiteIdFrom = jsonObject.getInt("project_site_id_from");
+                            inventoryComponentId = jsonObject.getInt("inventory_component_id");
+                            String projectSiteNameFrom = jsonObject.getString("project_site_name_from");
                             editTextSiteName.setText(projectSiteNameFrom);
-                            String material_name=jsonObject.getString("material_name");
+                            String material_name = jsonObject.getString("material_name");
                             editTextName.setText(material_name);
-                            String quantity=jsonObject.getString("quantity");
+                            String quantity = jsonObject.getString("quantity");
                             edtQuantity.setText(quantity);
-                            String unitName=jsonObject.getString("unit_name");
+                            String unitName = jsonObject.getString("unit_name");
                             editTextUnit.setText(unitName);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -305,7 +306,7 @@ public class SiteMoveInActivity extends BaseActivity {
                 });
     }
 
-    private void showProgressDialog(){
+    private void showProgressDialog() {
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage("Loading....");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
