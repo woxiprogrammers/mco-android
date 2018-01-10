@@ -260,7 +260,16 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
 
     private void setUpPeticashTransactionsListAdapter() {
         realm = Realm.getDefaultInstance();
-        Timber.d("Adapter setup called");
+        PeticashTransactionsResponse peticashTransactionsResponse = realm.where(PeticashTransactionsResponse.class).findFirst();
+        if (peticashTransactionsResponse != null) {
+            if (!TextUtils.isEmpty(peticashTransactionsResponse.getDate())) {
+                mTextViewListHeaderPeticash.setText("Latest transactions as on: " + peticashTransactionsResponse.getDate());
+            } else {
+                mTextViewListHeaderPeticash.setVisibility(View.GONE);
+            }
+        } else {
+            mTextViewListHeaderPeticash.setVisibility(View.GONE);
+        }
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
         peticashTransactionsRealmResult = realm.where(DatewiseTransactionsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
@@ -346,9 +355,6 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                 }
                                 if (!TextUtils.isEmpty(response.getPageId())) {
                                     pageNumber = Integer.parseInt(response.getPageId());
-                                }
-                                if (!TextUtils.isEmpty(response.getDate())) {
-                                    mTextViewListHeaderPeticash.setText("Latest transactions as on: " + response.getDate());
                                 }
                             }
 
