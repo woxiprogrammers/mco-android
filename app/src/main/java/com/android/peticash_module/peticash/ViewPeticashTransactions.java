@@ -100,7 +100,12 @@ public class ViewPeticashTransactions extends BaseActivity {
         }
         if (bundle != null) {
             transactionTypeId = bundle.getInt("transactionId", -1);
-            requestToPurchaseTransactionDetail();
+            setDetailsData();
+            if (AppUtils.getInstance().checkNetworkState()) {
+                requestToPurchaseTransactionDetail();
+            } else {
+                AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
+            }
         }
     }
 
@@ -138,7 +143,6 @@ public class ViewPeticashTransactions extends BaseActivity {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    setData();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -160,9 +164,10 @@ public class ViewPeticashTransactions extends BaseActivity {
                 });
     }
 
-    private void setData() {
+    private void setDetailsData() {
         realm = Realm.getDefaultInstance();
-        transactionDetailData = realm.where(TransactionDetailData.class).equalTo("peticashTransactionId", transactionTypeId).findFirst();
+        transactionDetailData = realm.where(TransactionDetailData.class)
+                .equalTo("peticashTransactionId", transactionTypeId).findFirst();
         editTextSourceSetName.setText(transactionDetailData.getSourceName());
         editTextSetItemName.setText(transactionDetailData.getName());
         edittextSetQuantity.setText(transactionDetailData.getQuantity());
