@@ -80,12 +80,20 @@ public class ViewPeticashTransactions extends BaseActivity {
     EditText editTextRefNum;
     @BindView(R.id.horizontalImage)
     HorizontalScrollView horizontalImage;
-    private Context mContext;
     @BindView(R.id.ll_forSupplierSetInOutTime)
     LinearLayout ll_forSupplierSetInOutTime;
+    private Context mContext;
     private Realm realm;
     private int transactionTypeId;
     private TransactionDetailData transactionDetailData;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,61 +115,6 @@ public class ViewPeticashTransactions extends BaseActivity {
                 AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
             }
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void requestToPurchaseTransactionDetail() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("peticash_transaction_id", transactionTypeId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_PURCHASE_PETICASH_TRANSACTION_DETAIL + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestAssetListOnline")
-                .build()
-                .getAsObject(TransactionDetailResponse.class, new ParsedRequestListener<TransactionDetailResponse>() {
-                    @Override
-                    public void onResponse(final TransactionDetailResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
-                    }
-                });
     }
 
     private void setDetailsData() {
@@ -219,6 +172,53 @@ public class ViewPeticashTransactions extends BaseActivity {
                 AppUtils.getInstance().loadImageViaGlide(strMaterialImageUrl, imageView, mContext);
             }
         }
+    }
+
+    private void requestToPurchaseTransactionDetail() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("peticash_transaction_id", transactionTypeId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_PURCHASE_PETICASH_TRANSACTION_DETAIL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("requestAssetListOnline")
+                .build()
+                .getAsObject(TransactionDetailResponse.class, new ParsedRequestListener<TransactionDetailResponse>() {
+                    @Override
+                    public void onResponse(final TransactionDetailResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
+                    }
+                });
     }
 
     private void openImageZoomFragment(String url) {

@@ -42,11 +42,6 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
         }
     }
 
-    // Define the method that allows the parent activity or fragment to define the listener
-    void setOnItemClickListener(PeticashTransactionsListAdapter.OnItemClickListener listener) {
-        this.clickListener = listener;
-    }
-
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_peticash_transactions_list, parent, false);
@@ -106,13 +101,17 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
         return getItem(index).getPrimaryKey();
     }
 
+    // Define the method that allows the parent activity or fragment to define the listener
+    void setOnItemClickListener(PeticashTransactionsListAdapter.OnItemClickListener listener) {
+        this.clickListener = listener;
+    }
+
     // Define the listener interface
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private Context context;
         @BindView(R.id.tv_transaction_date)
         TextView mTvTransactionDate;
         @BindView(R.id.tv_no_of_transactions)
@@ -121,6 +120,7 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
         FrameLayout mFlMainTransactionFrame;
         @BindView(R.id.ll_remaining_transactions_expandable)
         LinearLayout mLlRemainingTransactionsExpandable;
+        private Context context;
 
         MyViewHolder(View view) {
             super(view);

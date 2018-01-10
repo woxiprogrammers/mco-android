@@ -48,6 +48,7 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class PetiCashHomeActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
+    public int passYear, passMonth;
     @BindView(R.id.textView_peticashHome_appBarTitle)
     TextView mTextViewPeticashHomeAppBarTitle;
     @BindView(R.id.relative_layout_datePicker_peticash)
@@ -71,11 +72,11 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     @BindView(R.id.textView_remainingAmount)
     TextView mTextViewRemainingAmount;
     private Context mContext;
-    public int passYear, passMonth;
     private int pageNumber = 0;
     private Realm realm;
     private RealmResults<DatewiseTransactionsListItem> peticashTransactionsRealmResult;
     private String permissionList;
+    private String purchaseAmountLimit;
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
@@ -89,6 +90,145 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
         } else {
             setUpPeticashTransactionsListAdapter();
             AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
+        }
+    }
+
+    private void requestPeticashTransactionsOnline(int currentPageNumber) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("month", passMonth);
+            params.put("year", passYear);
+            params.put("type", "both");
+            params.put("page", currentPageNumber);
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_PETICASH_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("requestPeticashTransactionsOnline")
+                .build()
+                .getAsObject(PeticashTransactionsResponse.class,
+                        new ParsedRequestListener<PeticashTransactionsResponse>() {
+                            @Override
+                            public void onResponse(final PeticashTransactionsResponse response) {
+                                Timber.i("nextPageNumber", String.valueOf(pageNumber));
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            if (pageNumber == 0) {
+                                                realm.delete(PeticashTransactionsResponse.class);
+                                                realm.delete(PeticashTransactionData.class);
+                                                realm.delete(DatewiseTransactionsListItem.class);
+                                                realm.delete(TransactionListItem.class);
+                                            }
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
+                                            purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
+                                }
+                                if (!TextUtils.isEmpty(response.getPageId())) {
+                                    pageNumber = Integer.parseInt(response.getPageId());
+                                }
+                            }
+
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "requestPeticashTransactionsOnline");
+                            }
+                        });
+    }
+
+    private void setUpPeticashTransactionsListAdapter() {
+        realm = Realm.getDefaultInstance();
+        PeticashTransactionsResponse peticashTransactionsResponse = realm.where(PeticashTransactionsResponse.class).findFirst();
+        if (peticashTransactionsResponse != null) {
+            if (!TextUtils.isEmpty(peticashTransactionsResponse.getDate())) {
+                mTextViewListHeaderPeticash.setText("Latest transactions as on: " + peticashTransactionsResponse.getDate());
+            } else {
+                mTextViewListHeaderPeticash.setVisibility(View.GONE);
+            }
+        } else {
+            mTextViewListHeaderPeticash.setVisibility(View.GONE);
+        }
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        peticashTransactionsRealmResult = realm.where(DatewiseTransactionsListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .contains("date", String.valueOf(passYear))
+                .contains("date", strMonth).findAllAsync();
+        PeticashTransactionsListAdapter peticashTransactionsListAdapter = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
+        mRecyclerViewPeticashList.setLayoutManager(new LinearLayoutManager(mContext));
+        mRecyclerViewPeticashList.setHasFixedSize(true);
+        peticashTransactionsListAdapter.setOnItemClickListener(new PeticashTransactionsListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int modulePosition) {
+                int subModuleIndex = itemView.getId();
+                TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
+                if (transactionListItem.isValid()) {
+                    if (transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Salary") || transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Advance")) {
+                        Intent intent = new Intent(mContext, ActivityEmpSalaryTransactionDetails.class);
+                        intent.putExtra("idForTransactionDetails", transactionListItem.getPeticashTransactionId());
+                        intent.putExtra("transactionDetailType", transactionListItem.getPeticashTransactionType());
+                        startActivity(intent);
+                    } else {
+                        Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
+                        formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
+                        formIntent.putExtra("transactionType", transactionListItem.getPeticashTransactionType());
+                        startActivity(formIntent);
+                    }
+                }
+            }
+        });
+        mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.relative_layout_datePicker_peticash)
+    public void onMRelativeLayoutDatePickerPeticashClicked() {
+        MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
+        Bundle bundleArgs = new Bundle();
+        bundleArgs.putInt("maxYear", 2019);
+        bundleArgs.putInt("minYear", 2016);
+        bundleArgs.putInt("currentYear", passYear);
+        bundleArgs.putInt("currentMonth", passMonth);
+        monthYearPickerDialog.setArguments(bundleArgs);
+        monthYearPickerDialog.setListener(this);
+        monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
+    }
+
+    @OnClick(R.id.floating_add_button_peticash)
+    public void onFloatingAddButtonPeticashClicked() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit", purchaseAmountLimit));
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PetiCashHomeActivity");
         }
     }
 
@@ -114,54 +254,6 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpAppBarDatePicker();
-        setUpTransactionStatsData_inAppBar();
-        setUpPeticashTransactionsListAdapter();
-        if (AppUtils.getInstance().checkNetworkState()) {
-            requestTransactionStats();
-            requestPeticashTransactionsOnline(pageNumber);
-        } else {
-            AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private String purchaseAmountLimit;
-
-    @OnClick(R.id.relative_layout_datePicker_peticash)
-    public void onMRelativeLayoutDatePickerPeticashClicked() {
-        MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
-        Bundle bundleArgs = new Bundle();
-        bundleArgs.putInt("maxYear", 2019);
-        bundleArgs.putInt("minYear", 2016);
-        bundleArgs.putInt("currentYear", passYear);
-        bundleArgs.putInt("currentMonth", passMonth);
-        monthYearPickerDialog.setArguments(bundleArgs);
-        monthYearPickerDialog.setListener(this);
-        monthYearPickerDialog.show(getSupportFragmentManager(), "MonthYearPickerDialog");
-    }
-
-    @OnClick(R.id.floating_add_button_peticash)
-    public void onFloatingAddButtonPeticashClicked() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit", purchaseAmountLimit));
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PetiCashHomeActivity");
-        }
-    }
-
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
@@ -179,6 +271,20 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
             if (accessPermission.equalsIgnoreCase(getString(R.string.create_peticash_management))) {
                 mFloatingAddButtonPeticash.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpAppBarDatePicker();
+        setUpTransactionStatsData_inAppBar();
+        setUpPeticashTransactionsListAdapter();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestTransactionStats();
+            requestPeticashTransactionsOnline(pageNumber);
+        } else {
+            AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
         }
     }
 
@@ -254,113 +360,6 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                             @Override
                             public void onError(ANError anError) {
                                 AppUtils.getInstance().logApiError(anError, "requestTransactionStats");
-                            }
-                        });
-    }
-
-    private void setUpPeticashTransactionsListAdapter() {
-        realm = Realm.getDefaultInstance();
-        PeticashTransactionsResponse peticashTransactionsResponse = realm.where(PeticashTransactionsResponse.class).findFirst();
-        if (peticashTransactionsResponse != null) {
-            if (!TextUtils.isEmpty(peticashTransactionsResponse.getDate())) {
-                mTextViewListHeaderPeticash.setText("Latest transactions as on: " + peticashTransactionsResponse.getDate());
-            } else {
-                mTextViewListHeaderPeticash.setVisibility(View.GONE);
-            }
-        } else {
-            mTextViewListHeaderPeticash.setVisibility(View.GONE);
-        }
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        peticashTransactionsRealmResult = realm.where(DatewiseTransactionsListItem.class)
-                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .contains("date", String.valueOf(passYear))
-                .contains("date", strMonth).findAllAsync();
-        PeticashTransactionsListAdapter peticashTransactionsListAdapter = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
-        mRecyclerViewPeticashList.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerViewPeticashList.setHasFixedSize(true);
-        peticashTransactionsListAdapter.setOnItemClickListener(new PeticashTransactionsListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int modulePosition) {
-                int subModuleIndex = itemView.getId();
-                TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
-                if (transactionListItem.isValid()) {
-                    if (transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Salary") || transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Advance")) {
-                        Intent intent = new Intent(mContext, ActivityEmpSalaryTransactionDetails.class);
-                        intent.putExtra("idForTransactionDetails", transactionListItem.getPeticashTransactionId());
-                        intent.putExtra("transactionDetailType", transactionListItem.getPeticashTransactionType());
-                        startActivity(intent);
-                    } else {
-                        Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
-                        formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
-                        formIntent.putExtra("transactionType", transactionListItem.getPeticashTransactionType());
-                        startActivity(formIntent);
-                    }
-                }
-            }
-        });
-        mRecyclerViewPeticashList.setAdapter(peticashTransactionsListAdapter);
-    }
-
-    private void requestPeticashTransactionsOnline(int currentPageNumber) {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("month", passMonth);
-            params.put("year", passYear);
-            params.put("type", "both");
-            params.put("page", currentPageNumber);
-            Timber.d(String.valueOf(params));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_PETICASH_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestPeticashTransactionsOnline")
-                .build()
-                .getAsObject(PeticashTransactionsResponse.class,
-                        new ParsedRequestListener<PeticashTransactionsResponse>() {
-                            @Override
-                            public void onResponse(final PeticashTransactionsResponse response) {
-                                Timber.i("nextPageNumber", String.valueOf(pageNumber));
-                                realm = Realm.getDefaultInstance();
-                                try {
-                                    realm.executeTransactionAsync(new Realm.Transaction() {
-                                        @Override
-                                        public void execute(Realm realm) {
-                                            if (pageNumber == 0) {
-                                                realm.delete(PeticashTransactionsResponse.class);
-                                                realm.delete(PeticashTransactionData.class);
-                                                realm.delete(DatewiseTransactionsListItem.class);
-                                                realm.delete(TransactionListItem.class);
-                                            }
-                                            realm.insertOrUpdate(response);
-                                        }
-                                    }, new Realm.Transaction.OnSuccess() {
-                                        @Override
-                                        public void onSuccess() {
-                                            purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
-                                        }
-                                    }, new Realm.Transaction.OnError() {
-                                        @Override
-                                        public void onError(Throwable error) {
-                                            AppUtils.getInstance().logRealmExecutionError(error);
-                                        }
-                                    });
-                                } finally {
-                                    if (realm != null) {
-                                        realm.close();
-                                    }
-                                }
-                                if (!TextUtils.isEmpty(response.getPageId())) {
-                                    pageNumber = Integer.parseInt(response.getPageId());
-                                }
-                            }
-
-                            @Override
-                            public void onError(ANError anError) {
-                                AppUtils.getInstance().logApiError(anError, "requestPeticashTransactionsOnline");
                             }
                         });
     }
