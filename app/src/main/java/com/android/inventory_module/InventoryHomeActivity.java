@@ -37,6 +37,19 @@ public class InventoryHomeActivity extends BaseActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.action_move_in:
+                Intent intent = new Intent(this, SiteMoveInActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,21 +108,6 @@ public class InventoryHomeActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            case R.id.action_move_in:
-                Intent intent = new Intent(this, SiteMoveInActivity.class);
-                startActivity(intent);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {

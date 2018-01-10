@@ -77,6 +77,76 @@ public class SiteMoveInActivity extends BaseActivity {
     private int unitId, projectSiteIdFrom, inventoryComponentId;
     private ProgressDialog progressDialog;
 
+    @OnClick({R.id.textViewItemDetails, R.id.textView_capture, R.id.btnSubmit})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textViewItemDetails:
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    if (TextUtils.isEmpty(editTextEnteredGrn.getText().toString())) {
+                        editTextEnteredGrn.setError("Please enter GRN");
+                        return;
+                    }
+                    getDetails();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
+                }
+                break;
+            case R.id.textView_capture:
+                chooseAction();
+                break;
+            case R.id.btnSubmit:
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    if (TextUtils.isEmpty(editTextName.getText().toString())) {
+                        editTextName.setError("Please enter name");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(edtQuantity.getText().toString())) {
+                        edtQuantity.setError("Please enter quantity");
+                        return;
+                    }
+                    uploadImages_addItemToLocal();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
+                }
+                break;
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList));
+                llCaptImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
+                File currentImageFile;
+                for (Image currentImage : imagesList) {
+                    if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                        ImageView imageView = new ImageView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                        layoutParams.setMargins(10, 10, 10, 10);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setImageBitmap(myBitmap);
+                        llCaptImage.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,41 +243,6 @@ public class SiteMoveInActivity extends BaseActivity {
                 });
     }
 
-    @OnClick({R.id.textViewItemDetails, R.id.textView_capture, R.id.btnSubmit})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textViewItemDetails:
-                if (AppUtils.getInstance().checkNetworkState()) {
-                    if (TextUtils.isEmpty(editTextEnteredGrn.getText().toString())) {
-                        editTextEnteredGrn.setError("Please enter GRN");
-                        return;
-                    }
-                    getDetails();
-                } else {
-                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
-                }
-                break;
-            case R.id.textView_capture:
-                chooseAction();
-                break;
-            case R.id.btnSubmit:
-                if (AppUtils.getInstance().checkNetworkState()) {
-                    if (TextUtils.isEmpty(editTextName.getText().toString())) {
-                        editTextName.setError("Please enter name");
-                        return;
-                    }
-                    if (TextUtils.isEmpty(edtQuantity.getText().toString())) {
-                        edtQuantity.setError("Please enter quantity");
-                        return;
-                    }
-                    uploadImages_addItemToLocal();
-                } else {
-                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
-                }
-                break;
-        }
-    }
-
     private void chooseAction() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
         Params params = new Params();
@@ -217,41 +252,6 @@ public class SiteMoveInActivity extends BaseActivity {
         params.setButtonTextColor(R.color.colorWhite);
         intent.putExtra(Constants.KEY_PARAMS, params);
         startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        switch (requestCode) {
-            case Constants.TYPE_MULTI_CAPTURE:
-                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList));
-                llCaptImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                File currentImageFile;
-                for (Image currentImage : imagesList) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        llCaptImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-        }
     }
 
     private void getDetails() {
