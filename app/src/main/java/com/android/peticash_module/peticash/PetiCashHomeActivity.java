@@ -19,6 +19,7 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.login_mvp.login_model.PermissionsItem;
 import com.android.peticash_module.peticash.peticash_models.DatewiseTransactionsListItem;
+import com.android.peticash_module.peticash.peticash_models.PeticashTransactionData;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionStatsData;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionStatsResponse;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionsResponse;
@@ -78,12 +79,17 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
-        passYear = year;
-        passMonth = month;
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
-        pageNumber = 0;
-        requestPeticashTransactionsOnline(pageNumber);
+        if (AppUtils.getInstance().checkNetworkState()) {
+            passYear = year;
+            passMonth = month;
+            String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+            mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
+            pageNumber = 0;
+            requestPeticashTransactionsOnline(pageNumber);
+        } else {
+            setUpPeticashTransactionsListAdapter();
+            AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
+        }
     }
 
     @Override
@@ -113,9 +119,13 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
         super.onResume();
         setUpAppBarDatePicker();
         setUpTransactionStatsData_inAppBar();
-        requestTransactionStats();
         setUpPeticashTransactionsListAdapter();
-        requestPeticashTransactionsOnline(pageNumber);
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestTransactionStats();
+            requestPeticashTransactionsOnline(pageNumber);
+        } else {
+            AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
+        }
     }
 
     @Override
@@ -226,6 +236,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                     }, new Realm.Transaction.OnSuccess() {
                                         @Override
                                         public void onSuccess() {
+                                            setUpTransactionStatsData_inAppBar();
                                         }
                                     }, new Realm.Transaction.OnError() {
                                         @Override
@@ -299,45 +310,52 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPeticashTransactionsOnline")
                 .build()
-                .getAsObject(PeticashTransactionsResponse.class, new ParsedRequestListener<PeticashTransactionsResponse>() {
-                    @Override
-                    public void onResponse(final PeticashTransactionsResponse response) {
-                        Timber.i("nextPageNumber", String.valueOf(pageNumber));
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.insertOrUpdate(response);
+                .getAsObject(PeticashTransactionsResponse.class,
+                        new ParsedRequestListener<PeticashTransactionsResponse>() {
+                            @Override
+                            public void onResponse(final PeticashTransactionsResponse response) {
+                                Timber.i("nextPageNumber", String.valueOf(pageNumber));
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            if (pageNumber == 0) {
+                                                realm.delete(PeticashTransactionsResponse.class);
+                                                realm.delete(PeticashTransactionData.class);
+                                                realm.delete(DatewiseTransactionsListItem.class);
+                                                realm.delete(TransactionListItem.class);
+                                            }
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
+                                            purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
                                 }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
+                                if (!TextUtils.isEmpty(response.getPageId())) {
+                                    pageNumber = Integer.parseInt(response.getPageId());
                                 }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                if (!TextUtils.isEmpty(response.getDate())) {
+                                    mTextViewListHeaderPeticash.setText("Latest transactions as on: " + response.getDate());
                                 }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
-                        }
-                        if (!TextUtils.isEmpty(response.getPageId())) {
-                            pageNumber = Integer.parseInt(response.getPageId());
-                        }
-                        if (!TextUtils.isEmpty(response.getDate())) {
-                            mTextViewListHeaderPeticash.setText("Latest transactions as on: " + response.getDate());
-                        }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPeticashTransactionsOnline");
-                    }
-                });
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "requestPeticashTransactionsOnline");
+                            }
+                        });
     }
 }
