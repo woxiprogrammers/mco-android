@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import timber.log.Timber;
 
 public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
     public Context mContext;
@@ -84,10 +85,10 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         if (bundle != null) {
             transactionTypeId = bundle.getInt("idForTransactionDetails");
             transactionDetailType = bundle.getString("transactionDetailType");
-            setDetailsData();
             if (AppUtils.getInstance().checkNetworkState()) {
                 requestForData();
             } else {
+                setDetailsData();
                 AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
             }
         }
@@ -97,6 +98,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         realm = Realm.getDefaultInstance();
         empSalaryTransactionDetailData = realm.where(EmpSalaryTransactionDetailData.class)
                 .equalTo("peticashTransactionId", transactionTypeId).findFirst();
+        Timber.d("empSalaryTransactionDetailData: " + empSalaryTransactionDetailData);
         if (empSalaryTransactionDetailData != null) {
             edittextSetEmpName.setText(empSalaryTransactionDetailData.getEmployeeName());
             editTextSetSalaryDate.setText(empSalaryTransactionDetailData.getDate());
@@ -163,6 +165,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    setDetailsData();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

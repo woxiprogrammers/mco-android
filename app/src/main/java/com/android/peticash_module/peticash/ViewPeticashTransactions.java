@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import timber.log.Timber;
 
 public class ViewPeticashTransactions extends BaseActivity {
     @BindView(R.id.textViewSetSourceName)
@@ -108,10 +109,10 @@ public class ViewPeticashTransactions extends BaseActivity {
         }
         if (bundle != null) {
             transactionTypeId = bundle.getInt("transactionId", -1);
-            setDetailsData();
             if (AppUtils.getInstance().checkNetworkState()) {
                 requestToPurchaseTransactionDetail();
             } else {
+                setDetailsData();
                 AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
             }
         }
@@ -121,6 +122,7 @@ public class ViewPeticashTransactions extends BaseActivity {
         realm = Realm.getDefaultInstance();
         transactionDetailData = realm.where(TransactionDetailData.class)
                 .equalTo("peticashTransactionId", transactionTypeId).findFirst();
+        Timber.d("transactionDetailData: " + transactionDetailData);
         editTextSourceSetName.setText(transactionDetailData.getSourceName());
         editTextSetItemName.setText(transactionDetailData.getName());
         edittextSetQuantity.setText(transactionDetailData.getQuantity());
@@ -200,6 +202,7 @@ public class ViewPeticashTransactions extends BaseActivity {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    setDetailsData();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

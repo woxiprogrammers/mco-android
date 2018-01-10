@@ -80,11 +80,11 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
+        passYear = year;
+        passMonth = month;
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
         if (AppUtils.getInstance().checkNetworkState()) {
-            passYear = year;
-            passMonth = month;
-            String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-            mTextViewPeticashHomeAppBarTitle.setText(strMonth + ", " + passYear);
             pageNumber = 0;
             requestPeticashTransactionsOnline(pageNumber);
         } else {
@@ -126,6 +126,11 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                                 realm.delete(PeticashTransactionData.class);
                                                 realm.delete(DatewiseTransactionsListItem.class);
                                                 realm.delete(TransactionListItem.class);
+                                            }
+                                            for (DatewiseTransactionsListItem transactionsListItem
+                                                    : response.getPeticashTransactionData().getTransactionsList()) {
+                                                transactionsListItem.setPassMonth(passMonth);
+                                                transactionsListItem.setPassYear(passYear);
                                             }
                                             realm.insertOrUpdate(response);
                                         }
@@ -169,11 +174,11 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
         } else {
             mTextViewListHeaderPeticash.setVisibility(View.GONE);
         }
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+//        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
         peticashTransactionsRealmResult = realm.where(DatewiseTransactionsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .contains("date", String.valueOf(passYear))
-                .contains("date", strMonth).findAllAsync();
+                .equalTo("passYear", passYear)
+                .equalTo("passMonth", passMonth).findAllAsync();
         PeticashTransactionsListAdapter peticashTransactionsListAdapter = new PeticashTransactionsListAdapter(peticashTransactionsRealmResult, true, true);
         mRecyclerViewPeticashList.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerViewPeticashList.setHasFixedSize(true);
@@ -182,6 +187,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
             public void onItemClick(View itemView, int modulePosition) {
                 int subModuleIndex = itemView.getId();
                 TransactionListItem transactionListItem = peticashTransactionsRealmResult.get(modulePosition).getTransactionList().get(subModuleIndex);
+                Timber.d("transactionListItem: " + transactionListItem);
                 if (transactionListItem.isValid()) {
                     if (transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Salary") || transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Advance")) {
                         Intent intent = new Intent(mContext, ActivityEmpSalaryTransactionDetails.class);
