@@ -32,7 +32,6 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 
 public class ViewPeticashTransactions extends BaseActivity {
-
     @BindView(R.id.textViewSetSourceName)
     TextView textViewSetSourceName;
     @BindView(R.id.editTextSourceSetName)
@@ -102,9 +101,7 @@ public class ViewPeticashTransactions extends BaseActivity {
         if (bundle != null) {
             transactionTypeId = bundle.getInt("transactionId", -1);
             requestToPurchaseTransactionDetail();
-
         }
-
     }
 
     @Override
@@ -113,7 +110,6 @@ public class ViewPeticashTransactions extends BaseActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
-
     }
 
     private void requestToPurchaseTransactionDetail() {
@@ -175,7 +171,6 @@ public class ViewPeticashTransactions extends BaseActivity {
         editTextSetBillamount.setText(transactionDetailData.getBillAmount());
         editTextSetGrnNumber.setText(transactionDetailData.getGrn());
         editTextSetPayableAmount.setText(transactionDetailData.getBillAmount());
-
         if (!transactionDetailData.getRemark().isEmpty()) {
             editTextSetRemark.setText(transactionDetailData.getRemark());
             editTextSetRemark.setVisibility(View.VISIBLE);
@@ -183,26 +178,22 @@ public class ViewPeticashTransactions extends BaseActivity {
             editTextSetRemark.setVisibility(View.GONE);
         }
         editTesxtSetBillNumber.setText(transactionDetailData.getBillNumber());
-
         if (!transactionDetailData.getInTime().isEmpty()) {
             ll_forSupplierSetInOutTime.setVisibility(View.VISIBLE);
             llSetforSupplierVehicle.setVisibility(View.VISIBLE);
             edittextSetinTime.setText(transactionDetailData.getInTime());
             edittestSetOutTime.setText(transactionDetailData.getOutTime());
             editTextSetVehicleNumber.setText(transactionDetailData.getVehicleNumber());
-
         } else {
             llSetforSupplierVehicle.setVisibility(View.GONE);
             ll_forSupplierSetInOutTime.setVisibility(View.GONE);
         }
-
         if (!transactionDetailData.getReferenceNumber().isEmpty()) {
             linearLayoutSetRefNumber.setVisibility(View.VISIBLE);
             editTextRefNum.setText(transactionDetailData.getReferenceNumber());
         } else {
             linearLayoutSetRefNumber.setVisibility(View.GONE);
         }
-
         if (transactionDetailData.getListOfImages().size() > 0) {
             horizontalImage.setVisibility(View.VISIBLE);
             for (int i = 0; i < transactionDetailData.getListOfImages().size(); i++) {
@@ -213,7 +204,6 @@ public class ViewPeticashTransactions extends BaseActivity {
                 layoutParams.setMargins(10, 10, 10, 10);
                 imageView.setLayoutParams(layoutParams);
                 linearLayoutSetUploadImage.addView(imageView);
-
                 final int finalI = i;
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -224,7 +214,6 @@ public class ViewPeticashTransactions extends BaseActivity {
                 AppUtils.getInstance().loadImageViaGlide(strMaterialImageUrl, imageView, mContext);
             }
         }
-
     }
 
     private void openImageZoomFragment(String url) {

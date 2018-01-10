@@ -22,13 +22,15 @@ public class MonthYearPickerDialog extends DialogFragment {
     private int maxYear = 2050;
     private int minYear = 2017;
     private int currentYear, currentMonth;
-    private DatePickerDialog.OnDateSetListener listener;
+    private DatePickerDialog.OnDateSetListener dateSetListener;
+    private NumberPicker monthPicker;
+    private NumberPicker yearPicker;
 
     public MonthYearPickerDialog() {
     }
 
     public void setListener(DatePickerDialog.OnDateSetListener listener) {
-        this.listener = listener;
+        this.dateSetListener = listener;
     }
 
     @NonNull
@@ -46,10 +48,10 @@ public class MonthYearPickerDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 //        Calendar cal = Calendar.getInstance();
         View dialog = inflater.inflate(R.layout.date_picker_dialog, null);
-        final NumberPicker monthPicker = (NumberPicker) dialog.findViewById(R.id.picker_month);
-        final NumberPicker yearPicker = (NumberPicker) dialog.findViewById(R.id.picker_year);
-        final Button buttonSelect = (Button) dialog.findViewById(R.id.button_select_date_picker);
-        final Button buttonDismiss = (Button) dialog.findViewById(R.id.button_dismiss_date_picker);
+        monthPicker = dialog.findViewById(R.id.picker_month);
+        yearPicker = dialog.findViewById(R.id.picker_year);
+        Button buttonSelect = dialog.findViewById(R.id.button_select_date_picker);
+        Button buttonDismiss = dialog.findViewById(R.id.button_dismiss_date_picker);
         monthPicker.setMinValue(1);
         monthPicker.setMaxValue(12);
 //        monthPicker.setValue(cal.get(Calendar.MONTH) + 1);
@@ -62,7 +64,7 @@ public class MonthYearPickerDialog extends DialogFragment {
         buttonSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDateSet(null, yearPicker.getValue(), monthPicker.getValue(), 0);
+                dateSetListener.onDateSet(null, yearPicker.getValue(), monthPicker.getValue(), 0);
                 MonthYearPickerDialog.this.getDialog().dismiss();
             }
         });

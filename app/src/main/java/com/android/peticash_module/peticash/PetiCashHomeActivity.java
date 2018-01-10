@@ -112,7 +112,9 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     protected void onResume() {
         super.onResume();
         setUpAppBarDatePicker();
+        setUpTransactionStatsData_inAppBar();
         requestTransactionStats();
+        setUpPeticashTransactionsListAdapter();
         requestPeticashTransactionsOnline(pageNumber);
     }
 
@@ -130,7 +132,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
 
     @OnClick(R.id.relative_layout_datePicker_peticash)
     public void onMRelativeLayoutDatePickerPeticashClicked() {
-        final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
+        MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
         Bundle bundleArgs = new Bundle();
         bundleArgs.putInt("maxYear", 2019);
         bundleArgs.putInt("minYear", 2016);
@@ -143,7 +145,11 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
 
     @OnClick(R.id.floating_add_button_peticash)
     public void onFloatingAddButtonPeticashClicked() {
-        startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit", purchaseAmountLimit));
+        if (AppUtils.getInstance().checkNetworkState()) {
+            startActivity(new Intent(mContext, PeticashFormActivity.class).putExtra("amountLimit", purchaseAmountLimit));
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PetiCashHomeActivity");
+        }
     }
 
     /**
@@ -177,7 +183,9 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     private void setUpTransactionStatsData_inAppBar() {
         try {
             realm = Realm.getDefaultInstance();
-            PeticashTransactionStatsData peticashTransactionStatsData = realm.where(PeticashTransactionStatsData.class).findFirst();
+            PeticashTransactionStatsData peticashTransactionStatsData
+                    = realm.where(PeticashTransactionStatsData.class)
+                    .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findFirst();
             if (peticashTransactionStatsData != null && peticashTransactionStatsData.isValid()) {
                 mTextViewAllocatedAmount.setText("₹" + peticashTransactionStatsData.getAllocatedAmount());
                 mTextViewSalaryAmount.setText("₹" + peticashTransactionStatsData.getTotalSalaryAmount());
@@ -204,39 +212,39 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestTransactionStats")
                 .build()
-                .getAsObject(PeticashTransactionStatsResponse.class, new ParsedRequestListener<PeticashTransactionStatsResponse>() {
-                    @Override
-                    public void onResponse(final PeticashTransactionStatsResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.insertOrUpdate(response);
+                .getAsObject(PeticashTransactionStatsResponse.class,
+                        new ParsedRequestListener<PeticashTransactionStatsResponse>() {
+                            @Override
+                            public void onResponse(final PeticashTransactionStatsResponse response) {
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
                                 }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    setUpTransactionStatsData_inAppBar();
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestTransactionStats");
-                    }
-                });
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "requestTransactionStats");
+                            }
+                        });
     }
 
     private void setUpPeticashTransactionsListAdapter() {
@@ -300,18 +308,11 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    if (pageNumber == 0) {
-//                                        realm.delete(PeticashTransactionsResponse.class);
-//                                        realm.delete(PeticashTransactionData.class);
-//                                        realm.delete(DatewiseTransactionsListItem.class);
-//                                        realm.delete(TransactionListItem.class);
-//                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    setUpPeticashTransactionsListAdapter();
                                     purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
                                 }
                             }, new Realm.Transaction.OnError() {

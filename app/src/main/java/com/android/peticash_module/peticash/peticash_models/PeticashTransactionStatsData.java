@@ -1,11 +1,13 @@
 package com.android.peticash_module.peticash.peticash_models;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class PeticashTransactionStatsData extends RealmObject {
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @PrimaryKey
     private int primaryKey = 0;
     @SerializedName("remaining_amount")
