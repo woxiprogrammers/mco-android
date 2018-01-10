@@ -76,6 +76,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recyclerview_lsiting_for_asset_summary, container, false);
         unbinder = ButterKnife.bind(this, view);
+        mContext = getActivity();
         Bundle bundleArgs = getArguments();
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
@@ -84,17 +85,11 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
             inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
             component_type_slug = bundleArgs.getString("component_type_slug");
         }
-        initializeViews(view);
         setUpAssetListAdapter();
         if (AppUtils.getInstance().checkNetworkState()) {
             requestAssetSummaryList();
         }
         return view;
-    }
-
-    private void initializeViews(View view) {
-        unbinder = ButterKnife.bind(this, view);
-        mContext = getActivity();
     }
 
     private void setUpAssetListAdapter() {
