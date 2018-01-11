@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +62,10 @@ public class AppUtils {
     private String strLoggedInAt;
     private String strUserRole;
     private int intCurrentUserId;
+    ViewGroup viewGroup;
+    View view;
+
+    boolean isToShowProgress;ProgressBar progressBar;
 
     /**
      * initialize utils plus library
@@ -423,23 +428,23 @@ public class AppUtils {
         return "";
     }
 
-
-    public void showProgressBar(ViewGroup viewGroup,View view,Context mContext,boolean isToShowProgress,ProgressBar progressBar){
-
+    public void initializeProgressBar(ViewGroup viewGroup,Context mContext){
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         view = layoutInflater.inflate(R.layout.check_progress_bar, viewGroup, false);
         view.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         progressBar = view.findViewById(R.id.progressBar);
-        if(isToShowProgress){
+    }
 
+    public void showProgressBar(ViewGroup viewGroup,boolean isToShowProgress){
+        if(isToShowProgress){
             viewGroup.addView(view);
-            progressBar.getIndeterminateDrawable().setColorFilter(mContext.getColor(R.color.colorAccentDark),android.graphics.PorterDuff.Mode.MULTIPLY);
+            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext,R.color.colorAccentDark),android.graphics.PorterDuff.Mode.MULTIPLY);
             progressBar.setVisibility(View.VISIBLE);
         }else {
             viewGroup.removeView(view);
             progressBar.setVisibility(View.GONE);
         }
-
-
     }
+
+
 }

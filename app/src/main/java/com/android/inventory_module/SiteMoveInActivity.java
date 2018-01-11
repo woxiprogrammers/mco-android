@@ -77,10 +77,8 @@ public class SiteMoveInActivity extends BaseActivity {
     TextView siteName;
     @BindView(R.id.editTextSiteName)
     EditText editTextSiteName;
-    @BindView(R.id.relative)
-    RelativeLayout relative;
-    private ProgressBar progressBar;
-    private View progressLayout;
+    @BindView(R.id.mainRelative)
+    RelativeLayout mainRelative;
 
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
@@ -88,7 +86,6 @@ public class SiteMoveInActivity extends BaseActivity {
     private JSONArray jsonImageNameArray = new JSONArray();
     private boolean isMaterial;
     private int unitId, projectSiteIdFrom, inventoryComponentId;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +97,6 @@ public class SiteMoveInActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = SiteMoveInActivity.this;
-        progressDialog = new ProgressDialog(mContext);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Site In");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -157,7 +153,8 @@ public class SiteMoveInActivity extends BaseActivity {
 
     private void requestToMoveIn() {
 
-//        showProgressDialog();
+        AppUtils.getInstance().initializeProgressBar(mainRelative,mContext);
+        AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id_from", projectSiteIdFrom);
@@ -185,7 +182,7 @@ public class SiteMoveInActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
+                            AppUtils.getInstance().showProgressBar(mainRelative,false);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -273,8 +270,8 @@ public class SiteMoveInActivity extends BaseActivity {
     }
 
     private void getDetails() {
-//        showProgressDialog();
-        AppUtils.getInstance().showProgressBar(relative,progressLayout,mContext,true,progressBar);
+        AppUtils.getInstance().initializeProgressBar(mainRelative,mContext);
+        AppUtils.getInstance().showProgressBar(mainRelative,true);
 
         JSONObject params = new JSONObject();
         try {
@@ -293,7 +290,7 @@ public class SiteMoveInActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            AppUtils.getInstance().showProgressBar(relative,progressLayout,mContext,false,progressBar);
+                            AppUtils.getInstance().showProgressBar(mainRelative,false);
                             JSONObject jsonObject = response.getJSONObject("data");
                             linearLayoutDetails.setVisibility(View.VISIBLE);
                             isMaterial = jsonObject.getBoolean("is_material");
@@ -334,15 +331,6 @@ public class SiteMoveInActivity extends BaseActivity {
         progressDialog.show(); // Display Progress Dialog
         progressDialog.setCancelable(false);
         progressDialog.show();*/
-
-        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-        progressLayout = layoutInflater.inflate(R.layout.check_progress_bar, relative, false);
-        progressLayout.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        progressBar = progressLayout.findViewById(R.id.progressBar);
-        relative.addView(progressLayout);
-        progressBar.getIndeterminateDrawable().setColorFilter(getColor(R.color.colorAccentDark),android.graphics.PorterDuff.Mode.MULTIPLY);
-        progressBar.setVisibility(View.VISIBLE);
-
     }
 
 }
