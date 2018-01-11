@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/mainRelative"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -38,8 +39,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:text="GRN20180115"/>
+                    android:background="@android:drawable/editbox_background_normal"/>
 
                 <TextView
                     android:id="@+id/textViewItemDetails"
@@ -72,7 +72,7 @@
                     android:id="@+id/siteName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Site Name :-"
+                    android:text="Site Detail :-"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText

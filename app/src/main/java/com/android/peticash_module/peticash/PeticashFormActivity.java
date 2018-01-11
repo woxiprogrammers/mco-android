@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -193,6 +194,8 @@ public class PeticashFormActivity extends BaseActivity {
     LinearLayout linearLayoutESICTDS;
     @BindView(R.id.editTextSiteName)
     AutoCompleteTextView editTextSiteName;
+    @BindView(R.id.mainRelativeLayout)
+    RelativeLayout mainRelativeLayout;
     @BindView(R.id.linearLayoutEmployeInfo)
     LinearLayout linearLayoutEmployeInfo;
     @BindView(R.id.spinner_misc_category_array)
@@ -207,7 +210,6 @@ public class PeticashFormActivity extends BaseActivity {
     private Context mContext;
     private Realm realm;
     private int getPerWeges;
-    private Calendar myCalendar;
     private ArrayList<File> arrayImageFileList;
     private String flagForLayout = "";
     private float floatAmount, payableAmountForSalary;
@@ -265,6 +267,26 @@ public class PeticashFormActivity extends BaseActivity {
         public void afterTextChanged(Editable editable) {
         }
     };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.peticash_form);
+        ButterKnife.bind(this);
+        mContext = PeticashFormActivity.this;
+        layoutEmployeeInfo = findViewById(R.id.layoutEmployeeInformation);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Peticash");
+        }
+        requestToGetSystemSites();
+        initializeViews();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            amountLimit = bundle.getString("amountLimit");
+        }
+        AppUtils.getInstance().initializeProgressBar(mainRelativeLayout, mContext);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -337,207 +359,13 @@ public class PeticashFormActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.textViewCapturFirst)
-    public void onFirstCapClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textViewCapturFirst:
-                flagForLayout = "firstcapture";
-                captureImage();
-                break;
-        }
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
     }
-
-    private void captureImage() {
-        Intent intent = new Intent(mContext, MultiCameraActivity.class);
-        Params params = new Params();
-        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
-        params.setToolbarColor(R.color.colorPrimaryLight);
-        params.setActionButtonColor(R.color.colorAccentDark);
-        params.setButtonTextColor(R.color.colorWhite);
-        intent.putExtra(Constants.KEY_PARAMS, params);
-        startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
-    }
-
-    @OnClick(R.id.textViewCapturSecond)
-    public void onSecondCaptureClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textViewCapturSecond:
-                flagForLayout = "secondcapture";
-                captureImage();
-                break;
-        }
-    }
-
-    @OnClick(R.id.textView_captureSalaryImage)
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textView_captureSalaryImage:
-                flagForLayout = "salarycapture";
-                captureImage();
-                break;
-        }
-    }
-
-    @OnClick(R.id.button_view_amount)
-    public void onViewClickedAmount() {
-        if (TextUtils.isEmpty(editTextEmpIdName.getText().toString())) {
-            editTextEmpIdName.setError("Please enter employee name");
-            return;
-        }
-        if (TextUtils.isEmpty(editTextSiteName.getText().toString())) {
-            editTextSiteName.setError("Please enter site name");
-            return;
-        }
-        if (TextUtils.isEmpty(edittextDay.getText().toString())) {
-            edittextDay.setError("Please enter days");
-            return;
-        }
-        requestForViewPament();
-    }
-
-    private void requestForViewPament() {
-        if (isSalary) {
-            progressDialog = new ProgressDialog(mContext);
-            progressDialog.setMessage("Loading..."); // Setting Message
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
-            progressDialog.show(); // Display Progress Dialog
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", project_site_id);
-            if (isSalary) {
-                params.put("type", "salary");
-                params.put("employee_id", primaryKey);
-                params.put("per_day_wages", getPerWeges);
-                params.put("working_days", edittextDay.getText().toString());
-                params.put("advance_after_last_salary", intAdvanceAmount);//ToDo Ask for amount
-                if (TextUtils.isEmpty(editTextPT.getText().toString())) {
-                    params.put("pt", 0);
-                } else {
-                    params.put("pt", editTextPT.getText().toString());
-                }
-                if (TextUtils.isEmpty(editTextPF.getText().toString())) {
-                    params.put("pf", 0);
-                } else {
-                    params.put("pf", editTextPF.getText().toString());
-                }
-                if (TextUtils.isEmpty(editTextESIC.getText().toString())) {
-                    params.put("esic", 0);
-                } else {
-                    params.put("esic", editTextESIC.getText().toString());
-                }
-                if (TextUtils.isEmpty(editTextTDS.getText().toString())) {
-                    params.put("tds", 0);
-                } else {
-                    params.put("tds", editTextTDS.getText().toString());
-                }
-            } else {
-                params.put("type", "advance");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_SALARY_VIEW_PAYMENT + AppUtils.getInstance().getCurrentToken())
-                .setTag("API_SALARY_VIEW_PAYMENT")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONObject jsonObject = response.getJSONObject("data");
-                            approved_amount = jsonObject.getString("approved_amount");
-                            Log.i("#@approved_amount", approved_amount);
-                            editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
-                            editTextSiteName.setEnabled(false);
-                            editTextEmpIdName.setEnabled(false);
-                            spinnerCategoryArray.setEnabled(false);
-                            if (isSalary) {
-                                Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                                String amount = jsonObject.getString("payable_amount");
-                                edittextPayableAmountSalary.setText(amount);
-                                progressDialog.dismiss();
-                                editTextPT.setEnabled(false);
-                                editTextPF.setEnabled(false);
-                                editTextESIC.setEnabled(false);
-                                editTextTDS.setEnabled(false);
-                                edittextDay.setEnabled(false);
-                                editTextSalaryAmount.setEnabled(false);
-                                edittextPayableAmountSalary.setEnabled(false);
-                                linearPayableAmount.setVisibility(View.VISIBLE);
-                                textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
-                                editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
-                                buttonViewAmount.setVisibility(View.GONE);
-                                edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.peticash_form);
-        ButterKnife.bind(this);
-        mContext = PeticashFormActivity.this;
-        layoutEmployeeInfo = findViewById(R.id.layoutEmployeeInformation);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Peticash");
-        }
-        requestToGetSystemSites();
-        initializeViews();
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            amountLimit = bundle.getString("amountLimit");
-        }
-    }
-
-    private void requestToGetSystemSites() {
-        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
-                .setTag("requestToGetSystemSites")
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            jsonArrayForSite = response.getJSONArray("data");
-                            siteNameArray = new ArrayList<>();
-                            for (int i = 0; i < jsonArrayForSite.length(); i++) {
-                                JSONObject jsonObject = jsonArrayForSite.getJSONObject(i);
-                                siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
-                            }
-                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
-                            editTextSiteName.setAdapter(adapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
-                    }
-                });
-    }
-    /////API Calls//////////////////////////////////////////////////
 
     private void initializeViews() {
-        myCalendar = Calendar.getInstance();
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int passMonth = calendar.get(Calendar.MONTH) + 1;
         int passYear = calendar.get(Calendar.YEAR);
@@ -660,22 +488,6 @@ public class PeticashFormActivity extends BaseActivity {
                     floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
                     editTextSalaryAmount.setText(String.valueOf(floatAmount));
                     payableAmountForSalary = floatAmount - intAdvanceAmount;//intadvanceampunt
-
-                    /*if (payableAmountForSalary < 0) {
-                        edittextPayableAmountSalary.setText(String.valueOf(0));
-                    } else {
-                        edittextPayableAmountSalary.setText(String.valueOf(payableAmountForSalary));
-                        if (payableAmountForSalary > Float.parseFloat(approvedSalaryAmount)) {
-                            textViewDenyTransaction.setVisibility(View.VISIBLE);
-                            buttonSalarySubmit.setVisibility(View.GONE);
-                            textViewDenyTransaction.setText("Amount should be less than " + Float.parseFloat(approvedSalaryAmount));
-
-                        } else {
-                            textViewDenyTransaction.setText("");
-                            textViewDenyTransaction.setVisibility(View.GONE);
-                            buttonSalarySubmit.setVisibility(View.VISIBLE);
-                        }
-                    }*/
                 } else {
                     editTextSalaryAmount.setText("");
                     edittextPayableAmountSalary.setText("");
@@ -734,67 +546,6 @@ public class PeticashFormActivity extends BaseActivity {
         });
     }
 
-    private void setProjectNameFromIndex(String selectedString) {
-        int selectedIndex = siteNameArray.indexOf(selectedString);
-        try {
-            JSONObject jsonObject = jsonArrayForSite.getJSONObject(selectedIndex);
-            project_site_id = jsonObject.getInt("project_site_id");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        switch (requestCode) {
-            case Constants.TYPE_MULTI_CAPTURE:
-                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                if (flagForLayout.equalsIgnoreCase("firstcapture")) {
-                    onActivityResultForImage(linearLayoutUploadImage, imagesList);
-                } else if (flagForLayout.equalsIgnoreCase("secondcapture")) {
-                    onActivityResultForImage(linearLayoutUploadBillImage, imagesList);
-                } else if (flagForLayout.equalsIgnoreCase("salarycapture")) {
-                    onActivityResultForImage(linearLayoutUploadImageSalary, imagesList);
-                }
-                break;
-            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
-                functionToSetEmployeeInfo(intent);
-                break;
-            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_PETICASH:
-                functionForProcessingSearchResult(intent);
-                break;
-        }
-    }
-
-    private void onActivityResultForImage(LinearLayout layoutCapture, ArrayList<Image> imagesList) {
-        layoutCapture.removeAllViews();
-        arrayImageFileList = new ArrayList<File>();
-        for (Image currentImage : imagesList) {
-            if (currentImage.imagePath != null) {
-                File currentImageFile = new File(currentImage.imagePath);
-                arrayImageFileList.add(currentImageFile);
-                Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                ImageView imageView = new ImageView(mContext);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                layoutParams.setMargins(10, 10, 10, 10);
-                imageView.setLayoutParams(layoutParams);
-                imageView.setImageBitmap(myBitmap);
-                layoutCapture.addView(imageView);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }
-    }
-    ////////////////////////////////////////////////////////////////
-    /////////////////////////Images Part/////////////////////////////
-
     private void functionToSetEmployeeInfo(Intent intent) {
         linearLayoutEmployeInfo.setVisibility(View.VISIBLE);
         editTextEmpIdName.clearFocus();
@@ -813,114 +564,6 @@ public class PeticashFormActivity extends BaseActivity {
             edittextWeihges.setText("" + getPerWeges);
             AppUtils.getInstance().loadImageViaGlide(employeesearchdataItem.getEmployeeProfilePicture(), imageViewProfilePicture, mContext);
         }
-    }
-
-    private void functionForProcessingSearchResult(Intent intent) {
-        edittextQuantity.setText("");
-        linearLayoutMiscCategory.setVisibility(View.GONE);
-        isNewType = false;
-        Bundle bundleExtras = intent.getExtras();
-        if (bundleExtras != null) {
-            editTextItemName.clearFocus();
-            isNewItem = bundleExtras.getBoolean("isNewItem");
-            isMaterial = bundleExtras.getBoolean("isMaterial");
-            String searchedItemName = bundleExtras.getString("searchedItemName");
-            realm = Realm.getDefaultInstance();
-            if (isMaterial) {
-                edittextQuantity.setText("");
-                edittextQuantity.setFocusableInTouchMode(true);
-                if (isNewItem) {
-                    isNewType = true;
-                    searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
-                    linearLayoutMiscCategory.setVisibility(View.VISIBLE);
-                    setMiscelleneousCategories();
-                } else {
-                    searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
-                }
-            } else {
-                edittextQuantity.setText("1");
-//                edittextQuantity.setFocusable(false);
-                if (isNewItem) {
-                    searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
-                    linearLayoutMiscCategory.setVisibility(View.VISIBLE);
-                } else {
-                    searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
-                    isOtherType = searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
-                }
-                if (isOtherType) {
-                    edittextQuantity.setEnabled(true);
-                } else {
-                    edittextQuantity.setEnabled(false);
-                }
-            }
-            if (realm != null) {
-                realm.close();
-            }
-//            if (alertDialog.isShowing()) {
-            if (isMaterial) {
-                if (searchMaterialListItem_fromResult != null) {
-                    editTextItemName.setText(searchMaterialListItem_fromResult.getMaterialName());
-                    spinnerSelectUnits.setAdapter(setSpinnerUnits(searchMaterialListItem_fromResult.getUnitQuantity()));
-                }
-            } else {
-                if (searchAssetListItem_fromResult != null) {
-                    editTextItemName.setText(searchAssetListItem_fromResult.getAssetName());
-                }
-            }
-        }
-    }
-
-    private void setMiscelleneousCategories() {
-        AndroidNetworking.get(AppURL.API_GET_MISCELLANEOUS_CATEGORIES)
-                .setTag("setMiscelleneousCategories")
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            jsonArray = response.getJSONArray("data");
-                            miscelleneousCategoriesArray = new ArrayList<>();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                miscelleneousCategoriesArray.add(jsonObject.getString("category_name"));
-                            }
-                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, miscelleneousCategoriesArray);
-                            spinnerMiscCategoryArray.setAdapter(adapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
-                    }
-                });
-    }
-
-    private ArrayAdapter<String> setSpinnerUnits(RealmList<UnitQuantityItem> unitQuantityItems) {
-        List<UnitQuantityItem> arrUnitQuantityItems = null;
-        try {
-            arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
-        } catch (Exception e) {
-            arrUnitQuantityItems = unitQuantityItems;
-        }
-        ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
-        for (UnitQuantityItem quantityItem : arrUnitQuantityItems) {
-            String unitName = quantityItem.getUnitName();
-            arrayOfUnitNames.add(unitName);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUnitNames);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return arrayAdapter;
-    }
-
-    private void openImageZoomFragment(String url) {
-        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
-        imageZoomDialogFragment.setCancelable(true);
-        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
     }
 
     private void validateEntries() {
@@ -1007,6 +650,78 @@ public class PeticashFormActivity extends BaseActivity {
         uploadImages_addItemToLocal("Salary", "peticash_salary_transaction");
     }
 
+    private void functionForProcessingSearchResult(Intent intent) {
+        edittextQuantity.setText("");
+        linearLayoutMiscCategory.setVisibility(View.GONE);
+        isNewType = false;
+        Bundle bundleExtras = intent.getExtras();
+        if (bundleExtras != null) {
+            editTextItemName.clearFocus();
+            isNewItem = bundleExtras.getBoolean("isNewItem");
+            isMaterial = bundleExtras.getBoolean("isMaterial");
+            String searchedItemName = bundleExtras.getString("searchedItemName");
+            realm = Realm.getDefaultInstance();
+            if (isMaterial) {
+                edittextQuantity.setText("");
+                edittextQuantity.setFocusableInTouchMode(true);
+                if (isNewItem) {
+                    isNewType = true;
+                    searchMaterialListItem_fromResult = searchMaterialListItem_fromResult_staticNew;
+                    linearLayoutMiscCategory.setVisibility(View.VISIBLE);
+                    setMiscelleneousCategories();
+                } else {
+                    searchMaterialListItem_fromResult = realm.where(SearchMaterialListItem.class).equalTo("materialName", searchedItemName).findFirst();
+                }
+            } else {
+                edittextQuantity.setText("1");
+//                edittextQuantity.setFocusable(false);
+                if (isNewItem) {
+                    searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
+                    linearLayoutMiscCategory.setVisibility(View.VISIBLE);
+                } else {
+                    searchAssetListItem_fromResult = realm.where(SearchAssetListItem.class).equalTo("assetName", searchedItemName).findFirst();
+                    isOtherType = searchAssetListItem_fromResult.getAssetTypeSlug().equalsIgnoreCase("other");
+                }
+                if (isOtherType) {
+                    edittextQuantity.setEnabled(true);
+                } else {
+                    edittextQuantity.setEnabled(false);
+                }
+            }
+            if (realm != null) {
+                realm.close();
+            }
+//            if (alertDialog.isShowing()) {
+            if (isMaterial) {
+                if (searchMaterialListItem_fromResult != null) {
+                    editTextItemName.setText(searchMaterialListItem_fromResult.getMaterialName());
+                    spinnerSelectUnits.setAdapter(setSpinnerUnits(searchMaterialListItem_fromResult.getUnitQuantity()));
+                }
+            } else {
+                if (searchAssetListItem_fromResult != null) {
+                    editTextItemName.setText(searchAssetListItem_fromResult.getAssetName());
+                }
+            }
+        }
+    }
+
+    private ArrayAdapter<String> setSpinnerUnits(RealmList<UnitQuantityItem> unitQuantityItems) {
+        List<UnitQuantityItem> arrUnitQuantityItems = null;
+        try {
+            arrUnitQuantityItems = realm.copyFromRealm(unitQuantityItems);
+        } catch (Exception e) {
+            arrUnitQuantityItems = unitQuantityItems;
+        }
+        ArrayList<String> arrayOfUnitNames = new ArrayList<String>();
+        for (UnitQuantityItem quantityItem : arrUnitQuantityItems) {
+            String unitName = quantityItem.getUnitName();
+            arrayOfUnitNames.add(unitName);
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUnitNames);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return arrayAdapter;
+    }
+
     private void requestForSalaryOrAdvance() {
         JSONObject params = new JSONObject();
         try {
@@ -1080,6 +795,7 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void requestToGenerateGRN() {
+        AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         int intSelectedPos = spinnerMiscCategoryArray.getSelectedItemPosition();
         try {
             if (jsonArray != null) {
@@ -1149,6 +865,7 @@ public class PeticashFormActivity extends BaseActivity {
                             editTextPayableAmount_purchase.setText(jsonObject.getString("payable_amount"));
                             peticashTransactionId = jsonObject.getInt("peticash_transaction_id");
                             setEnabledFalse();
+                            AppUtils.getInstance().showProgressBar(mainRelativeLayout, false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1194,6 +911,180 @@ public class PeticashFormActivity extends BaseActivity {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
+    }
+
+    private void requestForViewPament() {
+        AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", project_site_id);
+            if (isSalary) {
+                params.put("type", "salary");
+                params.put("employee_id", primaryKey);
+                params.put("per_day_wages", getPerWeges);
+                params.put("working_days", edittextDay.getText().toString());
+                params.put("advance_after_last_salary", intAdvanceAmount);//ToDo Ask for amount
+                if (TextUtils.isEmpty(editTextPT.getText().toString())) {
+                    params.put("pt", 0);
+                } else {
+                    params.put("pt", editTextPT.getText().toString());
+                }
+                if (TextUtils.isEmpty(editTextPF.getText().toString())) {
+                    params.put("pf", 0);
+                } else {
+                    params.put("pf", editTextPF.getText().toString());
+                }
+                if (TextUtils.isEmpty(editTextESIC.getText().toString())) {
+                    params.put("esic", 0);
+                } else {
+                    params.put("esic", editTextESIC.getText().toString());
+                }
+                if (TextUtils.isEmpty(editTextTDS.getText().toString())) {
+                    params.put("tds", 0);
+                } else {
+                    params.put("tds", editTextTDS.getText().toString());
+                }
+            } else {
+                params.put("type", "advance");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_SALARY_VIEW_PAYMENT + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_SALARY_VIEW_PAYMENT")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            approved_amount = jsonObject.getString("approved_amount");
+                            Log.i("#@approved_amount", approved_amount);
+                            editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
+                            editTextSiteName.setEnabled(false);
+                            editTextEmpIdName.setEnabled(false);
+                            spinnerCategoryArray.setEnabled(false);
+                            if (isSalary) {
+                                edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
+                                Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                                String amount = jsonObject.getString("payable_amount");
+                                edittextPayableAmountSalary.setText(amount);
+                                editTextPT.setEnabled(false);
+                                editTextPF.setEnabled(false);
+                                editTextESIC.setEnabled(false);
+                                editTextTDS.setEnabled(false);
+                                edittextDay.setEnabled(false);
+                                editTextSalaryAmount.setEnabled(false);
+                                edittextPayableAmountSalary.setEnabled(false);
+                                linearPayableAmount.setVisibility(View.VISIBLE);
+                                textViewCaptureSalaryImage.setVisibility(View.VISIBLE);
+                                editTextAddtonoteforsalary.setVisibility(View.VISIBLE);
+                                buttonViewAmount.setVisibility(View.GONE);
+                                edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    @OnClick(R.id.textViewCapturFirst)
+    public void onFirstCapClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textViewCapturFirst:
+                flagForLayout = "firstcapture";
+                captureImage();
+                break;
+        }
+    }
+
+    @OnClick(R.id.textViewCapturSecond)
+    public void onSecondCaptureClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textViewCapturSecond:
+                flagForLayout = "secondcapture";
+                captureImage();
+                break;
+        }
+    }
+
+    @OnClick(R.id.textView_captureSalaryImage)
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textView_captureSalaryImage:
+                flagForLayout = "salarycapture";
+                captureImage();
+                break;
+        }
+    }
+
+    private void captureImage() {
+        Intent intent = new Intent(mContext, MultiCameraActivity.class);
+        Params params = new Params();
+        params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
+        params.setToolbarColor(R.color.colorPrimaryLight);
+        params.setActionButtonColor(R.color.colorAccentDark);
+        params.setButtonTextColor(R.color.colorWhite);
+        intent.putExtra(Constants.KEY_PARAMS, params);
+        startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                if (flagForLayout.equalsIgnoreCase("firstcapture")) {
+                    onActivityResultForImage(linearLayoutUploadImage, imagesList);
+                } else if (flagForLayout.equalsIgnoreCase("secondcapture")) {
+                    onActivityResultForImage(linearLayoutUploadBillImage, imagesList);
+                } else if (flagForLayout.equalsIgnoreCase("salarycapture")) {
+                    onActivityResultForImage(linearLayoutUploadImageSalary, imagesList);
+                }
+                break;
+            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_EMPLOYEE:
+                functionToSetEmployeeInfo(intent);
+                break;
+            case AppConstants.REQUEST_CODE_FOR_AUTO_SUGGEST_PETICASH:
+                functionForProcessingSearchResult(intent);
+                break;
+        }
+    }
+
+    private void onActivityResultForImage(LinearLayout layoutCapture, ArrayList<Image> imagesList) {
+        layoutCapture.removeAllViews();
+        arrayImageFileList = new ArrayList<File>();
+        for (Image currentImage : imagesList) {
+            if (currentImage.imagePath != null) {
+                File currentImageFile = new File(currentImage.imagePath);
+                arrayImageFileList.add(currentImageFile);
+                Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                ImageView imageView = new ImageView(mContext);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                imageView.setImageBitmap(myBitmap);
+                layoutCapture.addView(imageView);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
     }
 
     private void uploadImages_addItemToLocal(final String strTag, final String imageFor) {
@@ -1262,5 +1153,95 @@ public class PeticashFormActivity extends BaseActivity {
         buttonGenerateGrn.setVisibility(View.GONE);
         buttonPayWithPeticash.setVisibility(View.VISIBLE);
         layoutCapture.setVisibility(View.VISIBLE);
+    }
+
+    private void setMiscelleneousCategories() {
+        AndroidNetworking.get(AppURL.API_GET_MISCELLANEOUS_CATEGORIES)
+                .setTag("setMiscelleneousCategories")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArray = response.getJSONArray("data");
+                            miscelleneousCategoriesArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                miscelleneousCategoriesArray.add(jsonObject.getString("category_name"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, miscelleneousCategoriesArray);
+                            spinnerMiscCategoryArray.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getSystemSites");
+                    }
+                });
+    }
+
+    @OnClick(R.id.button_view_amount)
+    public void onViewClickedAmount() {
+        if (TextUtils.isEmpty(editTextEmpIdName.getText().toString())) {
+            editTextEmpIdName.requestFocus();
+            editTextEmpIdName.setFocusable(true);
+            editTextEmpIdName.setFocusableInTouchMode(true);
+            editTextEmpIdName.setError("Please enter employee name");
+            return;
+        }
+        if (TextUtils.isEmpty(editTextSiteName.getText().toString())) {
+            editTextSiteName.setError("Please enter site name");
+            return;
+        }
+        if (TextUtils.isEmpty(edittextDay.getText().toString())) {
+            edittextDay.setError("Please enter days");
+            return;
+        }
+        requestForViewPament();
+    }
+
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = siteNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArrayForSite.getJSONObject(selectedIndex);
+            project_site_id = jsonObject.getInt("project_site_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void requestToGetSystemSites() {
+        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
+                .setTag("requestToGetSystemSites")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArrayForSite = response.getJSONArray("data");
+                            siteNameArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArrayForSite.length(); i++) {
+                                JSONObject jsonObject = jsonArrayForSite.getJSONObject(i);
+                                siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
+                            editTextSiteName.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
+                    }
+                });
     }
 }

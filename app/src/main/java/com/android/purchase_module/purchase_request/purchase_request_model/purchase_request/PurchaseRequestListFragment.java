@@ -15,17 +15,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
-import com.android.purchase_module.purchase_request.MonthYearPickerDialog;
-import com.android.utils.FragmentInterface;
 import com.android.login_mvp.login_model.PermissionsItem;
+import com.android.purchase_module.purchase_request.MonthYearPickerDialog;
 import com.android.purchase_module.purchase_request.PurchaseRequestDetailsHomeActivity;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -58,6 +59,8 @@ import static android.app.Activity.RESULT_OK;
  * Created by Rohit.
  */
 public class PurchaseRequestListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
+    @BindView(R.id.purchaseRelative)
+    RelativeLayout purchaseRelative;
     private String subModuleTag, permissionList;
     @BindView(R.id.rv_material_purchase_request_list)
     RecyclerView recyclerView_commonListingView;
@@ -177,6 +180,9 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     }
 
     private void requestPrListOnline(int pageId) {
+        AppUtils.getInstance().initializeProgressBar(purchaseRelative,mContext);
+        AppUtils.getInstance().showProgressBar(purchaseRelative,true);
+
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -214,6 +220,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                                         oldPageNumber = pageNumber;
                                         requestPrListOnline(pageNumber);
                                     }
+                                    AppUtils.getInstance().showProgressBar(purchaseRelative,true);
+
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

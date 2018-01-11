@@ -97,6 +97,13 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     @Override
     public void fragmentBecameVisible() {
+        requestInventoryResponse(pageNumber);
+    }
+
+    @Override
+    public void onResume() {
+        requestInventoryResponse(pageNumber);
+        super.onResume();
     }
 
     private void setAdapterForMaterialList() {

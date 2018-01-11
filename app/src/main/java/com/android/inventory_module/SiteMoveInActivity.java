@@ -1,17 +1,18 @@
 package com.android.inventory_module;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,82 +71,13 @@ public class SiteMoveInActivity extends BaseActivity {
     TextView siteName;
     @BindView(R.id.editTextSiteName)
     EditText editTextSiteName;
+    @BindView(R.id.mainRelative)
+    RelativeLayout mainRelative;
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private boolean isMaterial;
     private int unitId, projectSiteIdFrom, inventoryComponentId;
-    private ProgressDialog progressDialog;
-
-    @OnClick({R.id.textViewItemDetails, R.id.textView_capture, R.id.btnSubmit})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.textViewItemDetails:
-                if (AppUtils.getInstance().checkNetworkState()) {
-                    if (TextUtils.isEmpty(editTextEnteredGrn.getText().toString())) {
-                        editTextEnteredGrn.setError("Please enter GRN");
-                        return;
-                    }
-                    getDetails();
-                } else {
-                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
-                }
-                break;
-            case R.id.textView_capture:
-                chooseAction();
-                break;
-            case R.id.btnSubmit:
-                if (AppUtils.getInstance().checkNetworkState()) {
-                    if (TextUtils.isEmpty(editTextName.getText().toString())) {
-                        editTextName.setError("Please enter name");
-                        return;
-                    }
-                    if (TextUtils.isEmpty(edtQuantity.getText().toString())) {
-                        edtQuantity.setError("Please enter quantity");
-                        return;
-                    }
-                    uploadImages_addItemToLocal();
-                } else {
-                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
-                }
-                break;
-        }
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-        switch (requestCode) {
-            case Constants.TYPE_MULTI_CAPTURE:
-                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
-                Timber.d(String.valueOf(imagesList));
-                llCaptImage.removeAllViews();
-                arrayImageFileList = new ArrayList<File>();
-                File currentImageFile;
-                for (Image currentImage : imagesList) {
-                    if (currentImage.imagePath != null) {
-                        currentImageFile = new File(currentImage.imagePath);
-                        arrayImageFileList.add(currentImageFile);
-                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        imageView.setImageBitmap(myBitmap);
-                        llCaptImage.addView(imageView);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                break;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +89,18 @@ public class SiteMoveInActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = SiteMoveInActivity.this;
-        progressDialog = new ProgressDialog(mContext);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Site In");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void uploadImages_addItemToLocal() {
@@ -201,7 +144,8 @@ public class SiteMoveInActivity extends BaseActivity {
     }
 
     private void requestToMoveIn() {
-        showProgressDialog();
+        AppUtils.getInstance().initializeProgressBar(mainRelative, mContext);
+        AppUtils.getInstance().showProgressBar(mainRelative, true);
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id_from", projectSiteIdFrom);
@@ -220,7 +164,7 @@ public class SiteMoveInActivity extends BaseActivity {
         }
         AndroidNetworking.post(AppURL.API_MATERIAL_MOVE_IN_OUT + AppUtils.getInstance().getCurrentToken())
                 .setTag("materialCreateTransfer")
-//                .addJSONObjectBody(params)
+                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -229,7 +173,7 @@ public class SiteMoveInActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
+                            AppUtils.getInstance().showProgressBar(mainRelative, false);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -243,6 +187,41 @@ public class SiteMoveInActivity extends BaseActivity {
                 });
     }
 
+    @OnClick({R.id.textViewItemDetails, R.id.textView_capture, R.id.btnSubmit})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.textViewItemDetails:
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    if (TextUtils.isEmpty(editTextEnteredGrn.getText().toString())) {
+                        editTextEnteredGrn.setError("Please enter GRN");
+                        return;
+                    }
+                    getDetails();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
+                }
+                break;
+            case R.id.textView_capture:
+                chooseAction();
+                break;
+            case R.id.btnSubmit:
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    if (TextUtils.isEmpty(editTextName.getText().toString())) {
+                        editTextName.setError("Please enter name");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(edtQuantity.getText().toString())) {
+                        edtQuantity.setError("Please enter quantity");
+                        return;
+                    }
+                    uploadImages_addItemToLocal();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("SiteMoveInActivity");
+                }
+                break;
+        }
+    }
+
     private void chooseAction() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
         Params params = new Params();
@@ -254,8 +233,44 @@ public class SiteMoveInActivity extends BaseActivity {
         startActivityForResult(intent, Constants.TYPE_MULTI_CAPTURE);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case Constants.TYPE_MULTI_CAPTURE:
+                ArrayList<Image> imagesList = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
+                Timber.d(String.valueOf(imagesList));
+                llCaptImage.removeAllViews();
+                arrayImageFileList = new ArrayList<File>();
+                File currentImageFile;
+                for (Image currentImage : imagesList) {
+                    if (currentImage.imagePath != null) {
+                        currentImageFile = new File(currentImage.imagePath);
+                        arrayImageFileList.add(currentImageFile);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(currentImage.imagePath);
+                        ImageView imageView = new ImageView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                        layoutParams.setMargins(10, 10, 10, 10);
+                        imageView.setLayoutParams(layoutParams);
+                        imageView.setImageBitmap(myBitmap);
+                        llCaptImage.addView(imageView);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(mContext, "Image Clicked", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                break;
+        }
+    }
+
     private void getDetails() {
-        showProgressDialog();
+        AppUtils.getInstance().initializeProgressBar(mainRelative, mContext);
+        AppUtils.getInstance().showProgressBar(mainRelative, true);
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
@@ -273,7 +288,7 @@ public class SiteMoveInActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            progressDialog.dismiss();
+                            AppUtils.getInstance().showProgressBar(mainRelative, false);
                             JSONObject jsonObject = response.getJSONObject("data");
                             linearLayoutDetails.setVisibility(View.VISIBLE);
                             isMaterial = jsonObject.getBoolean("is_material");
@@ -282,6 +297,7 @@ public class SiteMoveInActivity extends BaseActivity {
                             } else {
                                 textviewName.setText("Asset Name");
                             }
+                            textViewItemDetails.setVisibility(View.GONE);
                             editTextEnteredGrn.setEnabled(false);
                             unitId = jsonObject.getInt("unit_id");
                             projectSiteIdFrom = jsonObject.getInt("project_site_id_from");
@@ -304,14 +320,5 @@ public class SiteMoveInActivity extends BaseActivity {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
-    }
-
-    private void showProgressDialog() {
-        progressDialog = new ProgressDialog(mContext);
-        progressDialog.setMessage("Loading....");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show(); // Display Progress Dialog
-        progressDialog.setCancelable(false);
-        progressDialog.show();
     }
 }

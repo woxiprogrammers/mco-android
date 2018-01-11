@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +79,8 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     Button btnMoveOut;
     Unbinder unbinder;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
+    @BindView(R.id.mainRelative)
+    RelativeLayout mainRelative;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private Context mContext;
@@ -301,6 +304,8 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     }
 
     private void requestToMoveOut() {
+        AppUtils.getInstance().initializeProgressBar(mainRelative,mContext);
+        AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id_from", AppUtils.getInstance().getCurrentSiteId());
@@ -329,6 +334,8 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            AppUtils.getInstance().showProgressBar(mainRelative,false);
+
                             getActivity().finish();
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -61,6 +61,16 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     @Override
     public void fragmentBecameVisible() {
+        if(getUserVisibleHint()){
+            requestAssetListOnline(pageNumber);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        requestAssetListOnline(pageNumber);
     }
 
     @Override
