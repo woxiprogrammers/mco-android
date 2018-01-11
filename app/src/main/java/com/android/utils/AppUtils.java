@@ -6,13 +6,18 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.constro360.BuildConfig;
+import com.android.constro360.R;
 import com.android.login_mvp.login_model.LoginResponse;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -418,12 +423,23 @@ public class AppUtils {
         return "";
     }
 
-    public void showProgressDialog(ProgressDialog progressDialog,Context context){
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Loading...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show(); // Display Progress Dialog
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+
+    public void showProgressBar(ViewGroup viewGroup,View view,Context mContext,boolean isToShowProgress,ProgressBar progressBar){
+
+        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+        view = layoutInflater.inflate(R.layout.check_progress_bar, viewGroup, false);
+        view.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        progressBar = view.findViewById(R.id.progressBar);
+        if(isToShowProgress){
+
+            viewGroup.addView(view);
+            progressBar.getIndeterminateDrawable().setColorFilter(mContext.getColor(R.color.colorAccentDark),android.graphics.PorterDuff.Mode.MULTIPLY);
+            progressBar.setVisibility(View.VISIBLE);
+        }else {
+            viewGroup.removeView(view);
+            progressBar.setVisibility(View.GONE);
+        }
+
+
     }
 }
