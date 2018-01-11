@@ -22,7 +22,7 @@ public class MyApplication extends Application {
         super.onCreate();
         AndroidNetworking.initialize(getApplicationContext());
         // initialize Realm
-        Realm.init(getApplicationContext());
+        Realm.init(this);
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder()
                 .name(getString(R.string.realm_database_name))
                 .schemaVersion(AppConstants.PREFS_REALM_DATABASE_VERSION)
