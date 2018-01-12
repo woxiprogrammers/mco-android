@@ -1,6 +1,5 @@
 package com.android.utils;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -64,8 +63,8 @@ public class AppUtils {
     private int intCurrentUserId;
     ViewGroup viewGroup;
     View view;
-
-    boolean isToShowProgress;ProgressBar progressBar;
+    boolean isToShowProgress;
+    ProgressBar progressBar;
 
     /**
      * initialize utils plus library
@@ -253,14 +252,13 @@ public class AppUtils {
                 .into(imageView);
     }
 
-    public void hideKeyboard(View view, Context context, EditText EditText,boolean isShow) {
+    public void hideKeyboard(View view, Context context, EditText EditText, boolean isShow) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(isShow){
+        if (isShow) {
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-        }else {
+        } else {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-
     }
 
     public String getCurrentToken() {
@@ -428,23 +426,21 @@ public class AppUtils {
         return "";
     }
 
-    public void initializeProgressBar(ViewGroup viewGroup,Context mContext){
+    public void initializeProgressBar(ViewGroup viewGroup, Context mContext) {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         view = layoutInflater.inflate(R.layout.check_progress_bar, viewGroup, false);
         view.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         progressBar = view.findViewById(R.id.progressBar);
     }
 
-    public void showProgressBar(ViewGroup viewGroup,boolean isToShowProgress){
-        if(isToShowProgress){
+    public void showProgressBar(ViewGroup viewGroup, boolean isToShowProgress) {
+        if (isToShowProgress) {
             viewGroup.addView(view);
-            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext,R.color.colorAccentDark),android.graphics.PorterDuff.Mode.MULTIPLY);
+            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.colorAccentDark), android.graphics.PorterDuff.Mode.MULTIPLY);
             progressBar.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             viewGroup.removeView(view);
             progressBar.setVisibility(View.GONE);
         }
     }
-
-
 }

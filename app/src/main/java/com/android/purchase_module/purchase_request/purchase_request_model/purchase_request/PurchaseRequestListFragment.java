@@ -180,9 +180,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     }
 
     private void requestPrListOnline(int pageId) {
-        AppUtils.getInstance().initializeProgressBar(purchaseRelative,mContext);
-        AppUtils.getInstance().showProgressBar(purchaseRelative,true);
-
+        /*AppUtils.getInstance().initializeProgressBar(purchaseRelative,mContext);
+        AppUtils.getInstance().showProgressBar(purchaseRelative,true);*/
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -220,8 +219,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                                         oldPageNumber = pageNumber;
                                         requestPrListOnline(pageNumber);
                                     }
-                                    AppUtils.getInstance().showProgressBar(purchaseRelative,true);
-
+//                                    AppUtils.getInstance().showProgressBar(purchaseRelative,true);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
