@@ -118,6 +118,8 @@
         <activity android:name="com.android.inventory_module.SiteMoveInActivity">
         </activity>
         <activity android:name=".BaseActivity"/>
+        <activity android:name="com.android.inventory_module.assets.MoveOutAssetNewActivity">
+        </activity>
     </application>
 
 </manifest>

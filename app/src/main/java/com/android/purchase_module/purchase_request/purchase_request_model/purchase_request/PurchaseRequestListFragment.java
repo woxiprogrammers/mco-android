@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -215,12 +216,13 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    Log.i("@@Check","Check");
                                     setUpPrAdapter();
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
                                         requestPrListOnline(pageNumber);
                                     }
-                                    AppUtils.getInstance().showProgressBar(purchaseRelative,true);
+                                    AppUtils.getInstance().showProgressBar(purchaseRelative,false);
 
                                 }
                             }, new Realm.Transaction.OnError() {
