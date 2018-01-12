@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -47,6 +48,8 @@ public class ActivityAssetsReadings extends BaseActivity {
     EditText editTextElePerUnit;
     LinearLayout linearLayoutElePerUnit;
     FrameLayout frameLayoutTypeForAsset;
+    @BindView(R.id.mainRelativeAssetReading)
+    RelativeLayout mainRelativeAssetReading;
     private EditText editTextStartReading;
     private EditText editTextStartTime;
     private EditText editTextStopReading;
@@ -173,6 +176,7 @@ public class ActivityAssetsReadings extends BaseActivity {
     }
 
     private void requestToCreateReadings() {
+        AppUtils.getInstance().showProgressBar(mainRelativeAssetReading,true);
         JSONObject params = new JSONObject();
         try {
             params.put("inventory_component_id", intComponentId);
@@ -213,6 +217,7 @@ public class ActivityAssetsReadings extends BaseActivity {
                             if (!isExceed) {
                                 finish();
                             }
+                            AppUtils.getInstance().showProgressBar(mainRelativeAssetReading,false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -232,6 +237,7 @@ public class ActivityAssetsReadings extends BaseActivity {
         ButterKnife.bind(this);
         initializeViews();
         inflateReadingLayout();
+        AppUtils.getInstance().initializeProgressBar(mainRelativeAssetReading,mContext);
     }
 
     private void initializeViews() {
@@ -338,7 +344,7 @@ public class ActivityAssetsReadings extends BaseActivity {
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         final int minute = mcurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(mContext, R.style.MyDialogTheme,new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 String time = AppUtils.getInstance().getTime("HH:mm", "HH:mm:ss", selectedHour + ":" + selectedMinute);

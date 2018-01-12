@@ -123,7 +123,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                     public void onItemClick(View view, final int position) {
                         if (isCrateInOutTransfer) {
                             if (assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
-                                Intent startIntent = new Intent(mContext, ActivityAssetMoveInOutTransfer.class);
+                                Intent startIntent = new Intent(mContext, MoveOutAssetNewActivity.class);
                                 startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
                                 startActivity(startIntent);
                             } else {
