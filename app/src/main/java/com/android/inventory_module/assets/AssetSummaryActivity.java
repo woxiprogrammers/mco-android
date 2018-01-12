@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -43,6 +44,8 @@ import timber.log.Timber;
 public class AssetSummaryActivity extends BaseActivity {
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
+    @BindView(R.id.mainRelativeAssetSummary)
+    RelativeLayout mainRelativeAssetSummary;
     private int inventoryComponentId;
     private Realm realm;
     private Context mContext;
@@ -64,6 +67,7 @@ public class AssetSummaryActivity extends BaseActivity {
         getSupportActionBar().setTitle("Assets Summary");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Bundle bundleArgs = getIntent().getExtras();
+        AppUtils.getInstance().initializeProgressBar(mainRelativeAssetSummary,mContext);
         if (bundleArgs != null) {
             inventoryComponentId = bundleArgs.getInt("inventoryComponentId");
             strDate = bundleArgs.getString("getDate");
@@ -99,6 +103,7 @@ public class AssetSummaryActivity extends BaseActivity {
     }
 
     private void requestAssetReadingList() {
+        AppUtils.getInstance().showProgressBar(mainRelativeAssetSummary,true);
         JSONObject params = new JSONObject();
         try {
             params.put("inventory_component_id", inventoryComponentId);
@@ -131,6 +136,7 @@ public class AssetSummaryActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d(String.valueOf(response));
+                                    AppUtils.getInstance().showProgressBar(mainRelativeAssetSummary,false);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

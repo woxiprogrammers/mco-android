@@ -47,10 +47,6 @@ public class ViewPeticashTransactions extends BaseActivity {
     LinearLayout linearLayoutSetUnits;
     @BindView(R.id.editTextSetDate)
     EditText editTextSetDate;
-    @BindView(R.id.edittextSetinTime)
-    EditText edittextSetinTime;
-    @BindView(R.id.edittestSetOutTime)
-    EditText edittestSetOutTime;
     @BindView(R.id.editTesxtSetBillNumber)
     EditText editTesxtSetBillNumber;
     @BindView(R.id.lineraLayoutSetBillNumber)
@@ -59,10 +55,6 @@ public class ViewPeticashTransactions extends BaseActivity {
     EditText editTextSetBillamount;
     @BindView(R.id.linearSetBillAmount)
     LinearLayout linearSetBillAmount;
-    @BindView(R.id.editTextSetVehicleNumber)
-    EditText editTextSetVehicleNumber;
-    @BindView(R.id.ll_SetforSupplierVehicle)
-    LinearLayout llSetforSupplierVehicle;
     @BindView(R.id.linearLayoutSetUploadImage)
     LinearLayout linearLayoutSetUploadImage;
     @BindView(R.id.editTextSetGrnNumber)
@@ -81,8 +73,6 @@ public class ViewPeticashTransactions extends BaseActivity {
     EditText editTextRefNum;
     @BindView(R.id.horizontalImage)
     HorizontalScrollView horizontalImage;
-    @BindView(R.id.ll_forSupplierSetInOutTime)
-    LinearLayout ll_forSupplierSetInOutTime;
     private Context mContext;
     private Realm realm;
     private int transactionTypeId;
@@ -138,16 +128,7 @@ public class ViewPeticashTransactions extends BaseActivity {
             editTextSetRemark.setVisibility(View.GONE);
         }
         editTesxtSetBillNumber.setText(transactionDetailData.getBillNumber());
-        if (!transactionDetailData.getInTime().isEmpty()) {
-            ll_forSupplierSetInOutTime.setVisibility(View.VISIBLE);
-            llSetforSupplierVehicle.setVisibility(View.VISIBLE);
-            edittextSetinTime.setText(transactionDetailData.getInTime());
-            edittestSetOutTime.setText(transactionDetailData.getOutTime());
-            editTextSetVehicleNumber.setText(transactionDetailData.getVehicleNumber());
-        } else {
-            llSetforSupplierVehicle.setVisibility(View.GONE);
-            ll_forSupplierSetInOutTime.setVisibility(View.GONE);
-        }
+
         if (!transactionDetailData.getReferenceNumber().isEmpty()) {
             linearLayoutSetRefNumber.setVisibility(View.VISIBLE);
             editTextRefNum.setText(transactionDetailData.getReferenceNumber());

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     @Override
     public void fragmentBecameVisible() {
         if(getUserVisibleHint()){
+            Log.i("##fragmentBecameVisible","Resume");
             requestAssetListOnline(pageNumber);
         }
     }
@@ -70,6 +72,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     public void onResume() {
         super.onResume();
 
+        Log.i("##Resume","Resume");
         requestAssetListOnline(pageNumber);
     }
 
@@ -94,7 +97,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
             }
         }
         setUpAssetListAdapter();
-        requestAssetListOnline(pageNumber);
+        Log.i("##OnCreate","OnCreate");
         return mParentView;
     }
 

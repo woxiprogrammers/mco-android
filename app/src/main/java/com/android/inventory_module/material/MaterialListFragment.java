@@ -83,7 +83,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             isCrateInOutTransfer = true;
         }
         setAdapterForMaterialList();
-        requestInventoryResponse(pageNumber);
         return mParentView;
     }
 

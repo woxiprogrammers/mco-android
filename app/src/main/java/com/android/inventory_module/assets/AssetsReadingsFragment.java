@@ -86,9 +86,10 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
             component_type_slug = bundleArgs.getString("component_type_slug");
         }
         setUpAssetListAdapter();
+        /*
         if (AppUtils.getInstance().checkNetworkState()) {
             requestAssetSummaryList();
-        }
+        }*/
         return view;
     }
 

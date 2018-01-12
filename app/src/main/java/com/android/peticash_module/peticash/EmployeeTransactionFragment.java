@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.constro360.R;
 import com.android.peticash_module.peticashautosearchemployee.EmpTransactionResponse;
+import com.android.peticash_module.peticashautosearchemployee.EmployeeSearchDataItem;
 import com.android.peticash_module.peticashautosearchemployee.EmployeeTransactionsItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -47,6 +48,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
     private int employeeId;
     private ProgressBar progressBar;
     private TextView textViewNoTransactions;
+    private TextView txtEmployeeName,mobile;
 
     @NonNull
     @Override
@@ -63,6 +65,15 @@ public class EmployeeTransactionFragment extends DialogFragment {
         Button buttonOk = dialog.findViewById(R.id.btnOk);
         progressBar = dialog.findViewById(R.id.progressBarTrans);
         textViewNoTransactions = dialog.findViewById(R.id.textViewNoTransactions);
+        txtEmployeeName=dialog.findViewById(R.id.textViewVenName);
+        mobile=dialog.findViewById(R.id.mob);
+        mobile.setVisibility(View.GONE);
+        realm=Realm.getDefaultInstance();
+        EmployeeSearchDataItem employeeSearchDataItem=realm.where(EmployeeSearchDataItem.class).equalTo("employeeId",employeeId).findFirst();
+        if(employeeSearchDataItem != null){
+            txtEmployeeName.setText("Name of Employee:- " + employeeSearchDataItem.getEmployeeName());
+        }
+
         requestForEmpTransactions();
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
