@@ -24,20 +24,21 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_details.MaterialNamesItem;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_details.MaterialUnitsImagesResponse;
-import com.android.utils.FragmentInterface;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderListItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.new_transaction_list.PurchaseOrderTransactionListingItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.new_transaction_list.TransactionDataItem;
+import com.android.purchase_module.purchase_request.purchase_request_model.purchase_details.MaterialNamesItem;
+import com.android.purchase_module.purchase_request.purchase_request_model.purchase_details.MaterialUnitsImagesResponse;
+import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderListItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -141,6 +142,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     LinearLayout linearLayoutShowImg;
     @BindView(R.id.textViewShowMessage)
     TextView textViewShowMessage;
+    @BindView(R.id.mainRelativePurchaseOrderTrans)
+    RelativeLayout mainRelativePurchaseOrderTrans;
     private ArrayList<Integer> arrayList;
     Unbinder unbinder;
     private static int orderId;
@@ -173,11 +176,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         // Required empty public constructor
     }
 
-    public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor,boolean isHaveAccess) {
+    public static PayFragmentNew newInstance(int purchaseOrderId, String strVendor, boolean isHaveAccess) {
         Bundle args = new Bundle();
         orderId = purchaseOrderId;
         strVendorName = strVendor;
-        isHaveCreateAccess=isHaveAccess;
+        isHaveCreateAccess = isHaveAccess;
         PayFragmentNew fragment = new PayFragmentNew();
         fragment.setArguments(args);
         return fragment;
@@ -190,6 +193,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         unbinder = ButterKnife.bind(this, view);
         layout = view.findViewById(R.id.layoutView);
         mContext = getActivity();
+        AppUtils.getInstance().initializeProgressBar(mainRelativePurchaseOrderTrans,mContext);
         initializeViews();
 
         return view;
@@ -203,7 +207,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
 
         float quantity = Float.parseFloat(purchaseOrderListItem.getRemainingQuantity());
-        if(isHaveCreateAccess){
+        if (isHaveCreateAccess) {
             linearLayoutFirstLayout.setVisibility(View.VISIBLE);
             if (quantity == 0 || quantity == 0.0) {
                 textViewShowMessage.setVisibility(View.VISIBLE);
@@ -238,10 +242,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     AppUtils.getInstance().loadImageViaGlide(purchaseOrderListItem.getListOfImages().get(index).getImageUrl(), imageView, mContext);
                 }
             }
-        }else {
+        } else {
             linearLayoutFirstLayout.setVisibility(View.GONE);
         }
-
 
     }
 
@@ -383,10 +386,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToGenerateGrn() {
+
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,true);
         JSONObject params = new JSONObject();
         /**/
         try {
@@ -416,6 +421,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 //                            linearLayoutInflateNames.setEnabled(false);
 //                            frameLayoutEdit.setEnabled(false);
                             linearLayoutMatImg.setVisibility(View.GONE);
+                            AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -450,6 +456,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 }
             }
         }
+        AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,true);
+
         try {
             params.put("vehicle_number", strVehicleNumber);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
@@ -479,6 +487,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             ((PayAndBillsActivity) mContext).moveFragments(true);
                             clearData();
                             nestedScrollView.setVisibility(View.GONE);
+                            AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,false);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
