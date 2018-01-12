@@ -82,7 +82,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Start Realm Browser
         RealmBrowser.showRealmFilesNotification(getApplicationContext());
 //        }
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
