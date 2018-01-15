@@ -55,6 +55,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
     private Realm realm;
     private AlertDialog alert_Dialog;
     private String strUserRole;
+    private String subModulesItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,8 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
         strUserRole = AppUtils.getInstance().getUserRole();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            subModulesItemList = bundle.getString("subModulesItemList");
+
             bundle.getString("KEY_SUBMODULETAG");
             String permissionsItemList = bundle.getString("KEY_PERMISSIONLIST");
             PermissionsItem[] permissionsItems = new Gson().fromJson(permissionsItemList, PermissionsItem[].class);
@@ -289,7 +292,7 @@ public class PurchaseRequestDetailsHomeActivity extends BaseActivity {
                 /*case 1:
                     return PurchaseHistoryFragment.newInstance();*/
                 case 1:
-                    return PurchaseOrderListFragment.newInstance(mPurchaseRequestId, true);
+                    return PurchaseOrderListFragment.newInstance(mPurchaseRequestId, true,subModulesItemList);
                 default:
                     return null;
             }

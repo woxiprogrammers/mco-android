@@ -148,9 +148,9 @@ public class PurchaseHomeActivity extends BaseActivity {
                 case 0:
                     return PurchaseRequestListFragment.newInstance(strSubModuleTag, permissionsItemList);
                 case 1:
-                    return PurchaseOrderListFragment.newInstance(0, false);
+                    return PurchaseOrderListFragment.newInstance(0, false,subModulesItemList);
                 case 2:
-                    return PurchaseTranListFragment.newInstance(true, 1,subModulesItemList);
+                    return PurchaseTranListFragment.newInstance(true, 1);
                 case 3:
                     return PurchaseOrderHistoryFragment.newInstance(0, false);
                 default:

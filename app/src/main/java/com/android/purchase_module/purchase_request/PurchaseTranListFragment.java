@@ -50,18 +50,16 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     private int intPrimaryKey;
     private View mParentView;
     private int pageNumber = 0, oldPageNumber;
-    private String subModulesItemList;
 
     public PurchaseTranListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseTranListFragment newInstance(boolean isFromPurchaseHome, int primaryKey,String subModulelist) {
+    public static PurchaseTranListFragment newInstance(boolean isFromPurchaseHome, int primaryKey) {
         Bundle args = new Bundle();
         PurchaseTranListFragment fragment = new PurchaseTranListFragment();
         args.putBoolean("isFromPurchaseHome", isFromPurchaseHome);
         args.putInt("primaryKey", primaryKey);
-        args.putString("subModulesItemList",subModulelist);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,19 +69,16 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         initializeViews();
-        if(subModulesItemList.contains("view-purchase-order")){
             requestPrListOnline(pageNumber);
             setUpTransactionAdapter();
-        }
+
         setHasOptionsMenu(true);
         return mParentView;
     }
 
     @Override
     public void fragmentBecameVisible() {
-        if(subModulesItemList.contains("view-purchase-order")) {
             requestPrListOnline(pageNumber);
-        }
         if (isFromPurchaseRequestHome) {
             if (getUserVisibleHint() /*&& ((PurchaseHomeActivity) mContext) != null*/) {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
@@ -99,7 +94,6 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         if (bundle != null) {
             intPrimaryKey = bundle.getInt("primaryKey");
             isFromPurchaseRequestHome = bundle.getBoolean("isFromPurchaseHome");
-            subModulesItemList=bundle.getString("subModulesItemList");
         }
     }
 

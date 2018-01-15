@@ -168,7 +168,7 @@ public class PayAndBillsActivity extends BaseActivity {
                 case 0:
                     return PayFragmentNew.newInstance(primaryKey,strVendorName,isCreateAccess);
                 case 1:
-                    return PurchaseTranListFragment.newInstance(false, primaryKey,subModulesItemList);
+                    return PurchaseTranListFragment.newInstance(false, primaryKey);
                 default:
                     return null;
             }

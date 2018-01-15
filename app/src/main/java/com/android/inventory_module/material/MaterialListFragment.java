@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.constro360.R;
@@ -41,6 +42,8 @@ import timber.log.Timber;
 public class MaterialListFragment extends Fragment implements FragmentInterface {
     @BindView(R.id.rv_material_list)
     RecyclerView rv_material_list;
+    @BindView(R.id.mainRelativeList)
+    RelativeLayout mainRelativeList;
     private MaterialListAdapter materialListAdapter;
     private View mParentView;
     private Context mContext;
@@ -76,6 +79,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
         Bundle bundle = getArguments();
+        AppUtils.getInstance().initializeProgressBar(mainRelativeList,mContext);
         if (bundle != null) {
             subModulesItemList = bundle.getString("subModulesItemList");
         }
@@ -133,6 +137,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     }
 
     private void requestInventoryResponse(int pageId) {
+        AppUtils.getInstance().showProgressBar(mainRelativeList,true);
         JSONObject params = new JSONObject();
         try {
             params.put("page_id", pageId);
@@ -167,6 +172,8 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                                         oldPageNumber = pageNumber;
                                         requestInventoryResponse(pageNumber);
                                     }
+
+                                    AppUtils.getInstance().showProgressBar(mainRelativeList,false);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

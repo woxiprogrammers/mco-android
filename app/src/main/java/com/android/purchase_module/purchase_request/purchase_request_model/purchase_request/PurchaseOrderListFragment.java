@@ -61,24 +61,31 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
-    private boolean isCreateAcces;
+    private boolean isCreateAccess;
+    private String subModulesItemList;
 
     public PurchaseOrderListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId, boolean isFrom) {
+    public static PurchaseOrderListFragment newInstance(int mPurchaseRequestId, boolean isFrom, String subModulelist) {
         Bundle args = new Bundle();
         PurchaseOrderListFragment fragment = new PurchaseOrderListFragment();
+        args.putString("subModulesItemList", subModulelist);
         fragment.setArguments(args);
         purchaseRequestId = mPurchaseRequestId;
         isFromPurchaseRequest = isFrom;
+
         return fragment;
     }
 
     @Override
     public void fragmentBecameVisible() {
-        requestPrListOnline();
+        if (subModulesItemList.contains("view-purchase-order")) {
+            requestPrListOnline();
+        }else {
+            recyclerView_commonListingView.setAdapter(null);
+        }
         if (!isFromPurchaseRequest) {
             if (getUserVisibleHint()) {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
@@ -97,6 +104,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
+        Bundle bundle=getArguments();
+        if(bundle != null){
+            subModulesItemList = bundle.getString("subModulesItemList");
+
+        }
         return mParentView;
     }
 
@@ -167,7 +179,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
                         intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
-                        intent.putExtra("isCreateAccess",isCreateAcces);
+                        intent.putExtra("isCreateAccess",isCreateAccess);
                         intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
                         startActivity(intent);
                     }
@@ -213,7 +225,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    isCreateAcces=response.isCreateAccess();
+                                    isCreateAccess=response.isCreateAccess();
                                     setUpPOAdapter();
                                     Timber.d("Realm execution successful");
                                 }
@@ -241,7 +253,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
-            requestPrListOnline();
+            if (subModulesItemList.contains("view-purchase-order")) {
+                requestPrListOnline();
+            }else {
+                recyclerView_commonListingView.setAdapter(null);
+            }
         }
     }
 
