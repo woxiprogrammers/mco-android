@@ -59,16 +59,19 @@ public final class UCEHandler {
     private static WeakReference<Activity> lastActivityCreated = new WeakReference<>(null);
     private static boolean isInBackground = true;
     //////////////////////////////
-    private Context context;
-    private String commaSeparatedEmailAddresses = "";
-    private boolean isViewEnabled = true;
-    private boolean isShareEnabled = true;
-    private boolean isSaveToFileEnabled = true;
-    private boolean isCopyEnabled = true;
-    private boolean isSendEmailEnabled = true;
+    private final Context context;
+    private String commaSeparatedEmailAddresses;
+    private boolean isViewEnabled, isShareEnabled, isSaveToFileEnabled, isCopyEnabled, isSendEmailEnabled;
 
-    UCEHandler() {
-        install(context);
+    UCEHandler(Builder builder) {
+        this.context = builder.context;
+        this.commaSeparatedEmailAddresses = builder.commaSeparatedEmailAddresses;
+        this.isViewEnabled = builder.isViewEnabled;
+        this.isShareEnabled = builder.isShareEnabled;
+        this.isSaveToFileEnabled = builder.isSaveToFileEnabled;
+        this.isCopyEnabled = builder.isCopyEnabled;
+        this.isSendEmailEnabled = builder.isSendEmailEnabled;
+        setUCEHandler(context);
     }
 //////////////////////////////////////////
 
@@ -78,12 +81,9 @@ public final class UCEHandler {
      * @param context Context to use for obtaining the ApplicationContext. Must not be null.
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    public static void install(@Nullable final Context context) {
+    private static void setUCEHandler(@Nullable final Context context) {
         try {
-            if (context == null) {
-                Log.e(TAG, "Install failed: context is null!");
-            } else {
-                //INSTALL!
+            if (context != null) {
                 final Thread.UncaughtExceptionHandler oldHandler = Thread.getDefaultUncaughtExceptionHandler();
                 if (oldHandler != null && oldHandler.getClass().getName().startsWith(UCE_HANDLER_PACKAGE_NAME)) {
                     Log.e(TAG, "UCEHandler was already installed, doing nothing!");
@@ -263,6 +263,8 @@ public final class UCEHandler {
                     });
                 }
                 Log.i(TAG, "UCEHandler has been installed.");
+            } else {
+                Log.e(TAG, "context can not be null");
             }
         } catch (Throwable t) {
             Log.e(TAG, "An unknown error occurred while installing UCEHandler, it may not have been properly initialized. Please report this as a bug if needed.", t);
@@ -687,44 +689,50 @@ public final class UCEHandler {
 
     /////////////////////////
     public static class Builder {
-        private UCEHandler uceHandler;
+        private Context context;
+        private String commaSeparatedEmailAddresses;
+        private boolean isViewEnabled = true;
+        private boolean isShareEnabled = true;
+        private boolean isSaveToFileEnabled = true;
+        private boolean isCopyEnabled = true;
+        private boolean isSendEmailEnabled = true;
 
         public Builder(Context context) {
-            uceHandler.context = context;
+            this.context = context;
         }
 
         public Builder setCommaSeparatedEmailAddresses(String commaSeparatedEmailAddresses) {
-            uceHandler.commaSeparatedEmailAddresses = commaSeparatedEmailAddresses;
+            this.commaSeparatedEmailAddresses = commaSeparatedEmailAddresses;
             return this;
         }
 
         public Builder setIsViewEnabled(boolean isViewEnabled) {
-            uceHandler.isViewEnabled = isViewEnabled;
+            this.isViewEnabled = isViewEnabled;
             return this;
         }
 
         public Builder setIsShareEnabled(boolean isShareEnabled) {
-            uceHandler.isShareEnabled = isShareEnabled;
+            this.isShareEnabled = isShareEnabled;
             return this;
         }
 
         public Builder setIsSaveToFileEnabled(boolean isSaveToFileEnabled) {
-            uceHandler.isSaveToFileEnabled = isSaveToFileEnabled;
+            this.isSaveToFileEnabled = isSaveToFileEnabled;
             return this;
         }
 
         public Builder setIsCopyEnabled(boolean isCopyEnabled) {
-            uceHandler.isCopyEnabled = isCopyEnabled;
+            this.isCopyEnabled = isCopyEnabled;
             return this;
         }
 
         public Builder setIsSendEmailEnabled(boolean isSendEmailEnabled) {
-            uceHandler.isSendEmailEnabled = isSendEmailEnabled;
+            this.isSendEmailEnabled = isSendEmailEnabled;
             return this;
         }
 
         public UCEHandler build() {
-            return new UCEHandler();
+            return new UCEHandler(this);
         }
     }
 

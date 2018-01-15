@@ -37,7 +37,7 @@ public class MyApplication extends Application {
             Timber.plant(new Timber.DebugTree());
         }
         AppUtils.initialize(getApplicationContext(), "app_preferences");
-//        UCEHandler.install(this);
-        new UCEHandler.Builder(this).build();
+//        UCEHandler.setUCEHandler(this);
+//        new UCEHandler.Builder(this).build();
     }
 }
