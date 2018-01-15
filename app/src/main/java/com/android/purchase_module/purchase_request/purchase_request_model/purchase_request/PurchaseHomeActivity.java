@@ -35,7 +35,7 @@ public class PurchaseHomeActivity extends BaseActivity {
     Toolbar toolbarPurchaseHome;
     @BindView(R.id.textView_purchaseHome_appBarTitle)
     TextView textViewPurchaseHomeAppBarTitle;
-    private String strSubModuleTag, permissionsItemList;
+    private String strSubModuleTag, permissionsItemList,subModulesItemList;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
 
     public void setDateInAppBar(int passMonth, int passYear) {
@@ -67,6 +67,8 @@ public class PurchaseHomeActivity extends BaseActivity {
         if (bundle != null) {
             strSubModuleTag = bundle.getString("subModuleTag");
             permissionsItemList = bundle.getString("permissionsItemList");
+            subModulesItemList = bundle.getString("subModulesItemList");
+
         }
         viewPagerAdapter = new PurchaseHomeViewPagerAdapter(getSupportFragmentManager());
         mViewPager_purchaseHome.setAdapter(viewPagerAdapter);
@@ -148,7 +150,7 @@ public class PurchaseHomeActivity extends BaseActivity {
                 case 1:
                     return PurchaseOrderListFragment.newInstance(0, false);
                 case 2:
-                    return PurchaseTranListFragment.newInstance(true, 1);
+                    return PurchaseTranListFragment.newInstance(true, 1,subModulesItemList);
                 case 3:
                     return PurchaseOrderHistoryFragment.newInstance(0, false);
                 default:

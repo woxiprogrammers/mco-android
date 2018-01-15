@@ -39,6 +39,8 @@ public class PayAndBillsActivity extends BaseActivity {
     private int primaryKey;
     private String strVendorName;
     private boolean isCreateAccess;
+    private String subModulesItemList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,11 @@ public class PayAndBillsActivity extends BaseActivity {
     }
 
     private void initializeViews() {
+        Bundle  bundle=getIntent().getExtras();
+        if (bundle != null) {
+            subModulesItemList = bundle.getString("subModulesItemList");
+
+        }
         Intent intent = getIntent();
         primaryKey = 0;
         String title = "";
@@ -161,7 +168,7 @@ public class PayAndBillsActivity extends BaseActivity {
                 case 0:
                     return PayFragmentNew.newInstance(primaryKey,strVendorName,isCreateAccess);
                 case 1:
-                    return PurchaseTranListFragment.newInstance(false, primaryKey);
+                    return PurchaseTranListFragment.newInstance(false, primaryKey,subModulesItemList);
                 default:
                     return null;
             }
