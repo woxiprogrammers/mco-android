@@ -58,6 +58,19 @@ public final class UCEHandler {
     private static UCEConfig config = new UCEConfig();
     private static WeakReference<Activity> lastActivityCreated = new WeakReference<>(null);
     private static boolean isInBackground = true;
+    //////////////////////////////
+    private Context context;
+    private String commaSeparatedEmailAddresses = "";
+    private boolean isViewEnabled = true;
+    private boolean isShareEnabled = true;
+    private boolean isSaveToFileEnabled = true;
+    private boolean isCopyEnabled = true;
+    private boolean isSendEmailEnabled = true;
+
+    UCEHandler() {
+        install(context);
+    }
+//////////////////////////////////////////
 
     /**
      * Installs UCEHandler on the application using the default error activity.
@@ -671,4 +684,95 @@ public final class UCEHandler {
 
         void onCloseAppFromErrorActivity();
     }
+
+    /////////////////////////
+    public static class Builder {
+        private UCEHandler uceHandler;
+
+        public Builder(Context context) {
+            uceHandler.context = context;
+        }
+
+        public Builder setCommaSeparatedEmailAddresses(String commaSeparatedEmailAddresses) {
+            uceHandler.commaSeparatedEmailAddresses = commaSeparatedEmailAddresses;
+            return this;
+        }
+
+        public Builder setIsViewEnabled(boolean isViewEnabled) {
+            uceHandler.isViewEnabled = isViewEnabled;
+            return this;
+        }
+
+        public Builder setIsShareEnabled(boolean isShareEnabled) {
+            uceHandler.isShareEnabled = isShareEnabled;
+            return this;
+        }
+
+        public Builder setIsSaveToFileEnabled(boolean isSaveToFileEnabled) {
+            uceHandler.isSaveToFileEnabled = isSaveToFileEnabled;
+            return this;
+        }
+
+        public Builder setIsCopyEnabled(boolean isCopyEnabled) {
+            uceHandler.isCopyEnabled = isCopyEnabled;
+            return this;
+        }
+
+        public Builder setIsSendEmailEnabled(boolean isSendEmailEnabled) {
+            uceHandler.isSendEmailEnabled = isSendEmailEnabled;
+            return this;
+        }
+
+        public UCEHandler build() {
+            return new UCEHandler();
+        }
+    }
+
+    /*public static class Builder {
+        private Context context;
+        private String commaSeparatedEmailAddresses;
+        private boolean isViewEnabled, isShareEnabled, isSaveToFileEnabled, isCopyEnabled, isSendEmailEnabled;
+
+        public Builder(Context context) {
+            this.context = context;
+        }
+
+        public Builder setCommaSeparatedEmailAddresses(String commaSeparatedEmailAddresses) {
+            this.commaSeparatedEmailAddresses = commaSeparatedEmailAddresses;
+            return this;
+        }
+
+        public Builder setViewEnabled(boolean viewEnabled) {
+            this.isViewEnabled = viewEnabled;
+            return this;
+        }
+
+        public Builder setShareEnabled(boolean shareEnabled) {
+            this.isShareEnabled = shareEnabled;
+            return this;
+        }
+
+        public Builder setSaveToFileEnabled(boolean saveToFileEnabled) {
+            this.isSaveToFileEnabled = saveToFileEnabled;
+            return this;
+        }
+
+        public Builder setCopyEnabled(boolean copyEnabled) {
+            this.isCopyEnabled = copyEnabled;
+            return this;
+        }
+
+        public Builder setSendEmailEnabled(boolean sendEmailEnabled) {
+            this.isSendEmailEnabled = sendEmailEnabled;
+            return this;
+        }
+
+        public UCEHandler build() {
+            UCEHandler uceHandler = new UCEHandler(this);
+            if (isSendEmailEnabled && TextUtils.isEmpty(commaSeparatedEmailAddresses)) {
+                throw new IllegalStateException("If send email enabled, email addresses can not be empty!");
+            }
+            return uceHandler;
+        }
+    }*/
 }

@@ -16,7 +16,7 @@ import java.lang.reflect.Modifier;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-class UCEConfig implements Serializable {
+public class UCEConfig implements Serializable {
     public static final int BACKGROUND_MODE_SILENT = 0;
     public static final int BACKGROUND_MODE_SHOW_CUSTOM = 1;
     public static final int BACKGROUND_MODE_CRASH = 2;

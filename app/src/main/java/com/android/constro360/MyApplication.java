@@ -5,6 +5,7 @@ import android.app.Application;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
+import com.rohitss.uncaughtexceptionhandler.UCEHandler;
 
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.Realm;
@@ -37,5 +38,6 @@ public class MyApplication extends Application {
         }
         AppUtils.initialize(getApplicationContext(), "app_preferences");
 //        UCEHandler.install(this);
+        new UCEHandler.Builder(this).build();
     }
 }
