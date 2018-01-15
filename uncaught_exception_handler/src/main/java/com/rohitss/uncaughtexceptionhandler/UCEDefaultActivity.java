@@ -22,7 +22,7 @@ import android.widget.Toast;
  * <p>This class is used to </p>
  * Created by Rohit.
  */
-final class DefaultErrorActivity extends AppCompatActivity {
+public final class UCEDefaultActivity extends AppCompatActivity {
     @SuppressLint("PrivateResource")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,14 +51,14 @@ final class DefaultErrorActivity extends AppCompatActivity {
             restartButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UCEHandler.restartApplication(DefaultErrorActivity.this, config);
+                    UCEHandler.restartApplication(UCEDefaultActivity.this, config);
                 }
             });
         } else {
             restartButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UCEHandler.closeApplication(DefaultErrorActivity.this, config);
+                    UCEHandler.closeApplication(UCEDefaultActivity.this, config);
                 }
             });
         }
@@ -68,9 +68,9 @@ final class DefaultErrorActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //We retrieve all the error data and show it
-                    AlertDialog dialog = new AlertDialog.Builder(DefaultErrorActivity.this)
+                    AlertDialog dialog = new AlertDialog.Builder(UCEDefaultActivity.this)
                             .setTitle(R.string.customactivityoncrash_error_activity_error_details_title)
-                            .setMessage(UCEHandler.getAllErrorDetailsFromIntent(DefaultErrorActivity.this, getIntent()))
+                            .setMessage(UCEHandler.getAllErrorDetailsFromIntent(UCEDefaultActivity.this, getIntent()))
                             .setPositiveButton(R.string.customactivityoncrash_error_activity_error_details_close, null)
                             .setNeutralButton(R.string.customactivityoncrash_error_activity_error_details_copy,
                                     new DialogInterface.OnClickListener() {
@@ -97,13 +97,13 @@ final class DefaultErrorActivity extends AppCompatActivity {
     }
 
     private void copyErrorToClipboard() {
-        String errorInformation = UCEHandler.getAllErrorDetailsFromIntent(DefaultErrorActivity.this, getIntent());
+        String errorInformation = UCEHandler.getAllErrorDetailsFromIntent(UCEDefaultActivity.this, getIntent());
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         //Are there any devices without clipboard...?
         if (clipboard != null) {
             ClipData clip = ClipData.newPlainText(getString(R.string.customactivityoncrash_error_activity_error_details_clipboard_label), errorInformation);
             clipboard.setPrimaryClip(clip);
-            Toast.makeText(DefaultErrorActivity.this, R.string.customactivityoncrash_error_activity_error_details_copied, Toast.LENGTH_SHORT).show();
+            Toast.makeText(UCEDefaultActivity.this, R.string.customactivityoncrash_error_activity_error_details_copied, Toast.LENGTH_SHORT).show();
         }
     }
 }

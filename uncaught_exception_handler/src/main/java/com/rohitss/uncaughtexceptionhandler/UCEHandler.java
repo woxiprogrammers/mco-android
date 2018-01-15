@@ -38,13 +38,13 @@ import java.util.zip.ZipFile;
 public final class UCEHandler {
     private final static String TAG = "UCEHandler";
     //Extras passed to the error activity
-    private static final String EXTRA_CONFIG = "cat.ereza.UCEHandler.EXTRA_CONFIG";
-    private static final String EXTRA_STACK_TRACE = "cat.ereza.UCEHandler.EXTRA_STACK_TRACE";
-    private static final String EXTRA_ACTIVITY_LOG = "cat.ereza.UCEHandler.EXTRA_ACTIVITY_LOG";
+    private static final String EXTRA_CONFIG = "com.rohitss.uncaughtexceptionhandler.UCEHandler.EXTRA_CONFIG";
+    private static final String EXTRA_STACK_TRACE = "com.rohitss.uncaughtexceptionhandler.UCEHandler.EXTRA_STACK_TRACE";
+    private static final String EXTRA_ACTIVITY_LOG = "com.rohitss.uncaughtexceptionhandler.UCEHandler.EXTRA_ACTIVITY_LOG";
     //General constants
-    private static final String INTENT_ACTION_ERROR_ACTIVITY = "cat.ereza.UCEHandler.ERROR";
-    private static final String INTENT_ACTION_RESTART_ACTIVITY = "cat.ereza.UCEHandler.RESTART";
-    private static final String CAOC_HANDLER_PACKAGE_NAME = "cat.ereza.UCEHandler";
+    private static final String INTENT_ACTION_ERROR_ACTIVITY = "com.rohitss.uncaughtexceptionhandler.UCEHandler.ERROR";
+    private static final String INTENT_ACTION_RESTART_ACTIVITY = "com.rohitss.uncaughtexceptionhandler.UCEHandler.RESTART";
+    private static final String UCE_HANDLER_PACKAGE_NAME = "com.rohitss.uncaughtexceptionhandler.UCEHandler";
     private static final String DEFAULT_HANDLER_PACKAGE_NAME = "com.android.internal.os";
     private static final int MAX_STACK_TRACE_SIZE = 131071; //128 KB - 1
     private static final int MAX_ACTIVITIES_IN_LOG = 50;
@@ -72,7 +72,7 @@ public final class UCEHandler {
             } else {
                 //INSTALL!
                 final Thread.UncaughtExceptionHandler oldHandler = Thread.getDefaultUncaughtExceptionHandler();
-                if (oldHandler != null && oldHandler.getClass().getName().startsWith(CAOC_HANDLER_PACKAGE_NAME)) {
+                if (oldHandler != null && oldHandler.getClass().getName().startsWith(UCE_HANDLER_PACKAGE_NAME)) {
                     Log.e(TAG, "UCEHandler was already installed, doing nothing!");
                 } else {
                     if (oldHandler != null && !oldHandler.getClass().getName().startsWith(DEFAULT_HANDLER_PACKAGE_NAME)) {
@@ -135,6 +135,38 @@ public final class UCEHandler {
                                         if (config.getEventListener() != null) {
                                             config.getEventListener().onLaunchErrorActivity();
                                         }
+                                        /*StringWriter stackTrace = new StringWriter();
+        exception.printStackTrace(new PrintWriter(stackTrace));
+        StringBuilder errorReport = new StringBuilder();
+        errorReport.append("************ CAUSE OF ERROR ************\n\n");
+        errorReport.append(stackTrace.toString());
+
+        errorReport.append("\n************ DEVICE INFORMATION ***********\n");
+        errorReport.append("Brand: ");
+        errorReport.append(Build.BRAND);
+        errorReport.append(LINE_SEPARATOR);
+        errorReport.append("Device: ");
+        errorReport.append(Build.DEVICE);
+        errorReport.append(LINE_SEPARATOR);
+        errorReport.append("Model: ");
+        errorReport.append(Build.MODEL);
+        errorReport.append(LINE_SEPARATOR);
+        errorReport.append("Id: ");
+        errorReport.append(Build.ID);
+        errorReport.append(LINE_SEPARATOR);
+        errorReport.append("Product: ");
+        errorReport.append(Build.PRODUCT);
+        errorReport.append(LINE_SEPARATOR);
+        errorReport.append("\n************ FIRMWARE ************\n");
+        errorReport.append("SDK: ");
+        errorReport.append(Build.VERSION.SDK);
+        errorReport.append(LINE_SEPARATOR);
+        errorReport.append("Release: ");
+        errorReport.append(Build.VERSION.RELEASE);
+        errorReport.append(LINE_SEPARATOR);
+        errorReport.append("Incremental: ");
+        errorReport.append(Build.VERSION.INCREMENTAL);
+        errorReport.append(LINE_SEPARATOR);*/
                                         application.startActivity(intent);
                                     } else if (config.getBackgroundMode() == UCEConfig.BACKGROUND_MODE_CRASH) {
                                         if (oldHandler != null) {
@@ -248,7 +280,7 @@ public final class UCEHandler {
 
     /**
      * INTERNAL method used to guess which error activity must be called when the app crashes.
-     * It will first get activities from the AndroidManifest with intent filter <action android:name="cat.ereza.UCEHandler.ERROR" />,
+     * It will first get activities from the AndroidManifest with intent filter <action android:name="com.rohitss.uncaughtexceptionhandler.UCEHandler.ERROR" />,
      * if it cannot find them, then it will use the default error activity.
      *
      * @param context A valid context. Must not be null.
@@ -261,7 +293,7 @@ public final class UCEHandler {
         resolvedActivityClass = getErrorActivityClassWithIntentFilter(context);
         //Else, get the default error activity
         if (resolvedActivityClass == null) {
-            resolvedActivityClass = DefaultErrorActivity.class;
+            resolvedActivityClass = UCEDefaultActivity.class;
         }
         return resolvedActivityClass;
     }
@@ -289,7 +321,7 @@ public final class UCEHandler {
 
     /**
      * INTERNAL method used to guess which activity must be called from the error activity to restart the app.
-     * It will first get activities from the AndroidManifest with intent filter <action android:name="cat.ereza.UCEHandler.RESTART" />,
+     * It will first get activities from the AndroidManifest with intent filter <action android:name="com.rohitss.uncaughtexceptionhandler.UCEHandler.RESTART" />,
      * if it cannot find them, then it will get the default launcher.
      * If there is no default launcher, this returns null.
      *
@@ -328,7 +360,7 @@ public final class UCEHandler {
     /// INTERNAL METHODS NOT TO BE USED BY THIRD PARTIES
 
     /**
-     * INTERNAL method used to get the first activity with an intent-filter <action android:name="cat.ereza.UCEHandler.ERROR" />,
+     * INTERNAL method used to get the first activity with an intent-filter <action android:name="com.rohitss.uncaughtexceptionhandler.UCEHandler.ERROR" />,
      * If there is no activity with that intent filter, this returns null.
      *
      * @param context A valid context. Must not be null.
@@ -353,7 +385,7 @@ public final class UCEHandler {
     }
 
     /**
-     * INTERNAL method used to get the first activity with an intent-filter <action android:name="cat.ereza.UCEHandler.RESTART" />,
+     * INTERNAL method used to get the first activity with an intent-filter <action android:name="com.rohitss.uncaughtexceptionhandler.UCEHandler.RESTART" />,
      * If there is no activity with that intent filter, this returns null.
      *
      * @param context A valid context. Must not be null.
