@@ -13,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -123,10 +124,25 @@ public final class UCEDefaultActivity extends Activity {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         String strCurrentDate = dateFormat.format(currentDate);
         String errorLog = getAllErrorDetailsFromIntent(UCEDefaultActivity.this, getIntent());
-        String fullName = Environment.getExternalStorageDirectory() + "/" + "AppErrorLogs/" + strCurrentDate + ".txt";
-        // Extract to file.
-        File file = new File(fullName);
-        FileWriter writer = null;
+        String fullPath = Environment.getExternalStorageDirectory() + "/" + "AppErrorLogs";
+        fullPath = fullPath.replace(" ", "_");
+        //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {}
+        Log.d("Full Path", fullPath);
+        FileOutputStream outputStream;
+        try {
+            File file = new File(fullPath, strCurrentDate + ".txt");
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            Log.d("Absolute Path", file.getAbsolutePath());
+            outputStream = new FileOutputStream(file);
+            outputStream.write(errorLog.getBytes());
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /*FileWriter writer = null;
         try {
             writer = new FileWriter(file);
             writer.write(errorLog);
@@ -136,8 +152,25 @@ public final class UCEDefaultActivity extends Activity {
                 try {
                     writer.close();
                 } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
         }
+        ////////////////////////////////
+        try {
+            String fpath = "/sdcard/" + strCurrentDate + "55555.txt";
+            File file2 = new File(fpath);
+            // If file does not exists, then create it
+            if (!file2.exists()) {
+                file2.createNewFile();
+            }
+            FileWriter fw = new FileWriter(file2.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(errorLog);
+            bw.close();
+            Log.d("Success", "Success");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 
     private void shareErrorLog() {
