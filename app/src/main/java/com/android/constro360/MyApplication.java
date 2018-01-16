@@ -5,6 +5,7 @@ import android.app.Application;
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
+import com.rohitss.uceh.UCEHandler;
 
 import de.jonasrottmann.realmbrowser.RealmBrowser;
 import io.realm.Realm;
@@ -36,6 +37,6 @@ public class MyApplication extends Application {
             Timber.plant(new Timber.DebugTree());
         }
         AppUtils.initialize(getApplicationContext(), "app_preferences");
-//        new UCEHandler.Builder(this).build();
+        new UCEHandler.Builder(this).build();
     }
 }

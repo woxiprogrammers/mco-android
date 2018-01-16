@@ -5,9 +5,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -20,8 +17,6 @@ import java.util.ArrayDeque;
 import java.util.Date;
 import java.util.Deque;
 import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * <b></b>
@@ -30,18 +25,16 @@ import java.util.zip.ZipFile;
  */
 public final class UCEHandler {
     private final static String TAG = "UCEHandler";
-    private static final String EXTRA_STACK_TRACE = "com.rohitss.uceh.UCEHandler.EXTRA_STACK_TRACE";
-    private static final String EXTRA_ACTIVITY_LOG = "com.rohitss.uceh.UCEHandler.EXTRA_ACTIVITY_LOG";
+    static final String EXTRA_STACK_TRACE = "com.rohitss.uceh.UCEHandler.EXTRA_STACK_TRACE";
+    static final String EXTRA_ACTIVITY_LOG = "com.rohitss.uceh.UCEHandler.EXTRA_ACTIVITY_LOG";
     private static final String UCE_HANDLER_PACKAGE_NAME = "com.rohitss.uceh";
     private static final String DEFAULT_HANDLER_PACKAGE_NAME = "com.android.internal.os";
     private static final int MAX_STACK_TRACE_SIZE = 131071; //128 KB - 1
     private static final int MAX_ACTIVITIES_IN_LOG = 50;
-    //Shared preferences
     private static final String SHARED_PREFERENCES_FILE = "uceh_preferences";
     private static final String SHARED_PREFERENCES_FIELD_TIMESTAMP = "last_crash_timestamp";
     private static final Deque<String> activityLog = new ArrayDeque<>(MAX_ACTIVITIES_IN_LOG);
-    //Internal variables
-    @SuppressLint("StaticFieldLeak") //This is an application-wide component
+    @SuppressLint("StaticFieldLeak")
     private static Application application;
     private static WeakReference<Activity> lastActivityCreated = new WeakReference<>(null);
     private static boolean isInBackground = true;
@@ -245,86 +238,6 @@ public final class UCEHandler {
 
     private static long getLastCrashTimestamp(Context context) {
         return context.getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).getLong(SHARED_PREFERENCES_FIELD_TIMESTAMP, -1);
-    }
-
-    private static String getStackTraceFromIntent(Intent intent) {
-        return intent.getStringExtra(UCEHandler.EXTRA_STACK_TRACE);
-    }
-
-    static String getAllErrorDetailsFromIntent(Context context, Intent intent) {
-        Date currentDate = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-        String buildDateAsString = getBuildDateAsString(context, dateFormat);
-        String versionName = getVersionName(context);
-        String errorDetails = "";
-        errorDetails += "Build version: " + versionName + " \n";
-        if (buildDateAsString != null) {
-            errorDetails += "Build date: " + buildDateAsString + " \n";
-        }
-        errorDetails += "Current date: " + dateFormat.format(currentDate) + " \n";
-        errorDetails += "Device: " + getDeviceModelName() + " \n \n";
-        errorDetails += "Stack trace:  \n";
-        errorDetails += getStackTraceFromIntent(intent);
-        String activityLog = getActivityLogFromIntent(intent);
-        if (activityLog != null) {
-            errorDetails += "\nUser actions: \n";
-            errorDetails += activityLog;
-        }
-        return errorDetails;
-    }
-
-    private static String getBuildDateAsString(Context context, DateFormat dateFormat) {
-        long buildDate;
-        try {
-            ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
-            ZipFile zf = new ZipFile(ai.sourceDir);
-            //If this failed, try with the old zip method
-            ZipEntry ze = zf.getEntry("classes.dex");
-            buildDate = ze.getTime();
-            zf.close();
-        } catch (Exception e) {
-            buildDate = 0;
-        }
-        if (buildDate > 312764400000L) {
-            return dateFormat.format(new Date(buildDate));
-        } else {
-            return null;
-        }
-    }
-
-    private static String getVersionName(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (Exception e) {
-            return "Unknown";
-        }
-    }
-
-    private static String getDeviceModelName() {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        if (model.startsWith(manufacturer)) {
-            return capitalize(model);
-        } else {
-            return capitalize(manufacturer) + " " + model;
-        }
-    }
-
-    private static String getActivityLogFromIntent(Intent intent) {
-        return intent.getStringExtra(UCEHandler.EXTRA_ACTIVITY_LOG);
-    }
-
-    private static String capitalize(String s) {
-        if (s == null || s.length() == 0) {
-            return "";
-        }
-        char first = s.charAt(0);
-        if (Character.isUpperCase(first)) {
-            return s;
-        } else {
-            return Character.toUpperCase(first) + s.substring(1);
-        }
     }
 
     static void closeApplication(Activity activity) {
