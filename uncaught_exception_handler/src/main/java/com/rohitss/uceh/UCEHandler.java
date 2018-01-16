@@ -1,4 +1,4 @@
-package com.rohitss.uncaughtexceptionhandler;
+package com.rohitss.uceh;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -38,13 +38,13 @@ import java.util.zip.ZipFile;
 public final class UCEHandler {
     private final static String TAG = "UCEHandler";
     //Extras passed to the error activity
-    private static final String EXTRA_CONFIG = "com.rohitss.uncaughtexceptionhandler.UCEHandler.EXTRA_CONFIG";
-    private static final String EXTRA_STACK_TRACE = "com.rohitss.uncaughtexceptionhandler.UCEHandler.EXTRA_STACK_TRACE";
-    private static final String EXTRA_ACTIVITY_LOG = "com.rohitss.uncaughtexceptionhandler.UCEHandler.EXTRA_ACTIVITY_LOG";
+    private static final String EXTRA_CONFIG = "com.rohitss.uceh.UCEHandler.EXTRA_CONFIG";
+    private static final String EXTRA_STACK_TRACE = "com.rohitss.uceh.UCEHandler.EXTRA_STACK_TRACE";
+    private static final String EXTRA_ACTIVITY_LOG = "com.rohitss.uceh.UCEHandler.EXTRA_ACTIVITY_LOG";
     //General constants
-    private static final String INTENT_ACTION_ERROR_ACTIVITY = "com.rohitss.uncaughtexceptionhandler.UCEHandler.ERROR";
-    private static final String INTENT_ACTION_RESTART_ACTIVITY = "com.rohitss.uncaughtexceptionhandler.UCEHandler.RESTART";
-    private static final String UCE_HANDLER_PACKAGE_NAME = "com.rohitss.uncaughtexceptionhandler.UCEHandler";
+    private static final String INTENT_ACTION_ERROR_ACTIVITY = "com.rohitss.uceh.UCEHandler.ERROR";
+    private static final String INTENT_ACTION_RESTART_ACTIVITY = "com.rohitss.uceh.UCEHandler.RESTART";
+    private static final String UCE_HANDLER_PACKAGE_NAME = "com.rohitss.uceh.UCEHandler";
     private static final String DEFAULT_HANDLER_PACKAGE_NAME = "com.android.internal.os";
     private static final int MAX_STACK_TRACE_SIZE = 131071; //128 KB - 1
     private static final int MAX_ACTIVITIES_IN_LOG = 50;
@@ -295,7 +295,7 @@ public final class UCEHandler {
 
     /**
      * INTERNAL method used to guess which error activity must be called when the app crashes.
-     * It will first get activities from the AndroidManifest with intent filter <action android:name="com.rohitss.uncaughtexceptionhandler.UCEHandler.ERROR" />,
+     * It will first get activities from the AndroidManifest with intent filter <action android:name="com.rohitss.uceh.UCEHandler.ERROR" />,
      * if it cannot find them, then it will use the default error activity.
      *
      * @param context A valid context. Must not be null.
@@ -336,7 +336,7 @@ public final class UCEHandler {
 
     /**
      * INTERNAL method used to guess which activity must be called from the error activity to restart the app.
-     * It will first get activities from the AndroidManifest with intent filter <action android:name="com.rohitss.uncaughtexceptionhandler.UCEHandler.RESTART" />,
+     * It will first get activities from the AndroidManifest with intent filter <action android:name="com.rohitss.uceh.UCEHandler.RESTART" />,
      * if it cannot find them, then it will get the default launcher.
      * If there is no default launcher, this returns null.
      *
@@ -375,7 +375,7 @@ public final class UCEHandler {
     /// INTERNAL METHODS NOT TO BE USED BY THIRD PARTIES
 
     /**
-     * INTERNAL method used to get the first activity with an intent-filter <action android:name="com.rohitss.uncaughtexceptionhandler.UCEHandler.ERROR" />,
+     * INTERNAL method used to get the first activity with an intent-filter <action android:name="com.rohitss.uceh.UCEHandler.ERROR" />,
      * If there is no activity with that intent filter, this returns null.
      *
      * @param context A valid context. Must not be null.
@@ -400,7 +400,7 @@ public final class UCEHandler {
     }
 
     /**
-     * INTERNAL method used to get the first activity with an intent-filter <action android:name="com.rohitss.uncaughtexceptionhandler.UCEHandler.RESTART" />,
+     * INTERNAL method used to get the first activity with an intent-filter <action android:name="com.rohitss.uceh.UCEHandler.RESTART" />,
      * If there is no activity with that intent filter, this returns null.
      *
      * @param context A valid context. Must not be null.

@@ -1,4 +1,4 @@
-package com.rohitss.uncaughtexceptionhandler;
+package com.rohitss.uceh;
 
 import android.app.Activity;
 import android.support.annotation.DrawableRes;
