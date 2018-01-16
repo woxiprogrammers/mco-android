@@ -90,6 +90,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Calling function to initialize required views.
         initializeViews();
         setUpDrawerData();
+        throw new RuntimeException("Rohit");
     }
 
     @Override

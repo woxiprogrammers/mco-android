@@ -9,9 +9,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.util.Log;
 
 import java.io.PrintWriter;
@@ -80,8 +77,8 @@ public final class UCEHandler {
      *
      * @param context Context to use for obtaining the ApplicationContext. Must not be null.
      */
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    private static void setUCEHandler(@Nullable final Context context) {
+//    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    private static void setUCEHandler(final Context context) {
         try {
             if (context != null) {
                 final Thread.UncaughtExceptionHandler oldHandler = Thread.getDefaultUncaughtExceptionHandler();
@@ -279,7 +276,7 @@ public final class UCEHandler {
      *
      * @return true if the app has crashed in the last seconds, false otherwise.
      */
-    private static boolean hasCrashedInTheLastSeconds(@NonNull Context context) {
+    private static boolean hasCrashedInTheLastSeconds(Context context) {
         long lastTimestamp = getLastCrashTimestamp(context);
         long currentTimestamp = new Date().getTime();
         return (lastTimestamp <= currentTimestamp && currentTimestamp - lastTimestamp < 3000);
@@ -291,7 +288,7 @@ public final class UCEHandler {
      * @param timestamp The current timestamp.
      */
     @SuppressLint("ApplySharedPref") //This must be done immediately since we are killing the app
-    private static void setLastCrashTimestamp(@NonNull Context context, long timestamp) {
+    private static void setLastCrashTimestamp(Context context, long timestamp) {
         context.getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).edit().putLong(SHARED_PREFERENCES_FIELD_TIMESTAMP, timestamp).commit();
     }
     /**
@@ -368,7 +365,7 @@ public final class UCEHandler {
      *
      * @return The last crash timestamp, or -1 if not set.
      */
-    private static long getLastCrashTimestamp(@NonNull Context context) {
+    private static long getLastCrashTimestamp(Context context) {
         return context.getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).getLong(SHARED_PREFERENCES_FIELD_TIMESTAMP, -1);
     }
     /// INTERNAL METHODS NOT TO BE USED BY THIRD PARTIES
@@ -468,8 +465,7 @@ public final class UCEHandler {
      * @param intent The Intent. Must not be null.
      * @return The stacktrace, or null if not provided.
      */
-    @Nullable
-    public static String getStackTraceFromIntent(@NonNull Intent intent) {
+    public static String getStackTraceFromIntent(Intent intent) {
         return intent.getStringExtra(UCEHandler.EXTRA_STACK_TRACE);
     }
 
@@ -480,8 +476,7 @@ public final class UCEHandler {
      * @param intent  The Intent. Must not be null.
      * @return The full error details.
      */
-    @NonNull
-    public static String getAllErrorDetailsFromIntent(@NonNull Context context, @NonNull Intent intent) {
+    public static String getAllErrorDetailsFromIntent(Context context, Intent intent) {
         //I don't think that this needs localization because it's a development string...
         Date currentDate = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -516,8 +511,7 @@ public final class UCEHandler {
      * @param dateFormat DateFormat to use to convert from Date to String
      * @return The formatted date, or "Unknown" if unable to determine it.
      */
-    @Nullable
-    private static String getBuildDateAsString(@NonNull Context context, @NonNull DateFormat dateFormat) {
+    private static String getBuildDateAsString(Context context, DateFormat dateFormat) {
         long buildDate;
         try {
             ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
@@ -542,7 +536,6 @@ public final class UCEHandler {
      * @param context A valid context. Must not be null.
      * @return The version name, or "Unknown if unable to determine it.
      */
-    @NonNull
     private static String getVersionName(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -558,7 +551,6 @@ public final class UCEHandler {
      *
      * @return The device model name (i.e., "LGE Nexus 5")
      */
-    @NonNull
     private static String getDeviceModelName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
@@ -575,8 +567,7 @@ public final class UCEHandler {
      * @param intent The Intent. Must not be null.
      * @return The activity log, or null if not provided.
      */
-    @Nullable
-    public static String getActivityLogFromIntent(@NonNull Intent intent) {
+    public static String getActivityLogFromIntent(Intent intent) {
         return intent.getStringExtra(UCEHandler.EXTRA_ACTIVITY_LOG);
     }
 
@@ -586,8 +577,7 @@ public final class UCEHandler {
      * @param s The string to capitalize
      * @return The capitalized string
      */
-    @NonNull
-    private static String capitalize(@Nullable String s) {
+    private static String capitalize(String s) {
         if (s == null || s.length() == 0) {
             return "";
         }
@@ -634,21 +624,22 @@ public final class UCEHandler {
         killCurrentProcess();
     }
 
-    *//**
+    */
+
+    /**
      * Closes the app.
      * If an event listener is provided, the close app event is invoked.
      * Must only be used from your error activity.
      *
      * @param activity The current error activity. Must not be null.
-     * @param config   The config object as obtained by calling getConfigFromIntent.
-     *//*
-    public static void closeApplication(@NonNull Activity activity, @NonNull UCEConfig config) {
-        if (config.getEventListener() != null) {
+     */
+    static void closeApplication(Activity activity) {
+        /*if (config.getEventListener() != null) {
             config.getEventListener().onCloseAppFromErrorActivity();
-        }
+        }*/
         activity.finish();
         killCurrentProcess();
-    }*/
+    }
     /**
      * INTERNAL method that returns the current configuration of the library.
      * If you want to check the config, use UCEConfig.Builder.get();
@@ -682,7 +673,6 @@ public final class UCEHandler {
 
         void onCloseAppFromErrorActivity();
     }*/
-
     /////////////////////////
     public static class Builder {
         private Context context;

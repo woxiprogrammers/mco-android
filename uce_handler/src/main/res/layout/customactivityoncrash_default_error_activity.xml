@@ -25,31 +25,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
-                android:src="@drawable/customactivityoncrash_error_image" />
+                android:src="@drawable/customactivityoncrash_error_image"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
                 android:gravity="center"
-                android:text="@string/customactivityoncrash_error_activity_error_occurred_explanation"
+                android:text="An unexpected error occurred.\nSorry for the inconvenience."
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <Button
                 android:id="@+id/customactivityoncrash_error_activity_restart_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
-                android:text="@string/customactivityoncrash_error_activity_close_app" />
-
+                android:text="Close App"/>
+            <!--style="?borderlessButtonStyle"
+            android:textColor="?colorPrimary"-->
             <Button
                 android:id="@+id/customactivityoncrash_error_activity_more_info_button"
-                style="?borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/customactivityoncrash_error_activity_error_details"
-                android:textColor="?colorPrimary" />
+                android:text="View Error Log"
+                />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
