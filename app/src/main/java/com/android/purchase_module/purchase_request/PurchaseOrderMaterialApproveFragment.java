@@ -35,9 +35,7 @@ public class PurchaseOrderMaterialApproveFragment extends Fragment {
     }
 
     public static PurchaseOrderMaterialApproveFragment newInstance() {
-
         Bundle args = new Bundle();
-
         PurchaseOrderMaterialApproveFragment fragment = new PurchaseOrderMaterialApproveFragment();
         fragment.setArguments(args);
         return fragment;

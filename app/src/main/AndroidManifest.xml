@@ -120,6 +120,8 @@
         <activity android:name=".BaseActivity"/>
         <activity android:name="com.android.inventory_module.assets.MoveOutAssetNewActivity">
         </activity>
+        <activity android:name="com.android.dpr_module.DPRListActivity">
+        </activity>
     </application>
 
 </manifest>
