@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class DprdataItem extends RealmObject{
+public class SubdataItem extends RealmObject{
 
 	@SerializedName("name")
 	private String name;
