@@ -1,1 +1,1 @@
-include ':app', ':uncaught_exception_handler'
+include ':app', ':uce_handler'

@@ -7,13 +7,11 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,18 +27,18 @@ public final class UCEDefaultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //This is needed to avoid a crash if the developer has not specified
         //an app-level theme that extends Theme.AppCompat
-        TypedArray a = obtainStyledAttributes(R.styleable.AppCompatTheme);
-        if (!a.hasValue(R.styleable.AppCompatTheme_windowActionBar)) {
+        TypedArray styledAttributes = obtainStyledAttributes(R.styleable.AppCompatTheme);
+        if (!styledAttributes.hasValue(R.styleable.AppCompatTheme_windowActionBar)) {
             setTheme(R.style.Theme_AppCompat_Light_DarkActionBar);
         }
-        a.recycle();
+        styledAttributes.recycle();
         setContentView(R.layout.customactivityoncrash_default_error_activity);
         //Close/restart button logic:
         //If a class if set, use restart.
         //Else, use close and just finish the app.
         //It is recommended that you follow this logic if implementing a custom error activity.
         Button restartButton = findViewById(R.id.customactivityoncrash_error_activity_restart_button);
-        final UCEConfig config = UCEHandler.getConfigFromIntent(getIntent());
+        /*final UCEConfig config = UCEHandler.getConfigFromIntent(getIntent());
         if (config == null) {
             //This should never happen - Just finish the activity to avoid a recursive crash.
             finish();
@@ -61,9 +59,9 @@ public final class UCEDefaultActivity extends AppCompatActivity {
                     UCEHandler.closeApplication(UCEDefaultActivity.this, config);
                 }
             });
-        }
+        }*/
         Button moreInfoButton = findViewById(R.id.customactivityoncrash_error_activity_more_info_button);
-        if (config.isShowErrorDetails()) {
+        if (UCEHandler.isViewEnabled) {
             moreInfoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -89,11 +87,11 @@ public final class UCEDefaultActivity extends AppCompatActivity {
         } else {
             moreInfoButton.setVisibility(View.GONE);
         }
-        Integer defaultErrorActivityDrawableId = config.getErrorDrawable();
+        /*Integer defaultErrorActivityDrawableId = config.getErrorDrawable();
         ImageView errorImageView = findViewById(R.id.customactivityoncrash_error_activity_image);
         if (defaultErrorActivityDrawableId != null) {
             errorImageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), defaultErrorActivityDrawableId, getTheme()));
-        }
+        }*/
     }
 
     private void copyErrorToClipboard() {

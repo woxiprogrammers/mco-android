@@ -80,7 +80,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.xeoh.android:checkboxgroup:1.0.1'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
-    compile project(':uncaught_exception_handler')
+    compile project(':uce_handler')
 }
 
 apply plugin: 'com.google.gms.google-services'
