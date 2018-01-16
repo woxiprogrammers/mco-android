@@ -24,19 +24,7 @@ public final class UCEDefaultActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
         super.onCreate(savedInstanceState);
-        //This is needed to avoid a crash if the developer has not specified
-        //an app-level theme that extends Theme.AppCompat
-        /*TypedArray styledAttributes = obtainStyledAttributes(R.styleable.AppCompatTheme);
-        if (!styledAttributes.hasValue(R.styleable.AppCompatTheme_windowActionBar)) {
-            setTheme(R.style.Theme_AppCompat_Light_DarkActionBar);
-        }
-        //TODO Activity Theme
-        styledAttributes.recycle();*/
         setContentView(R.layout.customactivityoncrash_default_error_activity);
-        //Close/restart button logic:
-        //If a class if set, use restart.
-        //Else, use close and just finish the app.
-        //It is recommended that you follow this logic if implementing a custom error activity.
         Button restartButton = findViewById(R.id.customactivityoncrash_error_activity_restart_button);
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,30 +32,8 @@ public final class UCEDefaultActivity extends Activity {
                 UCEHandler.closeApplication(UCEDefaultActivity.this);
             }
         });
-        /*final UCEConfig config = UCEHandler.getConfigFromIntent(getIntent());
-        if (config == null) {
-            //This should never happen - Just finish the activity to avoid a recursive crash.
-            finish();
-            return;
-        }
-        if (config.isShowRestartButton() && config.getRestartActivityClass() != null) {
-            restartButton.setText(R.string.customactivityoncrash_error_activity_restart_app);
-            restartButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    UCEHandler.restartApplication(UCEDefaultActivity.this, config);
-                }
-            });
-        } else {
-            restartButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    UCEHandler.closeApplication(UCEDefaultActivity.this, config);
-                }
-            });
-        }*/
         Button moreInfoButton = findViewById(R.id.customactivityoncrash_error_activity_more_info_button);
-        if (UCEHandler.isViewEnabled) {
+        if (UCEHandler.isViewLogEnabled) {
             moreInfoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -75,7 +41,7 @@ public final class UCEDefaultActivity extends Activity {
                     AlertDialog dialog = new AlertDialog.Builder(UCEDefaultActivity.this)
                             .setTitle("Error Log")
                             .setMessage(UCEHandler.getAllErrorDetailsFromIntent(UCEDefaultActivity.this, getIntent()))
-                            .setNeutralButton("Copy Error Log",
+                            .setPositiveButton("Copy Log & Close",
                                     new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
@@ -83,11 +49,10 @@ public final class UCEDefaultActivity extends Activity {
                                             dialog.dismiss();
                                         }
                                     })
-                            .setPositiveButton("Close",
+                            .setNeutralButton("Close",
                                     new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            copyErrorToClipboard();
                                             dialog.dismiss();
                                         }
                                     })
@@ -106,11 +71,10 @@ public final class UCEDefaultActivity extends Activity {
     private void copyErrorToClipboard() {
         String errorInformation = UCEHandler.getAllErrorDetailsFromIntent(UCEDefaultActivity.this, getIntent());
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        //Are there any devices without clipboard...?
         if (clipboard != null) {
             ClipData clip = ClipData.newPlainText("View Error Log", errorInformation);
             clipboard.setPrimaryClip(clip);
-            Toast.makeText(UCEDefaultActivity.this, "Copied Error Log", Toast.LENGTH_SHORT).show();
+            Toast.makeText(UCEDefaultActivity.this, "Error Log Copied", Toast.LENGTH_SHORT).show();
         }
     }
 }

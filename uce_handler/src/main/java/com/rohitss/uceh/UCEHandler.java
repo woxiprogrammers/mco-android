@@ -30,14 +30,9 @@ import java.util.zip.ZipFile;
  */
 public final class UCEHandler {
     private final static String TAG = "UCEHandler";
-    //Extras passed to the error activity
-    private static final String EXTRA_CONFIG = "com.rohitss.uceh.UCEHandler.EXTRA_CONFIG";
     private static final String EXTRA_STACK_TRACE = "com.rohitss.uceh.UCEHandler.EXTRA_STACK_TRACE";
     private static final String EXTRA_ACTIVITY_LOG = "com.rohitss.uceh.UCEHandler.EXTRA_ACTIVITY_LOG";
-    //General constants
-    private static final String INTENT_ACTION_ERROR_ACTIVITY = "com.rohitss.uceh.UCEHandler.ERROR";
-    private static final String INTENT_ACTION_RESTART_ACTIVITY = "com.rohitss.uceh.UCEHandler.RESTART";
-    private static final String UCE_HANDLER_PACKAGE_NAME = "com.rohitss.uceh.UCEHandler";
+    private static final String UCE_HANDLER_PACKAGE_NAME = "com.rohitss.uceh";
     private static final String DEFAULT_HANDLER_PACKAGE_NAME = "com.android.internal.os";
     private static final int MAX_STACK_TRACE_SIZE = 131071; //128 KB - 1
     private static final int MAX_ACTIVITIES_IN_LOG = 50;
@@ -48,36 +43,26 @@ public final class UCEHandler {
     //Internal variables
     @SuppressLint("StaticFieldLeak") //This is an application-wide component
     private static Application application;
-    //    private static UCEConfig config = new UCEConfig();
     private static WeakReference<Activity> lastActivityCreated = new WeakReference<>(null);
     private static boolean isInBackground = true;
-    //////////////////////////////
-    private final Context context;
     private String commaSeparatedEmailAddresses;
     private boolean isShareEnabled, isSaveToFileEnabled, isCopyEnabled, isSendEmailEnabled;
     private static boolean isUCEHEnabled;
     private static boolean isTrackActivitiesEnabled;
-    static boolean isViewEnabled;
+    static boolean isViewLogEnabled;
 
     UCEHandler(Builder builder) {
-        this.context = builder.context;
         isUCEHEnabled = builder.isUCEHEnabled;
+        isTrackActivitiesEnabled = builder.isTrackActivitiesEnabled;
+        isViewLogEnabled = builder.isViewLogEnabled;
         this.commaSeparatedEmailAddresses = builder.commaSeparatedEmailAddresses;
-        this.isViewEnabled = builder.isViewEnabled;
         this.isShareEnabled = builder.isShareEnabled;
         this.isSaveToFileEnabled = builder.isSaveToFileEnabled;
         this.isCopyEnabled = builder.isCopyEnabled;
         this.isSendEmailEnabled = builder.isSendEmailEnabled;
-        setUCEHandler(context);
+        setUCEHandler(builder.context);
     }
-//////////////////////////////////////////
 
-    /**
-     * Installs UCEHandler on the application using the default error activity.
-     *
-     * @param context Context to use for obtaining the ApplicationContext. Must not be null.
-     */
-//    @RestrictTo(RestrictTo.Scope.LIBRARY)
     private static void setUCEHandler(final Context context) {
         try {
             if (context != null) {
@@ -89,7 +74,7 @@ public final class UCEHandler {
                         Log.e(TAG, "You already have an UncaughtExceptionHandler. If you use a custom UncaughtExceptionHandler, it should be initialized after UCEHandler! Installing anyway, but your original handler will not be called.");
                     }
                     application = (Application) context.getApplicationContext();
-                    //Set UCEH custom handler.
+                    //Setup UCE Handler.
                     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                         @Override
                         public void uncaughtException(Thread thread, final Throwable throwable) {
@@ -103,49 +88,25 @@ public final class UCEHandler {
                                     }
                                 } else {
                                     setLastCrashTimestamp(application, new Date().getTime());
-                                    /*Class<? extends Activity> errorActivityClass = config.getErrorActivityClass();
-                                    if (errorActivityClass == null) {
-                                        errorActivityClass = guessErrorActivityClass(application);
-                                    }
-                                    if (isStackTraceLikelyConflictive(throwable, errorActivityClass)) {
-                                        Log.e(TAG, "Your application class or your error activity have crashed, the custom activity will not be launched!");
-                                        if (oldHandler != null) {
-                                            oldHandler.uncaughtException(thread, throwable);
-                                            return;
-                                        }
-                                    } else */
-                                    if (/*config.getBackgroundMode() == UCEConfig.BACKGROUND_MODE_SHOW_CUSTOM || */!isInBackground) {
+                                    if (!isInBackground) {
                                         final Intent intent = new Intent(application, UCEDefaultActivity.class);
                                         StringWriter sw = new StringWriter();
                                         PrintWriter pw = new PrintWriter(sw);
                                         throwable.printStackTrace(pw);
                                         String stackTraceString = sw.toString();
-                                        //Reduce data to 128KB so we don't get a TransactionTooLargeException when sending the intent.
-                                        //The limit is 1MB on Android but some devices seem to have it lower.
-                                        //See: http://developer.android.com/reference/android/os/TransactionTooLargeException.html
-                                        //And: http://stackoverflow.com/questions/11451393/what-to-do-on-transactiontoolargeexception#comment46697371_12809171
                                         if (stackTraceString.length() > MAX_STACK_TRACE_SIZE) {
                                             String disclaimer = " [stack trace too large]";
                                             stackTraceString = stackTraceString.substring(0, MAX_STACK_TRACE_SIZE - disclaimer.length()) + disclaimer;
                                         }
                                         intent.putExtra(EXTRA_STACK_TRACE, stackTraceString);
-                                        /*if (config.isTrackActivities()) {
+                                        if (isTrackActivitiesEnabled) {
                                             StringBuilder activityLogStringBuilder = new StringBuilder();
                                             while (!activityLog.isEmpty()) {
                                                 activityLogStringBuilder.append(activityLog.poll());
                                             }
                                             intent.putExtra(EXTRA_ACTIVITY_LOG, activityLogStringBuilder.toString());
                                         }
-                                        if (config.isShowRestartButton() && config.getRestartActivityClass() == null) {
-                                            //We can set the restartActivityClass because the app will terminate right now,
-                                            //and when relaunched, will be null again by default.
-                                            config.setRestartActivityClass(guessRestartActivityClass(application));
-                                        }*/
-//                                        intent.putExtra(EXTRA_CONFIG, config);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        /*if (config.getEventListener() != null) {
-                                            config.getEventListener().onLaunchErrorActivity();
-                                        }*/
                                         /*StringWriter stackTrace = new StringWriter();
         exception.printStackTrace(new PrintWriter(stackTrace));
         StringBuilder errorReport = new StringBuilder();
@@ -179,19 +140,16 @@ public final class UCEHandler {
         errorReport.append(Build.VERSION.INCREMENTAL);
         errorReport.append(LINE_SEPARATOR);*/
                                         application.startActivity(intent);
-                                    } else /*if (config.getBackgroundMode() == UCEConfig.BACKGROUND_MODE_CRASH)*/ {
+                                    } else {
                                         if (oldHandler != null) {
                                             oldHandler.uncaughtException(thread, throwable);
                                             return;
                                         }
                                         //If it is null (should not be), we let it continue and kill the process or it will be stuck
                                     }
-                                    //Else (BACKGROUND_MODE_SILENT): do nothing and let the following code kill the process
                                 }
                                 final Activity lastActivity = lastActivityCreated.get();
                                 if (lastActivity != null) {
-                                    //We finish the activity, this solves a bug which causes infinite recursion.
-                                    //See: https://github.com/ACRA/acra/issues/42
                                     lastActivity.finish();
                                     lastActivityCreated.clear();
                                 }
@@ -209,10 +167,6 @@ public final class UCEHandler {
                         @Override
                         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                             if (activity.getClass() != UCEDefaultActivity.class) {
-                                // Copied from ACRA:
-                                // Ignore activityClass because we want the last
-                                // application Activity that was started so that we can
-                                // explicitly kill it off.
                                 lastActivityCreated = new WeakReference<>(activity);
                             }
                             if (isTrackActivitiesEnabled) {
@@ -224,7 +178,6 @@ public final class UCEHandler {
                         public void onActivityStarted(Activity activity) {
                             currentlyStartedActivities++;
                             isInBackground = (currentlyStartedActivities == 0);
-                            //Do nothing
                         }
 
                         @Override
@@ -243,14 +196,12 @@ public final class UCEHandler {
 
                         @Override
                         public void onActivityStopped(Activity activity) {
-                            //Do nothing
                             currentlyStartedActivities--;
                             isInBackground = (currentlyStartedActivities == 0);
                         }
 
                         @Override
                         public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-                            //Do nothing
                         }
 
                         @Override
@@ -282,207 +233,28 @@ public final class UCEHandler {
         return (lastTimestamp <= currentTimestamp && currentTimestamp - lastTimestamp < 3000);
     }
 
-    /**
-     * INTERNAL method that stores the last crash timestamp
-     *
-     * @param timestamp The current timestamp.
-     */
-    @SuppressLint("ApplySharedPref") //This must be done immediately since we are killing the app
+    @SuppressLint("ApplySharedPref")
     private static void setLastCrashTimestamp(Context context, long timestamp) {
         context.getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).edit().putLong(SHARED_PREFERENCES_FIELD_TIMESTAMP, timestamp).commit();
     }
-    /**
-     * INTERNAL method used to guess which error activity must be called when the app crashes.
-     * It will first get activities from the AndroidManifest with intent filter <action android:name="com.rohitss.uceh.UCEHandler.ERROR" />,
-     * if it cannot find them, then it will use the default error activity.
-     *
-     * @param context A valid context. Must not be null.
-     * @return The guessed error activity class, or the default error activity if not found
-     */
-    /*@NonNull
-    private static Class<? extends Activity> guessErrorActivityClass(@NonNull Context context) {
-        Class<? extends Activity> resolvedActivityClass;
-        //If action is defined, use that
-        resolvedActivityClass = getErrorActivityClassWithIntentFilter(context);
-        //Else, get the default error activity
-        if (resolvedActivityClass == null) {
-            resolvedActivityClass = UCEDefaultActivity.class;
-        }
-        return resolvedActivityClass;
-    }*/
-    /**
-     * INTERNAL method that checks if the stack trace that just crashed is conflictive. This is true in the following scenarios:
-     * - The application has crashed while initializing (handleBindApplication is in the stack)
-     * - The error activity has crashed (activityClass is in the stack)
-     *
-     * @param throwable     The throwable from which the stack trace will be checked
-     * @param activityClass The activity class to launch when the app crashes
-     * @return true if this stack trace is conflictive and the activity must not be launched, false otherwise
-     */
-    /*private static boolean isStackTraceLikelyConflictive(@NonNull Throwable throwable, @NonNull Class<? extends Activity> activityClass) {
-        do {
-            StackTraceElement[] stackTrace = throwable.getStackTrace();
-            for (StackTraceElement element : stackTrace) {
-                if ((element.getClassName().equals("android.app.ActivityThread") && element.getMethodName().equals("handleBindApplication")) || element.getClassName().equals(activityClass.getName())) {
-                    return true;
-                }
-            }
-        } while ((throwable = throwable.getCause()) != null);
-        return false;
-    }*/
-    /**
-     * INTERNAL method used to guess which activity must be called from the error activity to restart the app.
-     * It will first get activities from the AndroidManifest with intent filter <action android:name="com.rohitss.uceh.UCEHandler.RESTART" />,
-     * if it cannot find them, then it will get the default launcher.
-     * If there is no default launcher, this returns null.
-     *
-     * @param context A valid context. Must not be null.
-     * @return The guessed restart activity class, or null if no suitable one is found
-     */
-    /*@Nullable
-    private static Class<? extends Activity> guessRestartActivityClass(@NonNull Context context) {
-        Class<? extends Activity> resolvedActivityClass;
-        //If action is defined, use that
-        resolvedActivityClass = getRestartActivityClassWithIntentFilter(context);
-        //Else, get the default launcher activity
-        if (resolvedActivityClass == null) {
-            resolvedActivityClass = getLauncherActivity(context);
-        }
-        return resolvedActivityClass;
-    }*/
 
-    /**
-     * INTERNAL method that kills the current process.
-     * It is used after restarting or killing the app.
-     */
     private static void killCurrentProcess() {
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(10);
     }
 
-    /**
-     * INTERNAL method that gets the last crash timestamp
-     *
-     * @return The last crash timestamp, or -1 if not set.
-     */
     private static long getLastCrashTimestamp(Context context) {
         return context.getSharedPreferences(SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE).getLong(SHARED_PREFERENCES_FIELD_TIMESTAMP, -1);
     }
-    /// INTERNAL METHODS NOT TO BE USED BY THIRD PARTIES
-    /**
-     * INTERNAL method used to get the first activity with an intent-filter <action android:name="com.rohitss.uceh.UCEHandler.ERROR" />,
-     * If there is no activity with that intent filter, this returns null.
-     *
-     * @param context A valid context. Must not be null.
-     * @return A valid activity class, or null if no suitable one is found
-     */
-   /* @SuppressWarnings("unchecked")
-    @Nullable
-    private static Class<? extends Activity> getErrorActivityClassWithIntentFilter(@NonNull Context context) {
-        Intent searchedIntent = new Intent().setAction(INTENT_ACTION_ERROR_ACTIVITY).setPackage(context.getPackageName());
-        List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(searchedIntent,
-                PackageManager.GET_RESOLVED_FILTER);
-        if (resolveInfos != null && resolveInfos.size() > 0) {
-            ResolveInfo resolveInfo = resolveInfos.get(0);
-            try {
-                return (Class<? extends Activity>) Class.forName(resolveInfo.activityInfo.name);
-            } catch (ClassNotFoundException e) {
-                //Should not happen, print it to the log!
-                Log.e(TAG, "Failed when resolving the error activity class via intent filter, stack trace follows!", e);
-            }
-        }
-        return null;
-    }
 
-    *//**
-     * INTERNAL method used to get the first activity with an intent-filter <action android:name="com.rohitss.uceh.UCEHandler.RESTART" />,
-     * If there is no activity with that intent filter, this returns null.
-     *
-     * @param context A valid context. Must not be null.
-     * @return A valid activity class, or null if no suitable one is found
-     *//*
-    @SuppressWarnings("unchecked")
-    @Nullable
-    private static Class<? extends Activity> getRestartActivityClassWithIntentFilter(@NonNull Context context) {
-        Intent searchedIntent = new Intent().setAction(INTENT_ACTION_RESTART_ACTIVITY).setPackage(context.getPackageName());
-        List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(searchedIntent,
-                PackageManager.GET_RESOLVED_FILTER);
-        if (resolveInfos != null && resolveInfos.size() > 0) {
-            ResolveInfo resolveInfo = resolveInfos.get(0);
-            try {
-                return (Class<? extends Activity>) Class.forName(resolveInfo.activityInfo.name);
-            } catch (ClassNotFoundException e) {
-                //Should not happen, print it to the log!
-                Log.e(TAG, "Failed when resolving the restart activity class via intent filter, stack trace follows!", e);
-            }
-        }
-        return null;
-    }
-
-    *//**
-     * INTERNAL method used to get the default launcher activity for the app.
-     * If there is no launchable activity, this returns null.
-     *
-     * @param context A valid context. Must not be null.
-     * @return A valid activity class, or null if no suitable one is found
-     *//*
-    @SuppressWarnings("unchecked")
-    @Nullable
-    private static Class<? extends Activity> getLauncherActivity(@NonNull Context context) {
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
-        if (intent != null && intent.getComponent() != null) {
-            try {
-                return (Class<? extends Activity>) Class.forName(intent.getComponent().getClassName());
-            } catch (ClassNotFoundException e) {
-                //Should not happen, print it to the log!
-                Log.e(TAG, "Failed when resolving the restart activity class via getLaunchIntentForPackage, stack trace follows!", e);
-            }
-        }
-        return null;
-    }
-
-    *//**
-     * Given an Intent, returns the config extra from it.
-     *
-     * @param intent The Intent. Must not be null.
-     * @return The config, or null if not provided.
-     *//*
-    @Nullable
-    public static UCEConfig getConfigFromIntent(@NonNull Intent intent) {
-        UCEConfig config = (UCEConfig) intent.getSerializableExtra(UCEHandler.EXTRA_CONFIG);
-        if (config.isLogErrorOnRestart()) {
-            String stackTrace = getStackTraceFromIntent(intent);
-            if (stackTrace != null) {
-                Log.e(TAG, "The previous app process crashed. This is the stack trace of the crash:\n" + getStackTraceFromIntent(intent));
-            }
-        }
-        return config;
-    }*/
-
-    /**
-     * Given an Intent, returns the stack trace extra from it.
-     *
-     * @param intent The Intent. Must not be null.
-     * @return The stacktrace, or null if not provided.
-     */
-    public static String getStackTraceFromIntent(Intent intent) {
+    private static String getStackTraceFromIntent(Intent intent) {
         return intent.getStringExtra(UCEHandler.EXTRA_STACK_TRACE);
     }
 
-    /**
-     * Given an Intent, returns several error details including the stack trace extra from the intent.
-     *
-     * @param context A valid context. Must not be null.
-     * @param intent  The Intent. Must not be null.
-     * @return The full error details.
-     */
-    public static String getAllErrorDetailsFromIntent(Context context, Intent intent) {
-        //I don't think that this needs localization because it's a development string...
+    static String getAllErrorDetailsFromIntent(Context context, Intent intent) {
         Date currentDate = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-        //Get build date
         String buildDateAsString = getBuildDateAsString(context, dateFormat);
-        //Get app version
         String versionName = getVersionName(context);
         String errorDetails = "";
         errorDetails += "Build version: " + versionName + " \n";
@@ -490,9 +262,6 @@ public final class UCEHandler {
             errorDetails += "Build date: " + buildDateAsString + " \n";
         }
         errorDetails += "Current date: " + dateFormat.format(currentDate) + " \n";
-        //Added a space between line feeds to fix #18.
-        //Ideally, we should not use this method at all... It is only formatted this way because of coupling with the default error activity.
-        //We should move it to a method that returns a bean, and let anyone format it as they wish.
         errorDetails += "Device: " + getDeviceModelName() + " \n \n";
         errorDetails += "Stack trace:  \n";
         errorDetails += getStackTraceFromIntent(intent);
@@ -504,13 +273,6 @@ public final class UCEHandler {
         return errorDetails;
     }
 
-    /**
-     * INTERNAL method that returns the build date of the current APK as a string, or null if unable to determine it.
-     *
-     * @param context    A valid context. Must not be null.
-     * @param dateFormat DateFormat to use to convert from Date to String
-     * @return The formatted date, or "Unknown" if unable to determine it.
-     */
     private static String getBuildDateAsString(Context context, DateFormat dateFormat) {
         long buildDate;
         try {
@@ -530,12 +292,6 @@ public final class UCEHandler {
         }
     }
 
-    /**
-     * INTERNAL method that returns the version name of the current app, or null if unable to determine it.
-     *
-     * @param context A valid context. Must not be null.
-     * @return The version name, or "Unknown if unable to determine it.
-     */
     private static String getVersionName(Context context) {
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -545,12 +301,6 @@ public final class UCEHandler {
         }
     }
 
-    /**
-     * INTERNAL method that returns the device model name with correct capitalization.
-     * Taken from: http://stackoverflow.com/a/12707479/1254846
-     *
-     * @return The device model name (i.e., "LGE Nexus 5")
-     */
     private static String getDeviceModelName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
@@ -561,22 +311,10 @@ public final class UCEHandler {
         }
     }
 
-    /**
-     * Given an Intent, returns the activity log extra from it.
-     *
-     * @param intent The Intent. Must not be null.
-     * @return The activity log, or null if not provided.
-     */
-    public static String getActivityLogFromIntent(Intent intent) {
+    private static String getActivityLogFromIntent(Intent intent) {
         return intent.getStringExtra(UCEHandler.EXTRA_ACTIVITY_LOG);
     }
 
-    /**
-     * INTERNAL method that capitalizes the first character of a string
-     *
-     * @param s The string to capitalize
-     * @return The capitalized string
-     */
     private static String capitalize(String s) {
         if (s == null || s.length() == 0) {
             return "";
@@ -589,100 +327,21 @@ public final class UCEHandler {
         }
     }
 
-    /*public static void restartApplication(@NonNull Activity activity, @NonNull UCEConfig config) {
-        Intent intent = new Intent(activity, config.getRestartActivityClass());
-        restartApplicationWithIntent(activity, intent, config);
-    }
-
-    *//**
-     * Given an Intent, restarts the app and launches a startActivity to that intent.
-     * The flags NEW_TASK and CLEAR_TASK are set if the Intent does not have them, to ensure
-     * the app stack is fully cleared.
-     * If an event listener is provided, the restart app event is invoked.
-     * Must only be used from your error activity.
-     *
-     * @param activity The current error activity. Must not be null.
-     * @param intent   The Intent. Must not be null.
-     * @param config   The config object as obtained by calling getConfigFromIntent.
-     *//*
-    public static void restartApplicationWithIntent(@NonNull Activity activity, @NonNull Intent intent, @NonNull UCEConfig config) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        if (intent.getComponent() != null) {
-            //If the class name has been set, we force it to simulate a Launcher launch.
-            //If we don't do this, if you restart from the error activity, then press home,
-            //and then launch the activity from the launcher, the main activity appears twice on the backstack.
-            //This will most likely not have any detrimental effect because if you set the Intent component,
-            //if will always be launched regardless of the actions specified here.
-            intent.setAction(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        }
-        if (config.getEventListener() != null) {
-            config.getEventListener().onRestartAppFromErrorActivity();
-        }
-        activity.finish();
-        activity.startActivity(intent);
-        killCurrentProcess();
-    }
-
-    */
-
-    /**
-     * Closes the app.
-     * If an event listener is provided, the close app event is invoked.
-     * Must only be used from your error activity.
-     *
-     * @param activity The current error activity. Must not be null.
-     */
     static void closeApplication(Activity activity) {
-        /*if (config.getEventListener() != null) {
-            config.getEventListener().onCloseAppFromErrorActivity();
-        }*/
         activity.finish();
         killCurrentProcess();
     }
-    /**
-     * INTERNAL method that returns the current configuration of the library.
-     * If you want to check the config, use UCEConfig.Builder.get();
-     *
-     * @return the current configuration
-     */
-    /*@RestrictTo(RestrictTo.Scope.LIBRARY)
-    @NonNull
-    public static UCEConfig getConfig() {
-        return config;
-    }*/
-    /**
-     * INTERNAL method that sets the configuration of the library.
-     * You must not use this, use UCEConfig.Builder.apply()
-     *
-     * @param config the configuration to use
-     */
-    /*@RestrictTo(RestrictTo.Scope.LIBRARY)
-    public static void setConfig(@NonNull UCEConfig config) {
-        UCEHandler.config = config;
-    }*/
 
-    /**
-     * Interface to be called when events occur, so they can be reported
-     * by the app as, for example, Google Analytics events.
-     */
-    /*public interface EventListener extends Serializable {
-        void onLaunchErrorActivity();
-
-        void onRestartAppFromErrorActivity();
-
-        void onCloseAppFromErrorActivity();
-    }*/
-    /////////////////////////
     public static class Builder {
         private Context context;
         private boolean isUCEHEnabled = true;
         private String commaSeparatedEmailAddresses;
-        private boolean isViewEnabled = true;
+        private boolean isViewLogEnabled = true;
         private boolean isShareEnabled = true;
         private boolean isSaveToFileEnabled = true;
         private boolean isCopyEnabled = true;
         private boolean isSendEmailEnabled = true;
+        private boolean isTrackActivitiesEnabled = false;
 
         public Builder(Context context) {
             this.context = context;
@@ -693,32 +352,37 @@ public final class UCEHandler {
             return this;
         }
 
+        public Builder setTrackActivitiesEnabled(boolean isTrackActivitiesEnabled) {
+            this.isTrackActivitiesEnabled = isTrackActivitiesEnabled;
+            return this;
+        }
+
         public Builder setCommaSeparatedEmailAddresses(String commaSeparatedEmailAddresses) {
             this.commaSeparatedEmailAddresses = commaSeparatedEmailAddresses;
             return this;
         }
 
-        public Builder setIsViewEnabled(boolean isViewEnabled) {
-            this.isViewEnabled = isViewEnabled;
+        public Builder setViewEnabled(boolean isViewEnabled) {
+            this.isViewLogEnabled = isViewEnabled;
             return this;
         }
 
-        public Builder setIsShareEnabled(boolean isShareEnabled) {
+        public Builder setShareEnabled(boolean isShareEnabled) {
             this.isShareEnabled = isShareEnabled;
             return this;
         }
 
-        public Builder setIsSaveToFileEnabled(boolean isSaveToFileEnabled) {
+        public Builder setSaveToFileEnabled(boolean isSaveToFileEnabled) {
             this.isSaveToFileEnabled = isSaveToFileEnabled;
             return this;
         }
 
-        public Builder setIsCopyEnabled(boolean isCopyEnabled) {
+        public Builder setCopyEnabled(boolean isCopyEnabled) {
             this.isCopyEnabled = isCopyEnabled;
             return this;
         }
 
-        public Builder setIsSendEmailEnabled(boolean isSendEmailEnabled) {
+        public Builder setSendEmailEnabled(boolean isSendEmailEnabled) {
             this.isSendEmailEnabled = isSendEmailEnabled;
             return this;
         }
