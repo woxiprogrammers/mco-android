@@ -198,6 +198,7 @@ public class PurchaseOrderApproveListFragment  extends Fragment implements Fragm
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        ((PurchaseOrderApproveActivity)mContext).getMaterialApproveFragment();
 
                     }
 

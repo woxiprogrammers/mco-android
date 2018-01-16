@@ -28,7 +28,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = PurchaseOrderApproveActivity.this;
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -37,7 +37,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
@@ -48,6 +48,13 @@ public class PurchaseOrderApproveActivity extends BaseActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayoutPurchaseView, purchaseOrderApproveListFragment, "purchaseOrderApproveListFragment");
         fragmentTransaction.commit();
+    }
 
+    public void getMaterialApproveFragment() {
+        PurchaseOrderMaterialApproveFragment purchaseOrderMaterialApproveFragment = PurchaseOrderMaterialApproveFragment.newInstance();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.replace(R.id.frameLayoutPurchaseView, purchaseOrderMaterialApproveFragment, "purchaseOrderMaterialApproveFragment");
+        fragmentTransaction.commit();
     }
 }
