@@ -2,14 +2,18 @@ package com.android.dpr_module;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.awareness_module.awareness_model.AwarenessSubCategoriesItem;
 import com.android.awareness_module.awareness_model.SubCatedata;
@@ -21,8 +25,10 @@ import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,8 +53,9 @@ public class DPRHomeActivity extends BaseActivity {
     private View inflatedView = null;
     private Realm realm;
     private List<DprdataItem> categoryList;
-    RealmResults<SubdataItem> subdataItemRealmResults;
-    RealmResults<DprdataItem> dprdataItemRealmResults;
+    private RealmResults<DprdataItem> dprdataItemRealmResults;
+    private EditText editTextNumberOfUsers;
+    private int intSubContId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +63,7 @@ public class DPRHomeActivity extends BaseActivity {
         setContentView(R.layout.activity_dprhome);
         ButterKnife.bind(this);
         mContext = DPRHomeActivity.this;
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("DPR");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -67,7 +74,8 @@ public class DPRHomeActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
                 realm = Realm.getDefaultInstance();
                 dprdataItemRealmResults = realm.where(DprdataItem.class).findAll();
-                requestToGetSubCatData(dprdataItemRealmResults.get(selectedItemIndex).getId());
+                intSubContId=dprdataItemRealmResults.get(selectedItemIndex).getId();
+                requestToGetSubCatData(intSubContId);
             }
 
             @Override
@@ -75,12 +83,11 @@ public class DPRHomeActivity extends BaseActivity {
             }
         });
 
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
@@ -94,8 +101,8 @@ public class DPRHomeActivity extends BaseActivity {
             final SubdataItem subdataItem = subdataItemRealmResults.get(i);
             inflatedView = getLayoutInflater().inflate(R.layout.inflated_dpr_category_view, null, false);
             inflatedView.setId(i);
-            TextView textViewCategory=inflatedView.findViewById(R.id.textViewCategory);
-
+            TextView textViewCategory = inflatedView.findViewById(R.id.textViewCategory);
+            editTextNumberOfUsers = inflatedView.findViewById(R.id.editTextNoOfUsers);
             textViewCategory.setText(subdataItem.getName());
             linearLayoutCategory.addView(inflatedView);
         }
@@ -103,6 +110,7 @@ public class DPRHomeActivity extends BaseActivity {
 
     @OnClick(R.id.button_submit)
     public void onViewClicked() {
+        requestToSaveDetails();
     }
 
     private void setUpUsersSpinnerValueChangeListener() {
@@ -222,7 +230,53 @@ public class DPRHomeActivity extends BaseActivity {
                 });
     }
 
-    private void requestToSaveDetails(){
+    private void requestToSaveDetails() {
 
+        JSONObject params = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        for (int i = 0; i < linearLayoutCategory.getChildCount(); i++) {
+            CardView cardView = (CardView) linearLayoutCategory.getChildAt(i);
+            EditText editTextNoOfUsers = cardView.findViewById(R.id.editTextNoOfUsers);
+            if (TextUtils.isEmpty(editTextNoOfUsers.getText().toString().trim())) {
+                Toast.makeText(mContext, "Please Enter Value", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                int intUserCount = Integer.parseInt(editTextNoOfUsers.getText().toString().trim());
+                jsonArray.put(intUserCount);
+            }
+        }
+
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("subcontractor_id", intSubContId);
+            params.put("number_of_users",jsonArray);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_DPR_SUBCON_SAVE_DETAILS + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_GENERATE_GRN_PETICASH")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
     }
 }
