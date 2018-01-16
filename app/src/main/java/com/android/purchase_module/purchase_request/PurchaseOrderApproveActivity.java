@@ -3,6 +3,7 @@ package com.android.purchase_module.purchase_request;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
@@ -29,10 +30,15 @@ public class PurchaseOrderApproveActivity extends BaseActivity {
     private void initializeViews() {
         mContext = PurchaseOrderApproveActivity.this;
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("");
+            getSupportActionBar().setTitle("Purchase Order");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         getFragment();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
