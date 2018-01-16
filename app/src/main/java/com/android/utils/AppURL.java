@@ -84,4 +84,5 @@ public class AppURL {
     public static final String API_SALARY_VIEW_PAYMENT =BASE_URL + "peticash/employee-salary/calulate-payable-amount?token=" ;
     public static final String API_INVENTORY_GET_GRN_DETAILS = BASE_URL + "inventory/component/get-grn-details?token=";
     public static final String API_DPR_SUB_CONTRACTOR_DATA = BASE_URL + "dpr/subcontractor/listing?token=";
+    public static final String API_DPR_SUBCONTRACTOR_CATEGORY_DATA = BASE_URL + "dpr/category/listing?token=";
 }

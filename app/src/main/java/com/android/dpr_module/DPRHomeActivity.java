@@ -54,7 +54,7 @@ public class DPRHomeActivity extends BaseActivity {
     private Context mContext;
     private View inflatedView = null;
     private Realm realm;
-    private List<MainCategoriesItem> categoryList;
+    private List<DprdataItem> categoryList;
     private RealmResults<AwarenessSubCategoriesItem> materialNamesItems;
     RealmResults<MainCategoriesItem> mainCategoriesItems;
 
@@ -76,7 +76,6 @@ public class DPRHomeActivity extends BaseActivity {
                 realm = Realm.getDefaultInstance();
                 mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
                 requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
-
                 inflateViews();
             }
 
@@ -97,30 +96,21 @@ public class DPRHomeActivity extends BaseActivity {
     }
 
     private void requestToGetSubContractorData() {
-        JSONObject params = new JSONObject();
-        try {
-            params.put("page", 0);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_AWARENES_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_DPR_SUB_CONTRACTOR_DATA + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
-                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("requestToGetCategoryData")
+                .setTag("requestToGetSubContractorData")
                 .build()
-                .getAsObject(AwarenessMainCategoryResponse.class, new ParsedRequestListener<AwarenessMainCategoryResponse>() {
+                .getAsObject(DPRSubContractorResponse.class, new ParsedRequestListener<DPRSubContractorResponse>() {
                     @Override
-                    public void onResponse(final AwarenessMainCategoryResponse response) {
+                    public void onResponse(final DPRSubContractorResponse response) {
                         Timber.i(String.valueOf(response));
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(AwarenessMainCategoryResponse.class);
-                                    realm.delete(MainCategoriesData.class);
-                                    realm.delete(MainCategoriesItem.class);
+                                    realm.delete(DPRSubContractorResponse.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -145,7 +135,7 @@ public class DPRHomeActivity extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
+                        AppUtils.getInstance().logApiError(anError, "requestToGetSubContractorData");
                     }
                 });
     }
@@ -153,15 +143,15 @@ public class DPRHomeActivity extends BaseActivity {
     private void setUpUsersSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
         //ToDo Item Class
-        RealmResults<MainCategoriesItem> mainCategoriesItemRealmResults = realm.where(MainCategoriesItem.class).findAll();
+        RealmResults<DprdataItem> mainCategoriesItemRealmResults = realm.where(DprdataItem.class).findAll();
         setUpSpinnerAdapter(mainCategoriesItemRealmResults);
     }
 
-    private void setUpSpinnerAdapter(RealmResults<MainCategoriesItem> mainCategoriesItems) {
+    private void setUpSpinnerAdapter(RealmResults<DprdataItem> mainCategoriesItems) {
         //ToDo RealmResult
         categoryList = realm.copyFromRealm(mainCategoriesItems);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
-        for (MainCategoriesItem currentUser : categoryList) {
+        for (DprdataItem currentUser : categoryList) {
             String strUserName = currentUser.getName();
             arrayOfUsers.add(strUserName);
         }
@@ -197,12 +187,11 @@ public class DPRHomeActivity extends BaseActivity {
     private void requestToGetSubCatData(final int mainCategoryId) {
         JSONObject params = new JSONObject();
         try {
-            params.put("page", 0);
-            params.put("main_category_id", mainCategoryId);
+            params.put("subcontractor_id", mainCategoryId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_AWARENES_SUB_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_DPR_SUBCONTRACTOR_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
