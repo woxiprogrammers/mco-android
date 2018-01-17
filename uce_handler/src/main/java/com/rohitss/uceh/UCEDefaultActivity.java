@@ -38,29 +38,6 @@ import java.util.Locale;
 public final class UCEDefaultActivity extends Activity {
     private File txtFile;
 
-    public static String getApplicationName(Context context) {
-        ApplicationInfo applicationInfo = context.getApplicationInfo();
-        int stringId = applicationInfo.labelRes;
-        return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
-    }
-
-    private static String getVersionName(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (Exception e) {
-            return "Unknown";
-        }
-    }
-
-    private static String getActivityLogFromIntent(Intent intent) {
-        return intent.getStringExtra(UCEHandler.EXTRA_ACTIVITY_LOG);
-    }
-
-    private static String getStackTraceFromIntent(Intent intent) {
-        return intent.getStringExtra(UCEHandler.EXTRA_STACK_TRACE);
-    }
-
     @SuppressLint("PrivateResource")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +102,29 @@ public final class UCEDefaultActivity extends Activity {
                 }
             }
         });
+    }
+
+    public String getApplicationName(Context context) {
+        ApplicationInfo applicationInfo = context.getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
+    }
+
+    private String getVersionName(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (Exception e) {
+            return "Unknown";
+        }
+    }
+
+    private String getActivityLogFromIntent(Intent intent) {
+        return intent.getStringExtra(UCEHandler.EXTRA_ACTIVITY_LOG);
+    }
+
+    private String getStackTraceFromIntent(Intent intent) {
+        return intent.getStringExtra(UCEHandler.EXTRA_STACK_TRACE);
     }
 
     private void emailErrorLog() {
