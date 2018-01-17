@@ -98,7 +98,7 @@ public final class UCEDefaultActivity extends Activity {
                         .show();
                 TextView textView = dialog.findViewById(android.R.id.message);
                 if (textView != null) {
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 20);
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24);
                 }
             }
         });
