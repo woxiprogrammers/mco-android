@@ -5,38 +5,38 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
-public class DprListItem extends RealmObject{
+public class DprListItem extends RealmObject {
 
-	@SerializedName("name")
-	private String name;
+    @SerializedName("name")
+    private String name;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("users")
-	private RealmList<UsersItem> users;
+    @SerializedName("users")
+    private RealmList<DprUsersItem> users;
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName(){
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setUsers(RealmList<UsersItem> users){
-		this.users = users;
-	}
+    public void setUsers(RealmList<DprUsersItem> users) {
+        this.users = users;
+    }
 
-	public RealmList<UsersItem> getUsers(){
-		return users;
-	}
+    public RealmList<DprUsersItem> getUsers() {
+        return users;
+    }
 }

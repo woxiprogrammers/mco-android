@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import com.android.checklist_module.ChecklistHomeActivity;
 import com.android.dashboard.DashBoardActivity;
 import com.android.dpr_module.DPRHomeActivity;
+import com.android.dpr_module.DPRListActivity;
 import com.android.drawings_module.DrawingHomeActivity;
 import com.android.inventory_module.ActivityTransferRequest;
 import com.android.inventory_module.InventoryHomeActivity;
@@ -76,7 +77,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("vendor-assignment", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("manage-amendment", DPRHomeActivity.class.getName());
+        aclKeyValuePair.put("manage-amendment", DPRListActivity.class.getName());
         aclKeyValuePair.put("purchase-history", PurchaseOrderApproveActivity.class.getName());
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());

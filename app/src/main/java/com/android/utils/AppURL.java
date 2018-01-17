@@ -86,4 +86,5 @@ public class AppURL {
     public static final String API_DPR_SUB_CONTRACTOR_DATA = BASE_URL + "dpr/subcontractor/listing?token=";
     public static final String API_DPR_SUBCONTRACTOR_CATEGORY_DATA = BASE_URL + "dpr/category/listing?token=";
     public static final String API_DPR_SUBCON_SAVE_DETAILS=BASE_URL + "dpr/subcontractor/save-details?token=";
+    public static final String API_DPR_LISTING = "http://www.mocky.io/v2/5a5eef3f2e000026050a818d";
 }

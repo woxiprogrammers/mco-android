@@ -284,15 +284,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        /*recyclerView_commonListingView.addOnScrollListener(new EndlessRecyclerViewScrollListener(new LinearLayoutManager(mContext)) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (oldPageNumber != pageNumber) {
-                    oldPageNumber = pageNumber;
-                    requestPrListOnline(page);
-                }
-            }
-        });*/
     }
 
     @Override
