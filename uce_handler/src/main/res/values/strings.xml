@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">UCE Handler</string>
-    <string name="ask_for_error_log">An unexpected error has occurred.\nHelp developers by providing error details.\nThank you for you support.</string>
+    <string name="ask_for_error_log">An unexpected error has occurred.\nHelp developers by providing error details.\nThank you for your support.</string>
+    <string name="email_welcome_note">Dear Dev Team,\n\nPlease check error log which caused  the crash\n\n\n</string>
 </resources>

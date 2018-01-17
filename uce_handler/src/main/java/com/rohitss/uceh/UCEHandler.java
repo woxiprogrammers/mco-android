@@ -24,9 +24,16 @@ import java.util.Locale;
  * Created by Rohit.
  */
 public final class UCEHandler {
+    @SuppressLint("StaticFieldLeak")
+    private static Application application;
     private final static String TAG = "UCEHandler";
-    static final String EXTRA_STACK_TRACE = "com.rohitss.uceh.UCEHandler.EXTRA_STACK_TRACE";
-    static final String EXTRA_ACTIVITY_LOG = "com.rohitss.uceh.UCEHandler.EXTRA_ACTIVITY_LOG";
+    private static boolean isInBackground = true;
+    private static boolean isBackgroundMode;
+    private static boolean isUCEHEnabled;
+    private static boolean isTrackActivitiesEnabled;
+    static String COMMA_SEPARATED_EMAIL_ADDRESSES;
+    static final String EXTRA_STACK_TRACE = "EXTRA_STACK_TRACE";
+    static final String EXTRA_ACTIVITY_LOG = "EXTRA_ACTIVITY_LOG";
     private static final String UCE_HANDLER_PACKAGE_NAME = "com.rohitss.uceh";
     private static final String DEFAULT_HANDLER_PACKAGE_NAME = "com.android.internal.os";
     private static final int MAX_STACK_TRACE_SIZE = 131071; //128 KB - 1
@@ -34,25 +41,13 @@ public final class UCEHandler {
     private static final String SHARED_PREFERENCES_FILE = "uceh_preferences";
     private static final String SHARED_PREFERENCES_FIELD_TIMESTAMP = "last_crash_timestamp";
     private static final Deque<String> activityLog = new ArrayDeque<>(MAX_ACTIVITIES_IN_LOG);
-    @SuppressLint("StaticFieldLeak")
-    private static Application application;
     private static WeakReference<Activity> lastActivityCreated = new WeakReference<>(null);
-    private static boolean isInBackground = true;
-    private String commaSeparatedEmailAddresses;
-    private boolean isShareEnabled, isSaveToFileEnabled, isCopyEnabled, isSendEmailEnabled;
-    private static boolean isUCEHEnabled;
-    private static boolean isTrackActivitiesEnabled;
-    static boolean isViewLogEnabled;
 
     UCEHandler(Builder builder) {
         isUCEHEnabled = builder.isUCEHEnabled;
         isTrackActivitiesEnabled = builder.isTrackActivitiesEnabled;
-        isViewLogEnabled = builder.isViewLogEnabled;
-        this.commaSeparatedEmailAddresses = builder.commaSeparatedEmailAddresses;
-        this.isShareEnabled = builder.isShareEnabled;
-        this.isSaveToFileEnabled = builder.isSaveToFileEnabled;
-        this.isCopyEnabled = builder.isCopyEnabled;
-        this.isSendEmailEnabled = builder.isSendEmailEnabled;
+        isBackgroundMode = builder.isBackgroundModeEnabled;
+        COMMA_SEPARATED_EMAIL_ADDRESSES = builder.commaSeparatedEmailAddresses;
         setUCEHandler(builder.context);
     }
 
@@ -81,7 +76,7 @@ public final class UCEHandler {
                                     }
                                 } else {
                                     setLastCrashTimestamp(application, new Date().getTime());
-                                    if (!isInBackground) {
+                                    if (!isInBackground || isBackgroundMode) {
                                         final Intent intent = new Intent(application, UCEDefaultActivity.class);
                                         StringWriter sw = new StringWriter();
                                         PrintWriter pw = new PrintWriter(sw);
@@ -100,38 +95,6 @@ public final class UCEHandler {
                                             intent.putExtra(EXTRA_ACTIVITY_LOG, activityLogStringBuilder.toString());
                                         }
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        /*StringWriter stackTrace = new StringWriter();
-        exception.printStackTrace(new PrintWriter(stackTrace));
-        StringBuilder errorReport = new StringBuilder();
-        errorReport.append("************ CAUSE OF ERROR ************\n\n");
-        errorReport.append(stackTrace.toString());
-
-        errorReport.append("\n************ DEVICE INFORMATION ***********\n");
-        errorReport.append("Brand: ");
-        errorReport.append(Build.BRAND);
-        errorReport.append(LINE_SEPARATOR);
-        errorReport.append("Device: ");
-        errorReport.append(Build.DEVICE);
-        errorReport.append(LINE_SEPARATOR);
-        errorReport.append("Model: ");
-        errorReport.append(Build.MODEL);
-        errorReport.append(LINE_SEPARATOR);
-        errorReport.append("Id: ");
-        errorReport.append(Build.ID);
-        errorReport.append(LINE_SEPARATOR);
-        errorReport.append("Product: ");
-        errorReport.append(Build.PRODUCT);
-        errorReport.append(LINE_SEPARATOR);
-        errorReport.append("\n************ FIRMWARE ************\n");
-        errorReport.append("SDK: ");
-        errorReport.append(Build.VERSION.SDK);
-        errorReport.append(LINE_SEPARATOR);
-        errorReport.append("Release: ");
-        errorReport.append(Build.VERSION.RELEASE);
-        errorReport.append(LINE_SEPARATOR);
-        errorReport.append("Incremental: ");
-        errorReport.append(Build.VERSION.INCREMENTAL);
-        errorReport.append(LINE_SEPARATOR);*/
                                         application.startActivity(intent);
                                     } else {
                                         if (oldHandler != null) {
@@ -248,13 +211,9 @@ public final class UCEHandler {
     public static class Builder {
         private Context context;
         private boolean isUCEHEnabled = true;
-        private String commaSeparatedEmailAddresses;
-        private boolean isViewLogEnabled = true;
-        private boolean isShareEnabled = true;
-        private boolean isSaveToFileEnabled = true;
-        private boolean isCopyEnabled = true;
-        private boolean isSendEmailEnabled = true;
+        private String commaSeparatedEmailAddresses = "";
         private boolean isTrackActivitiesEnabled = false;
+        private boolean isBackgroundModeEnabled = true;
 
         public Builder(Context context) {
             this.context = context;
@@ -270,33 +229,13 @@ public final class UCEHandler {
             return this;
         }
 
-        public Builder setCommaSeparatedEmailAddresses(String commaSeparatedEmailAddresses) {
+        public Builder setBackgroundModeEnabled(boolean isBackgroundModeEnabled) {
+            this.isBackgroundModeEnabled = isBackgroundModeEnabled;
+            return this;
+        }
+
+        public Builder addCommaSeparatedEmailAddresses(String commaSeparatedEmailAddresses) {
             this.commaSeparatedEmailAddresses = commaSeparatedEmailAddresses;
-            return this;
-        }
-
-        public Builder setViewEnabled(boolean isViewEnabled) {
-            this.isViewLogEnabled = isViewEnabled;
-            return this;
-        }
-
-        public Builder setShareEnabled(boolean isShareEnabled) {
-            this.isShareEnabled = isShareEnabled;
-            return this;
-        }
-
-        public Builder setSaveToFileEnabled(boolean isSaveToFileEnabled) {
-            this.isSaveToFileEnabled = isSaveToFileEnabled;
-            return this;
-        }
-
-        public Builder setCopyEnabled(boolean isCopyEnabled) {
-            this.isCopyEnabled = isCopyEnabled;
-            return this;
-        }
-
-        public Builder setSendEmailEnabled(boolean isSendEmailEnabled) {
-            this.isSendEmailEnabled = isSendEmailEnabled;
             return this;
         }
 
