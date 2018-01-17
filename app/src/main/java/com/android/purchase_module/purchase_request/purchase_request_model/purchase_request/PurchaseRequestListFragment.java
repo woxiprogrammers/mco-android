@@ -74,16 +74,18 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private int pageNumber = 0;
     private int oldPageNumber;
     private int passYear, passMonth;
+    private String subModulesItemList;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
     }
 
-    public static PurchaseRequestListFragment newInstance(String subModule_Tag, String permissionsItemList) {
+    public static PurchaseRequestListFragment newInstance(String subModule_Tag, String permissionsItemList,String subModuleItemList) {
         PurchaseRequestListFragment fragment = new PurchaseRequestListFragment();
         Bundle args = new Bundle();
         args.putString("subModule_Tag", subModule_Tag);
         args.putString("permissionsItemList", permissionsItemList);
+        args.putString("subModulesItemList",subModuleItemList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -107,6 +109,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         if (bundle != null) {
             permissionList = bundle.getString("permissionsItemList");
             subModuleTag = bundle.getString("subModule_Tag");
+            subModulesItemList = bundle.getString("subModulesItemList");
+
         }
         //Initialize Views
         initializeViews();
@@ -271,6 +275,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                         intent.putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId());
                         intent.putExtra("KEY_SUBMODULETAG", subModuleTag);
                         intent.putExtra("KEY_PERMISSIONLIST", permissionList);
+                        intent.putExtra("subModulesItemList",subModulesItemList);
                         startActivity(intent);
 //                        startActivity(new Intent(mContext, PurchaseRequestDetailsHomeActivity.class).putExtra("PRNumber", purchaseRequestListItem.getPurchaseRequestId()).putExtra("KEY_PURCHASEREQUESTID", purchaseRequestListItem.getId()));
                     }

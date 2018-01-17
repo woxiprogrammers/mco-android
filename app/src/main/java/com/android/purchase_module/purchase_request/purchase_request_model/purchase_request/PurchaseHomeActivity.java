@@ -146,7 +146,7 @@ public class PurchaseHomeActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PurchaseRequestListFragment.newInstance(strSubModuleTag, permissionsItemList);
+                    return PurchaseRequestListFragment.newInstance(strSubModuleTag, permissionsItemList,subModulesItemList);
                 case 1:
                     return PurchaseOrderListFragment.newInstance(0, false,subModulesItemList);
                 case 2:
