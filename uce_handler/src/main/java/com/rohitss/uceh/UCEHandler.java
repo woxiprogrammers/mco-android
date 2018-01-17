@@ -24,16 +24,9 @@ import java.util.Locale;
  * Created by Rohit.
  */
 public final class UCEHandler {
-    @SuppressLint("StaticFieldLeak")
-    private static Application application;
-    private final static String TAG = "UCEHandler";
-    private static boolean isInBackground = true;
-    private static boolean isBackgroundMode;
-    private static boolean isUCEHEnabled;
-    private static boolean isTrackActivitiesEnabled;
-    static String COMMA_SEPARATED_EMAIL_ADDRESSES;
     static final String EXTRA_STACK_TRACE = "EXTRA_STACK_TRACE";
     static final String EXTRA_ACTIVITY_LOG = "EXTRA_ACTIVITY_LOG";
+    private final static String TAG = "UCEHandler";
     private static final String UCE_HANDLER_PACKAGE_NAME = "com.rohitss.uceh";
     private static final String DEFAULT_HANDLER_PACKAGE_NAME = "com.android.internal.os";
     private static final int MAX_STACK_TRACE_SIZE = 131071; //128 KB - 1
@@ -41,6 +34,13 @@ public final class UCEHandler {
     private static final String SHARED_PREFERENCES_FILE = "uceh_preferences";
     private static final String SHARED_PREFERENCES_FIELD_TIMESTAMP = "last_crash_timestamp";
     private static final Deque<String> activityLog = new ArrayDeque<>(MAX_ACTIVITIES_IN_LOG);
+    static String COMMA_SEPARATED_EMAIL_ADDRESSES;
+    @SuppressLint("StaticFieldLeak")
+    private static Application application;
+    private static boolean isInBackground = true;
+    private static boolean isBackgroundMode;
+    private static boolean isUCEHEnabled;
+    private static boolean isTrackActivitiesEnabled;
     private static WeakReference<Activity> lastActivityCreated = new WeakReference<>(null);
 
     UCEHandler(Builder builder) {
