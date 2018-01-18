@@ -29,13 +29,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+
                 <TextView
-                    android:id="@+id/textview_Date"
+                    android:id="@+id/textviewItemName"
                     android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="@dimen/dimen_8dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_4dp"
-                    android:layout_weight="0.5"
-                    android:text="30 July"/>
+                    android:textSize="@dimen/text_20sp"
+                    android:text="Wooden Ply Shaded Door"/>
 
                 <TextView
                     android:id="@+id/textviewItemStatus"
@@ -60,12 +62,6 @@
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/textviewItemName"
-                        android:layout_width="wrap_content"
-                        android:layout_marginTop="@dimen/dimen_8dp"
-                        android:layout_height="wrap_content"
-                        android:text="Wooden Ply Shaded Door"/>
 
                     <TextView
                         android:id="@+id/textviewItemUnits"
@@ -117,6 +113,13 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/text_14sp"
                 android:visibility="gone"/>
+            <TextView
+                android:id="@+id/textview_Date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:layout_weight="0.5"
+                android:text="30 July"/>
             <TextView
                 android:id="@+id/textViewMaterialHistory"
                 android:layout_width="wrap_content"

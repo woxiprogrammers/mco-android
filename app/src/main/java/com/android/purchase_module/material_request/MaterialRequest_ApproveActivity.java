@@ -1461,7 +1461,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
             setTime(purchaseMaterialListItem.getCreatedAt(), holder.textViewDate);
             holder.textViewItemStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseMaterialListItem.getComponentStatus()));
-            holder.textViewItemUnits.setText(purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
+            holder.textViewItemUnits.setText("Qty :" +purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
             holder.buttonMoveToIndent.setVisibility(View.GONE);
             holder.textviewCreatedBy.setText("Created By :-" + purchaseMaterialListItem.getMaterialCreatedBy());
