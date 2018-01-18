@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 public class DprListingResponse extends RealmObject
 		{
 
-	@SerializedName("dprListingData")
+	@SerializedName("data")
 	private DprListingData dprListingData;
 
 	@SerializedName("message")

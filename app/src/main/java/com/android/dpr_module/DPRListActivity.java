@@ -1,11 +1,15 @@
 package com.android.dpr_module;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -22,8 +26,16 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -36,9 +48,19 @@ public class DPRListActivity extends BaseActivity {
     @BindView(R.id.rv_subContCatList)
     RecyclerView rvSubContCatList;
     @BindView(R.id.mainRelativeDprList)
-    RelativeLayout mainRelativeDprList;
+    LinearLayout mainRelativeDprList;
+    @BindView(R.id.floating_add_button_peticash)
+    FloatingActionButton floatingAddButtonPeticash;
+    @BindView(R.id.textView_purchaseHome_appBarTitle)
+    TextView textViewPurchaseHomeAppBarTitle;
+    @BindView(R.id.relative_layout_datePicker_purchaseRequest)
+    RelativeLayout relativeLayoutDatePickerPurchaseRequest;
+    @BindView(R.id.toolbarPurchaseHome)
+    Toolbar toolbarPurchaseHome;
     private Context mContext;
     private Realm realm;
+    private int passYear, passMonth;
+    private int passDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +72,29 @@ public class DPRListActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = DPRListActivity.this;
+        toolbarPurchaseHome.setTitle("");
+        setSupportActionBar(toolbarPurchaseHome);
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        passDay=calendar.get(Calendar.DAY_OF_MONTH);
+        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passYear = calendar.get(Calendar.YEAR);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        setDateInAppBar(passMonth,passYear);
         requestToGetDprListing();
+    }
+
+    public void setDateInAppBar(int passMonth, int passYear) {
+        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + passYear);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setUpDPRListAdapter() {
@@ -76,8 +120,17 @@ public class DPRListActivity extends BaseActivity {
     }
 
     private void requestToGetDprListing() {
-        AndroidNetworking.get(AppURL.API_DPR_LISTING/* + AppUtils.getInstance().getCurrentToken()*/)
-//                .addHeaders(AppUtils.getInstance().getApiHeaders())
+        JSONObject params = new JSONObject();
+        try {
+            params.put("date", "2018-01-16");
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(AppURL.API_DPR_LISTING + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestToGetDprListing")
                 .build()
@@ -89,6 +142,10 @@ public class DPRListActivity extends BaseActivity {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(DprListingResponse.class);
+                                    realm.delete(DprListingData.class);
+                                    realm.delete(DprListItem.class);
+                                    realm.delete(DprUsersItem.class);
                                     for (int i = 0; i < response.getDprListingData().getDprList().size(); i++) {
                                         DprListItem dprListItem = response.getDprListingData().getDprList().get(i);
                                         int intId = dprListItem.getId();
@@ -125,6 +182,12 @@ public class DPRListActivity extends BaseActivity {
                         AppUtils.getInstance().logApiError(anError, "requestToGetDprListing");
                     }
                 });
+    }
+
+    @OnClick(R.id.floating_add_button_peticash)
+    public void onViewClicked() {
+        Intent intent = new Intent(mContext, DPRHomeActivity.class);
+        startActivity(intent);
     }
 
     @SuppressWarnings("WeakerAccess")

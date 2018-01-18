@@ -63,6 +63,7 @@ public class PurchaseHomeActivity extends BaseActivity {
      * Created by - Rohit
      */
     private void initializeViews() {
+
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             strSubModuleTag = bundle.getString("subModuleTag");

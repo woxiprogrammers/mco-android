@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 
 public class DprListingData extends RealmObject{
 
-	@SerializedName("dpr_list")
+	@SerializedName("sub_contractor_list")
 	private RealmList<DprListItem> dprList;
 
 	public void setDprList(RealmList<DprListItem> dprList){
