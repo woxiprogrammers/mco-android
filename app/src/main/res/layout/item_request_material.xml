@@ -67,7 +67,6 @@
                         android:id="@+id/textviewItemUnits"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dimen_5dp"
                         android:text="357 units"
                         android:textSize="@dimen/text_14sp"/>
 
@@ -85,14 +84,13 @@
                         android:id="@+id/iv_approve"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dimen_8dp"
+                        android:layout_marginRight="@dimen/dimen_8dp"
                         android:background="@drawable/ic_approve"/>
 
                     <ImageView
                         android:id="@+id/iv_disapprove"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dimen_8dp"
                         android:background="@drawable/ic_disapprove"/>
                 </LinearLayout>
 
