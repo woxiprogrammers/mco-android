@@ -394,7 +394,7 @@ public class AwarenessHomeActivity extends BaseActivity {
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile);
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         final long downloadId = downloadManager.enqueue(request);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
+        mProgressBar = findViewById(R.id.progressBar1);
         mProgressBar.setVisibility(View.VISIBLE);
         registerReceiver(downloadRecevier, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         new Thread(new Runnable() {
@@ -416,7 +416,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mProgressBar.setProgress((int) dl_progress);
+                            mProgressBar.setProgress(dl_progress);
                         }
                     });
                     statusMessage(cursor);
@@ -464,8 +464,6 @@ public class AwarenessHomeActivity extends BaseActivity {
                     }
                 });
             }
-
-            ;
         };
         timer.start();
     }

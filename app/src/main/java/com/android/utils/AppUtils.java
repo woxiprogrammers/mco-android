@@ -83,7 +83,7 @@ public class AppUtils {
             throw new IllegalArgumentException("Preference name can not be null");
         }
         mContext = context;
-        preference = context.getSharedPreferences(prefs_name, context.MODE_PRIVATE);
+        preference = context.getSharedPreferences(prefs_name, Context.MODE_PRIVATE);
         editor = preference.edit();
     }
 
@@ -97,7 +97,7 @@ public class AppUtils {
             throw new IllegalArgumentException("Preference name can not be null");
         }
         String DEFAULT_SHARED_PREFS_NAME = "app_preferences";
-        preference = context.getSharedPreferences(DEFAULT_SHARED_PREFS_NAME, context.MODE_PRIVATE);
+        preference = context.getSharedPreferences(DEFAULT_SHARED_PREFS_NAME, Context.MODE_PRIVATE);
         editor = preference.edit();
         mContext = context;
     }

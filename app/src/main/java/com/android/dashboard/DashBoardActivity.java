@@ -82,7 +82,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Start Realm Browser
         RealmBrowser.showRealmFilesNotification(getApplicationContext());
 //        }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -149,7 +149,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
                 setUpStaticValues(selectedId);
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             }
 
@@ -157,7 +157,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             public void onNothingSelected(AdapterView<?> adapterView) {
                 int selectedId = projectSpinner.getSelectedItemPosition();
                 setUpStaticValues(selectedId);
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             }
         });
@@ -244,7 +244,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -266,7 +266,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
                 break;
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

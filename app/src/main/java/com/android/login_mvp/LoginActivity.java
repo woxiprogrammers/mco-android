@@ -45,11 +45,11 @@ public class LoginActivity extends BaseActivity implements LoginView {
      * Created by - Rohit
      */
     private void initializeViews() {
-        edUserName = (EditText) findViewById(R.id.mobileNumber);
-        edPassword = (EditText) findViewById(R.id.password);
-        pbLoad = (ProgressBar) findViewById(R.id.login_progress);
+        edUserName = findViewById(R.id.mobileNumber);
+        edPassword = findViewById(R.id.password);
+        pbLoad = findViewById(R.id.login_progress);
         mLoginPresenter = new LoginPresenter(this);
-        btnSignIn = (Button) findViewById(R.id.btnSignIn);
+        btnSignIn = findViewById(R.id.btnSignIn);
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

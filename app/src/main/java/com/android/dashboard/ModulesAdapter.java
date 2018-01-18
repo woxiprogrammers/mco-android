@@ -127,10 +127,10 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         MyViewHolder(View view) {
             super(view);
             context = view.getContext();
-            moduleName = (TextView) view.findViewById(R.id.tv_moduleName);
+            moduleName = view.findViewById(R.id.tv_moduleName);
 //            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
-            fl_mainModuleFrame = (FrameLayout) view.findViewById(R.id.fl_mainModuleFrame);
-            ll_sub_modules = (LinearLayout) view.findViewById(R.id.ll_sub_modules);
+            fl_mainModuleFrame = view.findViewById(R.id.fl_mainModuleFrame);
+            ll_sub_modules = view.findViewById(R.id.ll_sub_modules);
             imageViewModule=view.findViewById(R.id.imageViewModule);
             int intMaxSize = 0;
             for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
