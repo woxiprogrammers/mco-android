@@ -1,5 +1,6 @@
 package com.android.dpr_module;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,7 +32,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -61,6 +65,8 @@ public class DPRListActivity extends BaseActivity {
     private Realm realm;
     private int passYear, passMonth;
     private int passDay;
+    private DatePickerDialog pickDatePickerDialog;
+    private Date date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,20 +81,31 @@ public class DPRListActivity extends BaseActivity {
         toolbarPurchaseHome.setTitle("");
         setSupportActionBar(toolbarPurchaseHome);
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        passDay=calendar.get(Calendar.DAY_OF_MONTH);
-        passMonth = calendar.get(Calendar.MONTH) + 1;
-        passYear = calendar.get(Calendar.YEAR);
+
+         date=new Date();
+        String format="yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat(format);
+        String strGetDate=simpleDateFormat.format(date);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        setDateInAppBar(passMonth,passYear);
-        requestToGetDprListing();
+        setDateInAppBar(0,0,"",false);
+        requestToGetDprListing(strGetDate);
     }
 
-    public void setDateInAppBar(int passMonth, int passYear) {
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        textViewPurchaseHomeAppBarTitle.setText(strMonth + ", " + passYear);
+    public void setDateInAppBar(int passMonth, int passYear, String  passDay,boolean isDateSelected) {
+
+        String format="dd-MMMM-yyyy";
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat(format);
+        String strGetDate=simpleDateFormat.format(date);
+        textViewPurchaseHomeAppBarTitle.setText(strGetDate);
+        if(isDateSelected){
+
+            String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
+            textViewPurchaseHomeAppBarTitle.setText(passDay + "," + strMonth + ", " + passYear);
+        }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -119,10 +136,10 @@ public class DPRListActivity extends BaseActivity {
                 }));
     }
 
-    private void requestToGetDprListing() {
+    private void requestToGetDprListing(String strDate) {
         JSONObject params = new JSONObject();
         try {
-            params.put("date", "2018-01-16");
+            params.put("date", strDate);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -188,6 +205,40 @@ public class DPRListActivity extends BaseActivity {
     public void onViewClicked() {
         Intent intent = new Intent(mContext, DPRHomeActivity.class);
         startActivity(intent);
+    }
+
+    private void openDatePickerDialog() {
+        Calendar newCalendar = Calendar.getInstance();
+        pickDatePickerDialog = new DatePickerDialog(this, R.style.MyDialogTheme,new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, month, day);
+                String monthString = String.valueOf(month + 1);
+                String strDay=String.valueOf(day);
+                String strYear=String.valueOf(year);
+                String formatDate;
+                if(strDay.length() == 1){
+                    strDay="0"+strDay;
+                }
+                if (monthString.length() == 1 ) {
+                    monthString = "0" + monthString;
+                }
+                formatDate=strYear + "," + monthString + "," +strDay;
+                requestToGetDprListing(formatDate);
+                setDateInAppBar(month +1, year, strDay,true);
+
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        pickDatePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        pickDatePickerDialog.show();
+
+    }
+
+    @OnClick(R.id.relative_layout_datePicker_purchaseRequest)
+    public void onCLicked() {
+        openDatePickerDialog();
     }
 
     @SuppressWarnings("WeakerAccess")

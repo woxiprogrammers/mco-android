@@ -74,7 +74,7 @@ public class DPRHomeActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
                 realm = Realm.getDefaultInstance();
                 dprdataItemRealmResults = realm.where(DprdataItem.class).findAll();
-                intSubContId=dprdataItemRealmResults.get(selectedItemIndex).getId();
+                intSubContId = dprdataItemRealmResults.get(selectedItemIndex).getId();
                 requestToGetSubCatData(intSubContId);
             }
 
@@ -243,15 +243,22 @@ public class DPRHomeActivity extends BaseActivity {
                 return;
             } else {
                 int intUserCount = Integer.parseInt(editTextNoOfUsers.getText().toString().trim());
-                jsonArray.put(intUserCount);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("category_id", 1);
+                    jsonObject.put("user_id", intUserCount);
+                    jsonArray.put(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("subcontractor_id", intSubContId);
-            params.put("number_of_users",jsonArray);
-
+            params.put("number_of_users", jsonArray);
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
