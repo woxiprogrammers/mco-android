@@ -12,10 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp">
+        android:padding="@dimen/dimen_8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,7 +30,7 @@
             <TextView
                 android:id="@+id/textView_purchase_request_status"
                 android:layout_width="wrap_content"
-                android:text="mfmflgfmgfmgfg"
+                android:text="Bill Pending"
                 android:layout_height="wrap_content"
                 style="@style/MyTextViewLabelStyle"/>
         </LinearLayout>
