@@ -282,7 +282,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseOrderListItem purchaseOrderListItem = arrPurchaseOrderListItems.get(position);
             holder.textViewPurchaseRequestId.setText(purchaseOrderListItem.getPurchaseOrderFormatId());
-            holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
+//            holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
             holder.textViewPurchaseRequestStatus.setText(purchaseOrderListItem.getStatus());
             holder.textViewPurchaseRequestDate.setText(purchaseOrderListItem.getDate());
             holder.textViewdetails.setVisibility(View.VISIBLE);
@@ -317,8 +317,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             TextView textViewPurchaseRequestDate;
             @BindView(R.id.textView_purchase_request_materials)
             TextView textViewPurchaseRequestMaterials;
-            @BindView(R.id.textview_client_name)
-            TextView textviewClientName;
+            /*@BindView(R.id.textview_client_name)
+            TextView textviewClientName;*/
             @BindView(R.id.textViewdetails)
             TextView textViewdetails;
             @BindView(R.id.textViewClose)

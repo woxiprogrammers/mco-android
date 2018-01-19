@@ -39,7 +39,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -327,11 +330,10 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseRequestListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-            holder.textViewCreated.setVisibility(View.VISIBLE);
-            holder.textViewCreated.setText("Created By : - " + purchaseRequestListItem.getCreatedBy());
+            holder.textViewPurchaseRequestDate.setText("Created By : " + purchaseRequestListItem.getCreatedBy() + "at " + setTime(purchaseRequestListItem.getDate()));
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
-                holder.textViewApproved.setText("Approved By : - " + purchaseRequestListItem.getApprovedBy());
+                holder.textViewApproved.setText("Approved By : " + purchaseRequestListItem.getApprovedBy());
             }
         }
 
@@ -358,13 +360,24 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             TextView textViewPurchaseRequestMaterials;
             @BindView(R.id.linearLayoutToHideApproved)
             LinearLayout linearLayoutToHideApproved;
-            @BindView(R.id.textViewCreated)
-            TextView textViewCreated;
 
             MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
             }
         }
+    }
+    private String setTime(String strParse) {
+        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date dateObj;
+        String newDateStr = null;
+        try {
+            dateObj = df.parse(strParse);
+            SimpleDateFormat fd = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+            newDateStr = fd.format(dateObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  newDateStr;
     }
 }
