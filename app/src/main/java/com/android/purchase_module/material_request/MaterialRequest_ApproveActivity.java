@@ -1506,7 +1506,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            textView.setText(newDateStr);
+            textView.setText("Created At :" + newDateStr);
         }
     }
 

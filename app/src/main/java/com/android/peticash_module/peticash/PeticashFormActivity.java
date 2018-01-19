@@ -74,8 +74,6 @@ public class PeticashFormActivity extends BaseActivity {
     EditText editTextEmpIdName;
     @BindView(R.id.imageViewProfilePicture)
     ImageView imageViewProfilePicture;
-    @BindView(R.id.textViewEployeeId)
-    TextView textViewEployeeId;
     @BindView(R.id.textViewEmployeeName)
     TextView textViewEmployeeName;
     @BindView(R.id.textViewBalance)
@@ -510,9 +508,8 @@ public class PeticashFormActivity extends BaseActivity {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
             employeesearchdataItem = realm.where(EmployeeSearchDataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            textViewEployeeId.setText("ID - " + employeesearchdataItem.getFormatEmployeeId() + "");
-            textViewEmployeeName.setText("Name - " + employeesearchdataItem.getEmployeeName());
-            textViewBalance.setText("Balance - " + employeesearchdataItem.getBalance());
+            textViewEmployeeName.setText(employeesearchdataItem.getEmployeeName() + " :- " + employeesearchdataItem.getFormatEmployeeId());
+            textViewBalance.setText("Balance :- " + employeesearchdataItem.getBalance());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
             intAdvanceAmount = employeesearchdataItem.getAdvanceAmount();

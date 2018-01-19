@@ -1,164 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<android.support.v4.widget.NestedScrollView
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_5dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="@dimen/dimen_4dp">
 
-    <android.support.v7.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
-        app:cardCornerRadius="8dp"
-        android:layout_margin="@dimen/dimen_5dp"
-        app:cardElevation="@dimen/dimen_4dp">
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:id="@+id/textviewItemName"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_20sp"
-                    android:text="Wooden Ply Shaded Door"/>
-
-                <TextView
-                    android:id="@+id/textviewItemStatus"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:gravity="right"
-                    android:text="Approved"
-                    android:textColor="#ff0000"
-                    android:textSize="@dimen/dimen_14dp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-
-
-                    <TextView
-                        android:id="@+id/textviewItemUnits"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="357 units"
-                        android:textSize="@dimen/text_14sp"/>
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayoutApproveDisapprove"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/iv_approve"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/dimen_8dp"
-                        android:background="@drawable/ic_approve"/>
-
-                    <ImageView
-                        android:id="@+id/iv_disapprove"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_disapprove"/>
-                </LinearLayout>
-
-
-            </LinearLayout>
 
             <TextView
-                android:id="@+id/textviewCreatedBy"
-                android:layout_width="match_parent"
+                android:id="@+id/textviewItemName"
+                style="@style/TextViewTitleStyle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_5dp"
-                android:textSize="@dimen/text_14sp"/>
+                android:layout_weight="1"
+                android:text="Wooden Ply Shaded Door"/>
+
             <TextView
-                android:id="@+id/textviewApprovedBy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_5dp"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_14sp"
-                android:visibility="gone"/>
-            <TextView
-                android:id="@+id/textview_Date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_4dp"
-                android:layout_weight="0.5"
-                android:text="30 July"/>
-            <TextView
-                android:id="@+id/textViewMaterialHistory"
+                android:id="@+id/textviewItemStatus"
+                style="@style/MyTextViewLabelStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="Approved"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textviewItemUnits"
+            style="@style/TextViewChildStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_4dp"
+            android:text="357 units"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textviewCreatedBy"
+                    style="@style/TextViewChildStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutApproveDisapprove"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_approve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_4dp"
+                    android:background="@drawable/ic_approve"/>
+
+                <ImageView
+                    android:id="@+id/iv_disapprove"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_4dp"
+                    android:background="@drawable/ic_disapprove"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textviewApprovedBy"
+            style="@style/TextViewChildStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textview_Date"
+                style="@style/TextViewChildStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="30 July"/>
+
+            <TextView
+                android:id="@+id/textViewMaterialHistory"
+                style="@style/TextViewChildStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
                 android:background="@drawable/background_button_pressed"
                 android:gravity="center"
                 android:padding="@dimen/dimen_8dp"
                 android:text="History"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_14sp"/>
-            <Button
-                android:id="@+id/button_move_to_indent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/selectable_button_background_gray"
-                android:drawableRight="@drawable/ic_arrow_right"
-                android:gravity="center"
-                android:paddingLeft="@dimen/dimen_4dp"
-                android:paddingRight="@dimen/dimen_4dp"
-                android:layout_marginTop="@dimen/dimen_8dp"
-                android:text="Move To Indent"
-                android:textSize="@dimen/text_12sp"
-                android:visibility="visible"/>
-            <HorizontalScrollView
+                android:textColor="@color/colorAccent"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_move_to_indent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:background="@drawable/selectable_button_background_gray"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dimen_4dp"
+            android:paddingRight="@dimen/dimen_4dp"
+            android:text="Move To Indent"
+            android:visibility="visible"/>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:fadeScrollbars="false">
+
+            <LinearLayout
+                android:id="@+id/ll_PaymentImageLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_4dp"
-                android:fadeScrollbars="false">
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+            </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/ll_PaymentImageLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-                </LinearLayout>
+        </HorizontalScrollView>
 
-            </HorizontalScrollView>
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-</android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -10,5 +10,6 @@
     <color name="colorTextLight">#757575</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorDivider">#BDBDBD</color>
+    <color name="darkGrey">#696969</color>
     <color name="transparent_color">#55b1b1b1</color>
 </resources>

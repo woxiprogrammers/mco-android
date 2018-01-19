@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
     <android.support.v4.widget.NestedScrollView
@@ -68,8 +69,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/ic_action_more_vert"/>
+                            android:layout_weight="0.1"/>
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -86,11 +86,6 @@
                                 android:layout_height="wrap_content"
                                 android:text="Employee Name"/>
 
-                            <TextView
-                                android:id="@+id/textViewEployeeId"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Employee ID"/>
 
                             <TextView
                                 android:id="@+id/textViewBalance"
@@ -103,9 +98,10 @@
                             android:id="@+id/imageviewEmpTransactions"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
                             android:layout_weight="0.1"
-                            android:background="@drawable/ic_arrow_right_black"
+                            android:layout_gravity="center_vertical|right"
+                            app:srcCompat="@drawable/ic_arrow_up"
+                            android:rotation="90"
                             />
                     </LinearLayout>
 

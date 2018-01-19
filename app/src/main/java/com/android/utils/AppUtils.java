@@ -439,7 +439,7 @@ public class AppUtils {
         viewGroup.removeView(view);
         if(isToShowProgress){
             viewGroup.addView(view);
-            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext,R.color.colorAccentDark),android.graphics.PorterDuff.Mode.MULTIPLY);
+            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext,R.color.colorPrimaryDark),android.graphics.PorterDuff.Mode.MULTIPLY);
             progressBar.setVisibility(View.VISIBLE);
         }else {
             viewGroup.removeView(view);
