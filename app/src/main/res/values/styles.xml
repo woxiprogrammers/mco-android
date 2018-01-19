@@ -34,7 +34,7 @@
     </style>
 
     <style name="TextViewTitleStyle" parent="MyTextViewStyle">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">22sp</item>
     </style>
     <style name="TextViewChildStyle" parent="MyTextViewStyle">
         <item name="android:textSize">16sp</item>
@@ -42,13 +42,15 @@
     <style name="MyTextViewLabelStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:background">@color/darkGrey</item>
-        <item name="android:padding">@dimen/dimen_2dp</item>
+        <item name="android:background">@drawable/background_status</item>
+        <item name="android:paddingLeft">@dimen/dimen_4dp</item>
+        <item name="android:paddingRight">@dimen/dimen_4dp</item>
+        <item name="android:paddingTop">@dimen/dimen_2dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_2dp</item>
 
     </style>
     <style name="MyEditTextStyle" parent="android:Widget.EditText">
         <item name="android:textSize">16sp</item>
-        <item name="android:layout_height">160dp</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="android:textColorHint">@color/colorTextLight</item>
         <item name="android:typeface">sans</item>
@@ -58,6 +60,9 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="MyEditTextHeightSTyle" parent="MyEditTextStyle">
+        <item name="android:layout_height">50dp</item>
+    </style>
     <style name="MyButtonStyle" parent="android:Widget.Button">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/colorWhite</item>

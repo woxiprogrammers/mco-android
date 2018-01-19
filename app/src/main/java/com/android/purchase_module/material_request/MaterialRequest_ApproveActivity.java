@@ -1408,8 +1408,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             TextView textViewDate;
             @BindView(R.id.textviewApprovedBy)
             TextView textviewApprovedBy;
-            @BindView(R.id.textviewCreatedBy)
-            TextView textviewCreatedBy;
             @BindView(R.id.textViewMaterialHistory)
             TextView textViewMaterialHistory;
 
@@ -1459,12 +1457,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
-            setTime(purchaseMaterialListItem.getCreatedAt(), holder.textViewDate);
             holder.textViewItemStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseMaterialListItem.getComponentStatus()));
-            holder.textViewItemUnits.setText("Qty :" +purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
+            holder.textViewItemUnits.setText("Qty : " +purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
             holder.buttonMoveToIndent.setVisibility(View.GONE);
-            holder.textviewCreatedBy.setText("Created By :-" + purchaseMaterialListItem.getMaterialCreatedBy());
+            holder.textViewDate.setText("Created By " + purchaseMaterialListItem.getMaterialCreatedBy() + " at " + setTime(purchaseMaterialListItem.getCreatedAt()));
             holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
             if (!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())) {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
@@ -1495,7 +1492,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             return arrPurchaseMaterialListItems == null ? 0 : arrPurchaseMaterialListItems.size();
         }
 
-        private void setTime(String strParse, TextView textView) {
+        private String setTime(String strParse) {
             final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             Date dateObj;
             String newDateStr = null;
@@ -1506,7 +1503,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            textView.setText("Created At :" + newDateStr);
+            return  newDateStr;
         }
     }
 
