@@ -330,7 +330,9 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseRequestListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-            holder.textViewPurchaseRequestDate.setText("Created By : " + purchaseRequestListItem.getCreatedBy() + "at " + setTime(purchaseRequestListItem.getDate()));
+            Log.i("@@Date",purchaseRequestListItem.getDate());
+
+            holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " +AppUtils.getInstance().getTime("E, dd MMMM yyyy","dd-MMM-yyyy",purchaseRequestListItem.getDate()));
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
                 holder.textViewApproved.setText("Approved By : " + purchaseRequestListItem.getApprovedBy());
@@ -368,7 +370,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         }
     }
     private String setTime(String strParse) {
-        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        final SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
         Date dateObj;
         String newDateStr = null;
         try {
