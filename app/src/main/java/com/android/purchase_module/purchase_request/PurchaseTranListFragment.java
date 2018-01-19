@@ -126,15 +126,6 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        /*if (purchaseBillListItems != null) {
-            purchaseBillListItems.addChangeListener(new RealmChangeListener<RealmResults<PurchaseOrderTransactionListingItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseOrderTransactionListingItem> purchaseBillListItems) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
-        }*/
     }
 
     private void requestPrListOnline(int pageId) {
@@ -230,9 +221,9 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             holder.textViewPurchaseGrn.setText(purchaseBillListItem.getGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getPurchaseOrderTransactionStatus());
             if (purchaseBillListItem.getPurchaseOrderTransactionStatus().equalsIgnoreCase("GRN Generated")) {
-                holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBillListItem.getInTime()));
+                holder.textViewPurchaseRequestDate.setText("Created at " +AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy", purchaseBillListItem.getInTime()));
             } else {
-                holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", purchaseBillListItem.getOutTime()));
+                holder.textViewPurchaseRequestDate.setText("Created at " +AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy", purchaseBillListItem.getOutTime()));
             }
             if (isFromPurchaseRequestHome) {
                 holder.textViewPurchaseOrderFormat.setVisibility(View.VISIBLE);

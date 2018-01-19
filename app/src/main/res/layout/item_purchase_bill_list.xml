@@ -23,41 +23,41 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView_purchase_grn"
+                android:id="@+id/textView_purchase_request_materials"
+                style="@style/TextViewTitleStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:text="Cement"/>
 
             <TextView
                 android:id="@+id/textView_purchase_request_status"
                 android:layout_width="wrap_content"
+                android:text="mfmflgfmgfmgfg"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccentLight"
-                android:textSize="@dimen/text_14sp"/>
+                style="@style/MyTextViewLabelStyle"/>
         </LinearLayout>
 
         <TextView
-            android:id="@+id/textView_purchase_request_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorTextLight"
-            android:textSize="@dimen/text_14sp"/>
-
-        <TextView
-            android:id="@+id/textView_purchase_request_materials"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorTextLight"
-            android:textSize="@dimen/text_14sp"/>
-
-
-        <TextView
             android:id="@+id/textView_purchase_order_format"
+            style="@style/TextViewChildStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="PON201734"
-            android:visibility="gone"
-            android:textColor="@color/colorTextLight"
-            android:textSize="@dimen/text_14sp"/>
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/textView_purchase_grn"
+            style="@style/TextViewChildStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GRN2018123"/>
+
+        <TextView
+            android:id="@+id/textView_purchase_request_date"
+            style="@style/TextViewChildStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="08-Jan-2018"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>
