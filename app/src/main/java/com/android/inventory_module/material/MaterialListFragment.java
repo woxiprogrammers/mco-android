@@ -100,7 +100,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     @Override
     public void fragmentBecameVisible() {
-        requestInventoryResponse(pageNumber);
+//        requestInventoryResponse(pageNumber);
     }
 
     @Override

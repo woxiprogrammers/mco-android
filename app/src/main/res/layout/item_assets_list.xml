@@ -19,35 +19,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dimen_8dp"
-            android:paddingLeft="@dimen/dimen_8dp"
-            android:paddingRight="@dimen/dimen_8dp"
-            android:paddingTop="@dimen/dimen_8dp">
+            android:padding="@dimen/dimen_8dp">
 
-            <TextView
-                android:id="@+id/text_view_asset_list_name"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Wood Cutter"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_16dp"/>
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/asset_model_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_5dp"
-                android:text="Model 1234"
-                android:textSize="@dimen/dimen_16dp"/>
+                <TextView
+                    android:id="@+id/text_view_asset_list_name"
+                    style="@style/TextViewTitleStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wood Cutter"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "/>
+
+                <TextView
+                    android:id="@+id/asset_model_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Model 1234"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayoutForThreeTypes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_8dp"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/dimen_10dp"
-                android:paddingTop="@dimen/dimen_10dp">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -61,20 +65,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        android:gravity="center_horizontal"/>
 
                     <TextView
+                        style="@style/TextViewChildStyle"
+                        android:textColor="@color/colorBlue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="Units"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        android:text="Units"/>
                 </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@color/colorLightGrey">
 
+                </View>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -88,20 +96,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        android:gravity="center_horizontal"/>
 
                     <TextView
+                        style="@style/TextViewChildStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:text="Work Hour"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        android:textColor="@color/colorAccent"
+                        />
                 </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@color/colorLightGrey">
 
+                </View>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -113,22 +126,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        android:gravity="center_horizontal"/>
 
                     <TextView
                         android:id="@+id/textviewConsumed"
+                        style="@style/TextViewChildStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/dimen_2dp"
                         android:gravity="center_horizontal"
-                        android:text="Diesel Consume"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="@string/diesel_consume"/>
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/linearLayoutBothType"
                     android:layout_width="0dp"
@@ -163,7 +173,6 @@
                 android:id="@+id/linearLayoutForOtherAssets"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_40dp"
                 android:layout_marginTop="@dimen/dimen_8dp"
                 android:orientation="horizontal"
                 android:visibility="gone">
@@ -190,10 +199,16 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:text="In"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        style="@style/TextViewChildStyle"
+                        android:textColor="@color/colorBlue"/>
                 </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@color/colorLightGrey">
 
+                </View>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -217,10 +232,16 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:text="Out"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        style="@style/TextViewChildStyle"
+                        android:textColor="@color/colorAccent"/>
                 </LinearLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:background="@color/colorLightGrey">
 
+                </View>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -243,8 +264,8 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
                         android:text="Available"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        style="@style/TextViewChildStyle"
+                        android:textColor="@color/colorPrimaryDark"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -28,13 +28,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="User Name"
+
                     android:textColor="@color/colorTextLight"/>
 
 
                 <EditText
                     android:id="@+id/edt_userNameAsset"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/MyEditTextHeightSTyle"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 

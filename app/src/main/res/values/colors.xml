@@ -12,4 +12,6 @@
     <color name="colorDivider">#BDBDBD</color>
     <color name="darkGrey">#696969</color>
     <color name="transparent_color">#55b1b1b1</color>
+    <color name="colorBlue">#0000FF</color>
+    <color name="colorLightGrey">#DCDCDC</color>
 </resources>

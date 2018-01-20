@@ -106,4 +106,5 @@
     <string name="title_activity_checklist">Checklist Management</string>
     <string name="create_peticash_management">create-peticash-management</string>
     <string name="create_inventory_in_out_transfer">create-inventory-in-out-transfer</string>
+    <string name="diesel_consume">Diesel \nConsume</string>
 </resources>
