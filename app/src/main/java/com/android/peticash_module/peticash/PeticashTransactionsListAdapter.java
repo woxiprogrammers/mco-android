@@ -75,9 +75,9 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
                         TextView currentTextView_Name = currentChildView.findViewById(R.id.textView_transactionName);
                         currentTextView_Name.setText(modulesItemRealmList.get(viewIndex).getName());
                         TextView currentTextView_Status = currentChildView.findViewById(R.id.textView_transactionStatus);
-                        currentTextView_Status.setText(modulesItemRealmList.get(viewIndex).getPaymentStatus());
+                        currentTextView_Status.setText(modulesItemRealmList.get(viewIndex).getPaymentStatus() + modulesItemRealmList.get(viewIndex).getPeticashTransactionAmount());
                         TextView currentTextView_Type = currentChildView.findViewById(R.id.textView_transactionType);
-                        currentTextView_Type.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionType() + ":  ");
+                        currentTextView_Type.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionType());
                         TextView currentTextView_Amount = currentChildView.findViewById(R.id.textView_transactionAmount);
                         currentTextView_Amount.setText(modulesItemRealmList.get(viewIndex).getPeticashTransactionAmount());
                         currentChildView.setOnClickListener(new View.OnClickListener() {

@@ -41,22 +41,19 @@
                     android:id="@+id/tv_transaction_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorText"
-                    android:textSize="@dimen/dimen_16dp"/>
+                    style="@style/TextViewChildStyle"/>
 
                 <TextView
                     android:id="@+id/tv_no_of_transactions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>
+                    style="@style/TextViewChildStyle"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Click here to see more transactions."
-                    android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>
+                    style="@style/TextViewChildStyle"/>
             </LinearLayout>
         </FrameLayout>
 

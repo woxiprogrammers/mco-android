@@ -25,14 +25,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="@dimen/text_size_18"
             android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/textView_transactionStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"/>
+            style="@style/MyTextViewLabelStyle"/>
     </LinearLayout>
 
     <LinearLayout
@@ -45,12 +44,14 @@
             android:id="@+id/textView_transactionType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextViewChildStyle"
             android:textColor="@color/colorTextLight"/>
 
         <TextView
             android:id="@+id/textView_transactionAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:textColor="@color/colorTextLight"/>
     </LinearLayout>
 </LinearLayout>

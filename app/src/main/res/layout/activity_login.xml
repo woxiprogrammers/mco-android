@@ -28,9 +28,9 @@
         android:layout_gravity="center"
         android:orientation="vertical">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/img_logo_small"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@mipmap/ic_launcher_round"
             android:gravity="center_horizontal"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/dimen_18dp"/>
