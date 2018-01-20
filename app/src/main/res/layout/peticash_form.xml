@@ -12,8 +12,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/dimen_8dp">
+            android:layout_margin="@dimen/dimen_8dp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -23,12 +23,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
                     android:text="Category:"
                     android:textColor="@color/colorTextLight"/>
 
                 <FrameLayout
+                    style="@style/MySpinnerStyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background">
 
                     <Spinner
@@ -56,18 +57,20 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
                         android:text="Select Type:"
                         android:textColor="@color/colorTextLight"/>
 
+
                     <FrameLayout
+                        style="@style/MySpinnerStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background">
 
                         <Spinner
                             android:id="@+id/spinner_material_or_asset"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:entries="@array/selectType"
                             />
                     </FrameLayout>
@@ -86,13 +89,14 @@
 
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
                         android:text="Shop Name:"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/edit_text_selected_source_name"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"/>
                 </LinearLayout>
 
@@ -106,13 +110,14 @@
                         android:id="@+id/textViewItemName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Material Name"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Material Name:"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/edit_text_item_name"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>
@@ -126,14 +131,14 @@
                     android:visibility="gone">
 
                     <FrameLayout
+                        style="@style/MySpinnerStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background">
 
                         <Spinner
                             android:id="@+id/spinner_misc_category_array"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             />
                     </FrameLayout>
                 </LinearLayout>
@@ -153,14 +158,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_3dp"
                             android:text="Quantity:"
+                            android:layout_marginLeft="@dimen/dimen_4dp"
                             android:textColor="@color/colorTextLight"/>
 
                         <EditText
                             android:id="@+id/edittextQuantity"
+                            style="@style/MyEditTextHeightSTyle"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:background="@android:drawable/editbox_background_normal"
                             android:digits="0123456789"
                             android:inputType="number"
@@ -177,14 +182,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_3dp"
+                            android:layout_marginLeft="@dimen/dimen_4dp"
                             android:text="Unit:"
                             android:textColor="@color/colorTextLight"/>
 
                         <FrameLayout
                             android:id="@+id/frameLayout_UnitSpinner"
+                            style="@style/MySpinnerStyle"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:background="@android:drawable/editbox_background">
 
                             <Spinner
@@ -195,8 +200,8 @@
 
                         <EditText
                             android:id="@+id/editTextSetUnit"
+                            style="@style/MyEditTextHeightSTyle"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:background="@android:drawable/editbox_background_normal"
                             android:digits="0123456789"
                             android:inputType="number"
@@ -217,12 +222,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/bill_number"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/edit_text_BillNumber"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:textColor="@color/black"/>
                 </LinearLayout>
@@ -239,12 +245,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/bill_amount"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/edit_text_billamount"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789"
                         android:inputType="number"
@@ -339,12 +346,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/grn_number"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
                     android:id="@+id/editText_grnNumber"
+                    style="@style/MyEditTextHeightSTyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:enabled="false"/>
             </LinearLayout>
@@ -361,12 +369,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/payableAmount"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
                     android:id="@+id/editText_PayableAmount"
+                    style="@style/MyEditTextHeightSTyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:inputType="number"/>
             </LinearLayout>
@@ -382,13 +391,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Reference Number"
+                    android:text="Reference Number:"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
                     android:id="@+id/editTextRefNumber"
+                    style="@style/MyEditTextHeightSTyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 

@@ -49,11 +49,6 @@
                     android:layout_height="wrap_content"
                     style="@style/TextViewChildStyle"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Click here to see more transactions."
-                    style="@style/TextViewChildStyle"/>
             </LinearLayout>
         </FrameLayout>
 

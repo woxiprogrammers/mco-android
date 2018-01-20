@@ -24,14 +24,18 @@
             android:id="@+id/textView_transactionName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textStyle="bold"/>
+            android:layout_weight="0.7"
+            android:text="Cement"
+            style="@style/TextViewTitleStyle"/>
+
 
         <TextView
-            android:id="@+id/textView_transactionStatus"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView_transactionAmount"
+            android:layout_width="0dp"
+            android:layout_weight="0.3"
+            android:gravity="right"
             android:layout_height="wrap_content"
-            style="@style/MyTextViewLabelStyle"/>
+            android:text="2"/>
     </LinearLayout>
 
     <LinearLayout
@@ -42,16 +46,17 @@
 
         <TextView
             android:id="@+id/textView_transactionType"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TextViewChildStyle"
+            android:text="Salry"
             android:textColor="@color/colorTextLight"/>
-
         <TextView
-            android:id="@+id/textView_transactionAmount"
+            android:id="@+id/textView_transactionStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:textColor="@color/colorTextLight"/>
+            android:gravity="center"
+            style="@style/MyTextViewLabelStyle"/>
     </LinearLayout>
 </LinearLayout>

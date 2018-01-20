@@ -508,8 +508,8 @@ public class PeticashFormActivity extends BaseActivity {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
             employeesearchdataItem = realm.where(EmployeeSearchDataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            textViewEmployeeName.setText(employeesearchdataItem.getEmployeeName() + " :- " + employeesearchdataItem.getFormatEmployeeId());
-            textViewBalance.setText("Balance :- " + employeesearchdataItem.getBalance());
+            textViewEmployeeName.setText(employeesearchdataItem.getEmployeeName() + " : " + employeesearchdataItem.getFormatEmployeeId());
+            textViewBalance.setText("Balance : " + employeesearchdataItem.getBalance());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
             intAdvanceAmount = employeesearchdataItem.getAdvanceAmount();

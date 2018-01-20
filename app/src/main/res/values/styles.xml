@@ -39,14 +39,17 @@
     <style name="TextViewChildStyle" parent="MyTextViewStyle">
         <item name="android:textSize">16sp</item>
     </style>
+    <style name="MySpinnerStyle">
+        <item name="android:layout_height">50dp</item>
+    </style>
     <style name="MyTextViewLabelStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:background">@drawable/background_status</item>
         <item name="android:paddingLeft">@dimen/dimen_4dp</item>
         <item name="android:paddingRight">@dimen/dimen_4dp</item>
-        <item name="android:paddingTop">@dimen/dimen_2dp</item>
-        <item name="android:paddingBottom">@dimen/dimen_2dp</item>
+        <item name="android:paddingTop">@dimen/dimen_4dp</item>
+        <item name="android:paddingBottom">@dimen/dimen_4dp</item>
 
     </style>
     <style name="MyEditTextStyle" parent="android:Widget.EditText">
@@ -62,6 +65,7 @@
 
     <style name="MyEditTextHeightSTyle" parent="MyEditTextStyle">
         <item name="android:layout_height">50dp</item>
+        <item name="android:paddingLeft">16dp</item>
     </style>
     <style name="MyButtonStyle" parent="android:Widget.Button">
         <item name="android:textSize">18sp</item>
