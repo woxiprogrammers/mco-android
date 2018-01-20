@@ -27,8 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Wooden Ply Shaded Door"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_16dp"/>
+                style="@style/TextViewTitleStyle"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -40,9 +39,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Quantity"
-                    android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>
+                    android:text="Quantity"/>
             </LinearLayout>
 
             <HorizontalScrollView

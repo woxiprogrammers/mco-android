@@ -19,17 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dimen_8dp"
-            android:paddingLeft="@dimen/dimen_8dp"
-            android:paddingRight="@dimen/dimen_8dp"
-            android:paddingTop="@dimen/dimen_8dp">
+            android:padding="@dimen/dimen_8dp">
 
             <TextView
                 android:id="@+id/text_view_asset_list_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorText"
-                android:textSize="@dimen/dimen_16dp"/>
+                android:text="JCB"
+                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:id="@+id/linearLayoutForThreeTypes"
@@ -52,18 +48,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        android:gravity="center_horizontal"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="Units"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        style="@style/TextViewChildStyle"
+                        android:textColor="@color/colorBlue"
+                        android:text="Units"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -79,18 +73,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        android:gravity="center_horizontal"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="Work Hour"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        style="@style/TextViewChildStyle"
+                        android:textColor="@color/colorAccent"
+                        android:text="Work Hour"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -104,9 +96,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:gravity="center_horizontal"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        android:gravity="center_horizontal"/>
 
                     <TextView
                         android:id="@+id/textviewConsumed"
@@ -115,9 +105,9 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/dimen_2dp"
                         android:gravity="center_horizontal"
-                        android:text="Diesel Consume"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        style="@style/TextViewChildStyle"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="Diesel Consume"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -136,17 +126,15 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        style="@style/TextViewChildStyle"
+                        android:textColor="@color/colorPrimaryDark"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="Electricity Used"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        android:text="Electricity Used"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -172,18 +160,14 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="3534"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        android:text="3534"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="In"
-                        android:textColor="@color/colorTextLight"
-                        android:textSize="@dimen/dimen_16dp"/>
+                        android:text="In"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -199,9 +183,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center_horizontal"
-                        android:text="34"
-                        android:textColor="@color/colorText"
-                        android:textSize="@dimen/dimen_18dp"/>
+                        android:text="34"/>
 
                     <TextView
                         android:layout_width="match_parent"

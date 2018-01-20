@@ -101,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_3dp"
-                    android:text="Materials"
+                    android:text="Materials:"
                     android:textColor="@color/colorTextLight"/>
             </LinearLayout>
             <LinearLayout
@@ -128,7 +128,7 @@
                 <EditText
                     android:id="@+id/editTextGrnNum"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/MyEditTextHeightSTyle"
                     android:background="@android:drawable/editbox_background_normal"
                     android:enabled="false"/>
             </LinearLayout>
@@ -140,13 +140,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
                     android:text="Bill Number:"
                     android:textColor="@color/colorTextLight"/>
                 <EditText
                     android:id="@+id/editTextBillumber"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/MyEditTextHeightSTyle"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
             <LinearLayout
@@ -163,7 +163,7 @@
                 <EditText
                     android:id="@+id/editTextVehNum"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/MyEditTextHeightSTyle"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
 
@@ -182,7 +182,7 @@
                 <EditText
                     android:id="@+id/editTextBillAmount"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/MyEditTextHeightSTyle"
                     android:background="@android:drawable/editbox_background_normal"
                     android:inputType="number"/>
             </LinearLayout>

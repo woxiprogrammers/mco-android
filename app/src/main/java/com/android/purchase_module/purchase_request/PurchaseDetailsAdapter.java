@@ -44,7 +44,7 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ItemListItem itemListItem = arrItemList.get(position);
         holder.textviewItemName.setText(itemListItem.getItemName());
-        holder.textviewItemQuantity.setText(itemListItem.getItemQuantity() + " " + itemListItem.getItemUnit());
+        holder.textviewItemQuantity.setText("Qty: " + itemListItem.getItemQuantity() + " " + itemListItem.getItemUnit());
         holder.llImage.removeAllViews();
         if (itemListItem.getListOfImages().size() > 0) {
             for (int index = 0; index < itemListItem.getListOfImages().size(); index++) {

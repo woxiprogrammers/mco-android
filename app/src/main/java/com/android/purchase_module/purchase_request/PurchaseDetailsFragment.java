@@ -106,24 +106,6 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvItemList.setLayoutManager(linearLayoutManager);
         rvItemList.setAdapter(purchaseDetailsAdapter);
-        /*rvItemList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvItemList, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, final int position) {
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-            }
-        }));*/
-        /*if (itemListItems != null) {
-            itemListItems.addChangeListener(new RealmChangeListener<RealmResults<ItemListItem>>() {
-                @Override
-                public void onChange(RealmResults<ItemListItem> purchaseRequestListItems) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("PurchaseDetailsFragment");
-        }*/
     }
 
     private void functionForGettingData() {

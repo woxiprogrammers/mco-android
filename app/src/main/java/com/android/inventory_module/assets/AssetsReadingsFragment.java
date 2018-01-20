@@ -240,7 +240,8 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             AssetReadingsListDataItem assetReadingsListDataItem = summaryListItems.get(position);
-            holder.textViewAssetListName.setText(assetReadingsListDataItem.getDate());
+
+            holder.textViewAssetListName.setText(AppUtils.getInstance().getTime("yyyy-MM-dd","dd-MMM-yyyy",assetReadingsListDataItem.getDate()));
             holder.textviewWorkHour.setText(String.valueOf(assetReadingsListDataItem.getTotalWorkingHours()));
             if (component_type_slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
                 holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
