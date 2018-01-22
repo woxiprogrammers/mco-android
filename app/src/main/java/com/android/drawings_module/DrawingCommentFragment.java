@@ -166,15 +166,6 @@ public class DrawingCommentFragment extends Fragment  implements FragmentInterfa
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        /*if (commentsListItemRealmResults != null) {
-            commentsListItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<CommentsListItem>>() {
-                @Override
-                public void onChange(RealmResults<CommentsListItem> assetsListItemRealmResults) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }*/
     }
 
     @Override

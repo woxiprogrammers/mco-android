@@ -372,15 +372,6 @@ public class DrawingHomeActivity extends BaseActivity {
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        /*if (imagesListDrawingItems != null) {
-            imagesListDrawingItems.addChangeListener(new RealmChangeListener<RealmResults<ImagesListDrawingItem>>() {
-                @Override
-                public void onChange(RealmResults<ImagesListDrawingItem> assetsListItemRealmResults) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("AssetsListFragment");
-        }*/
     }
 
     /////////////Adapter//////////

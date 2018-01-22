@@ -19,7 +19,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/MySpinnerStyle"
             android:background="@android:drawable/editbox_background">
 
             <com.android.utils.MySpinner
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dimen_4dp"
-            android:text="Sub Cate"
+            android:text="Sub Category"
             android:visibility="gone"/>
 
         <RelativeLayout
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:text="No Result Found. . ."
+                android:text="Result Not Found. . ."
                 android:textColor="@color/colorAccent"
                 android:visibility="gone"/>
         </RelativeLayout>

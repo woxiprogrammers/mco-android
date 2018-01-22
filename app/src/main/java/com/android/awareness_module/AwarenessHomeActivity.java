@@ -234,8 +234,13 @@ public class AwarenessHomeActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d("Success");
-                                    linearLayoutSubCategory.setVisibility(View.VISIBLE);
-                                    setUpUsersSubCatSpinnerValueChangeListener();
+                                    if(response.getSubCatedata().getSubCategories().size() > 0){
+                                        linearLayoutSubCategory.setVisibility(View.VISIBLE);
+                                        setUpUsersSubCatSpinnerValueChangeListener();
+                                    }else {
+                                        linearLayoutSubCategory.setVisibility(View.GONE);
+                                        Toast.makeText(mContext,"Sub categiry not found",Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -294,7 +299,12 @@ public class AwarenessHomeActivity extends BaseActivity {
                                 public void onSuccess() {
                                     Timber.d("Success");
                                     getPath = response.getAwarenesListData().getPath();
-                                    setUpFileAdapter(subCatId);
+                                    if (response.getAwarenesListData().getFileDetails().size() > 0) {
+                                        rvFiles.setVisibility(View.VISIBLE);
+                                        setUpFileAdapter(subCatId);
+                                    }else {
+                                        rvFiles.setVisibility(View.GONE);
+                                    }
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

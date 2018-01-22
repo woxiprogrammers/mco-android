@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_4dp"
                 android:text="Comment:"
+                style="@style/MyTextViewStyle"
                 android:textColor="@color/colorTextLight"/>
 
             <EditText
