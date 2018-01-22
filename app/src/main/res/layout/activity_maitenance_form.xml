@@ -70,7 +70,7 @@
                     </LinearLayout>
                 </HorizontalScrollView>
                 <Button
-                    android:id="@+id/button_generate_grn"
+                    android:id="@+id/buttonGenerateGrn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
@@ -104,7 +104,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        android:id="@+id/edit_text_BillNumber"
+                        android:id="@+id/editTextBillNumber"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -127,7 +127,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        android:id="@+id/edit_text_billamount"
+                        android:id="@+id/editTextBillAmount"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -184,7 +184,7 @@
                     >
 
                     <EditText
-                        android:id="@+id/editText_addNote"
+                        android:id="@+id/editTextAddNote"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="#FFD740"

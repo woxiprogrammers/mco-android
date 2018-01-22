@@ -2,9 +2,11 @@ package com.android.inventory_module.assets;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +15,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.inventory_module.MaitenanceFormActivity;
 import com.android.inventory_module.MaterialListAdapter;
 import com.android.inventory_module.inventory_model.MaterialListItem;
+import com.android.utils.FragmentInterface;
 
 import java.text.DecimalFormat;
 
@@ -28,7 +32,7 @@ import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AssetMaintainaceListFragment extends Fragment {
+public class AssetMaintainaceListFragment extends Fragment implements FragmentInterface{
 
 
    /* @BindView(R.id.rv_asset_maintaianance_list)
@@ -37,6 +41,9 @@ public class AssetMaintainaceListFragment extends Fragment {
     RelativeLayout mainRelativeMaintList;*/
     private View mParentView;
 
+
+    @BindView(R.id.cardView)
+    CardView cardView;
 
     public AssetMaintainaceListFragment() {
         // Required empty public constructor
@@ -58,7 +65,21 @@ public class AssetMaintainaceListFragment extends Fragment {
         mParentView= inflater.inflate(R.layout.item_asset_maint_list, container, false);
 
         ButterKnife.bind(this, mParentView);
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(),MaitenanceFormActivity.class);
+                startActivity(intent);
+
+
+            }
+        });
         return mParentView;
+
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
 
     }
 

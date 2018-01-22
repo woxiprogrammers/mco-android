@@ -8,7 +8,7 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/navigation_asset_history"
+        android:id="@+id/navigation_asset_maintenance"
         android:title="Maintenance"
         app:showAsAction="ifRoom"/>
 </menu>

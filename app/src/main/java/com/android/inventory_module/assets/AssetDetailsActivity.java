@@ -57,10 +57,10 @@ public class AssetDetailsActivity extends BaseActivity {
                 case R.id.navigation_readings:
                     viewPagerAssets.setCurrentItem(0);
                     break;
-                //ToDo Enable History For Asset History
-                /*case R.id.navigation_asset_history:
-                    Toast.makeText(mContext, "Work In Progress", Toast.LENGTH_SHORT).show();
-                    break;*/
+                case R.id.navigation_asset_maintenance:
+                    viewPagerAssets.setCurrentItem(1);
+
+                    break;
             }
             return false;
         }
