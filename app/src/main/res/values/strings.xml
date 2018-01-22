@@ -28,9 +28,9 @@
     <string name="vehicle_number">Vehicle Number:</string>
     <string name="bill_number">Bill Number:</string>
     <string name="date">Date</string>
-    <string name="asset_name">Asset Name</string>
-    <string name="model_number">Model Number</string>
-    <string name="remark">Remark</string>
+    <string name="asset_name">Asset Name:</string>
+    <string name="model_number">Model Number:</string>
+    <string name="remark">Remark:</string>
     <string name="button_request">REQUEST</string>
     <string name="asset_maintainance">Asset Maintainance</string>
     <string name="please_enter_expiry_eate">Please Enter Expiry Date</string>

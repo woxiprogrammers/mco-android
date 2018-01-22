@@ -176,7 +176,7 @@ public class AssetDetailsActivity extends BaseActivity {
     }
 
     public class InventoryViewPagerAdapter extends FragmentPagerAdapter {
-        private String[] arrBottomTitle = {"Bottom1"/*, "Bottom2"*/};
+        private String[] arrBottomTitle = {"Bottom1", "Bottom2"};
 
         public InventoryViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -192,9 +192,8 @@ public class AssetDetailsActivity extends BaseActivity {
             switch (position) {
                 case 0:
                     return AssetsReadingsFragment.newInstance(inventoryComponentId, component_type_slug);
-                //ToDo Enable History For Asset History
-                /*case 1:
-                    return AssetsHistoryFragment.newInstance();*/
+                case 1:
+                    return AssetMaintainaceListFragment.newInstance();
                 default:
                     return null;
             }

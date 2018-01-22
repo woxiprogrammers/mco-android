@@ -31,10 +31,10 @@ import timber.log.Timber;
 public class AssetMaintainaceListFragment extends Fragment {
 
 
-    @BindView(R.id.rv_asset_maintaianance_list)
+   /* @BindView(R.id.rv_asset_maintaianance_list)
     RecyclerView rvAssetMaintaiananceList;
     @BindView(R.id.mainRelativeMaintList)
-    RelativeLayout mainRelativeMaintList;
+    RelativeLayout mainRelativeMaintList;*/
     private View mParentView;
 
 
@@ -42,44 +42,48 @@ public class AssetMaintainaceListFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static AssetMaintainaceListFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        AssetMaintainaceListFragment fragment = new AssetMaintainaceListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mParentView= inflater.inflate(R.layout.fragment_asset_maintainace_list, container, false);
+        mParentView= inflater.inflate(R.layout.item_asset_maint_list, container, false);
 
         ButterKnife.bind(this, mParentView);
         return mParentView;
 
     }
 
-    public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListItem, MaterialListAdapter.MyViewHolder> {
+    public class AssetMaintenanceListAdapter extends RealmRecyclerViewAdapter<MaterialListItem, AssetMaintenanceListAdapter.MyViewHolder> {
+        //ToDo Item class
         private OrderedRealmCollection<MaterialListItem> materialListItemCollection;
         private DecimalFormat df;
 
-        public MaterialListAdapter(@Nullable OrderedRealmCollection<MaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        //ToDo Item class
+        public AssetMaintenanceListAdapter(@Nullable OrderedRealmCollection<MaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
-            setHasStableIds(true);
-            Timber.d(String.valueOf(data));
             materialListItemCollection = data;
         }
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_material_list, parent, false);
-            df = new DecimalFormat();
-            df.setMaximumFractionDigits(2);
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_asset_maint_list, parent, false);
             return new MyViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
+            //ToDO Item class
             final MaterialListItem materialListItem = materialListItemCollection.get(position);
-            holder.textview_material_name.setText(materialListItem.getMaterialName());
-            holder.textview_quantity_in.setText(df.format(Float.parseFloat(materialListItem.getQuantityIn())) + "");
-            holder.textview_quantity_out.setText(df.format(Float.parseFloat(materialListItem.getQuantityOut())) + "");
-            holder.textview_quantity_current.setText(df.format(Float.parseFloat(materialListItem.getQuantityAvailable())) + "");
+
         }
 
         @Override
@@ -88,14 +92,13 @@ public class AssetMaintainaceListFragment extends Fragment {
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.textview_material_name)
-            TextView textview_material_name;
-            @BindView(R.id.textview_quantity_in)
-            TextView textview_quantity_in;
-            @BindView(R.id.textview_quantity_out)
-            TextView textview_quantity_out;
-            @BindView(R.id.textview_quantity_current)
-            TextView textview_quantity_current;
+            @BindView(R.id.textViewMaintNumber)
+            TextView textViewMaintNumber;
+            @BindView(R.id.textViewReqName)
+            TextView textViewReqName;
+            @BindView(R.id.textViewStatus)
+            TextView textViewStatus;
+
             private Context context;
 
             private MyViewHolder(View itemView) {

@@ -48,8 +48,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
     EditText editTextAssetName;
     @BindView(R.id.edit_text_modelName)
     EditText editTextModelName;
-    @BindView(R.id.edit_text_maintainance_hours)
-    EditText editTextMaintainanceHours;
     @BindView(R.id.edit_text_remark)
     EditText editTextRemark;
     @BindView(R.id.button_request)
@@ -169,18 +167,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
     }
 
     private void validateEntries() {
-        String strExpiryDate = editTextMaintainanceHours.getText().toString();
         String strRemark = editTextRemark.getText().toString();
-        //For ExpiryDate
-        if (TextUtils.isEmpty(strExpiryDate)) {
-            editTextMaintainanceHours.setFocusableInTouchMode(true);
-            editTextMaintainanceHours.requestFocus();
-            editTextMaintainanceHours.setError(getString(R.string.please_enter_expiry_eate));
-            return;
-        } else {
-            editTextMaintainanceHours.requestFocus();
-            editTextMaintainanceHours.setError(null);
-        }
+
         //For Remark
         if (TextUtils.isEmpty(strRemark)) {
             editTextRemark.setFocusableInTouchMode(true);
@@ -201,7 +189,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
                 params.put("inventory_component_id", componentId);
             }
             params.put("remark", editTextRemark.getText().toString());
-            params.put("next_maintenance_hour", editTextMaintainanceHours.getText().toString());
             params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
