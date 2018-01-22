@@ -1,0 +1,24 @@
+package com.android.inventory_module;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+
+import com.android.constro360.BaseActivity;
+import com.android.constro360.R;
+
+public class MaitenanceFormActivity extends BaseActivity {
+
+    private Context mContext;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maitenance_form);
+        initializeViews();
+    }
+
+    private void initializeViews() {
+        mContext=MaitenanceFormActivity.this;
+
+    }
+}
