@@ -30,3 +30,4 @@
   **[] $VALUES;
   public *;
 }
+-dontwarn com.squareup.okhttp.**
