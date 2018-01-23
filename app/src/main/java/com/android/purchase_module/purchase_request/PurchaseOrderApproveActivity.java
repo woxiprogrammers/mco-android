@@ -106,11 +106,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
         textViewReadingsAppBarTitle.setText(strMonth + ", " + passYear);
     }
-   /* @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }*/
+
 
     @Override
     protected void onResume() {
@@ -153,7 +149,8 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        Intent intent=new Intent(PurchaseOrderApproveActivity.this,)
+                        Intent intent=new Intent(PurchaseOrderApproveActivity.this,PurchaseOrderMaterialRequestApproveActivity.class);
+                        startActivity(intent);
 
                     }
 
