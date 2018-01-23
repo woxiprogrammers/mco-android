@@ -115,6 +115,7 @@ public class AwarenessHomeActivity extends BaseActivity {
         spinnerAwarenesCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
+                Timber.d("Rohit spinnerAwarenesCategory " + selectedItemIndex);
                 realm = Realm.getDefaultInstance();
                 mainCategoriesItems = realm.where(MainCategoriesItem.class).findAll();
                 requestToGetSubCatData(mainCategoriesItems.get(selectedItemIndex).getId());
@@ -127,6 +128,7 @@ public class AwarenessHomeActivity extends BaseActivity {
         spinnerAwarenesSubcategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
+                Timber.d("Rohit spinnerAwarenesSubcategory " + selectedItemIndex);
                 realm = Realm.getDefaultInstance();
                 subCategoriesItems = realm.where(AwarenessSubCategoriesItem.class).findAll();
                 requestToGetFiles(subCategoriesItems.get(selectedItemIndex).getId());
@@ -239,10 +241,12 @@ public class AwarenessHomeActivity extends BaseActivity {
                                     Timber.d("Success");
                                     if (response.getSubCatedata().getSubCategories().size() > 0) {
                                         linearLayoutSubCategory.setVisibility(View.VISIBLE);
+                                        rvFiles.setVisibility(View.VISIBLE);
                                         setUpUsersSubCatSpinnerValueChangeListener();
                                     } else {
+                                        rvFiles.setVisibility(View.GONE);
                                         linearLayoutSubCategory.setVisibility(View.GONE);
-                                        Toast.makeText(mContext, "Sub categiry not found", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(mContext, "Sub category not found", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -266,7 +270,6 @@ public class AwarenessHomeActivity extends BaseActivity {
     }
 
     private void requestToGetFiles(final int subCatId) {
-        AppUtils.getInstance().showProgressBar(relativeLayoutAwareness,true);
         JSONObject params = new JSONObject();
         try {
             params.put("sub_category_id", subCatId);
@@ -309,7 +312,6 @@ public class AwarenessHomeActivity extends BaseActivity {
                                     } else {
                                         rvFiles.setVisibility(View.GONE);
                                     }
-                                    AppUtils.getInstance().showProgressBar(relativeLayoutAwareness,false);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
