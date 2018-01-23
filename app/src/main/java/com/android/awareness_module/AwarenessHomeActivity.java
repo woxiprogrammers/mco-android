@@ -30,13 +30,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.constro360.BaseActivity;
-import com.android.constro360.BuildConfig;
-import com.android.constro360.R;
 import com.android.awareness_module.awareness_model.AwarenesListData;
 import com.android.awareness_module.awareness_model.AwarenessFileDetailsResponse;
 import com.android.awareness_module.awareness_model.AwarenessMainCategoryResponse;
@@ -46,6 +44,9 @@ import com.android.awareness_module.awareness_model.MainCategoriesData;
 import com.android.awareness_module.awareness_model.MainCategoriesItem;
 import com.android.awareness_module.awareness_model.SubCatedata;
 import com.android.awareness_module.awareness_model.SubCategoriesResponse;
+import com.android.constro360.BaseActivity;
+import com.android.constro360.BuildConfig;
+import com.android.constro360.R;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerViewClickListener;
@@ -58,6 +59,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +82,8 @@ public class AwarenessHomeActivity extends BaseActivity {
     ProgressBar mProgressBar;
     @BindView(R.id.linearLayoutSubCategory)
     LinearLayout linearLayoutSubCategory;
+    @BindView(R.id.relativeLayoutAwareness)
+    RelativeLayout relativeLayoutAwareness;
     private Realm realm;
     private Context mContext;
     RealmResults<MainCategoriesItem> mainCategoriesItems;
@@ -91,7 +95,6 @@ public class AwarenessHomeActivity extends BaseActivity {
     private String getPath = "";
     private boolean isGrant;
     private String encodedString;
-    private long downloadReference;
     private BroadcastReceiver downloadRecevier;
     private String getFileName;
 
@@ -234,12 +237,12 @@ public class AwarenessHomeActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     Timber.d("Success");
-                                    if(response.getSubCatedata().getSubCategories().size() > 0){
+                                    if (response.getSubCatedata().getSubCategories().size() > 0) {
                                         linearLayoutSubCategory.setVisibility(View.VISIBLE);
                                         setUpUsersSubCatSpinnerValueChangeListener();
-                                    }else {
+                                    } else {
                                         linearLayoutSubCategory.setVisibility(View.GONE);
-                                        Toast.makeText(mContext,"Sub categiry not found",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(mContext, "Sub categiry not found", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -263,6 +266,7 @@ public class AwarenessHomeActivity extends BaseActivity {
     }
 
     private void requestToGetFiles(final int subCatId) {
+        AppUtils.getInstance().showProgressBar(relativeLayoutAwareness,true);
         JSONObject params = new JSONObject();
         try {
             params.put("sub_category_id", subCatId);
@@ -302,9 +306,10 @@ public class AwarenessHomeActivity extends BaseActivity {
                                     if (response.getAwarenesListData().getFileDetails().size() > 0) {
                                         rvFiles.setVisibility(View.VISIBLE);
                                         setUpFileAdapter(subCatId);
-                                    }else {
+                                    } else {
                                         rvFiles.setVisibility(View.GONE);
                                     }
+                                    AppUtils.getInstance().showProgressBar(relativeLayoutAwareness,false);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -370,7 +375,7 @@ public class AwarenessHomeActivity extends BaseActivity {
             public void onItemClick(View view, int position) {
                 if (view.getId() == R.id.imageviewDownload) {
                     try {
-                        encodedString = java.net.URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
+                        encodedString = URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
                         getFileName = BuildConfig.BASE_URL_MEDIA + getPath + "/" + encodedString;
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -395,7 +400,6 @@ public class AwarenessHomeActivity extends BaseActivity {
         DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
         request.setAllowedOverRoaming(false);
-//        request.setTitle("Downloading " + separatedString[0]);
         request.setDescription("Downloading ");
         request.setVisibleInDownloadsUi(true);
         request.allowScanningByMediaScanner();
@@ -437,11 +441,12 @@ public class AwarenessHomeActivity extends BaseActivity {
     }
 
     private String statusMessage(Cursor c) {
-        String msg = "???";
+        String msg = "";
         switch (c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
             case DownloadManager.STATUS_FAILED:
                 msg = "Download failed!";
-                startThread(msg);
+                startThread(msg, false);
+
                 break;
             case DownloadManager.STATUS_PAUSED:
                 msg = "Download paused!";
@@ -454,7 +459,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                 break;
             case DownloadManager.STATUS_SUCCESSFUL:
                 msg = "Download complete!";
-                startThread(msg);
+                startThread(msg, true);
                 break;
             default:
                 msg = "Download is nowhere in sight";
@@ -463,20 +468,21 @@ public class AwarenessHomeActivity extends BaseActivity {
         return (msg);
     }
 
-    private void startThread(final String strMessage) {
+    private void startThread(final String strMessage, final boolean isComplete) {
         Thread timer = new Thread() { //new thread
             public void run() {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(mContext, strMessage, Toast.LENGTH_LONG).show();
+                        if (isComplete) {
+                            Toast.makeText(mContext, strMessage, Toast.LENGTH_LONG).show();
+                        }
                         mProgressBar.setVisibility(View.GONE);
                     }
                 });
             }
-
-            ;
         };
+
         timer.start();
     }
 
