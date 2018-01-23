@@ -79,7 +79,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-bill", AwarenessHomeActivity.class.getName());
         aclKeyValuePair.put("manage-amendment", DPRListActivity.class.getName());
-        aclKeyValuePair.put("purchase-history", DrawingHomeActivity.class.getName());
+        aclKeyValuePair.put("purchase-history", PurchaseOrderApproveActivity.class.getName());
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.android.constro360">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.android.constro360">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".MyApplication"
@@ -21,84 +21,89 @@
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name="com.android.login_mvp.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.android.dashboard.DashBoardActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.android.peticash_module.peticash.PetiCashHomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseHomeActivity"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name="com.android.inventory_module.InventoryDetails"></activity>
-        <activity android:name="com.android.inventory_module.InventoryHomeActivity" />
-        <activity android:name="com.android.inventory_module.assets.ActivityRequestMaintanance"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.android.inventory_module.InventoryDetails"/>
+        <activity android:name="com.android.inventory_module.InventoryHomeActivity"/>
+        <activity android:name="com.android.inventory_module.assets.ActivityRequestMaintanance"/>
         <activity
             android:name="com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseMaterialListActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="com.android.inventory_module.assets.AssetDetailsActivity"
             android:label="@string/title_activity_asset_details"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name="com.android.inventory_module.assets.ActivityAssetsReadings"></activity>
-        <activity android:name="com.android.purchase_module.purchase_request.PurchaseRequestDetailsHomeActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.android.inventory_module.assets.ActivityAssetsReadings"/>
+        <activity android:name="com.android.purchase_module.purchase_request.PurchaseRequestDetailsHomeActivity"/>
         <activity
             android:name="com.android.purchase_module.purchase_request.PayAndBillsActivity"
-            android:label="@string/title_activity_pay_and_bills"></activity>
+            android:label="@string/title_activity_pay_and_bills"/>
         <activity
             android:name="com.android.purchase_module.material_request.MaterialRequest_ApproveActivity"
             android:label="@string/title_activity_material_request"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.android.purchase_module.material_request.AutoSuggestActivity"></activity>
-        <activity android:name="com.android.peticash_module.peticash.AutoSuggestEmployee"></activity>
-        <activity android:name="com.android.peticash_module.peticash.PeticashFormActivity"></activity>
-        <activity android:name="com.android.inventory_module.assets.ActivityAssetMoveInOutTransfer"></activity>
-        <activity android:name="com.android.peticash_module.peticash.ViewPeticashTransactions"></activity>
-        <activity android:name="com.android.inventory_module.assets.AssetSummaryActivity" />
-        <activity android:name="com.android.peticash_module.peticash.ActivityEmpSalaryTransactionDetails"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.android.purchase_module.material_request.AutoSuggestActivity"/>
+        <activity android:name="com.android.peticash_module.peticash.AutoSuggestEmployee"/>
+        <activity android:name="com.android.peticash_module.peticash.PeticashFormActivity"/>
+        <activity android:name="com.android.inventory_module.assets.ActivityAssetMoveInOutTransfer"/>
+        <activity android:name="com.android.peticash_module.peticash.ViewPeticashTransactions"/>
+        <activity android:name="com.android.inventory_module.assets.AssetSummaryActivity"/>
+        <activity android:name="com.android.peticash_module.peticash.ActivityEmpSalaryTransactionDetails"/>
         <activity
             android:name="com.android.checklist_module.ChecklistHomeActivity"
             android:label="@string/title_activity_checklist"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name="com.android.checklist_module.CheckListActionActivity"></activity>
-        <activity android:name="com.android.awareness_module.AwarenessHomeActivity"></activity>
-        <activity android:name="com.android.drawings_module.DrawingHomeActivity"></activity>
-        <activity android:name="com.android.drawings_module.DrawingDetailsActivity"></activity>
-        <activity android:name="com.android.dpr_module.DPRHomeActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.android.checklist_module.CheckListActionActivity"/>
+        <activity android:name="com.android.awareness_module.AwarenessHomeActivity"/>
+        <activity android:name="com.android.drawings_module.DrawingHomeActivity"/>
+        <activity android:name="com.android.drawings_module.DrawingDetailsActivity"/>
+        <activity android:name="com.android.dpr_module.DPRHomeActivity"/>
 
         <service android:name="com.android.firebase.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
         <service android:name="com.android.firebase.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
-        <activity android:name="com.android.inventory_module.ActivityTransferRequest"></activity>
-        <activity android:name="com.android.inventory_module.ActivitySiteMoveIn"></activity>
-        <activity android:name="com.android.inventory_module.AutoSuggestInventoryComponent"></activity>
-        <activity android:name="com.android.purchase_module.purchase_request.PurchaseOrderApproveActivity"></activity>
-        <activity android:name="com.android.inventory_module.SiteMoveInActivity"></activity>
-        <activity android:name=".BaseActivity" />
-        <activity android:name="com.android.inventory_module.assets.MoveOutAssetNewActivity"></activity>
+        <activity android:name="com.android.inventory_module.ActivityTransferRequest"/>
+        <activity android:name="com.android.inventory_module.ActivitySiteMoveIn"/>
+        <activity android:name="com.android.inventory_module.AutoSuggestInventoryComponent"/>
+        <activity
+            android:name="com.android.purchase_module.purchase_request.PurchaseOrderApproveActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name="com.android.inventory_module.SiteMoveInActivity"/>
+        <activity android:name=".BaseActivity"/>
+        <activity android:name="com.android.inventory_module.assets.MoveOutAssetNewActivity"/>
         <activity
             android:name="com.android.dpr_module.DPRListActivity"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name="com.android.inventory_module.MaitenanceFormActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="com.android.inventory_module.MaitenanceFormActivity"/>
+        <activity android:name="com.android.purchase_module.purchase_request.PurchaseOrderMaterialRequestApproveActivity">
+        </activity>
     </application>
 
 </manifest>

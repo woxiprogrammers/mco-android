@@ -527,19 +527,19 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private void createAlertDialog() {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_add_material_asset_form, null);
-        mTextViewTitleMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_title_material_asset);
-        mCheckboxIsDiesel = (CheckBox) dialogView.findViewById(R.id.checkbox_is_diesel);
+        mTextViewTitleMaterialAsset = dialogView.findViewById(R.id.textView_title_material_asset);
+        mCheckboxIsDiesel = dialogView.findViewById(R.id.checkbox_is_diesel);
         textViewExceedQuantityForQuotation = dialogView.findViewById(R.id.textview_error_for_exceed_quantity);
-        mTextViewLabelMaterialAsset = (TextView) dialogView.findViewById(R.id.textView_label_material_asset);
-        mEditTextNameMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_name_material_asset);
-        mEditTextQuantityMaterialAsset = (EditText) dialogView.findViewById(R.id.editText_quantity_material_asset);
-        mLlUploadImage = (LinearLayout) dialogView.findViewById(R.id.ll_uploadImage);
-        Button mButtonDismissMaterialAsset = (Button) dialogView.findViewById(R.id.button_dismiss_material_asset);
-        Button mButtonAddMaterialAsset = (Button) dialogView.findViewById(R.id.button_add_material_asset);
+        mTextViewLabelMaterialAsset = dialogView.findViewById(R.id.textView_label_material_asset);
+        mEditTextNameMaterialAsset = dialogView.findViewById(R.id.editText_name_material_asset);
+        mEditTextQuantityMaterialAsset = dialogView.findViewById(R.id.editText_quantity_material_asset);
+        mLlUploadImage = dialogView.findViewById(R.id.ll_uploadImage);
+        Button mButtonDismissMaterialAsset = dialogView.findViewById(R.id.button_dismiss_material_asset);
+        Button mButtonAddMaterialAsset = dialogView.findViewById(R.id.button_add_material_asset);
         mSpinnerUnits = dialogView.findViewById(R.id.spinner_select_units);
         ll_dialog_unit = dialogView.findViewById(R.id.ll_dialog_unit);
         View view = dialogView.findViewById(R.id.layoutCamera);
-        TextView mTextViewCaptureImages = (TextView) view.findViewById(R.id.textView_capture);
+        TextView mTextViewCaptureImages = view.findViewById(R.id.textView_capture);
         mButtonDismissMaterialAsset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1439,7 +1439,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         MaterialRequestHistoryFragment materialRequestHistoryFragment = new MaterialRequestHistoryFragment();
                         Bundle bundleArgs = new Bundle();
                         bundleArgs.putString("item_name", arrPurchaseMaterialListItems.get(getAdapterPosition()).getItem_name());
-                        bundleArgs.putInt("compId",arrPurchaseMaterialListItems.get(getAdapterPosition()).getMaterialRequestComponentId());;
+                        bundleArgs.putInt("compId",arrPurchaseMaterialListItems.get(getAdapterPosition()).getMaterialRequestComponentId());
                         materialRequestHistoryFragment.setArguments(bundleArgs);
                         materialRequestHistoryFragment.show(getSupportFragmentManager(), "MaterialRequestHistoryFragment");
                         break;

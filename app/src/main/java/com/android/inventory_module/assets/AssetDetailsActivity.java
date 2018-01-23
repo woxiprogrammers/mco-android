@@ -124,7 +124,7 @@ public class AssetDetailsActivity extends BaseActivity {
         ButterKnife.bind(this);
         initializeViews();
         setAdapter();
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.assets_navigation);
+        BottomNavigationView navigation = findViewById(R.id.assets_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 

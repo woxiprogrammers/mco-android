@@ -78,8 +78,8 @@ public class ImageZoomDialogFragment extends DialogFragment {
         }
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         Toast.makeText(getActivity().getBaseContext(),"Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
-        ImageView mIvAccountImage = (ImageView) mParentView.findViewById(R.id.ivAccountImage);
-        ImageView mIvDialogClose = (ImageView) mParentView.findViewById(R.id.ivDialogClose);
+        ImageView mIvAccountImage = mParentView.findViewById(R.id.ivAccountImage);
+        ImageView mIvDialogClose = mParentView.findViewById(R.id.ivDialogClose);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mIvDialogClose.setElevation(4);
         }
