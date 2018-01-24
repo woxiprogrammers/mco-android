@@ -90,5 +90,5 @@ public class AppURL {
     public static final String API_GENERATE_GRN_ASSET_MAINT =BASE_URL + "" ;
     public static final String API_SUBMIT_MAINENANCE =BASE_URL + "" ;
     public static final String API_PURCHASE_ORDER_REQUEST_LIST = BASE_URL +"purchase/purchase-order-request/listing?token=";
-    public static final String API_PURCHASE_ORDER_REQUEST_DETAILS_LIST = "http://www.mocky.io/v2/5a68287d2e00005600d5b25c";
+    public static final String API_PURCHASE_ORDER_REQUEST_DETAILS_LIST = BASE_URL+ "purchase/purchase-order-request/detail?token=";
 }

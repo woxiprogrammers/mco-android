@@ -6,7 +6,7 @@ import io.realm.RealmObject;
 
 public class RequestmaterialsData extends RealmObject{
 
-	@SerializedName("material_list")
+	@SerializedName("purchase_order_request_list")
 	private RealmList<RequestMaterialListItem> requestMaterialList;
 
 	public void setRequestMaterialList(RealmList<RequestMaterialListItem> requestMaterialList){

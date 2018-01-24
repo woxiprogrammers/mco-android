@@ -98,12 +98,14 @@ public class DPRHomeActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         RealmResults<SubdataItem> subdataItemRealmResults = realm.where(SubdataItem.class).findAll();
         for (int i = 0; i < subdataItemRealmResults.size(); i++) {
-            final SubdataItem subdataItem = subdataItemRealmResults.get(i);
+            SubdataItem subdataItem = subdataItemRealmResults.get(i);
             inflatedView = getLayoutInflater().inflate(R.layout.inflated_dpr_category_view, null, false);
             inflatedView.setId(i);
             TextView textViewCategory = inflatedView.findViewById(R.id.textViewCategory);
             editTextNumberOfUsers = inflatedView.findViewById(R.id.editTextNoOfUsers);
             textViewCategory.setText(subdataItem.getName());
+            TextView textViewCategoryID = inflatedView.findViewById(R.id.textViewCategoryID);
+            textViewCategoryID.setText(subdataItem.getId() + "");
             linearLayoutCategory.addView(inflatedView);
         }
     }
@@ -238,6 +240,10 @@ public class DPRHomeActivity extends BaseActivity {
         for (int i = 0; i < linearLayoutCategory.getChildCount(); i++) {
             CardView cardView = (CardView) linearLayoutCategory.getChildAt(i);
             EditText editTextNoOfUsers = cardView.findViewById(R.id.editTextNoOfUsers);
+
+            TextView textViewCategoryID = cardView.findViewById(R.id.textViewCategoryID);
+            int categoryID = Integer.parseInt(textViewCategoryID.getText().toString());
+
             if (TextUtils.isEmpty(editTextNoOfUsers.getText().toString().trim())) {
                 Toast.makeText(mContext, "Please Enter Value", Toast.LENGTH_SHORT).show();
                 return;
@@ -245,8 +251,8 @@ public class DPRHomeActivity extends BaseActivity {
                 int intUserCount = Integer.parseInt(editTextNoOfUsers.getText().toString().trim());
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("category_id", 1);
-                    jsonObject.put("user_id", intUserCount);
+                    jsonObject.put("category_id", categoryID);
+                    jsonObject.put("users", intUserCount);
                     jsonArray.put(jsonObject);
                 } catch (JSONException e) {
                     e.printStackTrace();

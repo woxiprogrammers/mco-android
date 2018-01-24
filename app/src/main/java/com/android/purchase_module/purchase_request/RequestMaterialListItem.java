@@ -3,22 +3,35 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class RequestMaterialListItem extends RealmObject{
 
-	@SerializedName("id")
+	@PrimaryKey
+	@SerializedName("purchase_order_request_component_id")
 	private int id;
 
-	@SerializedName("material_name")
+	@SerializedName("name")
 	private String materialName;
 
-	@SerializedName("vendors")
+	@SerializedName("vendor_relations")
 	private RealmList<VendorsItem> vendors;
 
 	@SerializedName("quantity")
 	private String quantity;
 
-	@SerializedName("unit_name")
+	public boolean isIs_approved() {
+		return is_approved;
+	}
+
+	public void setIs_approved(boolean is_approved) {
+		this.is_approved = is_approved;
+	}
+
+	@SerializedName("is_approved")
+	private boolean is_approved;
+
+	@SerializedName("unit")
 	private String unitName;
 
 	public void setId(int id){

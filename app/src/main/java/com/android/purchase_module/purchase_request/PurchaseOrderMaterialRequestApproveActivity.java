@@ -26,6 +26,9 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormatSymbols;
 
 import butterknife.BindView;
@@ -43,6 +46,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private Context mContext;
     private Realm realm;
     private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
+    private int intPurchaseOrderRequestId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,11 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("");
         }
+        Bundle bundle=getIntent().getExtras();
+        if(bundle != null){
+            intPurchaseOrderRequestId=bundle.getInt("purchase_order_request_id");
+        }
+
     }
 
     @Override
@@ -80,6 +89,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        requestToGetDetails();
     }
 
     private void setUpPrAdapter(){
@@ -106,22 +121,19 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }));
     }
     private void requestToGetDetails(){
-        /*JSONObject params = new JSONObject();
+        JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("month", passMonth);
-            params.put("year", passYear);
-            params.put("page", pageId);
+            params.put("purchase_order_request_id", intPurchaseOrderRequestId);
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
+        }
         //ToDo URL
-        AndroidNetworking.get(AppURL.API_PURCHASE_ORDER_REQUEST_DETAILS_LIST + AppUtils.getInstance().getCurrentToken())
-//                .addJSONObjectBody(params)
+        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_REQUEST_DETAILS_LIST + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("requestOrderListOnline")
+                .setTag("requestToGetDetails")
                 .build()
                 .getAsObject(RequestedMaterialsResponse.class, new ParsedRequestListener<RequestedMaterialsResponse>() {
                     @Override
@@ -132,6 +144,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(RequestedMaterialsResponse.class);
+                                    realm.delete(RequestmaterialsData.class);
+                                    realm.delete(RequestMaterialListItem.class);
+                                    realm.delete(VendorsItem.class);
+
+
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -155,7 +173,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestOrderListOnline");
+                        AppUtils.getInstance().logApiError(anError, "requestToGetDetails");
                     }
                 });
     }

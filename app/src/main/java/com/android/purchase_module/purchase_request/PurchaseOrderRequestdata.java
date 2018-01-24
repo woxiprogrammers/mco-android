@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 
 public class PurchaseOrderRequestdata extends RealmObject{
 
-	@SerializedName("list")
+	@SerializedName("purchase_order_request_list")
 	private RealmList<PurchaseOrderRequestListItem> purchaseOrderRequestlist;
 
 	public void setPurchaseOrderRequestlist(RealmList<PurchaseOrderRequestListItem> purchaseOrderRequestlist){

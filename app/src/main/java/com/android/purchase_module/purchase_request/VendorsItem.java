@@ -6,20 +6,34 @@ import io.realm.RealmObject;
 
 public class VendorsItem extends RealmObject{
 
-	@SerializedName("rate")
+	@SerializedName("rate_without_tax")
 	private String rate;
 
 	@SerializedName("vendor_id")
 	private int vendorId;
 
+	@SerializedName("component_vendor_relation_id")
+	private int componentVendorRelationId;
+
+	public int getOrderRequestComponentId() {
+		return orderRequestComponentId;
+	}
+
+	public void setOrderRequestComponentId(int orderRequestComponentId) {
+		this.orderRequestComponentId = orderRequestComponentId;
+	}
+
 	@SerializedName("vendor_name")
 	private String vendorName;
 
-	@SerializedName("rate_per_tax")
+	@SerializedName("rate_with_tax")
 	private String ratePerTax;
 
-	@SerializedName("total_rate_per_tax")
+	@SerializedName("total_with_tax")
 	private String totalRatePerTax;
+
+	@SerializedName("purchase_order_request_component_id")
+	private int orderRequestComponentId;
 
 	public void setRate(String rate){
 		this.rate = rate;

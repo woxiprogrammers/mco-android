@@ -122,17 +122,17 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         passYear = year;
         passMonth = month;
         setDateInAppBar(passMonth, passYear);
-        setUpPrAdapter();
+//        setUpPrAdapter();
         requestOrderListOnline(0);
 
     }
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
-        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class).findAllAsync();
+        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class).findAll();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         rvPurchaseOrderList.setLayoutManager(new LinearLayoutManager(mContext));
-        rvPurchaseOrderList.setHasFixedSize(true);
+//        rvPurchaseOrderList.setHasFixedSize(true);
         rvPurchaseOrderList.setAdapter(purchaseRequestRvAdapter);
         rvPurchaseOrderList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 rvPurchaseOrderList,
@@ -140,6 +140,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                     @Override
                     public void onItemClick(View view, final int position) {
                         Intent intent=new Intent(PurchaseOrderApproveActivity.this,PurchaseOrderMaterialRequestApproveActivity.class);
+                        intent.putExtra("purchase_order_request_id",purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
                         startActivity(intent);
                     }
 
@@ -175,6 +176,9 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(PurchaseOrderRequestResponse.class);
+                                    realm.delete(PurchaseOrderRequestdata.class);
+                                    realm.delete(PurchaseOrderRequestListItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -222,8 +226,8 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
             PurchaseOrderRequestListItem purchaseOrderRequestListItem = purchaseOrderRequestListItemOrderedRealmCollection.get(position);
             holder.textViewPurchaseOrderReqMaterial.setText(purchaseOrderRequestListItem.getMaterialName());
             holder.textViewOrderId.setText(purchaseOrderRequestListItem.getPurchaseRequestFormatId());
-            holder.textViewRequestedBy.setText("Requested by: " + purchaseOrderRequestListItem.getUserName() +
-            "on" + AppUtils.getInstance().getTime("EEE, dd MMM yyyy","dd-MMM-yyyy", purchaseOrderRequestListItem.getDate()));
+            holder.textViewRequestedBy.setText("Requested by " + purchaseOrderRequestListItem.getUserName() +
+            "on " + AppUtils.getInstance().getTime("EEE, dd MMM yyyy","dd-MMM-yyyy", purchaseOrderRequestListItem.getDate()));
         }
 
         @Override

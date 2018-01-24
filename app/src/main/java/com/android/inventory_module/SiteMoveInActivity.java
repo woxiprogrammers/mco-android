@@ -318,6 +318,8 @@ public class SiteMoveInActivity extends BaseActivity {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logRealmExecutionError(anError);
+                        Toast.makeText(mContext,"Please enter correct GRN",Toast.LENGTH_SHORT).show();
+                        AppUtils.getInstance().showProgressBar(mainRelative, false);
                     }
                 });
     }

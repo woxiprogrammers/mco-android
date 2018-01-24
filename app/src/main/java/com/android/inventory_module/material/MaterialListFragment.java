@@ -79,7 +79,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
         Bundle bundle = getArguments();
-        AppUtils.getInstance().initializeProgressBar(mainRelativeList,mContext);
+        AppUtils.getInstance().initializeProgressBar(mainRelativeList, mContext);
         if (bundle != null) {
             subModulesItemList = bundle.getString("subModulesItemList");
         }
@@ -137,7 +137,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     }
 
     private void requestInventoryResponse(int pageId) {
-        AppUtils.getInstance().showProgressBar(mainRelativeList,true);
+        AppUtils.getInstance().showProgressBar(mainRelativeList, true);
         JSONObject params = new JSONObject();
         try {
             params.put("page_id", pageId);
@@ -173,7 +173,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                                         requestInventoryResponse(pageNumber);
                                     }
 
-                                    AppUtils.getInstance().showProgressBar(mainRelativeList,false);
+                                    AppUtils.getInstance().showProgressBar(mainRelativeList, false);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -194,4 +194,5 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                     }
                 });
     }
+
 }
