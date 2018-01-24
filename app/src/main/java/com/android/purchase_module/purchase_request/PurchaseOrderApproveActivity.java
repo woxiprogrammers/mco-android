@@ -106,7 +106,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
     @Override
     protected void onResume() {
         super.onResume();
-        requestPrListOnline(pageNumber);
+        requestOrderListOnline(pageNumber);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         passMonth = month;
         setDateInAppBar(passMonth, passYear);
         setUpPrAdapter();
-        requestPrListOnline(0);
+        requestOrderListOnline(0);
 
     }
 
@@ -155,7 +155,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                 }));
     }
 
-    private void requestPrListOnline(int pageId) {
+    private void requestOrderListOnline(int pageId) {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -170,7 +170,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("requestPrListOnline")
+                .setTag("requestOrderListOnline")
                 .build()
                 .getAsObject(PurchaseOrderRequestResponse.class, new ParsedRequestListener<PurchaseOrderRequestResponse>() {
                     @Override
@@ -204,7 +204,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                        AppUtils.getInstance().logApiError(anError, "requestOrderListOnline");
                     }
                 });
     }
