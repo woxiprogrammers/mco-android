@@ -117,7 +117,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             TextView textViewItemName;
             @BindView(R.id.textView_item_quantity)
             TextView textViewItemQuantity;
-
             private MyViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
