@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class PurchaseOrderRequestlistItem extends RealmObject{
+public class PurchaseOrderRequestListItem extends RealmObject{
 
 	@SerializedName("date")
 	private String date;

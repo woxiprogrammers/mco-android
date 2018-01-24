@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +19,6 @@ import android.widget.TextView;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.inventory_module.assets.AssetDetailsActivity;
-import com.android.inventory_module.assets.AssetsReadingsFragment;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseRequestListItem;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseRequestResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -65,7 +60,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
     private int pageNumber = 0;
     private int oldPageNumber;
     private Realm realm;
-    private RealmResults<PurchaseRequestListItem> purchaseRequestListItems;
+    private RealmResults<PurchaseOrderRequestListItem> purchaseRequestListItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +131,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
+        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
                 .contains("date", strMonth).findAllAsync();
@@ -171,18 +166,16 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_PURCHASE_REQUEST_LIST + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_REQUEST_LIST + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestPrListOnline")
                 .build()
-                .getAsObject(PurchaseRequestResponse.class, new ParsedRequestListener<PurchaseRequestResponse>() {
+                .getAsObject(PurchaseOrderRequestResponse.class, new ParsedRequestListener<PurchaseOrderRequestResponse>() {
                     @Override
-                    public void onResponse(final PurchaseRequestResponse response) {
-                        if (!response.getPage_id().equalsIgnoreCase("")) {
-                            pageNumber = Integer.parseInt(response.getPage_id());
-                        }
+                    public void onResponse(final PurchaseOrderRequestResponse response) {
+
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -194,10 +187,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                                 @Override
                                 public void onSuccess() {
                                     setUpPrAdapter();
-                                    if (oldPageNumber != pageNumber) {
-                                        oldPageNumber = pageNumber;
-                                        requestPrListOnline(pageNumber);
-                                    }
+
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -220,12 +210,12 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
     }
 
     @SuppressWarnings("WeakerAccess")
-    protected class PurchaseRequestRvAdapter extends RealmRecyclerViewAdapter<PurchaseRequestListItem, PurchaseRequestRvAdapter.MyViewHolder> {
-        private OrderedRealmCollection<PurchaseRequestListItem> arrPurchaseRequestListItems;
+    protected class PurchaseRequestRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderRequestListItem, PurchaseRequestRvAdapter.MyViewHolder> {
+        private OrderedRealmCollection<PurchaseOrderRequestListItem> purchaseOrderRequestListItemOrderedRealmCollection;
 
-        PurchaseRequestRvAdapter(@Nullable OrderedRealmCollection<PurchaseRequestListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        PurchaseRequestRvAdapter(@Nullable OrderedRealmCollection<PurchaseOrderRequestListItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
-            arrPurchaseRequestListItems = data;
+            purchaseOrderRequestListItemOrderedRealmCollection = data;
         }
 
         @Override
@@ -236,18 +226,21 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
-            PurchaseRequestListItem purchaseRequestListItem = arrPurchaseRequestListItems.get(position);
-            holder.textViewOrderId.setText(purchaseRequestListItem.getPurchaseRequestId());
+            PurchaseOrderRequestListItem purchaseOrderRequestListItem = purchaseOrderRequestListItemOrderedRealmCollection.get(position);
+            holder.textViewPurchaseOrderReqMaterial.setText(purchaseOrderRequestListItem.getMaterialName());
+            holder.textViewOrderId.setText(purchaseOrderRequestListItem.getPurchaseRequestId());
+            holder.textViewRequestedBy.setText("Requested by: " + purchaseOrderRequestListItem.getUserName() +
+            "on" + AppUtils.getInstance().getTime("EEE, dd MMM yyyy","dd-MMM-yyyy", purchaseOrderRequestListItem.getDate()));
         }
 
         @Override
         public long getItemId(int index) {
-            return arrPurchaseRequestListItems.get(index).getId();
+            return purchaseOrderRequestListItemOrderedRealmCollection.get(index).getPurchaseRequestId();
         }
 
         @Override
         public int getItemCount() {
-            return arrPurchaseRequestListItems == null ? 0 : arrPurchaseRequestListItems.size();
+            return purchaseOrderRequestListItemOrderedRealmCollection == null ? 0 : purchaseOrderRequestListItemOrderedRealmCollection.size();
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {

@@ -8,13 +8,13 @@ import io.realm.RealmObject;
 public class PurchaseOrderRequestdata extends RealmObject{
 
 	@SerializedName("list")
-	private RealmList<PurchaseOrderRequestlistItem> purchaseOrderRequestlist;
+	private RealmList<PurchaseOrderRequestListItem> purchaseOrderRequestlist;
 
-	public void setPurchaseOrderRequestlist(RealmList<PurchaseOrderRequestlistItem> purchaseOrderRequestlist){
+	public void setPurchaseOrderRequestlist(RealmList<PurchaseOrderRequestListItem> purchaseOrderRequestlist){
 		this.purchaseOrderRequestlist = purchaseOrderRequestlist;
 	}
 
-	public RealmList<PurchaseOrderRequestlistItem> getPurchaseOrderRequestlist(){
+	public RealmList<PurchaseOrderRequestListItem> getPurchaseOrderRequestlist(){
 		return purchaseOrderRequestlist;
 	}
 }
