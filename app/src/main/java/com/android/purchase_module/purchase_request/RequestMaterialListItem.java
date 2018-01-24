@@ -15,12 +15,34 @@ public class RequestMaterialListItem extends RealmObject{
 	@SerializedName("vendors")
 	private RealmList<VendorsItem> vendors;
 
+	@SerializedName("quantity")
+	private String quantity;
+
+	@SerializedName("unit_name")
+	private String unitName;
+
 	public void setId(int id){
 		this.id = id;
 	}
 
 	public int getId(){
 		return id;
+	}
+
+	public String getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getUnitName() {
+		return unitName;
+	}
+
+	public void setUnitName(String unitName) {
+		this.unitName = unitName;
 	}
 
 	public void setMaterialName(String materialName){

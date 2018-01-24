@@ -5,9 +5,24 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 
 public class PurchaseOrderRequestListItem extends RealmObject{
-
+/*
+	{
+		"data": {
+		"list": [
+		{
+				"purchase_request_format_id": "PR5201801231",
+				"user_name": "Admin ",
+				"date": "Tuesday, 23 January 2018"
+		}
+        ]
+	},
+		"message": "Success"
+	}*/
 	@SerializedName("date")
 	private String date;
+
+	@SerializedName("purchase_order_request_id")
+	private int purchaseOrderRequestId;
 
 	@SerializedName("purchase_request_id")
 	private int purchaseRequestId;
@@ -15,8 +30,27 @@ public class PurchaseOrderRequestListItem extends RealmObject{
 	@SerializedName("user_name")
 	private String userName;
 
-	@SerializedName("material_name")
+	@SerializedName("purchase_request_format_id")
+	private String purchaseRequestFormatId;
+
+	@SerializedName("component_names")
 	private String materialName;
+
+	public int getPurchaseOrderRequestId() {
+		return purchaseOrderRequestId;
+	}
+
+	public void setPurchaseOrderRequestId(int purchaseOrderRequestId) {
+		this.purchaseOrderRequestId = purchaseOrderRequestId;
+	}
+
+	public String getPurchaseRequestFormatId() {
+		return purchaseRequestFormatId;
+	}
+
+	public void setPurchaseRequestFormatId(String purchaseRequestFormatId) {
+		this.purchaseRequestFormatId = purchaseRequestFormatId;
+	}
 
 	public void setDate(String date){
 		this.date = date;
