@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.firebase.counts_model.NotificationCountResponse;
 import com.android.login_mvp.LoginActivity;
 import com.android.login_mvp.login_model.LoginResponseData;
 import com.android.login_mvp.login_model.ModulesItem;
@@ -30,9 +31,17 @@ import com.android.login_mvp.login_model.PermissionsItem;
 import com.android.login_mvp.login_model.ProjectsItem;
 import com.android.login_mvp.login_model.SubModulesItem;
 import com.android.utils.AppConstants;
+import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -147,16 +156,13 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
                 setUpStaticValues(selectedId);
+                requestNotificationCountData();
                 DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                int selectedId = projectSpinner.getSelectedItemPosition();
-                setUpStaticValues(selectedId);
-                DrawerLayout drawer = findViewById(R.id.drawer_layout);
-                drawer.closeDrawer(GravityCompat.START);
             }
         });
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -191,6 +197,34 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             mProjectName.setText(strProjectName);
             mTextViewClientName.setText(strClientCompanyName);
         }
+    }
+
+    private void requestNotificationCountData() {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_NOTIFICATION_DASHBOARD_COUNTS
+                + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .setTag("requestNotificationCountData")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsObject(NotificationCountResponse.class,
+                        new ParsedRequestListener<NotificationCountResponse>() {
+                            @Override
+                            public void onResponse(final NotificationCountResponse response) {
+                                Timber.i("NotificationCountResponse: " + String.valueOf(response));
+                            }
+
+                            @Override
+                            public void onError(ANError error) {
+                                AppUtils.getInstance().logApiError(error, "requestNotificationCountData");
+                            }
+                        });
     }
 
     private void startCorrespondingAclActivity(SubModulesItem subModulesItem, RealmList<SubModulesItem> subModulesItemRealmList) {

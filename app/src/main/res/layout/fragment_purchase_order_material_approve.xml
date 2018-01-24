@@ -50,14 +50,8 @@
                         android:textColor="@color/colorTextLight"
                         android:textSize="@dimen/dimen_14dp"/>
                 </LinearLayout>
-
             </LinearLayout>
-
         </LinearLayout>
     </android.support.v7.widget.CardView>
-
-
-
-
 </LinearLayout>
 

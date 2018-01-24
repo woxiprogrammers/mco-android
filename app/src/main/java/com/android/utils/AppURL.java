@@ -78,16 +78,17 @@ public class AppURL {
     public static final String API_GET_PARENTS_CHECKPOINTS = BASE_URL + "checklist/get-parent?token=";
     public static final String API_SEND_FIREBASE_REFRESHED_TOKEN = BASE_URL + "notification/store-fcm-token?token=";
     public static final String API_REQUEST_COMPONENT_LIST = BASE_URL + "inventory/request-component-listing?token=";
-    public static final String API_CHANGE_STATUS_INVENTORY_APPROVE=BASE_URL + "inventory/change-status?token=";
-    public static final String API_INVENTORY_COMPONENT_AUTO_SUGGEST=BASE_URL+ "inventory/component/auto-suggest?token=";
+    public static final String API_CHANGE_STATUS_INVENTORY_APPROVE = BASE_URL + "inventory/change-status?token=";
+    public static final String API_INVENTORY_COMPONENT_AUTO_SUGGEST = BASE_URL + "inventory/component/auto-suggest?token=";
     public static final String API_MATERIAL_REQUEST_HISTORY = BASE_URL + "purchase/get-history?token=";
-    public static final String API_SALARY_VIEW_PAYMENT =BASE_URL + "peticash/employee-salary/calulate-payable-amount?token=" ;
+    public static final String API_SALARY_VIEW_PAYMENT = BASE_URL + "peticash/employee-salary/calulate-payable-amount?token=";
     public static final String API_INVENTORY_GET_GRN_DETAILS = BASE_URL + "inventory/component/get-grn-details?token=";
     public static final String API_DPR_SUB_CONTRACTOR_DATA = BASE_URL + "dpr/subcontractor/listing?token=";
     public static final String API_DPR_SUBCONTRACTOR_CATEGORY_DATA = BASE_URL + "dpr/category/listing?token=";
-    public static final String API_DPR_SUBCON_SAVE_DETAILS=BASE_URL + "dpr/subcontractor/save-details?token=";
-    public static final String API_DPR_LISTING = BASE_URL +"dpr/subcontractor/dpr-detail-listing?token=";
-    public static final String API_GENERATE_GRN_ASSET_MAINT =BASE_URL + "" ;
-    public static final String API_SUBMIT_MAINENANCE =BASE_URL + "" ;
-    public static final String API_PURCHASE_ORDER_REQUEST_LIST = BASE_URL +"";
+    public static final String API_DPR_SUBCON_SAVE_DETAILS = BASE_URL + "dpr/subcontractor/save-details?token=";
+    public static final String API_DPR_LISTING = BASE_URL + "dpr/subcontractor/dpr-detail-listing?token=";
+    public static final String API_GENERATE_GRN_ASSET_MAINT = BASE_URL + "";
+    public static final String API_SUBMIT_MAINENANCE = BASE_URL + "";
+    public static final String API_PURCHASE_ORDER_REQUEST_LIST = BASE_URL + "";
+    public static final String API_NOTIFICATION_DASHBOARD_COUNTS = BASE_URL + "notification/get-counts?token=";
 }
