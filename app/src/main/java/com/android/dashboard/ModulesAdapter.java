@@ -7,12 +7,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
+import com.android.firebase.counts_model.NotificationCountData;
 import com.android.login_mvp.login_model.ModulesItem;
 import com.android.login_mvp.login_model.SubModulesItem;
 import com.android.utils.SlideAnimationUtil;
@@ -20,6 +20,7 @@ import com.android.utils.SlideAnimationUtil;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
+import timber.log.Timber;
 
 /**
  * <b></b>
@@ -28,12 +29,15 @@ import io.realm.RealmRecyclerViewAdapter;
  */
 public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, ModulesAdapter.MyViewHolder> {
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
+    private NotificationCountData notificationCountData;
     // Define listener member variable
     private OnItemClickListener clickListener;
 
-    public ModulesAdapter(OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection) {
-        super(modulesItemOrderedRealmCollection, true);
+    ModulesAdapter(OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection,
+                   NotificationCountData notificationCountData) {
+        super(modulesItemOrderedRealmCollection, true, true);
         this.modulesItemOrderedRealmCollection = modulesItemOrderedRealmCollection;
+        this.notificationCountData = notificationCountData;
         setHasStableIds(true);
         int intMaxSize = 0;
         for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
@@ -43,7 +47,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }
 
     // Define the method that allows the parent activity or fragment to define the listener
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    void setOnItemClickListener(OnItemClickListener listener) {
         this.clickListener = listener;
     }
 
@@ -55,19 +59,30 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final ModulesItem modulesItem = modulesItemOrderedRealmCollection.get(position);
+        ModulesItem modulesItem = modulesItemOrderedRealmCollection.get(position);
         RealmList<SubModulesItem> modulesItemRealmList = modulesItem.getSubModules();
         holder.moduleName.setText(modulesItem.getModuleName());
-        String moduleName=modulesItem.getModuleName();
-        if(moduleName.equalsIgnoreCase("Purchase")){
+        String moduleName = modulesItem.getModuleName();
+        if (moduleName.equalsIgnoreCase("Purchase")) {
+            int intCount = notificationCountData.getMaterialRequestCreateCount()
+                    + notificationCountData.getMaterialRequestDisapprovedCount()
+                    + notificationCountData.getPurchaseRequestCreateCount()
+                    + notificationCountData.getPurchaseRequestDisapprovedCount();
+            if (intCount > 0) {
+                Timber.d("Purchase Count: " + intCount);
+                holder.moduleCount.setText(String.valueOf(intCount));
+            } else {
+                Timber.d("Purchase Count: " + intCount);
+                holder.moduleCount.setVisibility(View.GONE);
+            }
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
-        }else if(moduleName.equalsIgnoreCase("Peticash")){
+        } else if (moduleName.equalsIgnoreCase("Peticash")) {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_peticash);
-        }else if(moduleName.equalsIgnoreCase("Inventory")) {
+        } else if (moduleName.equalsIgnoreCase("Inventory")) {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_inventory2);
-        }else if(moduleName.equalsIgnoreCase("Checklist")) {
+        } else if (moduleName.equalsIgnoreCase("Checklist")) {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_checklist);
-        }else {
+        } else {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
         }
 //       holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
@@ -118,20 +133,21 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView moduleName/*, moduleDescription*/;
+        private TextView moduleName, moduleCount;
         private Context context;
         private LinearLayout ll_sub_modules;
-        private FrameLayout fl_mainModuleFrame;
+        private LinearLayout fl_mainModuleFrame;
         private ImageView imageViewModule;
 
         MyViewHolder(View view) {
             super(view);
             context = view.getContext();
             moduleName = view.findViewById(R.id.tv_moduleName);
+            moduleCount = view.findViewById(R.id.tv_moduleCount);
 //            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
             fl_mainModuleFrame = view.findViewById(R.id.fl_mainModuleFrame);
             ll_sub_modules = view.findViewById(R.id.ll_sub_modules);
-            imageViewModule=view.findViewById(R.id.imageViewModule);
+            imageViewModule = view.findViewById(R.id.imageViewModule);
             int intMaxSize = 0;
             for (int index = 0; index < modulesItemOrderedRealmCollection.size(); index++) {
                 int intMaxSizeTemp = modulesItemOrderedRealmCollection.get(index).getSubModules().size();

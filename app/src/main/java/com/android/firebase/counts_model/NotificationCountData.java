@@ -1,10 +1,14 @@
 package com.android.firebase.counts_model;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class NotificationCountData extends RealmObject {
+    @PrimaryKey
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("material_request_disapproved_count")
     private int materialRequestDisapprovedCount;
     @SerializedName("material_request_create_count")

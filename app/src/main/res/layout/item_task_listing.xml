@@ -14,49 +14,53 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/fl_mainModuleFrame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top">
+            android:layout_gravity="center_vertical"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:paddingRight="16dp">
+
+            <FrameLayout
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp">
+
+                <ImageView
+                    android:id="@+id/imageViewModule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_moduleName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                android:textColor="@color/colorText"
+                android:textSize="@dimen/dimen_18dp"/>
+
+            <TextView
+                android:id="@+id/tv_moduleCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="16dp"
+                android:textColor="@color/colorText"
+                android:textSize="@dimen/dimen_18dp"/>
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="16dp"
+                android:layout_gravity="center"
                 android:rotation="90"
                 app:srcCompat="@drawable/ic_arrow_up"/>
-
-            <ImageView
-                android:id="@+id/imageViewModule"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|left"
-                android:layout_marginLeft="16dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="16dp"
-                android:paddingLeft="80dp"
-                android:paddingTop="16dp">
-
-                <TextView
-                    android:id="@+id/tv_moduleName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorText"
-                    android:textSize="@dimen/dimen_18dp"/>
-                <!--<TextView
-                    android:id="@+id/tv_Description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>-->
-            </LinearLayout>
-        </FrameLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_sub_modules"

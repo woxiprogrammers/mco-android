@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.firebase.counts_model.NotificationCountData;
 import com.android.firebase.counts_model.NotificationCountResponse;
 import com.android.login_mvp.LoginActivity;
 import com.android.login_mvp.login_model.LoginResponseData;
@@ -119,9 +120,15 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         View headerLayout = navView.inflateHeaderView(R.layout.nav_header_dash_board);
         projectSpinner = headerLayout.findViewById(R.id.project_spinner);
         userName = headerLayout.findViewById(R.id.userName);
+    }
+
+    private void setUpDashboardAdapterData() {
         realm = Realm.getDefaultInstance();
         modulesItemOrderedRealmCollection = realm.where(LoginResponseData.class).findFirst().getModules();
-        ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection);
+        NotificationCountData notificationCountData = realm.where(NotificationCountData.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .findFirst();
+        ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection, notificationCountData);
         mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));
         mRvTaskSelection.setAdapter(modulesAdapter);
         mRvTaskSelection.setHasFixedSize(true);
@@ -142,21 +149,16 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         userName.setText(loginResponseData.getFirstName() + " " + loginResponseData.getLastName());
         projectsItemRealmResults = realm.where(ProjectsItem.class).findAll();
         setUpProjectsSpinnerAdapter(projectsItemRealmResults);
-        /*if (projectsItemRealmResults != null) {
-            projectsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<ProjectsItem>>() {
-                @Override
-                public void onChange(RealmResults<ProjectsItem> projectsItems) {
-                    setUpProjectsSpinnerAdapter(projectsItems);
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("DashBoardActivity");
-        }*/
         projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
                 setUpStaticValues(selectedId);
-                requestNotificationCountData();
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    requestNotificationCountData();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("");
+                    setUpDashboardAdapterData();
+                }
                 DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
             }
@@ -211,13 +213,37 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .setTag("requestNotificationCountData")
-                .setPriority(Priority.MEDIUM)
+                .setPriority(Priority.IMMEDIATE)
                 .build()
                 .getAsObject(NotificationCountResponse.class,
                         new ParsedRequestListener<NotificationCountResponse>() {
                             @Override
                             public void onResponse(final NotificationCountResponse response) {
                                 Timber.i("NotificationCountResponse: " + String.valueOf(response));
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            realm.delete(NotificationCountData.class);
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
+                                            setUpDashboardAdapterData();
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
+                                }
                             }
 
                             @Override
