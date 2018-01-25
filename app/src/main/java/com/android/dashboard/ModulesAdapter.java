@@ -20,7 +20,6 @@ import com.android.utils.SlideAnimationUtil;
 import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
-import timber.log.Timber;
 
 /**
  * <b></b>
@@ -68,13 +67,14 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                     + notificationCountData.getMaterialRequestDisapprovedCount()
                     + notificationCountData.getPurchaseRequestCreateCount()
                     + notificationCountData.getPurchaseRequestDisapprovedCount();
-            if (intCount > 0) {
+            holder.moduleCount.setText(String.valueOf(intCount));
+            /*if (intCount > 0) {
                 Timber.d("Purchase Count: " + intCount);
                 holder.moduleCount.setText(String.valueOf(intCount));
             } else {
                 Timber.d("Purchase Count: " + intCount);
                 holder.moduleCount.setVisibility(View.GONE);
-            }
+            }*/
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
         } else if (moduleName.equalsIgnoreCase("Peticash")) {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_peticash);
