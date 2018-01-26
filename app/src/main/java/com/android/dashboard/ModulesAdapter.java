@@ -77,12 +77,16 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
         } else if (moduleName.equalsIgnoreCase("Peticash")) {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_peticash);
+            holder.moduleCount.setVisibility(View.GONE);
         } else if (moduleName.equalsIgnoreCase("Inventory")) {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_inventory2);
+            holder.moduleCount.setVisibility(View.GONE);
         } else if (moduleName.equalsIgnoreCase("Checklist")) {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_checklist);
+            holder.moduleCount.setVisibility(View.GONE);
         } else {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
+            holder.moduleCount.setVisibility(View.GONE);
         }
 //       holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
         int noOfChildViews = holder.ll_sub_modules.getChildCount();
@@ -96,21 +100,33 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         for (int textViewIndex = 0; textViewIndex < noOfSubModules; textViewIndex++) {
             LinearLayout currentChildView = (LinearLayout) holder.ll_sub_modules.getChildAt(textViewIndex);
             TextView currentTextView_Name = currentChildView.findViewById(R.id.textView_submodule_name);
-            currentTextView_Name.setText(modulesItemRealmList.get(textViewIndex).getSubModuleName());
-            /*TextView currentTextView_Count = currentChildView.findViewById(R.id.tv_submoduleCount);
+            String strSumModuleName = modulesItemRealmList.get(textViewIndex).getSubModuleName();
+            currentTextView_Name.setText(strSumModuleName);
+            TextView currentTextView_Count = currentChildView.findViewById(R.id.tv_submoduleCount);
             currentTextView_Count.setText("");
             if (moduleName.equalsIgnoreCase("Purchase")) {
-                int intCount = notificationCountData.getMaterialRequestCreateCount()
-                        + notificationCountData.getMaterialRequestDisapprovedCount()
-                        + notificationCountData.getPurchaseRequestCreateCount()
-                        + notificationCountData.getPurchaseRequestDisapprovedCount();
-//            holder.moduleCount.setText(String.valueOf(intCount));
-                if (intCount > 0) {
-                    Timber.d("Purchase Count: " + intCount);
-                    currentTextView_Count.setText(String.valueOf(intCount));
+                if (strSumModuleName.equalsIgnoreCase("material request")) {
+                    int intCount = notificationCountData.getMaterialRequestCreateCount()
+                            + notificationCountData.getMaterialRequestDisapprovedCount();
+                    if (intCount > 0) {
+                        Timber.d("material request: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("material request: " + intCount);
+                        currentTextView_Count.setVisibility(View.INVISIBLE);
+                    }
+                } else if (strSumModuleName.equalsIgnoreCase("purchase request")) {
+                    int intCount = notificationCountData.getPurchaseRequestCreateCount()
+                            + notificationCountData.getPurchaseRequestDisapprovedCount();
+                    if (intCount > 0) {
+                        Timber.d("purchase request: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("purchase request: " + intCount);
+                        currentTextView_Count.setVisibility(View.INVISIBLE);
+                    }
                 } else {
-                    Timber.d("Purchase Count: " + intCount);
-                    currentTextView_Count.setVisibility(View.GONE);
+                    currentTextView_Count.setVisibility(View.INVISIBLE);
                 }
             } else if (moduleName.equalsIgnoreCase("Peticash")) {
                 currentTextView_Count.setText("");
@@ -118,7 +134,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                 currentTextView_Count.setText("");
             } else if (moduleName.equalsIgnoreCase("Checklist")) {
                 currentTextView_Count.setText("");
-            }*/
+            }
 
             /*TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(textViewIndex);
             currentTextView.setText(modulesItemRealmList.get(textViewIndex).getSubModuleName());*/
@@ -136,7 +152,6 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             @Override
             public void onClick(View view) {
                 if (holder.ll_sub_modules.getVisibility() == View.VISIBLE) {
-//                    SlideAnimationUtil.slideOutToLeft(holder.context, holder.ll_sub_modules);
                     holder.ll_sub_modules.setVisibility(View.GONE);
                 } else {
                     SlideAnimationUtil.slideInFromRight(holder.context, holder.ll_sub_modules);
@@ -169,7 +184,6 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             context = view.getContext();
             moduleName = view.findViewById(R.id.tv_moduleName);
             moduleCount = view.findViewById(R.id.tv_moduleCount);
-//            moduleDescription = (TextView) view.findViewById(R.id.tv_Description);
             fl_mainModuleFrame = view.findViewById(R.id.fl_mainModuleFrame);
             ll_sub_modules = view.findViewById(R.id.ll_sub_modules);
             imageViewModule = view.findViewById(R.id.imageViewModule);
