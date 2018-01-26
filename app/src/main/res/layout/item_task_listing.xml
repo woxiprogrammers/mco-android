@@ -21,13 +21,13 @@
             android:layout_gravity="center_vertical"
             android:baselineAligned="false"
             android:orientation="horizontal"
-            android:paddingRight="16dp">
+            android:paddingRight="12dp">
 
             <FrameLayout
-                android:layout_width="60dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="16dp">
+                android:layout_marginLeft="12dp">
 
                 <ImageView
                     android:id="@+id/imageViewModule"
