@@ -113,7 +113,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         currentTextView_Count.setText(String.valueOf(intCount));
                     } else {
                         Timber.d("material request: " + intCount);
-                        currentTextView_Count.setVisibility(View.INVISIBLE);
+                        currentTextView_Count.setVisibility(View.GONE);
                     }
                 } else if (strSumModuleName.equalsIgnoreCase("purchase request")) {
                     int intCount = notificationCountData.getPurchaseRequestCreateCount()
@@ -123,17 +123,17 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         currentTextView_Count.setText(String.valueOf(intCount));
                     } else {
                         Timber.d("purchase request: " + intCount);
-                        currentTextView_Count.setVisibility(View.INVISIBLE);
+                        currentTextView_Count.setVisibility(View.GONE);
                     }
                 } else {
-                    currentTextView_Count.setVisibility(View.INVISIBLE);
+                    currentTextView_Count.setVisibility(View.GONE);
                 }
             } else if (moduleName.equalsIgnoreCase("Peticash")) {
-                currentTextView_Count.setText("");
+                currentTextView_Count.setVisibility(View.GONE);
             } else if (moduleName.equalsIgnoreCase("Inventory")) {
-                currentTextView_Count.setText("");
+                currentTextView_Count.setVisibility(View.GONE);
             } else if (moduleName.equalsIgnoreCase("Checklist")) {
-                currentTextView_Count.setText("");
+                currentTextView_Count.setVisibility(View.GONE);
             }
 
             /*TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(textViewIndex);
