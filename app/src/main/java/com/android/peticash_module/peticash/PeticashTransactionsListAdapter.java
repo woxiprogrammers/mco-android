@@ -51,7 +51,7 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final DatewiseTransactionsListItem modulesItem = modulesItemOrderedRealmCollection.get(position);
+         DatewiseTransactionsListItem modulesItem = modulesItemOrderedRealmCollection.get(position);
         final RealmList<TransactionListItem> modulesItemRealmList = modulesItem.getTransactionList();
 
         holder.mTvTransactionDate.setText("Records On: " + AppUtils.getInstance().getTime("E, dd MMMM yyyy","dd-MMM-yyyy",modulesItem.getDate()));

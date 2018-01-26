@@ -1,9 +1,7 @@
 package com.android.dashboard;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,18 +85,44 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
         }
 //       holder.moduleDescription.setText(modulesItem.getSubModules().get(size).getModuleDescription());
-        int noOfTextViews = holder.ll_sub_modules.getChildCount();
+        int noOfChildViews = holder.ll_sub_modules.getChildCount();
         int noOfSubModules = modulesItemRealmList.size();
-        if (noOfSubModules < noOfTextViews) {
-            for (int index = noOfSubModules; index < noOfTextViews; index++) {
-                TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(index);
-                currentTextView.setVisibility(View.GONE);
+        if (noOfSubModules < noOfChildViews) {
+            for (int index = noOfSubModules; index < noOfChildViews; index++) {
+                LinearLayout currentChildView = (LinearLayout) holder.ll_sub_modules.getChildAt(index);
+                currentChildView.setVisibility(View.GONE);
             }
         }
         for (int textViewIndex = 0; textViewIndex < noOfSubModules; textViewIndex++) {
-            TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(textViewIndex);
-            currentTextView.setText(modulesItemRealmList.get(textViewIndex).getSubModuleName());
-            currentTextView.setOnClickListener(new View.OnClickListener() {
+            LinearLayout currentChildView = (LinearLayout) holder.ll_sub_modules.getChildAt(textViewIndex);
+            TextView currentTextView_Name = currentChildView.findViewById(R.id.textView_submodule_name);
+            currentTextView_Name.setText(modulesItemRealmList.get(textViewIndex).getSubModuleName());
+            /*TextView currentTextView_Count = currentChildView.findViewById(R.id.tv_submoduleCount);
+            currentTextView_Count.setText("");
+            if (moduleName.equalsIgnoreCase("Purchase")) {
+                int intCount = notificationCountData.getMaterialRequestCreateCount()
+                        + notificationCountData.getMaterialRequestDisapprovedCount()
+                        + notificationCountData.getPurchaseRequestCreateCount()
+                        + notificationCountData.getPurchaseRequestDisapprovedCount();
+//            holder.moduleCount.setText(String.valueOf(intCount));
+                if (intCount > 0) {
+                    Timber.d("Purchase Count: " + intCount);
+                    currentTextView_Count.setText(String.valueOf(intCount));
+                } else {
+                    Timber.d("Purchase Count: " + intCount);
+                    currentTextView_Count.setVisibility(View.GONE);
+                }
+            } else if (moduleName.equalsIgnoreCase("Peticash")) {
+                currentTextView_Count.setText("");
+            } else if (moduleName.equalsIgnoreCase("Inventory")) {
+                currentTextView_Count.setText("");
+            } else if (moduleName.equalsIgnoreCase("Checklist")) {
+                currentTextView_Count.setText("");
+            }*/
+
+            /*TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(textViewIndex);
+            currentTextView.setText(modulesItemRealmList.get(textViewIndex).getSubModuleName());*/
+            currentChildView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (clickListener != null) {
@@ -154,7 +178,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                 int intMaxSizeTemp = modulesItemOrderedRealmCollection.get(index).getSubModules().size();
                 if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
             }
-            for (int indexView = 0; indexView < intMaxSize; indexView++) {
+            /*for (int indexView = 0; indexView < intMaxSize; indexView++) {
                 TextView textView = new TextView(context);
                 textView.setId(indexView);
                 textView.setPadding(0, 20, 0, 20);
@@ -162,6 +186,11 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                 textView.setBackground(ContextCompat.getDrawable(context, R.drawable.background_sub_module_text));
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 ll_sub_modules.addView(textView, layoutParams);
+            }*/
+            for (int indexView = 0; indexView < intMaxSize; indexView++) {
+                View taskLayout = LayoutInflater.from(context).inflate(R.layout.item_submodule_dashboard, null);
+                taskLayout.setId(indexView);
+                ll_sub_modules.addView(taskLayout);
             }
         }
     }
