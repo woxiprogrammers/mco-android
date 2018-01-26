@@ -11,12 +11,12 @@ public class NotificationCountResponse extends RealmObject {
     @SerializedName("data")
     private NotificationCountData notificationCountData;
 
-    public void setNotificationCountData(NotificationCountData notificationCountData) {
-        this.notificationCountData = notificationCountData;
-    }
-
     public NotificationCountData getNotificationCountData() {
         return notificationCountData;
+    }
+
+    public void setNotificationCountData(NotificationCountData notificationCountData) {
+        this.notificationCountData = notificationCountData;
     }
 
     @Override

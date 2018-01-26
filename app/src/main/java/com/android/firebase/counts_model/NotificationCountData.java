@@ -18,36 +18,36 @@ public class NotificationCountData extends RealmObject {
     @SerializedName("purchase_request_create_count")
     private int purchaseRequestCreateCount;
 
-    public void setMaterialRequestDisapprovedCount(int materialRequestDisapprovedCount) {
-        this.materialRequestDisapprovedCount = materialRequestDisapprovedCount;
-    }
-
     public int getMaterialRequestDisapprovedCount() {
         return materialRequestDisapprovedCount;
     }
 
-    public void setMaterialRequestCreateCount(int materialRequestCreateCount) {
-        this.materialRequestCreateCount = materialRequestCreateCount;
+    public void setMaterialRequestDisapprovedCount(int materialRequestDisapprovedCount) {
+        this.materialRequestDisapprovedCount = materialRequestDisapprovedCount;
     }
 
     public int getMaterialRequestCreateCount() {
         return materialRequestCreateCount;
     }
 
-    public void setPurchaseRequestDisapprovedCount(int purchaseRequestDisapprovedCount) {
-        this.purchaseRequestDisapprovedCount = purchaseRequestDisapprovedCount;
+    public void setMaterialRequestCreateCount(int materialRequestCreateCount) {
+        this.materialRequestCreateCount = materialRequestCreateCount;
     }
 
     public int getPurchaseRequestDisapprovedCount() {
         return purchaseRequestDisapprovedCount;
     }
 
-    public void setPurchaseRequestCreateCount(int purchaseRequestCreateCount) {
-        this.purchaseRequestCreateCount = purchaseRequestCreateCount;
+    public void setPurchaseRequestDisapprovedCount(int purchaseRequestDisapprovedCount) {
+        this.purchaseRequestDisapprovedCount = purchaseRequestDisapprovedCount;
     }
 
     public int getPurchaseRequestCreateCount() {
         return purchaseRequestCreateCount;
+    }
+
+    public void setPurchaseRequestCreateCount(int purchaseRequestCreateCount) {
+        this.purchaseRequestCreateCount = purchaseRequestCreateCount;
     }
 
     @Override
