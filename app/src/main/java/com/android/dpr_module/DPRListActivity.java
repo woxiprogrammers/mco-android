@@ -236,12 +236,13 @@ public class DPRListActivity extends BaseActivity {
     }
 
     @SuppressWarnings("WeakerAccess")
-    protected class DprListAdapter extends RealmRecyclerViewAdapter<DprUsersItem, DprListAdapter.MyViewHolder> {
+    protected class DprListAdapter extends RealmRecyclerViewAdapter<DprUsersItem,
+            DprListAdapter.MyViewHolder> {
         private Realm realm;
-        //ToDo Item class
         private OrderedRealmCollection<DprUsersItem> usersItemOrderedRealmCollection;
 
-        DprListAdapter(@Nullable OrderedRealmCollection<DprUsersItem> data, boolean autoUpdate, boolean updateOnModification) {
+        DprListAdapter(@Nullable OrderedRealmCollection<DprUsersItem> data,
+                       boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             realm = Realm.getDefaultInstance();
             usersItemOrderedRealmCollection = data;
