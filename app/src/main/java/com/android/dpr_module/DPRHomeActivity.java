@@ -51,11 +51,8 @@ public class DPRHomeActivity extends BaseActivity {
     @BindView(R.id.linearLayoutCategory)
     LinearLayout linearLayoutCategory;
     private Context mContext;
-    private View inflatedView = null;
     private Realm realm;
-    private List<DprdataItem> categoryList;
     private RealmResults<DprdataItem> dprdataItemRealmResults;
-    private EditText editTextNumberOfUsers;
     private int intSubContId;
 
     @Override
@@ -99,10 +96,10 @@ public class DPRHomeActivity extends BaseActivity {
         RealmResults<SubdataItem> subdataItemRealmResults = realm.where(SubdataItem.class).findAll();
         for (int i = 0; i < subdataItemRealmResults.size(); i++) {
             final SubdataItem subdataItem = subdataItemRealmResults.get(i);
-            inflatedView = getLayoutInflater().inflate(R.layout.inflated_dpr_category_view, null, false);
+            View inflatedView = getLayoutInflater().inflate(R.layout.inflated_dpr_category_view, null, false);
             inflatedView.setId(i);
             TextView textViewCategory = inflatedView.findViewById(R.id.textViewCategory);
-            editTextNumberOfUsers = inflatedView.findViewById(R.id.editTextNoOfUsers);
+            EditText editTextNumberOfUsers = inflatedView.findViewById(R.id.editTextNoOfUsers);
             textViewCategory.setText(subdataItem.getName());
             linearLayoutCategory.addView(inflatedView);
         }
@@ -120,7 +117,7 @@ public class DPRHomeActivity extends BaseActivity {
     }
 
     private void setUpSpinnerAdapter(RealmResults<DprdataItem> dprdataItemRealmResults) {
-        categoryList = realm.copyFromRealm(dprdataItemRealmResults);
+        List<DprdataItem> categoryList = realm.copyFromRealm(dprdataItemRealmResults);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (DprdataItem dprdataItem : categoryList) {
             String strUserName = dprdataItem.getName();
