@@ -5,28 +5,26 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class SubdataItem extends RealmObject{
+public class SubdataItem extends RealmObject {
+    @SerializedName("name")
+    private String name;
+    @PrimaryKey
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("name")
-	private String name;
+    public String getName() {
+        return name;
+    }
 
-	@PrimaryKey
-	@SerializedName("id")
-	private int id;
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setName(String name){
-		this.name = name;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getName(){
-		return name;
-	}
-
-	public void setId(int id){
-		this.id = id;
-	}
-
-	public int getId(){
-		return id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 }

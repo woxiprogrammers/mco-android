@@ -12,11 +12,11 @@ public class DprListingData extends RealmObject {
     @SerializedName("sub_contractor_list")
     private RealmList<DprListItem> dprList;
 
-    public void setDprList(RealmList<DprListItem> dprList) {
-        this.dprList = dprList;
-    }
-
     public RealmList<DprListItem> getDprList() {
         return dprList;
+    }
+
+    public void setDprList(RealmList<DprListItem> dprList) {
+        this.dprList = dprList;
     }
 }

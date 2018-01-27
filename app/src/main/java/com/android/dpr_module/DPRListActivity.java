@@ -68,6 +68,50 @@ public class DPRListActivity extends BaseActivity {
     private String strCurrentDate;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.floating_add_button_peticash)
+    public void onViewClicked() {
+        Intent intent = new Intent(mContext, DPRHomeActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.relative_layout_datePicker_purchaseRequest)
+    public void onCLicked() {
+        openDatePickerDialog();
+    }
+
+    private void openDatePickerDialog() {
+        Calendar newCalendar = Calendar.getInstance();
+        DatePickerDialog pickDatePickerDialog = new DatePickerDialog(this, R.style.MyDialogTheme, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, month, day);
+                String monthString = String.valueOf(month + 1);
+                String strDay = String.valueOf(day);
+                String strYear = String.valueOf(year);
+//                String formatDate;
+                if (strDay.length() == 1) {
+                    strDay = "0" + strDay;
+                }
+                if (monthString.length() == 1) {
+                    monthString = "0" + monthString;
+                }
+                strCurrentDate = strYear + "-" + monthString + "-" + strDay;
+                requestToGetDprListing(strCurrentDate);
+                setDateInAppBar(month + 1, year, strDay, true);
+            }
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        pickDatePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        pickDatePickerDialog.show();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dprlist);
@@ -101,14 +145,6 @@ public class DPRListActivity extends BaseActivity {
             String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
             textViewPurchaseHomeAppBarTitle.setText(passDay + "," + strMonth + ", " + passYear);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void setUpDPRListAdapter() {
@@ -196,42 +232,6 @@ public class DPRListActivity extends BaseActivity {
                                 AppUtils.getInstance().logApiError(anError, "requestToGetDprListing");
                             }
                         });
-    }
-
-    @OnClick(R.id.floating_add_button_peticash)
-    public void onViewClicked() {
-        Intent intent = new Intent(mContext, DPRHomeActivity.class);
-        startActivity(intent);
-    }
-
-    private void openDatePickerDialog() {
-        Calendar newCalendar = Calendar.getInstance();
-        DatePickerDialog pickDatePickerDialog = new DatePickerDialog(this, R.style.MyDialogTheme, new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year, int month, int day) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, month, day);
-                String monthString = String.valueOf(month + 1);
-                String strDay = String.valueOf(day);
-                String strYear = String.valueOf(year);
-//                String formatDate;
-                if (strDay.length() == 1) {
-                    strDay = "0" + strDay;
-                }
-                if (monthString.length() == 1) {
-                    monthString = "0" + monthString;
-                }
-                strCurrentDate = strYear + "-" + monthString + "-" + strDay;
-                requestToGetDprListing(strCurrentDate);
-                setDateInAppBar(month + 1, year, strDay, true);
-            }
-        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-        pickDatePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        pickDatePickerDialog.show();
-    }
-
-    @OnClick(R.id.relative_layout_datePicker_purchaseRequest)
-    public void onCLicked() {
-        openDatePickerDialog();
     }
 
     @SuppressWarnings("WeakerAccess")

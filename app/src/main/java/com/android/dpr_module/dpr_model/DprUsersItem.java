@@ -19,28 +19,28 @@ public class DprUsersItem extends RealmObject {
     @SerializedName("no_of_users")
     private int noOfUsers;
 
-    public void setCat(String cat) {
-        this.cat = cat;
-    }
-
     public String getCat() {
         return cat;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCat(String cat) {
+        this.cat = cat;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setNoOfUsers(int noOfUsers) {
-        this.noOfUsers = noOfUsers;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getNoOfUsers() {
         return noOfUsers;
+    }
+
+    public void setNoOfUsers(int noOfUsers) {
+        this.noOfUsers = noOfUsers;
     }
 
     public int getIntPrimaryKey() {

@@ -56,6 +56,78 @@ public class DPRHomeActivity extends BaseActivity {
     private RealmResults<DprdataItem> dprdataItemRealmResults;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.button_submit)
+    public void onViewClicked() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestToSaveDetails();
+        } else {
+            AppUtils.getInstance().showOfflineMessage("DPRHomeActivity");
+        }
+    }
+
+    private void requestToSaveDetails() {
+        JSONObject params = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < linearLayoutCategory.getChildCount(); i++) {
+            CardView cardView = (CardView) linearLayoutCategory.getChildAt(i);
+            EditText editTextNoOfUsers = cardView.findViewById(R.id.editTextNoOfUsers);
+            TextView textViewCategoryID = cardView.findViewById(R.id.textViewCategoryID);
+            int categoryID = Integer.parseInt(textViewCategoryID.getText().toString());
+            if (TextUtils.isEmpty(editTextNoOfUsers.getText().toString().trim())) {
+                Toast.makeText(mContext, "Please Enter Value", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                int intUserCount = Integer.parseInt(editTextNoOfUsers.getText().toString().trim());
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("category_id", categoryID);
+                    jsonObject.put("users", intUserCount);
+                    jsonArray.put(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("subcontractor_id", intSubContId);
+            params.put("number_of_users", jsonArray);
+            Timber.d(String.valueOf(params));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_DPR_SUBCON_SAVE_DETAILS + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_GENERATE_GRN_PETICASH")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dprhome);
@@ -84,54 +156,6 @@ public class DPRHomeActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void inflateViews() {
-        linearLayoutCategory.removeAllViews();
-        realm = Realm.getDefaultInstance();
-        RealmResults<SubdataItem> subdataItemRealmResults = realm.where(SubdataItem.class).findAll();
-        for (int i = 0; i < subdataItemRealmResults.size(); i++) {
-            SubdataItem subdataItem = subdataItemRealmResults.get(i);
-            View inflatedView = getLayoutInflater().inflate(R.layout.inflated_dpr_category_view, null, false);
-            inflatedView.setId(i);
-            TextView textViewCategory = inflatedView.findViewById(R.id.textViewCategory);
-            EditText editTextNumberOfUsers = inflatedView.findViewById(R.id.editTextNoOfUsers);
-            textViewCategory.setText(subdataItem.getName());
-            TextView textViewCategoryID = inflatedView.findViewById(R.id.textViewCategoryID);
-            textViewCategoryID.setText(subdataItem.getId() + "");
-            linearLayoutCategory.addView(inflatedView);
-        }
-    }
-
-    @OnClick(R.id.button_submit)
-    public void onViewClicked() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            requestToSaveDetails();
-        } else {
-            AppUtils.getInstance().showOfflineMessage("DPRHomeActivity");
-        }
-    }
-
-    private void setUpUsersSpinnerValueChangeListener() {
-        realm = Realm.getDefaultInstance();
-        dprdataItemRealmResults = realm.where(DprdataItem.class).findAll();
-        List<DprdataItem> categoryList = realm.copyFromRealm(dprdataItemRealmResults);
-        ArrayList<String> arrayOfUsers = new ArrayList<String>();
-        for (DprdataItem dprdataItem : categoryList) {
-            String strUserName = dprdataItem.getName();
-            arrayOfUsers.add(strUserName);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerSubContractor.setAdapter(arrayAdapter);
     }
 
     ////////////API Calls
@@ -237,58 +261,34 @@ public class DPRHomeActivity extends BaseActivity {
                         });
     }
 
-    private void requestToSaveDetails() {
-        JSONObject params = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        for (int i = 0; i < linearLayoutCategory.getChildCount(); i++) {
-            CardView cardView = (CardView) linearLayoutCategory.getChildAt(i);
-            EditText editTextNoOfUsers = cardView.findViewById(R.id.editTextNoOfUsers);
-            TextView textViewCategoryID = cardView.findViewById(R.id.textViewCategoryID);
-            int categoryID = Integer.parseInt(textViewCategoryID.getText().toString());
-            if (TextUtils.isEmpty(editTextNoOfUsers.getText().toString().trim())) {
-                Toast.makeText(mContext, "Please Enter Value", Toast.LENGTH_SHORT).show();
-                return;
-            } else {
-                int intUserCount = Integer.parseInt(editTextNoOfUsers.getText().toString().trim());
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("category_id", categoryID);
-                    jsonObject.put("users", intUserCount);
-                    jsonArray.put(jsonObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+    private void setUpUsersSpinnerValueChangeListener() {
+        realm = Realm.getDefaultInstance();
+        dprdataItemRealmResults = realm.where(DprdataItem.class).findAll();
+        List<DprdataItem> categoryList = realm.copyFromRealm(dprdataItemRealmResults);
+        ArrayList<String> arrayOfUsers = new ArrayList<String>();
+        for (DprdataItem dprdataItem : categoryList) {
+            String strUserName = dprdataItem.getName();
+            arrayOfUsers.add(strUserName);
         }
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("subcontractor_id", intSubContId);
-            params.put("number_of_users", jsonArray);
-            Timber.d(String.valueOf(params));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_DPR_SUBCON_SAVE_DETAILS + AppUtils.getInstance().getCurrentToken())
-                .setTag("API_GENERATE_GRN_PETICASH")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            finish();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSubContractor.setAdapter(arrayAdapter);
+    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
+    private void inflateViews() {
+        linearLayoutCategory.removeAllViews();
+        realm = Realm.getDefaultInstance();
+        RealmResults<SubdataItem> subdataItemRealmResults = realm.where(SubdataItem.class).findAll();
+        for (int i = 0; i < subdataItemRealmResults.size(); i++) {
+            SubdataItem subdataItem = subdataItemRealmResults.get(i);
+            View inflatedView = getLayoutInflater().inflate(R.layout.inflated_dpr_category_view, null, false);
+            inflatedView.setId(i);
+            TextView textViewCategory = inflatedView.findViewById(R.id.textViewCategory);
+            EditText editTextNumberOfUsers = inflatedView.findViewById(R.id.editTextNoOfUsers);
+            textViewCategory.setText(subdataItem.getName());
+            TextView textViewCategoryID = inflatedView.findViewById(R.id.textViewCategoryID);
+            textViewCategoryID.setText(subdataItem.getId() + "");
+            linearLayoutCategory.addView(inflatedView);
+        }
     }
 }

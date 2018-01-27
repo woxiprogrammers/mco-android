@@ -15,27 +15,27 @@ public class DprListItem extends RealmObject {
     @SerializedName("users")
     private RealmList<DprUsersItem> users;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setUsers(RealmList<DprUsersItem> users) {
-        this.users = users;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public RealmList<DprUsersItem> getUsers() {
         return users;
+    }
+
+    public void setUsers(RealmList<DprUsersItem> users) {
+        this.users = users;
     }
 }
