@@ -15,11 +15,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.awareness_module.awareness_model.AwarenessSubCategoriesItem;
-import com.android.awareness_module.awareness_model.SubCatedata;
-import com.android.awareness_module.awareness_model.SubCategoriesResponse;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.dpr_module.dpr_model.DPRSubContractorCatResponse;
+import com.android.dpr_module.dpr_model.DPRSubContractorResponse;
+import com.android.dpr_module.dpr_model.DprdataItem;
+import com.android.dpr_module.dpr_model.SubdataItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
@@ -82,7 +83,6 @@ public class DPRHomeActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
     }
 
     @Override
@@ -231,10 +231,8 @@ public class DPRHomeActivity extends BaseActivity {
     }
 
     private void requestToSaveDetails() {
-
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();
-
         for (int i = 0; i < linearLayoutCategory.getChildCount(); i++) {
             CardView cardView = (CardView) linearLayoutCategory.getChildAt(i);
             EditText editTextNoOfUsers = cardView.findViewById(R.id.editTextNoOfUsers);
@@ -253,7 +251,6 @@ public class DPRHomeActivity extends BaseActivity {
                 }
             }
         }
-
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("subcontractor_id", intSubContId);
@@ -274,7 +271,6 @@ public class DPRHomeActivity extends BaseActivity {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             finish();
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

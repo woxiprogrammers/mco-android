@@ -1,4 +1,4 @@
-package com.android.dpr_module;
+package com.android.dpr_module.dpr_model;
 
 import com.google.gson.annotations.SerializedName;
 
