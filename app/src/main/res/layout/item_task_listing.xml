@@ -21,19 +21,20 @@
             android:layout_gravity="center_vertical"
             android:baselineAligned="false"
             android:orientation="horizontal"
-            android:paddingRight="12dp">
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp">
 
             <FrameLayout
                 android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="12dp">
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
 
                 <ImageView
                     android:id="@+id/imageViewModule"
                     android:layout_width="wrap_content"
-                    android:scaleType="fitXY"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"/>
             </FrameLayout>
 
             <TextView
@@ -50,9 +51,9 @@
                 android:id="@+id/tv_moduleCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_gravity="center"
                 android:layout_marginBottom="4dp"
-                android:gravity="center"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/background_count_badge"
                 android:padding="@dimen/dimen_4dp"
                 android:textColor="@color/colorWhite"

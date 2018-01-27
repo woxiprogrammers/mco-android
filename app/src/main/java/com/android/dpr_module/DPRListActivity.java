@@ -66,9 +66,6 @@ public class DPRListActivity extends BaseActivity {
     Toolbar toolbarPurchaseHome;
     private Context mContext;
     private Realm realm;
-    private int passYear, passMonth;
-    private int passDay;
-    private DatePickerDialog pickDatePickerDialog;
     private Date date;
 
     @Override
@@ -206,7 +203,7 @@ public class DPRListActivity extends BaseActivity {
 
     private void openDatePickerDialog() {
         Calendar newCalendar = Calendar.getInstance();
-        pickDatePickerDialog = new DatePickerDialog(this, R.style.MyDialogTheme, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog pickDatePickerDialog = new DatePickerDialog(this, R.style.MyDialogTheme, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int month, int day) {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, month, day);
@@ -258,7 +255,8 @@ public class DPRListActivity extends BaseActivity {
             Timber.d(String.valueOf(usersItemOrderedRealmCollection.size()));
             DprUsersItem usersItem = usersItemOrderedRealmCollection.get(position);
             String strSubConName = usersItem.getStrSubConName();
-            DprUsersItem firstUsersItem = realm.where(DprUsersItem.class).equalTo("strSubConName", strSubConName).findFirst();
+            DprUsersItem firstUsersItem = realm.where(DprUsersItem.class)
+                    .equalTo("strSubConName", strSubConName).findFirst();
             if (firstUsersItem.getId() == usersItem.getId()) {
                 holder.textViewSubConName.setText(strSubConName);
             } else holder.textViewSubConName.setVisibility(View.GONE);
