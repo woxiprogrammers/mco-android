@@ -4,15 +4,14 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class DprListItem extends RealmObject {
-
-    @SerializedName("name")
-    private String name;
-
+    @PrimaryKey
     @SerializedName("id")
     private int id;
-
+    @SerializedName("name")
+    private String name;
     @SerializedName("users")
     private RealmList<DprUsersItem> users;
 

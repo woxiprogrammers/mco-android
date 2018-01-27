@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.dpr_module.dpr_model.DprListItem;
-import com.android.dpr_module.dpr_model.DprListingData;
 import com.android.dpr_module.dpr_model.DprListingResponse;
 import com.android.dpr_module.dpr_model.DprUsersItem;
 import com.android.utils.AppURL;
@@ -39,7 +38,6 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,6 +65,7 @@ public class DPRListActivity extends BaseActivity {
     private Context mContext;
     private Realm realm;
     private Date date;
+    private String strCurrentDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,16 +79,17 @@ public class DPRListActivity extends BaseActivity {
         mContext = DPRListActivity.this;
         toolbarPurchaseHome.setTitle("");
         setSupportActionBar(toolbarPurchaseHome);
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+//        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         date = new Date();
         String format = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
-        String strGetDate = simpleDateFormat.format(date);
+        strCurrentDate = simpleDateFormat.format(date);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         setDateInAppBar(0, 0, "", false);
-        requestToGetDprListing(strGetDate);
+        setUpDPRListAdapter();
+        requestToGetDprListing(strCurrentDate);
     }
 
     public void setDateInAppBar(int passMonth, int passYear, String passDay, boolean isDateSelected) {
@@ -114,6 +114,8 @@ public class DPRListActivity extends BaseActivity {
     private void setUpDPRListAdapter() {
         realm = Realm.getDefaultInstance();
         RealmResults<DprUsersItem> dprListItemRealmResults = realm.where(DprUsersItem.class)
+                .equalTo("strDate", strCurrentDate)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .findAllSortedAsync("strSubConName", Sort.ASCENDING);
         DprListAdapter purchaseRequestRvAdapter = new DprListAdapter(dprListItemRealmResults, true, true);
         rvSubContCatList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -132,7 +134,7 @@ public class DPRListActivity extends BaseActivity {
                 }));
     }
 
-    private void requestToGetDprListing(String strDate) {
+    private void requestToGetDprListing(final String strDate) {
         JSONObject params = new JSONObject();
         try {
             params.put("date", strDate);
@@ -146,53 +148,54 @@ public class DPRListActivity extends BaseActivity {
                 .setPriority(Priority.MEDIUM)
                 .setTag("requestToGetDprListing")
                 .build()
-                .getAsObject(DprListingResponse.class, new ParsedRequestListener<DprListingResponse>() {
-                    @Override
-                    public void onResponse(final DprListingResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(DprListingResponse.class);
-                                    realm.delete(DprListingData.class);
-                                    realm.delete(DprListItem.class);
-                                    realm.delete(DprUsersItem.class);
-                                    for (int i = 0; i < response.getDprListingData().getDprList().size(); i++) {
-                                        DprListItem dprListItem = response.getDprListingData().getDprList().get(i);
-                                        int intId = dprListItem.getId();
-                                        String strSubConName = dprListItem.getName();
-                                        for (DprUsersItem userItem : dprListItem.getUsers()) {
-                                            userItem.setIntPrimaryKey(intId);
-                                            userItem.setStrSubConName(strSubConName);
+                .getAsObject(DprListingResponse.class,
+                        new ParsedRequestListener<DprListingResponse>() {
+                            @Override
+                            public void onResponse(final DprListingResponse response) {
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+//                                            realm.delete(DprListingResponse.class);
+//                                            realm.delete(DprListingData.class);
+//                                            realm.delete(DprListItem.class);
+//                                            realm.delete(DprUsersItem.class);
+                                            for (int i = 0; i < response.getDprListingData().getDprList().size(); i++) {
+                                                DprListItem dprListItem = response.getDprListingData().getDprList().get(i);
+                                                int intId = dprListItem.getId();
+                                                String strSubConName = dprListItem.getName();
+                                                for (DprUsersItem userItem : dprListItem.getUsers()) {
+                                                    userItem.setIntPrimaryKey(intId);
+                                                    userItem.setStrSubConName(strSubConName);
+                                                    userItem.setStrDate(strDate);
+                                                }
+                                            }
+                                            realm.insertOrUpdate(response);
                                         }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Timber.d("Realm Execution Successful");
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
                                     }
-                                    realm.insertOrUpdate(response);
                                 }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    setUpDPRListAdapter();
-                                    Timber.d("Realm Execution Successful");
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestToGetDprListing");
-                    }
-                });
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "requestToGetDprListing");
+                            }
+                        });
     }
 
     @OnClick(R.id.floating_add_button_peticash)
@@ -210,15 +213,15 @@ public class DPRListActivity extends BaseActivity {
                 String monthString = String.valueOf(month + 1);
                 String strDay = String.valueOf(day);
                 String strYear = String.valueOf(year);
-                String formatDate;
+//                String formatDate;
                 if (strDay.length() == 1) {
                     strDay = "0" + strDay;
                 }
                 if (monthString.length() == 1) {
                     monthString = "0" + monthString;
                 }
-                formatDate = strYear + "-" + monthString + "-" + strDay;
-                requestToGetDprListing(formatDate);
+                strCurrentDate = strYear + "-" + monthString + "-" + strDay;
+                requestToGetDprListing(strCurrentDate);
                 setDateInAppBar(month + 1, year, strDay, true);
             }
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));

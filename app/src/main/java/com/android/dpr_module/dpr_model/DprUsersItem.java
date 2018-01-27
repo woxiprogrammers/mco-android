@@ -1,21 +1,21 @@
 package com.android.dpr_module.dpr_model;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class DprUsersItem extends RealmObject {
-    private int intPrimaryKey;
+    private int intPrimaryKey; //Required
+    private String strDate;
     private String strSubConName;
-
-    @SerializedName("cat")
-    private String cat;
-
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @PrimaryKey
     @SerializedName("id")
     private int id;
-
+    @SerializedName("cat")
+    private String cat;
     @SerializedName("no_of_users")
     private int noOfUsers;
 
@@ -57,5 +57,13 @@ public class DprUsersItem extends RealmObject {
 
     public void setStrSubConName(String strSubConName) {
         this.strSubConName = strSubConName;
+    }
+
+    public String getStrDate() {
+        return strDate;
+    }
+
+    public void setStrDate(String strDate) {
+        this.strDate = strDate;
     }
 }
