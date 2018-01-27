@@ -52,8 +52,8 @@ public class DPRHomeActivity extends BaseActivity {
     LinearLayout linearLayoutCategory;
     private Context mContext;
     private Realm realm;
-    private RealmResults<DprdataItem> dprdataItemRealmResults;
     private int intSubContId;
+    private RealmResults<DprdataItem> dprdataItemRealmResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,15 +65,19 @@ public class DPRHomeActivity extends BaseActivity {
             getSupportActionBar().setTitle("DPR");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-//        inflateViews();
         requestToGetSubContractorData();
         spinnerSubContractor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemIndex, long l) {
-                realm = Realm.getDefaultInstance();
-                dprdataItemRealmResults = realm.where(DprdataItem.class).findAll();
-                intSubContId = dprdataItemRealmResults.get(selectedItemIndex).getId();
-                requestToGetSubCatData(intSubContId);
+            public void onItemSelected(AdapterView<?> adapterView, View view,
+                                       int selectedItemIndex, long l) {
+//                realm = Realm.getDefaultInstance();
+//                dprdataItemRealmResults = realm.where(DprdataItem.class).findAll();
+                try {
+                    intSubContId = dprdataItemRealmResults.get(selectedItemIndex).getId();
+                    requestToGetSubCatData(intSubContId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -109,16 +113,16 @@ public class DPRHomeActivity extends BaseActivity {
 
     @OnClick(R.id.button_submit)
     public void onViewClicked() {
-        requestToSaveDetails();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestToSaveDetails();
+        } else {
+            AppUtils.getInstance().showOfflineMessage("DPRHomeActivity");
+        }
     }
 
     private void setUpUsersSpinnerValueChangeListener() {
         realm = Realm.getDefaultInstance();
-        RealmResults<DprdataItem> dprdataItemRealmResults = realm.where(DprdataItem.class).findAll();
-        setUpSpinnerAdapter(dprdataItemRealmResults);
-    }
-
-    private void setUpSpinnerAdapter(RealmResults<DprdataItem> dprdataItemRealmResults) {
+        dprdataItemRealmResults = realm.where(DprdataItem.class).findAll();
         List<DprdataItem> categoryList = realm.copyFromRealm(dprdataItemRealmResults);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (DprdataItem dprdataItem : categoryList) {
@@ -132,49 +136,51 @@ public class DPRHomeActivity extends BaseActivity {
 
     ////////////API Calls
     private void requestToGetSubContractorData() {
-        AndroidNetworking.post(AppURL.API_DPR_SUB_CONTRACTOR_DATA + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_DPR_SUB_CONTRACTOR_DATA
+                + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("requestToGetSubContractorData")
                 .build()
-                .getAsObject(DPRSubContractorResponse.class, new ParsedRequestListener<DPRSubContractorResponse>() {
-                    @Override
-                    public void onResponse(final DPRSubContractorResponse response) {
-                        Timber.i(String.valueOf(response));
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(DPRSubContractorResponse.class);
-                                    realm.delete(DprdataItem.class);
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
+                .getAsObject(DPRSubContractorResponse.class,
+                        new ParsedRequestListener<DPRSubContractorResponse>() {
+                            @Override
+                            public void onResponse(final DPRSubContractorResponse response) {
+                                Timber.i(String.valueOf(response));
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            realm.delete(DPRSubContractorResponse.class);
+                                            realm.delete(DprdataItem.class);
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
 //                                    setUpPrAdapter();
-                                    Timber.d("Success");
-                                    setUpUsersSpinnerValueChangeListener();
+                                            Timber.d("Success");
+                                            setUpUsersSpinnerValueChangeListener();
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
                                 }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestToGetSubContractorData");
-                    }
-                });
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "requestToGetSubContractorData");
+                            }
+                        });
     }
 
     private void requestToGetSubCatData(final int subContractorId) {
@@ -184,49 +190,51 @@ public class DPRHomeActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_DPR_SUBCONTRACTOR_CATEGORY_DATA + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_DPR_SUBCONTRACTOR_CATEGORY_DATA
+                + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("requestToGetSubCatData")
                 .build()
-                .getAsObject(DPRSubContractorCatResponse.class, new ParsedRequestListener<DPRSubContractorCatResponse>() {
-                    @Override
-                    public void onResponse(final DPRSubContractorCatResponse response) {
-                        Timber.i(String.valueOf(response));
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(DPRSubContractorCatResponse.class);
-                                    realm.delete(SubdataItem.class);
-                                    realm.insertOrUpdate(response);
+                .getAsObject(DPRSubContractorCatResponse.class,
+                        new ParsedRequestListener<DPRSubContractorCatResponse>() {
+                            @Override
+                            public void onResponse(final DPRSubContractorCatResponse response) {
+                                Timber.i(String.valueOf(response));
+                                realm = Realm.getDefaultInstance();
+                                try {
+                                    realm.executeTransactionAsync(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            realm.delete(DPRSubContractorCatResponse.class);
+                                            realm.delete(SubdataItem.class);
+                                            realm.insertOrUpdate(response);
+                                        }
+                                    }, new Realm.Transaction.OnSuccess() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Timber.d("Success");
+                                            inflateViews();
+                                        }
+                                    }, new Realm.Transaction.OnError() {
+                                        @Override
+                                        public void onError(Throwable error) {
+                                            AppUtils.getInstance().logRealmExecutionError(error);
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
                                 }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    Timber.d("Success");
-                                    inflateViews();
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
-                        }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
-                    }
-                });
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
+                            }
+                        });
     }
 
     private void requestToSaveDetails() {
