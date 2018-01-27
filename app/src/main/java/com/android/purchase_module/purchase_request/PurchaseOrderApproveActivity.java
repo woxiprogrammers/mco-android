@@ -122,22 +122,17 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         passYear = year;
         passMonth = month;
         setDateInAppBar(passMonth, passYear);
-        setUpPrAdapter();
+//        setUpPrAdapter();
         requestOrderListOnline(0);
 
     }
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
-        Timber.d("Adapter setup called");
-        String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class)
-                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .contains("date", String.valueOf(passYear))
-                .contains("date", strMonth).findAllAsync();
+        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class).findAll();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         rvPurchaseOrderList.setLayoutManager(new LinearLayoutManager(mContext));
-        rvPurchaseOrderList.setHasFixedSize(true);
+//        rvPurchaseOrderList.setHasFixedSize(true);
         rvPurchaseOrderList.setAdapter(purchaseRequestRvAdapter);
         rvPurchaseOrderList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 rvPurchaseOrderList,
@@ -145,8 +140,8 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                     @Override
                     public void onItemClick(View view, final int position) {
                         Intent intent=new Intent(PurchaseOrderApproveActivity.this,PurchaseOrderMaterialRequestApproveActivity.class);
+                        intent.putExtra("purchase_order_request_id",purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
                         startActivity(intent);
-
                     }
 
                     @Override
@@ -156,12 +151,12 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
     }
 
     private void requestOrderListOnline(int pageId) {
+        //ToDo Params
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("month", passMonth);
             params.put("year", passYear);
-            params.put("page", pageId);
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -181,13 +176,15 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(PurchaseOrderRequestResponse.class);
+                                    realm.delete(PurchaseOrderRequestdata.class);
+                                    realm.delete(PurchaseOrderRequestListItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
                                     setUpPrAdapter();
-
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -228,14 +225,14 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseOrderRequestListItem purchaseOrderRequestListItem = purchaseOrderRequestListItemOrderedRealmCollection.get(position);
             holder.textViewPurchaseOrderReqMaterial.setText(purchaseOrderRequestListItem.getMaterialName());
-            holder.textViewOrderId.setText(purchaseOrderRequestListItem.getPurchaseRequestId());
-            holder.textViewRequestedBy.setText("Requested by: " + purchaseOrderRequestListItem.getUserName() +
-            "on" + AppUtils.getInstance().getTime("EEE, dd MMM yyyy","dd-MMM-yyyy", purchaseOrderRequestListItem.getDate()));
+            holder.textViewOrderId.setText(purchaseOrderRequestListItem.getPurchaseRequestFormatId());
+            holder.textViewRequestedBy.setText("Requested by " + purchaseOrderRequestListItem.getUserName() +
+            "on " + AppUtils.getInstance().getTime("EEE, dd MMM yyyy","dd-MMM-yyyy", purchaseOrderRequestListItem.getDate()));
         }
 
         @Override
         public long getItemId(int index) {
-            return purchaseOrderRequestListItemOrderedRealmCollection.get(index).getPurchaseRequestId();
+            return purchaseOrderRequestListItemOrderedRealmCollection.get(index).getPurchaseOrderRequestId();
         }
 
         @Override

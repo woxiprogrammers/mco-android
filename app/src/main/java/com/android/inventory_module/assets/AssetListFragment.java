@@ -62,19 +62,16 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     @Override
     public void fragmentBecameVisible() {
-        if(getUserVisibleHint()){
-            Log.i("##fragmentBecameVisible","Resume");
+        if (getUserVisibleHint()) {
             requestAssetListOnline(pageNumber);
         }
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
-
-        Log.i("##Resume","Resume");
         requestAssetListOnline(pageNumber);
-    }
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,7 +94,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
             }
         }
         setUpAssetListAdapter();
-        Log.i("##OnCreate","OnCreate");
         return mParentView;
     }
 

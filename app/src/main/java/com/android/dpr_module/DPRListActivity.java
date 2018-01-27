@@ -220,7 +220,7 @@ public class DPRListActivity extends BaseActivity {
                 if (monthString.length() == 1) {
                     monthString = "0" + monthString;
                 }
-                formatDate = strYear + "," + monthString + "," + strDay;
+                formatDate = strYear + "-" + monthString + "-" + strDay;
                 requestToGetDprListing(formatDate);
                 setDateInAppBar(month + 1, year, strDay, true);
             }

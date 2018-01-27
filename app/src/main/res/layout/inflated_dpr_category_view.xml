@@ -19,17 +19,22 @@
             android:layout_weight="0.8"
             android:text="Category Names"/>
 
+        <TextView
+            android:id="@+id/textViewCategoryID"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"/>
 
         <EditText
             android:id="@+id/editTextNoOfUsers"
             android:layout_width="0dp"
             android:layout_height="@dimen/dimen_40dp"
-            android:background="@drawable/background_button_pressed"
-            android:inputType="number"
-            android:digits="0123456789."
-            android:paddingLeft="@dimen/dimen_16dp"
             android:layout_marginRight="@dimen/dimen_8dp"
-            android:layout_weight="0.6"/>
+            android:layout_weight="0.6"
+            android:background="@drawable/background_button_pressed"
+            android:digits="0123456789."
+            android:inputType="number"
+            android:paddingLeft="@dimen/dimen_16dp"/>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>
