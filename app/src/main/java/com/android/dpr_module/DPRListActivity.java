@@ -103,6 +103,7 @@ public class DPRListActivity extends BaseActivity {
                     monthString = "0" + monthString;
                 }
                 strCurrentDate = strYear + "-" + monthString + "-" + strDay;
+                setUpDPRListAdapter(strCurrentDate);
                 requestToGetDprListing(strCurrentDate);
                 setDateInAppBar(month + 1, year, strDay, true);
             }
@@ -131,9 +132,9 @@ public class DPRListActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        setDateInAppBar(0, 0, "", false);
-        setUpDPRListAdapter();
+        setUpDPRListAdapter(strCurrentDate);
         requestToGetDprListing(strCurrentDate);
+        setDateInAppBar(0, 0, "", false);
     }
 
     public void setDateInAppBar(int passMonth, int passYear, String passDay, boolean isDateSelected) {
@@ -147,7 +148,7 @@ public class DPRListActivity extends BaseActivity {
         }
     }
 
-    private void setUpDPRListAdapter() {
+    private void setUpDPRListAdapter(String strCurrentDate) {
         realm = Realm.getDefaultInstance();
         RealmResults<DprUsersItem> dprListItemRealmResults = realm.where(DprUsersItem.class)
                 .equalTo("strDate", strCurrentDate)
