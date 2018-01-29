@@ -104,6 +104,12 @@
         <activity android:name="com.android.inventory_module.MaitenanceFormActivity"/>
         <activity android:name="com.android.purchase_module.purchase_request.PurchaseOrderMaterialRequestApproveActivity">
         </activity>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <!--<meta-data android:name="com.google.firebase.messaging.default_notification_color"
+                   android:resource="@color/colorWhite" />-->
+
     </application>
 
 </manifest>
