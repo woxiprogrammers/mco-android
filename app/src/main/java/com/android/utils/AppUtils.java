@@ -57,14 +57,14 @@ public class AppUtils {
                     "[a-zA-Z0-9][a-zA-Z0-9-]{0,25}" +
                     ")+"
     );
-    private String strToken;
-    private String strLoggedInAt;
-    private String strUserRole;
-    private int intCurrentUserId;
     ViewGroup viewGroup;
     View view;
     boolean isToShowProgress;
     ProgressBar progressBar;
+    private String strToken;
+    private String strLoggedInAt;
+    private String strUserRole;
+    private int intCurrentUserId;
 
     /**
      * initialize utils plus library
@@ -100,20 +100,6 @@ public class AppUtils {
         preference = context.getSharedPreferences(DEFAULT_SHARED_PREFS_NAME, Context.MODE_PRIVATE);
         editor = preference.edit();
         mContext = context;
-    }
-
-    public static synchronized AppUtils getInstance() {
-        if (instance == null) {
-            return instance = new AppUtils();
-        }
-        return instance;
-    }
-
-    private static <T> T checkNull(String message, T object) {
-        if (object == null) {
-            throw new NullPointerException(message);
-        }
-        return object;
     }
 
     public AppUtils put(String key, Object obj) {
@@ -156,14 +142,6 @@ public class AppUtils {
         return preference.getBoolean(key, defaultValue);
     }
 
-    public String getString(String key, String defaultValue) {
-        return preference.getString(key, defaultValue);
-    }
-
-    public int getInt(String key, int defaultValue) {
-        return preference.getInt(key, defaultValue);
-    }
-
     public float getFloat(String key, float defaultValue) {
         return preference.getFloat(key, defaultValue);
     }
@@ -196,16 +174,6 @@ public class AppUtils {
     }
 
     /**
-     * Checks whether there is an active network connection or not
-     *
-     * @return true or false
-     */
-    public boolean checkNetworkState() {
-        final ConnectivityManager connectivityManager = ((ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-    }
-
-    /**
      * validates email
      *
      * @param email email address
@@ -220,26 +188,8 @@ public class AppUtils {
         }
     }
 
-    public void logApiError(ANError anError, String strApiTag) {
-        if (anError.getErrorCode() != 0) {
-            Timber.tag(strApiTag).d("Api errorCode : " + anError.getErrorCode());
-//            Timber.tag(strApiTag).d("Api errorBody : " + anError.getErrorBody());
-            Timber.tag(strApiTag).d("Api errorMessage : " + anError.getMessage());
-            Timber.tag(strApiTag).d("Api errorDetail : " + anError.getErrorDetail());
-        } else {
-            Timber.tag(strApiTag).d("onError errorDetail : " + anError.getErrorDetail());
-            Timber.tag(strApiTag).d("onError errorMessage : " + anError.getMessage());
-        }
-//        Toast.makeText(mContext, "API Error: " + anError.getErrorDetail(), Toast.LENGTH_SHORT).show();
-    }
-
     public void logRealmExecutionError(Throwable error) {
         Timber.d("RealmExecutionError: " + error.getMessage());
-    }
-
-    public void showOfflineMessage(String strTag) {
-        Timber.tag(strTag).d("App is offline");
-        Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
     }
 
     public void loadImageViaGlide(String strUrl, ImageView imageView, Context mContext) {
@@ -261,26 +211,6 @@ public class AppUtils {
         }
     }
 
-    public String getCurrentToken() {
-        Realm realm = Realm.getDefaultInstance();
-        try {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
-                    strToken = loginResponse.getToken();
-                }
-            });
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-        return strToken;
-    }
-
     public Map<String, String> getApiHeaders() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Accept", "application/json; charset=UTF-8");
@@ -294,6 +224,17 @@ public class AppUtils {
 
     public int getCurrentSiteId() {
         return AppUtils.getInstance().getInt("projectId", -1);
+    }
+
+    public int getInt(String key, int defaultValue) {
+        return preference.getInt(key, defaultValue);
+    }
+
+    public static synchronized AppUtils getInstance() {
+        if (instance == null) {
+            return instance = new AppUtils();
+        }
+        return instance;
     }
 
     public String getLoggedInAt() {
@@ -397,6 +338,58 @@ public class AppUtils {
         }
     }
 
+    public String getString(String key, String defaultValue) {
+        return preference.getString(key, defaultValue);
+    }
+
+    /**
+     * Checks whether there is an active network connection or not
+     *
+     * @return true or false
+     */
+    public boolean checkNetworkState() {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
+
+    public String getCurrentToken() {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
+                    strToken = loginResponse.getToken();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return strToken;
+    }
+
+    public void logApiError(ANError anError, String strApiTag) {
+        if (anError.getErrorCode() != 0) {
+            Timber.tag(strApiTag).d("Api errorCode : " + anError.getErrorCode());
+//            Timber.tag(strApiTag).d("Api errorBody : " + anError.getErrorBody());
+            Timber.tag(strApiTag).d("Api errorMessage : " + anError.getMessage());
+            Timber.tag(strApiTag).d("Api errorDetail : " + anError.getErrorDetail());
+        } else {
+            Timber.tag(strApiTag).d("onError errorDetail : " + anError.getErrorDetail());
+            Timber.tag(strApiTag).d("onError errorMessage : " + anError.getMessage());
+        }
+//        Toast.makeText(mContext, "API Error: " + anError.getErrorDetail(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void showOfflineMessage(String strTag) {
+        Timber.tag(strTag).d("App is offline");
+        Toast.makeText(mContext, "You are offline.", Toast.LENGTH_SHORT).show();
+    }
+
     public String getVisibleStatus(String strStatus) {
         if (strStatus.equalsIgnoreCase("p-r-assigned")) {
             return "P R Assigned";
@@ -432,6 +425,7 @@ public class AppUtils {
         view.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         progressBar = view.findViewById(R.id.progressBar);
     }
+
     public void showProgressBar(ViewGroup viewGroup, boolean isToShowProgress) {
         if (isToShowProgress) {
             viewGroup.addView(view);
@@ -441,5 +435,12 @@ public class AppUtils {
             viewGroup.removeView(view);
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    private static <T> T checkNull(String message, T object) {
+        if (object == null) {
+            throw new NullPointerException(message);
+        }
+        return object;
     }
 }

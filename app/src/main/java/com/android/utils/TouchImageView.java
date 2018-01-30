@@ -1,8 +1,8 @@
 package com.android.utils;
-
 /**
  * Created by woxi-007 on 2/12/17.
  */
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -76,6 +76,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     private GestureDetector.OnDoubleTapListener doubleTapListener = null;
     private OnTouchListener userTouchListener = null;
     private OnTouchImageViewListener touchImageViewListener = null;
+
     public TouchImageView(Context context) {
         super(context);
         sharedConstructing(context);
@@ -91,132 +92,29 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         sharedConstructing(context);
     }
 
-    private void sharedConstructing(Context context) {
-        super.setClickable(true);
-        this.context = context;
-        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
-        mGestureDetector = new GestureDetector(context, new GestureListener());
-        matrix = new Matrix();
-        prevMatrix = new Matrix();
-        m = new float[9];
-        normalizedScale = 1;
-        if (mScaleType == null) {
-            mScaleType = ScaleType.FIT_CENTER;
-        }
-        minScale = 1;
-        maxScale = 3;
-        superMinScale = SUPER_MIN_MULTIPLIER * minScale;
-        superMaxScale = SUPER_MAX_MULTIPLIER * maxScale;
-        setImageMatrix(matrix);
-        setScaleType(ScaleType.MATRIX);
-        setState(State.NONE);
-        onDrawReady = false;
-        super.setOnTouchListener(new PrivateOnTouchListener());
-    }
-
     @Override
     public void setOnTouchListener(OnTouchListener l) {
         userTouchListener = l;
     }
 
-    public void setOnTouchImageViewListener(OnTouchImageViewListener l) {
-        touchImageViewListener = l;
-    }
-
-    public void setOnDoubleTapListener(GestureDetector.OnDoubleTapListener l) {
-        doubleTapListener = l;
-    }
-
     @Override
-    public void setImageResource(int resId) {
-        super.setImageResource(resId);
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
         savePreviousImageValues();
-        fitImageToView();
     }
 
     @Override
-    public void setImageBitmap(Bitmap bm) {
-        super.setImageBitmap(bm);
-        savePreviousImageValues();
-        fitImageToView();
-    }
-
-    @Override
-    public void setImageDrawable(Drawable drawable) {
-        super.setImageDrawable(drawable);
-        savePreviousImageValues();
-        fitImageToView();
-    }
-
-    @Override
-    public void setImageURI(Uri uri) {
-        super.setImageURI(uri);
-        savePreviousImageValues();
-        fitImageToView();
-    }
-
-    @Override
-    public ScaleType getScaleType() {
-        return mScaleType;
-    }
-
-    @Override
-    public void setScaleType(ScaleType type) {
-        if (type == ScaleType.FIT_START || type == ScaleType.FIT_END) {
-            throw new UnsupportedOperationException("TouchImageView does not support FIT_START or FIT_END");
+    public boolean canScrollHorizontally(int direction) {
+        matrix.getValues(m);
+        float x = m[Matrix.MTRANS_X];
+        if (getImageWidth() < viewWidth) {
+            return false;
+        } else if (x >= -1 && direction < 0) {
+            return false;
+        } else if (Math.abs(x) + viewWidth + 1 >= getImageWidth() && direction > 0) {
+            return false;
         }
-        if (type == ScaleType.MATRIX) {
-            super.setScaleType(ScaleType.MATRIX);
-        } else {
-            mScaleType = type;
-            if (onDrawReady) {
-                //
-                // If the image is already rendered, scaleType has been called programmatically
-                // and the TouchImageView should be updated with the new scaleType.
-                //
-                setZoom(this);
-            }
-        }
-    }
-
-    /**
-     * Returns false if image is in initial, unzoomed state. False, otherwise.
-     *
-     * @return true if image is zoomed
-     */
-    public boolean isZoomed() {
-        return normalizedScale != 1;
-    }
-
-    /**
-     * Return a Rect representing the zoomed image.
-     *
-     * @return rect representing zoomed image
-     */
-    public RectF getZoomedRect() {
-        if (mScaleType == ScaleType.FIT_XY) {
-            throw new UnsupportedOperationException("getZoomedRect() not supported with FIT_XY");
-        }
-        PointF topLeft = transformCoordTouchToBitmap(0, 0, true);
-        PointF bottomRight = transformCoordTouchToBitmap(viewWidth, viewHeight, true);
-        float w = getDrawable().getIntrinsicWidth();
-        float h = getDrawable().getIntrinsicHeight();
-        return new RectF(topLeft.x / w, topLeft.y / h, bottomRight.x / w, bottomRight.y / h);
-    }
-
-    /**
-     * Save the current matrix and view dimensions
-     * in the prevMatrix and prevView variables.
-     */
-    private void savePreviousImageValues() {
-        if (matrix != null && viewHeight != 0 && viewWidth != 0) {
-            matrix.getValues(m);
-            prevMatrix.setValues(m);
-            prevMatchViewHeight = matchViewHeight;
-            prevMatchViewWidth = matchViewWidth;
-            prevViewHeight = viewHeight;
-            prevViewWidth = viewWidth;
-        }
+        return true;
     }
 
     @Override
@@ -252,7 +150,218 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         super.onRestoreInstanceState(state);
     }
 
+    public void setOnTouchImageViewListener(OnTouchImageViewListener l) {
+        touchImageViewListener = l;
+    }
+
+    public void setOnDoubleTapListener(GestureDetector.OnDoubleTapListener l) {
+        doubleTapListener = l;
+    }
+
     @Override
+    public void setImageResource(int resId) {
+        super.setImageResource(resId);
+        savePreviousImageValues();
+        fitImageToView();
+    }
+
+    @Override
+    public void setImageDrawable(Drawable drawable) {
+        super.setImageDrawable(drawable);
+        savePreviousImageValues();
+        fitImageToView();
+    }    @Override
+    public ScaleType getScaleType() {
+        return mScaleType;
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap bm) {
+        super.setImageBitmap(bm);
+        savePreviousImageValues();
+        fitImageToView();
+    }    @Override
+    public void setScaleType(ScaleType type) {
+        if (type == ScaleType.FIT_START || type == ScaleType.FIT_END) {
+            throw new UnsupportedOperationException("TouchImageView does not support FIT_START or FIT_END");
+        }
+        if (type == ScaleType.MATRIX) {
+            super.setScaleType(ScaleType.MATRIX);
+        } else {
+            mScaleType = type;
+            if (onDrawReady) {
+                //
+                // If the image is already rendered, scaleType has been called programmatically
+                // and the TouchImageView should be updated with the new scaleType.
+                //
+                setZoom(this);
+            }
+        }
+    }
+
+    @Override
+    public void setImageURI(Uri uri) {
+        super.setImageURI(uri);
+        savePreviousImageValues();
+        fitImageToView();
+    }
+
+    /**
+     * Save the current matrix and view dimensions
+     * in the prevMatrix and prevView variables.
+     */
+    private void savePreviousImageValues() {
+        if (matrix != null && viewHeight != 0 && viewWidth != 0) {
+            matrix.getValues(m);
+            prevMatrix.setValues(m);
+            prevMatchViewHeight = matchViewHeight;
+            prevMatchViewWidth = matchViewWidth;
+            prevViewHeight = viewHeight;
+            prevViewWidth = viewWidth;
+        }
+    }
+
+    /**
+     * If the normalizedScale is equal to 1, then the image is made to fit the screen. Otherwise,
+     * it is made to fit the screen according to the dimensions of the previous image matrix. This
+     * allows the image to maintain its zoom after rotation.
+     */
+    private void fitImageToView() {
+        Drawable drawable = getDrawable();
+        if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+            return;
+        }
+        if (matrix == null || prevMatrix == null) {
+            return;
+        }
+        int drawableWidth = drawable.getIntrinsicWidth();
+        int drawableHeight = drawable.getIntrinsicHeight();
+        //
+        // Scale image for view
+        //
+        float scaleX = (float) viewWidth / drawableWidth;
+        float scaleY = (float) viewHeight / drawableHeight;
+        switch (mScaleType) {
+            case CENTER:
+                scaleX = scaleY = 1;
+                break;
+            case CENTER_CROP:
+                scaleX = scaleY = Math.max(scaleX, scaleY);
+                break;
+            case CENTER_INSIDE:
+                scaleX = scaleY = Math.min(1, Math.min(scaleX, scaleY));
+            case FIT_CENTER:
+                scaleX = scaleY = Math.min(scaleX, scaleY);
+                break;
+            case FIT_XY:
+                break;
+            default:
+                //
+                // FIT_START and FIT_END not supported
+                //
+                throw new UnsupportedOperationException("TouchImageView does not support FIT_START or FIT_END");
+        }
+        //
+        // Center the image
+        //
+        float redundantXSpace = viewWidth - (scaleX * drawableWidth);
+        float redundantYSpace = viewHeight - (scaleY * drawableHeight);
+        matchViewWidth = viewWidth - redundantXSpace;
+        matchViewHeight = viewHeight - redundantYSpace;
+        if (!isZoomed() && !imageRenderedAtLeastOnce) {
+            //
+            // Stretch and center image to fit view
+            //
+            matrix.setScale(scaleX, scaleY);
+            matrix.postTranslate(redundantXSpace / 2, redundantYSpace / 2);
+            normalizedScale = 1;
+        } else {
+            //
+            // These values should never be 0 or we will set viewWidth and viewHeight
+            // to NaN in translateMatrixAfterRotate. To avoid this, call savePreviousImageValues
+            // to set them equal to the current values.
+            //
+            if (prevMatchViewWidth == 0 || prevMatchViewHeight == 0) {
+                savePreviousImageValues();
+            }
+            prevMatrix.getValues(m);
+            //
+            // Rescale Matrix after rotation
+            //
+            m[Matrix.MSCALE_X] = matchViewWidth / drawableWidth * normalizedScale;
+            m[Matrix.MSCALE_Y] = matchViewHeight / drawableHeight * normalizedScale;
+            //
+            // TransX and TransY from previous matrix
+            //
+            float transX = m[Matrix.MTRANS_X];
+            float transY = m[Matrix.MTRANS_Y];
+            //
+            // Width
+            //
+            float prevActualWidth = prevMatchViewWidth * normalizedScale;
+            float actualWidth = getImageWidth();
+            translateMatrixAfterRotate(Matrix.MTRANS_X, transX, prevActualWidth, actualWidth, prevViewWidth, viewWidth, drawableWidth);
+            //
+            // Height
+            //
+            float prevActualHeight = prevMatchViewHeight * normalizedScale;
+            float actualHeight = getImageHeight();
+            translateMatrixAfterRotate(Matrix.MTRANS_Y, transY, prevActualHeight, actualHeight, prevViewHeight, viewHeight, drawableHeight);
+            //
+            // Set the matrix to the adjusted scale and translate values.
+            //
+            matrix.setValues(m);
+        }
+        fixTrans();
+        setImageMatrix(matrix);
+    }
+
+    /**
+     * Returns false if image is in initial, unzoomed state. False, otherwise.
+     *
+     * @return true if image is zoomed
+     */
+    public boolean isZoomed() {
+        return normalizedScale != 1;
+    }
+
+    private float getImageWidth() {
+        return matchViewWidth * normalizedScale;
+    }
+
+    /**
+     * After rotating, the matrix needs to be translated. This function finds the area of image
+     * which was previously centered and adjusts translations so that is again the center, post-rotation.
+     *
+     * @param axis          Matrix.MTRANS_X or Matrix.MTRANS_Y
+     * @param trans         the value of trans in that axis before the rotation
+     * @param prevImageSize the width/height of the image before the rotation
+     * @param imageSize     width/height of the image after rotation
+     * @param prevViewSize  width/height of view before rotation
+     * @param viewSize      width/height of view after rotation
+     * @param drawableSize  width/height of drawable
+     */
+    private void translateMatrixAfterRotate(int axis, float trans, float prevImageSize, float imageSize, int prevViewSize, int viewSize, int drawableSize) {
+        if (imageSize < viewSize) {
+            //
+            // The width/height of image is less than the view's width/height. Center it.
+            //
+            m[axis] = (viewSize - (drawableSize * m[Matrix.MSCALE_X])) * 0.5f;
+        } else if (trans > 0) {
+            //
+            // The image is larger than the view, but was not before rotation. Center it.
+            //
+            m[axis] = -((imageSize - viewSize) * 0.5f);
+        } else {
+            //
+            // Find the area of the image which was previously centered in the view. Determine its distance
+            // from the left/top side of the view as a fraction of the entire image's width/height. Use that percentage
+            // to calculate the trans in the new view width/height.
+            //
+            float percentage = (Math.abs(trans) + (0.5f * prevViewSize)) / prevImageSize;
+            m[axis] = -((percentage * imageSize) - (viewSize * 0.5f));
+        }
+    }    @Override
     protected void onDraw(Canvas canvas) {
         onDrawReady = true;
         imageRenderedAtLeastOnce = true;
@@ -263,10 +372,80 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         super.onDraw(canvas);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        savePreviousImageValues();
+    private float getImageHeight() {
+        return matchViewHeight * normalizedScale;
+    }
+
+    /**
+     * Performs boundary checking and fixes the image matrix if it
+     * is out of bounds.
+     */
+    private void fixTrans() {
+        matrix.getValues(m);
+        float transX = m[Matrix.MTRANS_X];
+        float transY = m[Matrix.MTRANS_Y];
+        float fixTransX = getFixTrans(transX, viewWidth, getImageWidth());
+        float fixTransY = getFixTrans(transY, viewHeight, getImageHeight());
+        if (fixTransX != 0 || fixTransY != 0) {
+            matrix.postTranslate(fixTransX, fixTransY);
+        }
+    }
+
+    private float getFixTrans(float trans, float viewSize, float contentSize) {
+        float minTrans, maxTrans;
+        if (contentSize <= viewSize) {
+            minTrans = 0;
+            maxTrans = viewSize - contentSize;
+        } else {
+            minTrans = viewSize - contentSize;
+            maxTrans = 0;
+        }
+        if (trans < minTrans)
+            return -trans + minTrans;
+        if (trans > maxTrans)
+            return -trans + maxTrans;
+        return 0;
+    }
+
+    /**
+     * Return a Rect representing the zoomed image.
+     *
+     * @return rect representing zoomed image
+     */
+    public RectF getZoomedRect() {
+        if (mScaleType == ScaleType.FIT_XY) {
+            throw new UnsupportedOperationException("getZoomedRect() not supported with FIT_XY");
+        }
+        PointF topLeft = transformCoordTouchToBitmap(0, 0, true);
+        PointF bottomRight = transformCoordTouchToBitmap(viewWidth, viewHeight, true);
+        float w = getDrawable().getIntrinsicWidth();
+        float h = getDrawable().getIntrinsicHeight();
+        return new RectF(topLeft.x / w, topLeft.y / h, bottomRight.x / w, bottomRight.y / h);
+    }
+
+    /**
+     * This function will transform the coordinates in the touch event to the coordinate
+     * system of the drawable that the imageview contain
+     *
+     * @param x            x-coordinate of touch event
+     * @param y            y-coordinate of touch event
+     * @param clipToBitmap Touch event may occur within view, but outside image content. True, to clip return value
+     *                     to the bounds of the bitmap size.
+     * @return Coordinates of the point touched, in the coordinate system of the original drawable.
+     */
+    private PointF transformCoordTouchToBitmap(float x, float y, boolean clipToBitmap) {
+        matrix.getValues(m);
+        float origW = getDrawable().getIntrinsicWidth();
+        float origH = getDrawable().getIntrinsicHeight();
+        float transX = m[Matrix.MTRANS_X];
+        float transY = m[Matrix.MTRANS_Y];
+        float finalX = ((x - transX) * origW) / getImageWidth();
+        float finalY = ((y - transY) * origH) / getImageHeight();
+        if (clipToBitmap) {
+            finalX = Math.min(Math.max(finalX, 0), origW);
+            finalY = Math.min(Math.max(finalY, 0), origH);
+        }
+        return new PointF(finalX, finalY);
     }
 
     /**
@@ -425,19 +604,31 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         setZoom(normalizedScale, focusX, focusY);
     }
 
-    /**
-     * Performs boundary checking and fixes the image matrix if it
-     * is out of bounds.
-     */
-    private void fixTrans() {
-        matrix.getValues(m);
-        float transX = m[Matrix.MTRANS_X];
-        float transY = m[Matrix.MTRANS_Y];
-        float fixTransX = getFixTrans(transX, viewWidth, getImageWidth());
-        float fixTransY = getFixTrans(transY, viewHeight, getImageHeight());
-        if (fixTransX != 0 || fixTransY != 0) {
-            matrix.postTranslate(fixTransX, fixTransY);
+    public boolean canScrollHorizontallyFroyo(int direction) {
+        return canScrollHorizontally(direction);
+    }
+
+    private void sharedConstructing(Context context) {
+        super.setClickable(true);
+        this.context = context;
+        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mGestureDetector = new GestureDetector(context, new GestureListener());
+        matrix = new Matrix();
+        prevMatrix = new Matrix();
+        m = new float[9];
+        normalizedScale = 1;
+        if (mScaleType == null) {
+            mScaleType = ScaleType.FIT_CENTER;
         }
+        minScale = 1;
+        maxScale = 3;
+        superMinScale = SUPER_MIN_MULTIPLIER * minScale;
+        superMaxScale = SUPER_MAX_MULTIPLIER * maxScale;
+        setImageMatrix(matrix);
+        setScaleType(ScaleType.MATRIX);
+        setState(State.NONE);
+        onDrawReady = false;
+        super.setOnTouchListener(new PrivateOnTouchListener());
     }
 
     /**
@@ -457,40 +648,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             m[Matrix.MTRANS_Y] = (viewHeight - getImageHeight()) / 2;
         }
         matrix.setValues(m);
-    }
-
-    private float getFixTrans(float trans, float viewSize, float contentSize) {
-        float minTrans, maxTrans;
-        if (contentSize <= viewSize) {
-            minTrans = 0;
-            maxTrans = viewSize - contentSize;
-        } else {
-            minTrans = viewSize - contentSize;
-            maxTrans = 0;
-        }
-        if (trans < minTrans)
-            return -trans + minTrans;
-        if (trans > maxTrans)
-            return -trans + maxTrans;
-        return 0;
-    }
-
-    private float getFixDragTrans(float delta, float viewSize, float contentSize) {
-        if (contentSize <= viewSize) {
-            return 0;
-        }
-        return delta;
-    }
-
-    private float getImageWidth() {
-        return matchViewWidth * normalizedScale;
-    }
-
-    private float getImageHeight() {
-        return matchViewHeight * normalizedScale;
-    }
-
-    @Override
+    }    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         Drawable drawable = getDrawable();
         if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
@@ -515,102 +673,16 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         fitImageToView();
     }
 
-    /**
-     * If the normalizedScale is equal to 1, then the image is made to fit the screen. Otherwise,
-     * it is made to fit the screen according to the dimensions of the previous image matrix. This
-     * allows the image to maintain its zoom after rotation.
-     */
-    private void fitImageToView() {
-        Drawable drawable = getDrawable();
-        if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
-            return;
+    private float getFixDragTrans(float delta, float viewSize, float contentSize) {
+        if (contentSize <= viewSize) {
+            return 0;
         }
-        if (matrix == null || prevMatrix == null) {
-            return;
-        }
-        int drawableWidth = drawable.getIntrinsicWidth();
-        int drawableHeight = drawable.getIntrinsicHeight();
-        //
-        // Scale image for view
-        //
-        float scaleX = (float) viewWidth / drawableWidth;
-        float scaleY = (float) viewHeight / drawableHeight;
-        switch (mScaleType) {
-            case CENTER:
-                scaleX = scaleY = 1;
-                break;
-            case CENTER_CROP:
-                scaleX = scaleY = Math.max(scaleX, scaleY);
-                break;
-            case CENTER_INSIDE:
-                scaleX = scaleY = Math.min(1, Math.min(scaleX, scaleY));
-            case FIT_CENTER:
-                scaleX = scaleY = Math.min(scaleX, scaleY);
-                break;
-            case FIT_XY:
-                break;
-            default:
-                //
-                // FIT_START and FIT_END not supported
-                //
-                throw new UnsupportedOperationException("TouchImageView does not support FIT_START or FIT_END");
-        }
-        //
-        // Center the image
-        //
-        float redundantXSpace = viewWidth - (scaleX * drawableWidth);
-        float redundantYSpace = viewHeight - (scaleY * drawableHeight);
-        matchViewWidth = viewWidth - redundantXSpace;
-        matchViewHeight = viewHeight - redundantYSpace;
-        if (!isZoomed() && !imageRenderedAtLeastOnce) {
-            //
-            // Stretch and center image to fit view
-            //
-            matrix.setScale(scaleX, scaleY);
-            matrix.postTranslate(redundantXSpace / 2, redundantYSpace / 2);
-            normalizedScale = 1;
-        } else {
-            //
-            // These values should never be 0 or we will set viewWidth and viewHeight
-            // to NaN in translateMatrixAfterRotate. To avoid this, call savePreviousImageValues
-            // to set them equal to the current values.
-            //
-            if (prevMatchViewWidth == 0 || prevMatchViewHeight == 0) {
-                savePreviousImageValues();
-            }
-            prevMatrix.getValues(m);
-            //
-            // Rescale Matrix after rotation
-            //
-            m[Matrix.MSCALE_X] = matchViewWidth / drawableWidth * normalizedScale;
-            m[Matrix.MSCALE_Y] = matchViewHeight / drawableHeight * normalizedScale;
-            //
-            // TransX and TransY from previous matrix
-            //
-            float transX = m[Matrix.MTRANS_X];
-            float transY = m[Matrix.MTRANS_Y];
-            //
-            // Width
-            //
-            float prevActualWidth = prevMatchViewWidth * normalizedScale;
-            float actualWidth = getImageWidth();
-            translateMatrixAfterRotate(Matrix.MTRANS_X, transX, prevActualWidth, actualWidth, prevViewWidth, viewWidth, drawableWidth);
-            //
-            // Height
-            //
-            float prevActualHeight = prevMatchViewHeight * normalizedScale;
-            float actualHeight = getImageHeight();
-            translateMatrixAfterRotate(Matrix.MTRANS_Y, transY, prevActualHeight, actualHeight, prevViewHeight, viewHeight, drawableHeight);
-            //
-            // Set the matrix to the adjusted scale and translate values.
-            //
-            matrix.setValues(m);
-        }
-        fixTrans();
-        setImageMatrix(matrix);
+        return delta;
     }
 
-    /**
+    private void setState(State state) {
+        this.state = state;
+    }    /**
      * Set view dimensions based on layout params
      *
      * @param mode
@@ -637,62 +709,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         return viewSize;
     }
 
-    /**
-     * After rotating, the matrix needs to be translated. This function finds the area of image
-     * which was previously centered and adjusts translations so that is again the center, post-rotation.
-     *
-     * @param axis          Matrix.MTRANS_X or Matrix.MTRANS_Y
-     * @param trans         the value of trans in that axis before the rotation
-     * @param prevImageSize the width/height of the image before the rotation
-     * @param imageSize     width/height of the image after rotation
-     * @param prevViewSize  width/height of view before rotation
-     * @param viewSize      width/height of view after rotation
-     * @param drawableSize  width/height of drawable
-     */
-    private void translateMatrixAfterRotate(int axis, float trans, float prevImageSize, float imageSize, int prevViewSize, int viewSize, int drawableSize) {
-        if (imageSize < viewSize) {
-            //
-            // The width/height of image is less than the view's width/height. Center it.
-            //
-            m[axis] = (viewSize - (drawableSize * m[Matrix.MSCALE_X])) * 0.5f;
-        } else if (trans > 0) {
-            //
-            // The image is larger than the view, but was not before rotation. Center it.
-            //
-            m[axis] = -((imageSize - viewSize) * 0.5f);
-        } else {
-            //
-            // Find the area of the image which was previously centered in the view. Determine its distance
-            // from the left/top side of the view as a fraction of the entire image's width/height. Use that percentage
-            // to calculate the trans in the new view width/height.
-            //
-            float percentage = (Math.abs(trans) + (0.5f * prevViewSize)) / prevImageSize;
-            m[axis] = -((percentage * imageSize) - (viewSize * 0.5f));
-        }
-    }
-
-    private void setState(State state) {
-        this.state = state;
-    }
-
-    public boolean canScrollHorizontallyFroyo(int direction) {
-        return canScrollHorizontally(direction);
-    }
-
-    @Override
-    public boolean canScrollHorizontally(int direction) {
-        matrix.getValues(m);
-        float x = m[Matrix.MTRANS_X];
-        if (getImageWidth() < viewWidth) {
-            return false;
-        } else if (x >= -1 && direction < 0) {
-            return false;
-        } else if (Math.abs(x) + viewWidth + 1 >= getImageWidth() && direction > 0) {
-            return false;
-        }
-        return true;
-    }
-
     private void scaleImage(double deltaScale, float focusX, float focusY, boolean stretchImageToSuper) {
         float lowerScale, upperScale;
         if (stretchImageToSuper) {
@@ -713,31 +729,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         }
         matrix.postScale((float) deltaScale, (float) deltaScale, focusX, focusY);
         fixScaleTrans();
-    }
-
-    /**
-     * This function will transform the coordinates in the touch event to the coordinate
-     * system of the drawable that the imageview contain
-     *
-     * @param x            x-coordinate of touch event
-     * @param y            y-coordinate of touch event
-     * @param clipToBitmap Touch event may occur within view, but outside image content. True, to clip return value
-     *                     to the bounds of the bitmap size.
-     * @return Coordinates of the point touched, in the coordinate system of the original drawable.
-     */
-    private PointF transformCoordTouchToBitmap(float x, float y, boolean clipToBitmap) {
-        matrix.getValues(m);
-        float origW = getDrawable().getIntrinsicWidth();
-        float origH = getDrawable().getIntrinsicHeight();
-        float transX = m[Matrix.MTRANS_X];
-        float transY = m[Matrix.MTRANS_Y];
-        float finalX = ((x - transX) * origW) / getImageWidth();
-        float finalY = ((y - transY) * origH) / getImageHeight();
-        if (clipToBitmap) {
-            finalX = Math.min(Math.max(finalX, 0), origW);
-            finalY = Math.min(Math.max(finalY, 0), origH);
-        }
-        return new PointF(finalX, finalY);
     }
 
     /**
@@ -782,14 +773,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
      */
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            if (doubleTapListener != null) {
-                return doubleTapListener.onSingleTapConfirmed(e);
-            }
-            return performClick();
-        }
-
-        @Override
         public void onLongPress(MotionEvent e) {
             performLongClick();
         }
@@ -829,6 +812,14 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
                 return doubleTapListener.onDoubleTapEvent(e);
             }
             return false;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            if (doubleTapListener != null) {
+                return doubleTapListener.onSingleTapConfirmed(e);
+            }
+            return performClick();
         }
     }
 
@@ -901,12 +892,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
      */
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            setState(State.ZOOM);
-            return true;
-        }
-
-        @Override
         public boolean onScale(ScaleGestureDetector detector) {
             scaleImage(detector.getScaleFactor(), detector.getFocusX(), detector.getFocusY(), true);
             //
@@ -915,6 +900,12 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             if (touchImageViewListener != null) {
                 touchImageViewListener.onMove();
             }
+            return true;
+        }
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            setState(State.ZOOM);
             return true;
         }
 
@@ -999,20 +990,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         }
 
         /**
-         * Interpolate between where the image should start and end in order to translate
-         * the image so that the point that is touched is what ends up centered at the end
-         * of the zoom.
-         *
-         * @param t
-         */
-        private void translateImageToCenterTouchPosition(float t) {
-            float targetX = startTouch.x + t * (endTouch.x - startTouch.x);
-            float targetY = startTouch.y + t * (endTouch.y - startTouch.y);
-            PointF curr = transformCoordBitmapToTouch(bitmapX, bitmapY);
-            matrix.postTranslate(targetX - curr.x, targetY - curr.y);
-        }
-
-        /**
          * Use interpolator to get t
          *
          * @return
@@ -1034,6 +1011,20 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         private double calculateDeltaScale(float t) {
             double zoom = startZoom + t * (targetZoom - startZoom);
             return zoom / normalizedScale;
+        }
+
+        /**
+         * Interpolate between where the image should start and end in order to translate
+         * the image so that the point that is touched is what ends up centered at the end
+         * of the zoom.
+         *
+         * @param t
+         */
+        private void translateImageToCenterTouchPosition(float t) {
+            float targetX = startTouch.x + t * (endTouch.x - startTouch.x);
+            float targetY = startTouch.y + t * (endTouch.y - startTouch.y);
+            PointF curr = transformCoordBitmapToTouch(bitmapX, bitmapY);
+            matrix.postTranslate(targetX - curr.x, targetY - curr.y);
         }
     }
 
@@ -1187,6 +1178,16 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             this.scaleType = scaleType;
         }
     }
+
+
+
+
+
+
+
+
+
+
 
     /*private void printMatrixInfo() {
         float[] n = new float[9];

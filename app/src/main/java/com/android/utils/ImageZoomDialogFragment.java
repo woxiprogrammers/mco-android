@@ -1,5 +1,4 @@
 package com.android.utils;
-
 /**
  * Created by Sharvari on 2/12/17.
  */
@@ -21,7 +20,6 @@ import android.widget.Toast;
 import com.android.constro360.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 
 /**
  * <b>public class ImageZoomDialogFragment extends DialogFragment</b>
@@ -49,20 +47,6 @@ public class ImageZoomDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onResume() {
-        // Get existing layout params for the window
-        if (getDialog().getWindow() != null) {
-            ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-            // Assign window properties to fill the parent
-            params.width = WindowManager.LayoutParams.MATCH_PARENT;
-            params.height = WindowManager.LayoutParams.MATCH_PARENT;
-            getDialog().getWindow().setAttributes((WindowManager.LayoutParams) params);
-        }
-        // Call super onResume after sizing
-        super.onResume();
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View mParentView = inflater.inflate(R.layout.fragment_account_image_zoom, container, false);
@@ -77,7 +61,7 @@ public class ImageZoomDialogFragment extends DialogFragment {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        Toast.makeText(getActivity().getBaseContext(),"Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity().getBaseContext(), "Double Touch or Pinch In/Out To Zoom", Toast.LENGTH_LONG).show();
         ImageView mIvAccountImage = mParentView.findViewById(R.id.ivAccountImage);
         ImageView mIvDialogClose = mParentView.findViewById(R.id.ivDialogClose);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -100,5 +84,19 @@ public class ImageZoomDialogFragment extends DialogFragment {
                 .error(R.mipmap.ic_launcher_round)
                 .into(mIvAccountImage);
         return mParentView;
+    }
+
+    @Override
+    public void onResume() {
+        // Get existing layout params for the window
+        if (getDialog().getWindow() != null) {
+            ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+            // Assign window properties to fill the parent
+            params.width = WindowManager.LayoutParams.MATCH_PARENT;
+            params.height = WindowManager.LayoutParams.MATCH_PARENT;
+            getDialog().getWindow().setAttributes((WindowManager.LayoutParams) params);
+        }
+        // Call super onResume after sizing
+        super.onResume();
     }
 }

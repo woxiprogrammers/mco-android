@@ -10,7 +10,6 @@ import android.view.WindowManager;
 import com.android.awareness_module.AwarenessHomeActivity;
 import com.android.checklist_module.ChecklistHomeActivity;
 import com.android.dashboard.DashBoardActivity;
-import com.android.dpr_module.DPRHomeActivity;
 import com.android.dpr_module.DPRListActivity;
 import com.android.drawings_module.DrawingHomeActivity;
 import com.android.inventory_module.ActivityTransferRequest;

@@ -83,6 +83,53 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private RealmResults<ProjectsItem> projectsItemRealmResults;
 
     @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.actionLogout:
+                logoutAndClearAllData();
+                break;
+            case R.id.actionSetting:
+            case R.id.actionAbout:
+            case R.id.actionProfile:
+                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void logoutAndClearAllData() {
+        realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.deleteAll();
+                    AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
+                    Intent intentLogin = new Intent(mContext, LoginActivity.class);
+                    startActivity(intentLogin);
+                    finish();
+                }
+            });
+        } catch (Exception e) {
+            Timber.d(e.getMessage());
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash_board);
@@ -298,52 +345,5 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         Type type = new TypeToken<HashMap<String, String>>() {
         }.getType();
         return gson.fromJson(hashMapString, type);
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.actionLogout:
-                logoutAndClearAllData();
-                break;
-            case R.id.actionSetting:
-            case R.id.actionAbout:
-            case R.id.actionProfile:
-                Toast.makeText(mContext, "In Progress", Toast.LENGTH_SHORT).show();
-                break;
-        }
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void logoutAndClearAllData() {
-        realm = Realm.getDefaultInstance();
-        try {
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.deleteAll();
-                    AppUtils.getInstance().put(AppConstants.PREFS_IS_LOGGED_IN, false);
-                    Intent intentLogin = new Intent(mContext, LoginActivity.class);
-                    startActivity(intentLogin);
-                    finish();
-                }
-            });
-        } catch (Exception e) {
-            Timber.d(e.getMessage());
-        }
     }
 }

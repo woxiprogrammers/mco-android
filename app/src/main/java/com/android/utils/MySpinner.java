@@ -8,7 +8,6 @@ import android.util.AttributeSet;
  * Spinner extension that calls onItemSelected even when the selection is the same as its previous value
  */
 public class MySpinner extends AppCompatSpinner {
-
     public MySpinner(Context context) {
         super(context);
     }
@@ -40,5 +39,4 @@ public class MySpinner extends AppCompatSpinner {
             getOnItemSelectedListener().onItemSelected(this, getSelectedView(), position, getSelectedItemId());
         }
     }
-
 }
