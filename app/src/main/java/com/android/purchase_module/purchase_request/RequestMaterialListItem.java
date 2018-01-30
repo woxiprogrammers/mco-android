@@ -8,7 +8,7 @@ import io.realm.annotations.PrimaryKey;
 public class RequestMaterialListItem extends RealmObject{
 
 	@PrimaryKey
-	@SerializedName("purchase_order_request_component_id")
+	@SerializedName("material_request_component_id")
 	private int id;
 
 	@SerializedName("name")

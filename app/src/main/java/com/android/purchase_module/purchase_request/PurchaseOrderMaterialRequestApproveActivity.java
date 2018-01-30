@@ -201,7 +201,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("submitPurchaseRequest")
+                .setTag("requestToChangeStatus")
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
@@ -243,7 +243,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
+                        AppUtils.getInstance().logApiError(anError, "requestToChangeStatus");
                     }
                 });
     }
@@ -273,6 +273,9 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             RequestMaterialListItem requestMaterialListItem = requestMaterialListItemOrderedRealmCollection.get(position);
             RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
             holder.textViewItemName.setText(requestMaterialListItem.getMaterialName());
+            if(!requestMaterialListItem.isIs_approved()){
+                holder.checkboxComponent.setEnabled(false);
+            }
             holder.textViewItemQuantity.setText(requestMaterialListItem.getQuantity() + " " + requestMaterialListItem.getUnitName());
             int noOfChildViews = holder.ll_vendors.getChildCount();
             final int noOfSubModules = vendorsItemRealmList.size();
