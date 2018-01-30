@@ -34,6 +34,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.3"
             android:gravity="right"
+            style="@style/TextViewTitleStyle"
             android:layout_height="wrap_content"
             android:text="2"/>
     </LinearLayout>
