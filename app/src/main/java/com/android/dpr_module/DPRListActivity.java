@@ -127,7 +127,6 @@ public class DPRListActivity extends BaseActivity {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-
                     }
 
                     @Override

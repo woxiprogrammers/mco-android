@@ -3,7 +3,6 @@ package com.android.purchase_module.purchase_request;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,28 +12,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.inventory_module.inventory_model.MaterialListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormatSymbols;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -68,9 +69,9 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("");
         }
-        Bundle bundle=getIntent().getExtras();
-        if(bundle != null){
-            intPurchaseOrderRequestId=bundle.getInt("purchase_order_request_id");
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            intPurchaseOrderRequestId = bundle.getInt("purchase_order_request_id");
         }
 
     }
@@ -79,8 +80,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
             onBackPressed();
-        }
-        if (R.id.action_approve == item.getItemId()) {
+        } else if (R.id.action_approve == item.getItemId()) {
             if (AppUtils.getInstance().checkNetworkState()) {
                 openApproveDialog();
             } else {
@@ -97,7 +97,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         requestToGetDetails();
     }
 
-    private void setUpPrAdapter(){
+    private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseRequestListItems = realm.where(RequestMaterialListItem.class)
@@ -106,21 +106,15 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         rvList.setLayoutManager(new LinearLayoutManager(mContext));
         rvList.setHasFixedSize(true);
         rvList.setAdapter(purchaseRequestRvAdapter);
-        rvList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
-                rvList,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, final int position) {
-
-
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-                }));
+        purchaseRequestRvAdapter.setOnItemClickListener(new OnVendorClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                Toast.makeText(mContext, "Hi", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-    private void requestToGetDetails(){
+
+    private void requestToGetDetails() {
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_request_id", intPurchaseOrderRequestId);
@@ -148,7 +142,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                                     realm.delete(RequestmaterialsData.class);
                                     realm.delete(RequestMaterialListItem.class);
                                     realm.delete(VendorsItem.class);
-
 
                                     realm.insertOrUpdate(response);
                                 }
@@ -197,13 +190,76 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         alert.show();
     }
 
-    //ToDo item class
+    private void requestToChangeStatus(){
+        JSONObject params=new JSONObject();
+        try {
+            params.put("","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("submitPurchaseRequest")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(final JSONObject response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    try {
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                        String message = null;
+                        try {
+                            message = response.getString("message");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");
+                    }
+                });
+    }
+
     public class MaterialRequestListAdapter extends RealmRecyclerViewAdapter<RequestMaterialListItem, MaterialRequestListAdapter.MyViewHolder> {
         private OrderedRealmCollection<RequestMaterialListItem> requestMaterialListItemOrderedRealmCollection;
+        private OnVendorClickListener clickListener;
 
-        public MaterialRequestListAdapter(@Nullable OrderedRealmCollection<RequestMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        MaterialRequestListAdapter(@Nullable OrderedRealmCollection<RequestMaterialListItem> data, boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             requestMaterialListItemOrderedRealmCollection = data;
+            setHasStableIds(true);
+        }
+
+        void setOnItemClickListener(OnVendorClickListener listener) {
+            this.clickListener = listener;
         }
 
         @Override
@@ -213,11 +269,42 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         }
 
         @Override
-        public void onBindViewHolder(MyViewHolder holder, int position) {
-            final RequestMaterialListItem requestMaterialListItem = requestMaterialListItemOrderedRealmCollection.get(position);
+        public void onBindViewHolder(final MyViewHolder holder, int position) {
+            RequestMaterialListItem requestMaterialListItem = requestMaterialListItemOrderedRealmCollection.get(position);
+            RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
             holder.textViewItemName.setText(requestMaterialListItem.getMaterialName());
-            holder.textViewItemQuantity.setText(requestMaterialListItem.getQuantity() + requestMaterialListItem.getUnitName());
+            holder.textViewItemQuantity.setText(requestMaterialListItem.getQuantity() + " " + requestMaterialListItem.getUnitName());
+            int noOfChildViews = holder.ll_vendors.getChildCount();
+            final int noOfSubModules = vendorsItemRealmList.size();
+            if (noOfSubModules < noOfChildViews) {
+                for (int index = noOfSubModules; index < noOfChildViews; index++) {
+                    LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(index);
+                    currentChildView.setVisibility(View.GONE);
+                }
+            }
+            for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
+                LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
+                RadioButton vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
+                TextView textViewRateWithTax = currentChildView.findViewById(R.id.textViewRateWithTax);
+                TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
+                TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
 
+                textViewRateWithTax.setText("Rate Per Tax: " + vendorsItemRealmList.get(viewIndex).getRatePerTax());
+
+                textViewRateWithoutTax.setText("Rate Without Tax: " + vendorsItemRealmList.get(viewIndex).getRate());
+
+                textViewTotalWithTax.setText("Total With Tax: " + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
+                vendorRadioButton.setText(vendorsItemRealmList.get(viewIndex).getVendorName());
+
+                currentChildView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (clickListener != null) {
+                            clickListener.onItemClick(view, holder.getAdapterPosition());
+                        }
+                    }
+                });
+            }
         }
 
         @Override
@@ -230,11 +317,33 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             TextView textViewItemName;
             @BindView(R.id.textView_item_quantity)
             TextView textViewItemQuantity;
+            private Context context;
+            @BindView(R.id.ll_vendors)
+            LinearLayout ll_vendors;
+            @BindView(R.id.checkboxComponent)
+            CheckBox checkboxComponent;
+
             private MyViewHolder(View itemView) {
                 super(itemView);
+                context = itemView.getContext();
                 ButterKnife.bind(this, itemView);
+                int intMaxSize = 0;
+                for (int index = 0; index < requestMaterialListItemOrderedRealmCollection.size(); index++) {
+                    int intMaxSizeTemp = requestMaterialListItemOrderedRealmCollection.get(index).getVendors().size();
+                    if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
+                }
+                for (int indexView = 0; indexView < intMaxSize; indexView++) {
+                    View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
+                    childLayout.setId(indexView);
+                    ll_vendors.addView(childLayout);
+                }
             }
         }
+    }
+
+    // Define the listener interface
+    public interface OnVendorClickListener {
+        void onItemClick(View itemView, int position);
     }
 
 }
