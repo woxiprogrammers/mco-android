@@ -519,8 +519,6 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void validateEntries() {
-        String strSelectedSource = editTextSelectedSourceName.getText().toString();
-        String strItemName = editTextItemName.getText().toString();
         String strItemQuantity = edittextQuantity.getText().toString();
         String strBillNumber = editTextBillNumber.getText().toString();
         String strBillAmount = editTextBillamount.getText().toString();

@@ -13,16 +13,23 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/linearLayout_components"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/checkboxComponent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="@dimen/dimen_4dp"/>
+            <FrameLayout
+                android:id="@+id/checkboxFrame"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="@dimen/dimen_8dp">
+
+                <CheckBox
+                    android:id="@+id/checkboxComponent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,8 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="100 Kg"
-                    android:textColor="@color/colorTextLight"
-                    android:textSize="@dimen/dimen_14dp"/>
+                    android:textColor="@color/colorTextLight"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -52,6 +58,7 @@
             android:id="@+id/ll_vendors"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8dp"
             android:orientation="vertical">
         </LinearLayout>
     </LinearLayout>
