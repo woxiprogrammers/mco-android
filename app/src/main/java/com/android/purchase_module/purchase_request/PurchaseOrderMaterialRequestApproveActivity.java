@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +52,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private Realm realm;
     private int intPurchaseOrderRequestId;
     private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
+    private JSONArray jsonArray=new JSONArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +141,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         purchaseRequestRvAdapter.setChildClickListener(new OnVendorClickListener() {
             @Override
             public void onVendorItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors) {
-                JSONArray jsonArray = new JSONArray();
                 JSONObject jsonObject;
                 int itemViewIndex = itemView.getId();
                 RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
@@ -155,7 +156,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         if (vendorsItem.getOrderRequestComponentId() != tempVendorsItem.getOrderRequestComponentId()) {
                             try {
                                 jsonObject.put("id", tempVendorsItem.getOrderRequestComponentId());
-                                jsonObject.put("is_approve", false);
+                                jsonObject.put("is_approved", false);
                                 jsonArray.put(jsonObject);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -168,7 +169,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     jsonObject = new JSONObject();
                     try {
                         jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
-                        jsonObject.put("is_approve", true);
+                        jsonObject.put("is_approved", true);
                         jsonArray.put(jsonObject);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -249,6 +250,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        requestToChangeStatus();
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -264,10 +266,11 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private void requestToChangeStatus() {
         JSONObject params = new JSONObject();
         try {
-            params.put("", "");
+            params.put("purchase_order_request_components", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.i("@@",params.toString());
         AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
@@ -288,6 +291,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess() {
                                     try {
+                                        Toast.makeText(mContext,response.getString("message"),Toast.LENGTH_SHORT).show();
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -303,18 +307,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                                 realm.close();
                             }
                         }
-                        String message = null;
-                        try {
-                            message = response.getString("message");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestToChangeStatus");
+
                     }
                 });
     }
