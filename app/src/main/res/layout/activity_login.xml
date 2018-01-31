@@ -33,13 +33,12 @@
             android:background="@drawable/img_logo_small"
             android:gravity="center_horizontal"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/dimen_18dp"/>
+            android:layout_marginBottom="@dimen/dimen_5dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_30dp"
-            android:visibility="gone"
+            android:layout_marginBottom="@dimen/dimen_40dp"
             android:gravity="center_horizontal"
             android:text="Quality Is Not Expensive, \n It Is Priceless. "
             android:textColor="@color/colorWhite"/>
@@ -106,13 +105,13 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:visibility="gone"/>
-
+<!--
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_20dp"
             android:gravity="bottom|center_horizontal"
             android:text="Quality Is Not Expensive, \n It Is Priceless. "
-            android:textColor="@color/colorWhite"/>
+            android:textColor="@color/colorWhite"/>-->
     </LinearLayout>
 </FrameLayout>

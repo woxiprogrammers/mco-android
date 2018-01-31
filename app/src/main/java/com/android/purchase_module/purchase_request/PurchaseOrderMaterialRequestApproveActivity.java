@@ -107,12 +107,20 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         rvList.setLayoutManager(new LinearLayoutManager(mContext));
         rvList.setHasFixedSize(true);
         rvList.setAdapter(purchaseRequestRvAdapter);
-        /*purchaseRequestRvAdapter.setOnItemClickListener(new OnVendorClickListener() {
+        purchaseRequestRvAdapter.setOnItemClickListener(new OnVendorClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                Toast.makeText(mContext, "Hi", Toast.LENGTH_SHORT).show();
+                if (itemView.getId() == R.id.linearLayout_components) {
+                    Toast.makeText(mContext, "Main Compo LL", Toast.LENGTH_SHORT).show();
+                } else if (itemView.getId() == R.id.ll_vendors) {
+                    Toast.makeText(mContext, "Vendors LL", Toast.LENGTH_SHORT).show();
+                } else if (itemView.getId() == R.id.checkboxFrame) {
+                    Toast.makeText(mContext, "checkboxFrame", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "Different", Toast.LENGTH_SHORT).show();
+                }
             }
-        });*/
+        });
     }
 
     private void requestToGetDetails() {
@@ -296,12 +304,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 textViewRateWithoutTax.setText("Rate Without Tax: " + vendorsItemRealmList.get(viewIndex).getRate());
                 textViewTotalWithTax.setText("Total With Tax: " + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
                 vendorRadioButton.setText(vendorsItemRealmList.get(viewIndex).getVendorName());
-                vendorRadioButton.setOnClickListener(new View.OnClickListener() {
+                vendorRadioButton.setClickable(false);
+                /*currentChildView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (clickListener != null) {
+                        *//*if (clickListener != null) {
                             clickListener.onItemClick(view, holder.getAdapterPosition());
-                        }
+                        }*//*
                         for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                             LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
                             RadioButton tempVendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
@@ -310,15 +319,14 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
                         if (vendorRadioButton.isChecked()) {
                             vendorRadioButton.setChecked(false);
-                            Toast.makeText(mContext, "Checked", Toast.LENGTH_SHORT).show();
                         } else {
                             vendorRadioButton.setChecked(true);
                         }
                     }
-                });
+                });*/
             }
             holder.ll_vendors.setVisibility(View.GONE);
-            holder.linearLayout_components.setOnClickListener(new View.OnClickListener() {
+            /*holder.linearLayout_components.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (holder.ll_vendors.getVisibility() == View.VISIBLE) {
@@ -328,9 +336,9 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         holder.ll_vendors.setVisibility(View.VISIBLE);
                     }
                 }
-            });
+            });*/
 
-            holder.checkboxFrame.setOnClickListener(new View.OnClickListener() {
+            /*holder.checkboxFrame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (requestMaterialListItem.isIs_approved()) {
@@ -340,7 +348,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         holder.checkboxComponent.setChecked(true);
                     }
                 }
-            });
+            });*/
         }
 
         @Override
@@ -348,12 +356,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             return requestMaterialListItemOrderedRealmCollection.get(index).getId();
         }
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
+        class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            private Context context;
             @BindView(R.id.textView_item_name)
             TextView textViewItemName;
             @BindView(R.id.textView_item_quantity)
             TextView textViewItemQuantity;
-            private Context context;
             @BindView(R.id.ll_vendors)
             LinearLayout ll_vendors;
             @BindView(R.id.linearLayout_components)
@@ -375,7 +383,17 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 for (int indexView = 0; indexView < intMaxSize; indexView++) {
                     View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
+                    childLayout.setOnClickListener(this);
                     ll_vendors.addView(childLayout);
+                }
+                checkboxFrame.setOnClickListener(this);
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View view) {
+                if (clickListener != null) {
+                    clickListener.onItemClick(view, getAdapterPosition());
                 }
             }
         }
