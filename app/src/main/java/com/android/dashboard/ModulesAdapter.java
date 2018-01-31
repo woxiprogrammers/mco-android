@@ -43,7 +43,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     }
 
     // Define the method that allows the parent activity or fragment to define the listener
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    void setOnItemClickListener(OnItemClickListener listener) {
         this.clickListener = listener;
     }
 

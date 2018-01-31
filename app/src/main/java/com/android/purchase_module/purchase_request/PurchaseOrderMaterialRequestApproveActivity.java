@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.login_mvp.login_model.SubModulesItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.SlideAnimationUtil;
@@ -49,6 +50,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private Context mContext;
     private Realm realm;
     private int intPurchaseOrderRequestId;
+    private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,24 +103,60 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
-        RealmResults<RequestMaterialListItem> purchaseRequestListItems = realm.where(RequestMaterialListItem.class)
-                .findAll();
+        purchaseRequestListItems = realm.where(RequestMaterialListItem.class).findAll();
         MaterialRequestListAdapter purchaseRequestRvAdapter = new MaterialRequestListAdapter(purchaseRequestListItems, true, true);
         rvList.setLayoutManager(new LinearLayoutManager(mContext));
         rvList.setHasFixedSize(true);
         rvList.setAdapter(purchaseRequestRvAdapter);
-        purchaseRequestRvAdapter.setOnItemClickListener(new OnVendorClickListener() {
+        purchaseRequestRvAdapter.setOnItemClickListener(new OnComponentClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                if (itemView.getId() == R.id.linearLayout_components) {
-                    Toast.makeText(mContext, "Main Compo LL", Toast.LENGTH_SHORT).show();
-                } else if (itemView.getId() == R.id.ll_vendors) {
-                    Toast.makeText(mContext, "Vendors LL", Toast.LENGTH_SHORT).show();
-                } else if (itemView.getId() == R.id.checkboxFrame) {
-                    Toast.makeText(mContext, "checkboxFrame", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(mContext, "Different", Toast.LENGTH_SHORT).show();
+                int itemViewIndex = itemView.getId();
+                RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
+                if (itemViewIndex == R.id.linearLayout_components) {
+                    LinearLayout ll_vendors = itemView.findViewById(R.id.ll_vendors);
+                    if (ll_vendors.getVisibility() == View.VISIBLE) {
+                        ll_vendors.setVisibility(View.GONE);
+                    } else {
+                        SlideAnimationUtil.slideInFromRight(getBaseContext(), ll_vendors);
+                        ll_vendors.setVisibility(View.VISIBLE);
+                    }
+                } else if (itemViewIndex == R.id.checkboxFrame/* || itemViewIndex == R.id.checkboxComponent*/) {
+                    CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
+                    if (checkBox.isChecked()) {
+                        Toast.makeText(mContext, "Checked", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "UnChecked", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (requestMaterialListItem.isIs_approved()) {
+                        Toast.makeText(mContext, "Already approved", Toast.LENGTH_SHORT).show();
+                        checkBox.setChecked(false);
+                    } else {
+                        Toast.makeText(mContext, "Already disapproved", Toast.LENGTH_SHORT).show();
+                        checkBox.setChecked(true);
+                    }
                 }
+            }
+        });
+        purchaseRequestRvAdapter.setChildClickListener(new OnVendorClickListener() {
+            @Override
+            public void onVendorItemClick(View itemView, int position, int itemIndex) {
+                if (itemView.getId() == R.id.linearLayoutVendorItem) {
+                    Toast.makeText(mContext, "" + position + " " + itemIndex, Toast.LENGTH_SHORT).show();
+                    /*for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
+                        LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
+                        RadioButton tempVendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
+                        tempVendorRadioButton.setChecked(false);
+                    }
+
+                    if (vendorRadioButton.isChecked()) {
+                        vendorRadioButton.setChecked(false);
+                    } else {
+                        vendorRadioButton.setChecked(true);
+                    }*/
+                }
+
             }
         });
     }
@@ -258,7 +296,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
     public class MaterialRequestListAdapter extends RealmRecyclerViewAdapter<RequestMaterialListItem, MaterialRequestListAdapter.MyViewHolder> {
         private OrderedRealmCollection<RequestMaterialListItem> requestMaterialListItemOrderedRealmCollection;
-        private OnVendorClickListener clickListener;
+        private OnComponentClickListener componentClickListener;
+        private OnVendorClickListener vendorClickListener;
 
         MaterialRequestListAdapter(@Nullable OrderedRealmCollection<RequestMaterialListItem> data,
                                    boolean autoUpdate, boolean updateOnModification) {
@@ -267,8 +306,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             setHasStableIds(true);
         }
 
-        void setOnItemClickListener(OnVendorClickListener listener) {
-            this.clickListener = listener;
+        void setOnItemClickListener(OnComponentClickListener componentClickListener) {
+            this.componentClickListener = componentClickListener;
+        }
+
+        void setChildClickListener(OnVendorClickListener vendorClickListener) {
+            this.vendorClickListener = vendorClickListener;
+
         }
 
         @Override
@@ -284,7 +328,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
             holder.textViewItemName.setText(requestMaterialListItem.getMaterialName());
             holder.textViewItemQuantity.setText("Qty: " + requestMaterialListItem.getQuantity() + " " + requestMaterialListItem.getUnitName());
-
+            holder.ll_vendors.setVisibility(View.GONE);
             int noOfChildViews = holder.ll_vendors.getChildCount();
             final int noOfSubModules = vendorsItemRealmList.size();
             if (noOfSubModules < noOfChildViews) {
@@ -308,8 +352,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 /*currentChildView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        *//*if (clickListener != null) {
-                            clickListener.onItemClick(view, holder.getAdapterPosition());
+                        *//*if (componentClickListener != null) {
+                            componentClickListener.onItemClick(view, holder.getAdapterPosition());
                         }*//*
                         for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                             LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
@@ -325,7 +369,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     }
                 });*/
             }
-            holder.ll_vendors.setVisibility(View.GONE);
             /*holder.linearLayout_components.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -383,25 +426,39 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 for (int indexView = 0; indexView < intMaxSize; indexView++) {
                     View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
-                    childLayout.setOnClickListener(this);
+                    LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);
+                    final int finalIndexView = indexView;
+                    linearLayoutVendorItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (vendorClickListener != null) {
+                                vendorClickListener.onVendorItemClick(view, getAdapterPosition(), finalIndexView);
+                            }
+                        }
+                    });
                     ll_vendors.addView(childLayout);
                 }
                 checkboxFrame.setOnClickListener(this);
-                itemView.setOnClickListener(this);
+//                checkboxComponent.setOnClickListener(this);
+//                ll_vendors.setOnClickListener(this);
+                linearLayout_components.setOnClickListener(this);
             }
 
             @Override
             public void onClick(View view) {
-                if (clickListener != null) {
-                    clickListener.onItemClick(view, getAdapterPosition());
+                if (componentClickListener != null) {
+                    componentClickListener.onItemClick(view, getAdapterPosition());
                 }
             }
         }
     }
 
     // Define the listener interface
-    public interface OnVendorClickListener {
+    public interface OnComponentClickListener {
         void onItemClick(View itemView, int position);
     }
 
+    private interface OnVendorClickListener {
+        void onVendorItemClick(View itemView, int position, int itemIndex);
+    }
 }

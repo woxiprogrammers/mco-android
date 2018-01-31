@@ -7,34 +7,41 @@
     android:orientation="vertical"
     android:paddingBottom="@dimen/dimen_8dp">
 
-    <RadioButton
-        android:id="@+id/vendorRadioButton"
+    <LinearLayout
+        android:id="@+id/linearLayoutVendorItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dimen_12dp"
-        android:paddingLeft="@dimen/dimen_4dp"
-        android:paddingTop="@dimen/dimen_12dp"
-        android:text="First Vendor Name"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textViewRateWithTax"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_10dp"
-        android:text="Rate With Tax"/>
+        <RadioButton
+            android:id="@+id/vendorRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dimen_12dp"
+            android:paddingLeft="@dimen/dimen_4dp"
+            android:paddingTop="@dimen/dimen_12dp"
+            android:text="First Vendor Name"/>
 
-    <TextView
-        android:id="@+id/textViewRateWithoutTax"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_10dp"
-        android:text="Rate Without Tax"/>
+        <TextView
+            android:id="@+id/textViewRateWithTax"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:text="Rate With Tax"/>
 
-    <TextView
-        android:id="@+id/textViewTotalWithTax"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dimen_10dp"
-        android:text="Total With Tax"/>
+        <TextView
+            android:id="@+id/textViewRateWithoutTax"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:text="Rate Without Tax"/>
+
+        <TextView
+            android:id="@+id/textViewTotalWithTax"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:text="Total With Tax"/>
+    </LinearLayout>
 
 </LinearLayout>
