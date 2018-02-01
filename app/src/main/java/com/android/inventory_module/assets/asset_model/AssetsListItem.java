@@ -7,12 +7,6 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class AssetsListItem extends RealmObject {
-    /*
-            "slug": "fuel_dependent",
-            "total_electricity_consumed": 0,
-            "in": 0,
-            "out": 0,
-            "available": 0*/
     @SerializedName("assets_name")
     private String assetsName;
     @SerializedName("asset_id")
