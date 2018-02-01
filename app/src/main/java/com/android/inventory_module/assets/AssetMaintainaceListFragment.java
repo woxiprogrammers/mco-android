@@ -36,6 +36,9 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.OrderedRealmCollection;
@@ -56,6 +59,7 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
     private View mParentView;
     private Context mContext;
     private Realm realm;
+    private int passYear, passMonth;
 
     public AssetMaintainaceListFragment() {
         // Required empty public constructor
@@ -75,6 +79,9 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
         mContext=getActivity();
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passYear = calendar.get(Calendar.YEAR);
         setAdapterForMaterialList();
         return mParentView;
 
@@ -87,7 +94,7 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
 
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
-        RealmResults<AssetMaintenanceListItem> materialListItems = realm.where(AssetMaintenanceListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        final RealmResults<AssetMaintenanceListItem> materialListItems = realm.where(AssetMaintenanceListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
         AssetMaintenanceListAdapter materialListAdapter = new AssetMaintenanceListAdapter(materialListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -96,7 +103,10 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvMaterialList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-
+                Intent intent=new Intent(getActivity(),MaitenanceFormActivity.class);
+                intent.putExtra("asset_maintenance_id",materialListItems.get(position).getAssetMaintenanceId());
+                intent.putExtra("vendorName",materialListItems.get(position).getApprovedVendorName());
+                startActivity(intent);
             }
 
             @Override
@@ -105,13 +115,13 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         }));
     }
 
+
     private void requestToGetList() {
         AppUtils.getInstance().showProgressBar(mainRelativeList, true);
         JSONObject params = new JSONObject();
         try {
-            params.put("month","02");
-            params.put("year","2018");
-
+            params.put("month",passMonth);
+            params.put("year",passYear);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -190,8 +200,8 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             final AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItemOrderedRealmCollection.get(position);
-            holder.textViewMaintNumber.setText(assetMaintenanceListItem.getAssetMaintenanceId());
-            holder.textViewReqName.setText("Requested by" + assetMaintenanceListItem.getUserName());
+            holder.textViewMaintNumber.setText("Maintenance Id "+assetMaintenanceListItem.getAssetMaintenanceId());
+            holder.textViewReqName.setText("Requested by " + assetMaintenanceListItem.getUserName());
             holder.textViewStatus.setText(assetMaintenanceListItem.getStatus());
             holder.textViewReqDate.setText(AppUtils.getInstance().getTime("EEE, dd MMM yyyy", "dd-MMM-yyyy", assetMaintenanceListItem.getDate()));
 
@@ -203,12 +213,16 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
+
             @BindView(R.id.textViewMaintNumber)
             TextView textViewMaintNumber;
+
             @BindView(R.id.textViewReqName)
             TextView textViewReqName;
+
             @BindView(R.id.textViewStatus)
             TextView textViewStatus;
+
             @BindView(R.id.textViewReqDate)
             TextView textViewReqDate;
 

@@ -78,6 +78,8 @@ public class MaitenanceFormActivity extends BaseActivity {
     private String strCaptureTag="";
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
+    private int maintenanceId;
+    private String strvendorName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,13 @@ public class MaitenanceFormActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Maintenance");
         }
+        Bundle bundle=getIntent().getExtras();
+        if(bundle != null){
+            maintenanceId=bundle.getInt("asset_maintenance_id");
+            strvendorName=bundle.getString("vendorName");
+            editTextVendorName.setText(strvendorName);
+
+        }
 
     }
 
@@ -107,9 +116,10 @@ public class MaitenanceFormActivity extends BaseActivity {
 
     @OnClick(R.id.buttonGenerateGrn)
     public void onClicked() {
-        linearLayoutAfterGrn.setVisibility(View.VISIBLE);
+        /*linearLayoutAfterGrn.setVisibility(View.VISIBLE);
         buttonGenerateGrn.setVisibility(View.GONE);
-        textViewCapture.setVisibility(View.GONE);
+        textViewCapture.setVisibility(View.GONE);*/
+        uploadImages_addItemToLocal("GRN","pre_grn_request_maintenance");
 
     }
 
@@ -266,17 +276,19 @@ public class MaitenanceFormActivity extends BaseActivity {
 
 
     private void requestToGenerateGrn() {
-        if (TextUtils.isEmpty(editTextVendorName.getText().toString())) {
+        /*if (TextUtils.isEmpty(editTextVendorName.getText().toString())) {
             editTextVendorName.setError("Please enter vendor name");
             return;
-        }
+        }*/
         if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
         JSONObject params = new JSONObject();
         try {
-            params.put("", "");
+            params.put("asset_maintenance_id", maintenanceId);
+            params.put("remark",editTextAddNote.getText().toString());
+            params.put("images",jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
