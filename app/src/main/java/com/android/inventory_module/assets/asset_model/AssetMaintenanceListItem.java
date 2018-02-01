@@ -1,8 +1,10 @@
 package com.android.inventory_module.assets.asset_model;
 
+import com.android.purchase_module.purchase_request.purchase_request_model.purchase_details.ImageItem;
 import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class AssetMaintenanceListItem extends RealmObject{
@@ -30,8 +32,29 @@ public class AssetMaintenanceListItem extends RealmObject{
 
 	@SerializedName("status")
 	private String status;
+
+	private boolean is_transaction_created;
+
+	public boolean isIs_transaction_created() {
+		return is_transaction_created;
+	}
+
+	public void setIs_transaction_created(boolean is_transaction_created) {
+		this.is_transaction_created = is_transaction_created;
+	}
+
 	private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
+	@SerializedName("images")
+	private RealmList<ImageItem> imageItems;
+
+	public RealmList<ImageItem> getImageItems() {
+		return imageItems;
+	}
+
+	public void setImageItems(RealmList<ImageItem> imageItems) {
+		this.imageItems = imageItems;
+	}
 
 	public void setDate(String date){
 		this.date = date;

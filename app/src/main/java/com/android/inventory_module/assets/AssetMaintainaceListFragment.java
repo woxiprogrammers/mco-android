@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.inventory_module.InventoryDetails;
 import com.android.inventory_module.MaitenanceFormActivity;
-import com.android.inventory_module.MaterialListAdapter;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListData;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListItem;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListResponse;
-import com.android.inventory_module.inventory_model.InventoryResponse;
-import com.android.inventory_module.inventory_model.MaterialListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.FragmentInterface;
@@ -45,7 +42,6 @@ import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,8 +90,8 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
 
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetMaintenanceListItem> materialListItems = realm.where(AssetMaintenanceListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
-        AssetMaintenanceListAdapter materialListAdapter = new AssetMaintenanceListAdapter(materialListItems, true, true);
+        final RealmResults<AssetMaintenanceListItem> assetMaintenanceListItems = realm.where(AssetMaintenanceListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        AssetMaintenanceListAdapter materialListAdapter = new AssetMaintenanceListAdapter(assetMaintenanceListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvMaterialList.setLayoutManager(linearLayoutManager);
@@ -103,10 +99,23 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvMaterialList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-                Intent intent=new Intent(getActivity(),MaitenanceFormActivity.class);
-                intent.putExtra("asset_maintenance_id",materialListItems.get(position).getAssetMaintenanceId());
-                intent.putExtra("vendorName",materialListItems.get(position).getApprovedVendorName());
-                startActivity(intent);
+                AssetMaintenanceListItem assetMaintenanceListItem=assetMaintenanceListItems.get(position);
+                Log.i("@@getStatus",assetMaintenanceListItem.getGrn());
+                Log.i("@@iction_created", String.valueOf(assetMaintenanceListItem.isIs_transaction_created()));
+                if(assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")){
+                    if(!assetMaintenanceListItem.getGrn().equalsIgnoreCase("") && assetMaintenanceListItem.isIs_transaction_created()){
+                        Intent intent=new Intent(getActivity(),MaitenanceFormActivity.class);
+                        intent.putExtra("asset_maintenance_id",assetMaintenanceListItem.getAssetMaintenanceId());
+                        intent.putExtra("vendorName",assetMaintenanceListItem.getApprovedVendorName());
+                        startActivity(intent);
+
+                    }else {
+                        Toast.makeText(mContext,"Transaction Completed Successfully",Toast.LENGTH_SHORT).show();
+
+                    }
+                }else {
+                    Toast.makeText(mContext,"You can not proceed unless vendor approved",Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
