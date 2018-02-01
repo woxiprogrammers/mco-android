@@ -92,4 +92,5 @@ public class AppURL {
     public static final String API_PURCHASE_ORDER_REQUEST_LIST = BASE_URL +"purchase/purchase-order-request/listing?token=";
     public static final String API_PURCHASE_ORDER_REQUEST_DETAILS_LIST = BASE_URL+ "purchase/purchase-order-request/detail?token=";
     public static final String API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS = BASE_URL + "purchase/purchase-order-request/change-status?token=";
+    public static final String API_ASSET_MAINTENANCE_REQUEST_LISTING = BASE_URL + "inventory/asset/maintenance-request/listing?token=";
 }
