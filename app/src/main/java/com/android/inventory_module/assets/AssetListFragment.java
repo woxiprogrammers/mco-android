@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,8 +44,8 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     private Realm realm;
     private int pageNumber = 0;
     private int oldPageNumber;
-    private String subModulesItemList;
     private boolean isCrateInOutTransfer;
+    private RealmResults<AssetsListItem> assetsListItems;
 
     public AssetListFragment() {
         // Required empty public constructor
@@ -86,7 +85,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            subModulesItemList = bundle.getString("subModulesItemList");
+            String subModulesItemList = bundle.getString("subModulesItemList");
             if (subModulesItemList != null) {
                 if (subModulesItemList.contains("create-inventory-in-out-transfer")) {
                     isCrateInOutTransfer = true;
@@ -108,7 +107,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetsListItems = realm.where(AssetsListItem.class)
+        assetsListItems = realm.where(AssetsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
         Timber.d(String.valueOf(assetsListItems));
         AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetsListItems, true, true);
@@ -130,6 +129,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                                 intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
                                 intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
                                 intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
+                                intent.putExtra("asset_id", assetsListItems.get(position).getAsset_id());
                                 intent.putExtra("component_type_slug", assetsListItems.get(position).getSlug());
                                 startActivity(intent);
                             }

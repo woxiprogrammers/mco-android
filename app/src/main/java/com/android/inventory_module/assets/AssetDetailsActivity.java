@@ -46,7 +46,7 @@ public class AssetDetailsActivity extends BaseActivity {
     private MenuItem prevMenuItem;
     private Context mContext;
     private String strAssetName, strModelNumber;
-    private int inventoryComponentId;
+    private int inventoryComponentId, asset_id;
     private String component_type_slug;
     private Realm realm;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -100,6 +100,7 @@ public class AssetDetailsActivity extends BaseActivity {
         startIntent.putExtra("key", strAssetName);
         startIntent.putExtra("key1", strModelNumber);
         startIntent.putExtra("ComponentId", inventoryComponentId);
+        startIntent.putExtra("asset_id", asset_id);
         startActivity(startIntent);
     }
 
@@ -137,7 +138,8 @@ public class AssetDetailsActivity extends BaseActivity {
         if (extras != null) {
             strAssetName = extras.getStringExtra("assetName");
             strModelNumber = extras.getStringExtra("modelNumber");
-            inventoryComponentId = extras.getIntExtra("inventory_component_id", -1);
+            inventoryComponentId = extras.getIntExtra("asset_id", -1);
+            asset_id = extras.getIntExtra("asset_id", -1);
             component_type_slug = extras.getStringExtra("component_type_slug");
         }
         if (getSupportActionBar() != null) {

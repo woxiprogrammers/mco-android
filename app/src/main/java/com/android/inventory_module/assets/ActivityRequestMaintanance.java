@@ -59,7 +59,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
     private Context mContext;
     private String strAssetName;
     private String strModelNumber;
-    private int componentId;
+    private int componentId, asset_id;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
 
@@ -159,6 +159,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
             strAssetName = extras.getStringExtra("key");
             strModelNumber = extras.getStringExtra("key1");
             componentId = extras.getIntExtra("ComponentId", -1);
+            asset_id = extras.getIntExtra("asset_id", -1);
         }
         editTextAssetName.setText(strAssetName);
         editTextAssetName.setEnabled(false);
@@ -168,7 +169,6 @@ public class ActivityRequestMaintanance extends BaseActivity {
 
     private void validateEntries() {
         String strRemark = editTextRemark.getText().toString();
-
         //For Remark
         if (TextUtils.isEmpty(strRemark)) {
             editTextRemark.setFocusableInTouchMode(true);
@@ -186,10 +186,12 @@ public class ActivityRequestMaintanance extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             if (componentId != -1) {
-                params.put("inventory_component_id", componentId);
+                params.put("asset_id", asset_id);
             }
             params.put("remark", editTextRemark.getText().toString());
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("images", jsonImageNameArray);
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -212,7 +214,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
+                        AppUtils.getInstance().logApiError(anError, "requestAssetMaintenance");
                     }
                 });
     }

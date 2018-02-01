@@ -28,7 +28,8 @@ public class ActivityTransferRequest extends BaseActivity {
     }
 
     private void getFragment() {
-        InventoryTransferRequestListFragment transferRequestListFragment = InventoryTransferRequestListFragment.newInstance();
+        InventoryTransferRequestListFragment transferRequestListFragment
+                = InventoryTransferRequestListFragment.newInstance();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayoutTransferRequest, transferRequestListFragment, "transferRequestListFragment");
         fragmentTransaction.commit();

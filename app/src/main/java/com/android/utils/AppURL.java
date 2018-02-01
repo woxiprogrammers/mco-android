@@ -28,7 +28,7 @@ public class AppURL {
     public static final String API_SUBMIT_PURCHASE_REQUEST = BASE_URL + "purchase/purchase-request/create?token=";
     public static final String API_IMAGE_UPLOAD_INDEPENDENT = BASE_URL + "save-image?token=";
     public static final String API_PURCHASE_REQUEST_CHANGE_STATUS = BASE_URL + "purchase/purchase-request/change-status?token=";
-    public static final String API_ASSET_REQUEST_MAINTENANCE = BASE_URL + "inventory/asset/request-maintenance?token=";
+    public static final String API_ASSET_REQUEST_MAINTENANCE = BASE_URL + "inventory/asset/maintenance-request/create?token=";
     public static final String API_MATERIAL_MOVE_IN_OUT = BASE_URL + "inventory/create-transfer?token=";
     public static final String API_PURCHASE_ORDER_BILL_TRANSACTION = BASE_URL + "purchase/purchase-order/bill-transaction?token=";
     public static final String API_PURCHAE_ORDER_BILL_PAYMENT = BASE_URL + "purchase/purchase-order/bill-payment?token=";

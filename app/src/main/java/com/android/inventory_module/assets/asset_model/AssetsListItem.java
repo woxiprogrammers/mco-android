@@ -15,6 +15,8 @@ public class AssetsListItem extends RealmObject {
             "available": 0*/
     @SerializedName("assets_name")
     private String assetsName;
+    @SerializedName("asset_id")
+    private int asset_id;
     @PrimaryKey
     @SerializedName("inventory_component_id")
     private int id;
@@ -152,5 +154,13 @@ public class AssetsListItem extends RealmObject {
 
     public void setAssetsName(String assetsName) {
         this.assetsName = assetsName;
+    }
+
+    public int getAsset_id() {
+        return asset_id;
+    }
+
+    public void setAsset_id(int asset_id) {
+        this.asset_id = asset_id;
     }
 }
