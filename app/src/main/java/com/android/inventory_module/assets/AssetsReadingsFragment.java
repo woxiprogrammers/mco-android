@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -210,6 +211,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
+        Log.i("@@","AssetsReadingsFragment");
         passYear = year;
         passMonth = month;
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);

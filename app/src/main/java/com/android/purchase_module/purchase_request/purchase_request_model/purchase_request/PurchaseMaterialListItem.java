@@ -46,8 +46,19 @@ public class PurchaseMaterialListItem extends RealmObject {
     @SerializedName("have_access")
     private String have_access;
 
+    @SerializedName("purchase_order_created")
+    private boolean purchase_order_created;
+
     @SerializedName("approved_by")
     private String approvedBy;
+
+    public boolean isPurchase_order_created() {
+        return purchase_order_created;
+    }
+
+    public void setPurchase_order_created(boolean purchase_order_created) {
+        this.purchase_order_created = purchase_order_created;
+    }
 
     @SerializedName("created_by")
     private String materialCreatedBy;

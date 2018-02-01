@@ -1,5 +1,6 @@
 package com.android.inventory_module.assets;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +48,7 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AssetMaintainaceListFragment extends Fragment implements FragmentInterface {
+public class AssetMaintainaceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
 
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
@@ -190,6 +192,16 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         requestToGetList();
         super.onResume();
 
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
+        Log.i("@@","AssetMaintainaceListFragment");
+        passYear = year;
+        passMonth = month;
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        setAdapterForMaterialList();
+        requestToGetList();
     }
 
     public class AssetMaintenanceListAdapter extends RealmRecyclerViewAdapter<AssetMaintenanceListItem, AssetMaintenanceListAdapter.MyViewHolder> {
