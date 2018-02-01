@@ -23,8 +23,6 @@ import java.util.Random;
 import timber.log.Timber;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private NotificationChannel notificationChannel;
-
     public MyFirebaseMessagingService() {
     }
 
@@ -58,7 +56,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager != null) {
-                notificationChannel = new NotificationChannel(AppConstants.FCM_CHANNEL_ID,
+                NotificationChannel notificationChannel = new NotificationChannel(AppConstants.FCM_CHANNEL_ID,
                         AppConstants.FCM_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
                 notificationChannel.enableLights(true);
                 notificationChannel.enableVibration(true);
@@ -75,8 +73,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(strBody)
                 .setAutoCancel(false)
                 .setSound(defaultSoundUri)
-                /*.setGroup(strTag)
-                .setGroupSummary(true)*/
+                .setGroup(strTag)
+                .setGroupSummary(true)
                 .setContentIntent(pendingIntent);
         if (notificationManager != null && notificationBuilder != null) {
             Random random = new Random();
