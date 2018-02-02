@@ -53,6 +53,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private int intPurchaseOrderRequestId;
     private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
     private JSONArray jsonArray=new JSONArray();
+    private boolean isMaterialSeleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,12 +128,14 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
                     if (requestMaterialListItem.isIs_approved()) {
                         checkBox.setEnabled(false);
-                        Toast.makeText(mContext, "Already approved", Toast.LENGTH_SHORT).show();
                     } else {
                         if (checkBox.isChecked()) {
+                            Toast.makeText(mContext,"CheckedFalse",Toast.LENGTH_SHORT).show();
                             checkBox.setChecked(false);
                         } else {
+                            isMaterialSeleted=true;
                             checkBox.setChecked(true);
+                            Toast.makeText(mContext,"CheckedTrue",Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -176,12 +179,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     }
 
                     if (vendorRadioButton.isChecked()) {
+                        Toast.makeText(mContext,"RadioFalse",Toast.LENGTH_SHORT).show();
                         vendorRadioButton.setChecked(false);
                     } else {
+                        Toast.makeText(mContext,"RadioTrue",Toast.LENGTH_SHORT).show();
                         vendorRadioButton.setChecked(true);
                     }
 
-                    Timber.d(String.valueOf(jsonArray));
                 }
 
             }
@@ -250,6 +254,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
                         requestToChangeStatus();
                     }
                 })
@@ -270,7 +275,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("@@",params.toString());
         AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)

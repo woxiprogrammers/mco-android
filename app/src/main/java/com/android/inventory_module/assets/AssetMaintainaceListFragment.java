@@ -1,6 +1,5 @@
 package com.android.inventory_module.assets;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,12 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,12 +46,18 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AssetMaintainaceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
+public class AssetMaintainaceListFragment extends Fragment implements FragmentInterface {
 
-    @BindView(R.id.rv_material_list)
+    @BindView(R.id.rvRecyclerAssetList)
     RecyclerView rvMaterialList;
     @BindView(R.id.mainRelativeList)
     RelativeLayout mainRelativeList;
+    @BindView(R.id.textView_asset_appBarTitle)
+    TextView textViewAssetAppBarTitle;
+    @BindView(R.id.relative_layout_datePicker_assetList)
+    RelativeLayout relativeLayoutDatePickerAssetList;
+    @BindView(R.id.toolbarHome)
+    Toolbar toolbarHome;
     private View mParentView;
     private Context mContext;
     private Realm realm;
@@ -64,7 +68,6 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
     }
 
     public static AssetMaintainaceListFragment newInstance() {
-
         Bundle args = new Bundle();
         AssetMaintainaceListFragment fragment = new AssetMaintainaceListFragment();
         fragment.setArguments(args);
@@ -74,9 +77,9 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        mParentView = inflater.inflate(R.layout.layout_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
-        mContext=getActivity();
+        mContext = getActivity();
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
@@ -101,22 +104,22 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext, rvMaterialList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
-                AssetMaintenanceListItem assetMaintenanceListItem=assetMaintenanceListItems.get(position);
-                Log.i("@@getStatus",assetMaintenanceListItem.getGrn());
+                AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItems.get(position);
+                Log.i("@@getStatus", assetMaintenanceListItem.getGrn());
                 Log.i("@@iction_created", String.valueOf(assetMaintenanceListItem.isIs_transaction_created()));
-                if(assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")){
-                    if(!assetMaintenanceListItem.getGrn().equalsIgnoreCase("") && assetMaintenanceListItem.isIs_transaction_created()){
-                        Intent intent=new Intent(getActivity(),MaitenanceFormActivity.class);
-                        intent.putExtra("asset_maintenance_id",assetMaintenanceListItem.getAssetMaintenanceId());
-                        intent.putExtra("vendorName",assetMaintenanceListItem.getApprovedVendorName());
+                if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")) {
+                    if (!assetMaintenanceListItem.getGrn().equalsIgnoreCase("") && assetMaintenanceListItem.isIs_transaction_created()) {
+                        Intent intent = new Intent(getActivity(), MaitenanceFormActivity.class);
+                        intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
+                        intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
                         startActivity(intent);
 
-                    }else {
-                        Toast.makeText(mContext,"Transaction Completed Successfully",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
 
                     }
-                }else {
-                    Toast.makeText(mContext,"You can not proceed unless vendor approved",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext, "You can not proceed unless vendor approved", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -126,13 +129,12 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         }));
     }
 
-
     private void requestToGetList() {
         AppUtils.getInstance().showProgressBar(mainRelativeList, true);
         JSONObject params = new JSONObject();
         try {
-            params.put("month",passMonth);
-            params.put("year",passYear);
+            params.put("month", passMonth);
+            params.put("year", passYear);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -194,16 +196,6 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
 
     }
 
-    @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
-        Log.i("@@","AssetMaintainaceListFragment");
-        passYear = year;
-        passMonth = month;
-        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
-        setAdapterForMaterialList();
-        requestToGetList();
-    }
-
     public class AssetMaintenanceListAdapter extends RealmRecyclerViewAdapter<AssetMaintenanceListItem, AssetMaintenanceListAdapter.MyViewHolder> {
         private OrderedRealmCollection<AssetMaintenanceListItem> assetMaintenanceListItemOrderedRealmCollection;
 
@@ -221,7 +213,7 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             final AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItemOrderedRealmCollection.get(position);
-            holder.textViewMaintNumber.setText("Maintenance Id "+assetMaintenanceListItem.getAssetMaintenanceId());
+            holder.textViewMaintNumber.setText("Maintenance Id " + assetMaintenanceListItem.getAssetMaintenanceId());
             holder.textViewReqName.setText("Requested by " + assetMaintenanceListItem.getUserName());
             holder.textViewStatus.setText(assetMaintenanceListItem.getStatus());
             holder.textViewReqDate.setText(AppUtils.getInstance().getTime("EEE, dd MMM yyyy", "dd-MMM-yyyy", assetMaintenanceListItem.getDate()));

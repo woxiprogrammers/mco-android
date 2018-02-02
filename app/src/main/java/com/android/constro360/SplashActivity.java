@@ -94,6 +94,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("checklist-management", ChecklistHomeActivity.class.getName());
         //
         aclKeyValuePair.put("manage-drawing", DrawingHomeActivity.class.getName());
+        aclKeyValuePair.put("manage-dpr", DPRListActivity.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);

@@ -8,12 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -50,8 +52,16 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class AssetsReadingsFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
-    @BindView(R.id.rv_material_list)
+    @BindView(R.id.rvRecyclerAssetList)
     RecyclerView rvMaterialList;
+    @BindView(R.id.textView_asset_appBarTitle)
+    TextView textViewAssetAppBarTitle;
+    @BindView(R.id.relative_layout_datePicker_assetList)
+    RelativeLayout relativeLayoutDatePickerAssetList;
+    @BindView(R.id.toolbarHome)
+    Toolbar toolbarHome;
+    @BindView(R.id.mainRelativeList)
+    LinearLayout mainRelativeList;
     private Context mContext;
     private Unbinder unbinder;
     private Realm realm;
@@ -75,7 +85,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recyclerview_lsiting_for_asset_summary, container, false);
+        View view = inflater.inflate(R.layout.layout_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
         Bundle bundleArgs = getArguments();
@@ -211,7 +221,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
-        Log.i("@@","AssetsReadingsFragment");
+        Log.i("@@", "AssetsReadingsFragment");
         passYear = year;
         passMonth = month;
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
@@ -239,7 +249,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         public void onBindViewHolder(MyViewHolder holder, int position) {
             AssetReadingsListDataItem assetReadingsListDataItem = summaryListItems.get(position);
 
-            holder.textViewAssetListName.setText(AppUtils.getInstance().getTime("yyyy-MM-dd","dd-MMM-yyyy",assetReadingsListDataItem.getDate()));
+            holder.textViewAssetListName.setText(AppUtils.getInstance().getTime("yyyy-MM-dd", "dd-MMM-yyyy", assetReadingsListDataItem.getDate()));
             holder.textviewWorkHour.setText(String.valueOf(assetReadingsListDataItem.getTotalWorkingHours()));
             if (component_type_slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
                 holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
