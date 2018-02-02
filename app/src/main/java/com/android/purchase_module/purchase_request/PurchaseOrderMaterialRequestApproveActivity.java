@@ -92,7 +92,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 if (isMaterialSelected) {
                     openApproveDialog();
                 } else {
-                    Toast.makeText(mContext, "Please select material first", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Please select at lease one material and its vendor", Toast.LENGTH_LONG).show();
                 }
             } else {
                 AppUtils.getInstance().showOfflineMessage("PurchaseRequestDetailsHomeActivity");

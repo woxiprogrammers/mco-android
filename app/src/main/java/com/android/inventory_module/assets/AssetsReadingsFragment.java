@@ -213,7 +213,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
-        Log.i("@@", "AssetsReadingsFragment");
         passYear = year;
         passMonth = month;
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");

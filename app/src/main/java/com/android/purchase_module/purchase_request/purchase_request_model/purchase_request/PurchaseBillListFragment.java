@@ -99,7 +99,6 @@ public class PurchaseBillListFragment extends Fragment implements FragmentInterf
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("purchase_order_id", intPrimaryKey);
             params.put("page", 0);
-            Log.i("@@Params", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

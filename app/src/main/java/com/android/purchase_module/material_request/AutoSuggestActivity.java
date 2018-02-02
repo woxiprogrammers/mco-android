@@ -174,7 +174,6 @@ public class AutoSuggestActivity extends BaseActivity {
             postRequestBuilder.getAsObject(MaterialSearchResponse.class, new ParsedRequestListener<MaterialSearchResponse>() {
                 @Override
                 public void onResponse(final MaterialSearchResponse response) {
-                    Log.i("@@", response.toString());
                     searchMaterialListItem = response.getMaterialSearchResponseData().getMaterialList().get(0);
                     if (searchMaterialListItem.getMaterialRequestComponentTypeSlug().contains("new")) {
                         setUpAddNewButton(true);

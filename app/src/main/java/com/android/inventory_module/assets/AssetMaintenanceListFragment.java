@@ -99,8 +99,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             @Override
             public void onItemClick(View view, final int position) {
                 AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItems.get(position);
-                Log.i("@@getStatus", assetMaintenanceListItem.getGrn());
-                Log.i("@@iction_created", String.valueOf(assetMaintenanceListItem.isIs_transaction_created()));
                 if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")) {
                     if (!assetMaintenanceListItem.getGrn().equalsIgnoreCase("") && assetMaintenanceListItem.isIs_transaction_created()) {
                         Intent intent = new Intent(getActivity(), MaitenanceFormActivity.class);

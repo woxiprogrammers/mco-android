@@ -555,7 +555,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             } else {
                 params.put("remark", editext_tapToAddNote.getText().toString());
             }
-            Log.i("##PArams", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -629,7 +628,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 purchaseOrderComponentId = availableMaterialRealmResults.get(i).getId();
-                Log.i("##P", String.valueOf(purchaseOrderComponentId));
                 setUpSpinnerValueForUnits(purchaseOrderComponentId);
                 getMaterialImages(purchaseOrderComponentId);
             }
@@ -642,7 +640,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 unitId = unitsRealmResults.get(i).getUnitId();
-                Log.i("##U", String.valueOf(unitId));
             }
 
             @Override
@@ -918,7 +915,6 @@ public class PayFragment extends Fragment implements FragmentInterface {
             } else {
                 params.put("remark", editext_tapToAddNote.getText().toString());
             }
-            Log.i("@@Params", String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }

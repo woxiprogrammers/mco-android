@@ -905,7 +905,6 @@ public class PeticashFormActivity extends BaseActivity {
                         try {
                             JSONObject jsonObject = response.getJSONObject("data");
                             approved_amount = jsonObject.getString("approved_amount");
-                            Log.i("#@approved_amount", approved_amount);
                             editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
                             editTextSiteName.setEnabled(false);
                             editTextEmpIdName.setEnabled(false);
