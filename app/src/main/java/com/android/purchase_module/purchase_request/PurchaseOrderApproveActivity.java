@@ -45,11 +45,11 @@ import timber.log.Timber;
 
 public class PurchaseOrderApproveActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
 
-    @BindView(R.id.textView_readings_appBarTitle)
+    @BindView(R.id.textView_readings_appBarTitle_Maintenance)
     TextView textViewReadingsAppBarTitle;
-    @BindView(R.id.relative_layout_datePicker_readings)
+    @BindView(R.id.relative_layout_datePicker_maintenance)
     RelativeLayout relativeLayoutDatePickerReadings;
-    @BindView(R.id.toolbarAssetDetails)
+    @BindView(R.id.toolbarAssetMaintenanceReadings)
     Toolbar toolbarAssetDetails;
     @BindView(R.id.rv_purchase_order_list)
     RecyclerView rvPurchaseOrderList;
@@ -84,7 +84,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         setDateInAppBar(passMonth, passYear);
     }
 
-    @OnClick(R.id.relative_layout_datePicker_readings)
+    @OnClick(R.id.relative_layout_datePicker_maintenance)
     public void onDatePickerPurchaseRequestClicked() {
         final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
         Bundle bundleArgs = new Bundle();

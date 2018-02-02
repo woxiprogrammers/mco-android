@@ -1,5 +1,6 @@
 package com.android.inventory_module.assets;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,11 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,18 +48,10 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AssetMaintainaceListFragment extends Fragment implements FragmentInterface {
+public class AssetMaintainaceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
 
-    @BindView(R.id.rvRecyclerAssetList)
+    @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
-    @BindView(R.id.mainRelativeList)
-    RelativeLayout mainRelativeList;
-    @BindView(R.id.textView_asset_appBarTitle)
-    TextView textViewAssetAppBarTitle;
-    @BindView(R.id.relative_layout_datePicker_assetList)
-    RelativeLayout relativeLayoutDatePickerAssetList;
-    @BindView(R.id.toolbarHome)
-    Toolbar toolbarHome;
     private View mParentView;
     private Context mContext;
     private Realm realm;
@@ -68,6 +62,7 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
     }
 
     public static AssetMaintainaceListFragment newInstance() {
+
         Bundle args = new Bundle();
         AssetMaintainaceListFragment fragment = new AssetMaintainaceListFragment();
         fragment.setArguments(args);
@@ -77,7 +72,7 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.layout_recycler_view_listing, container, false);
+        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
         mContext = getActivity();
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
@@ -130,7 +125,7 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
     }
 
     private void requestToGetList() {
-        AppUtils.getInstance().showProgressBar(mainRelativeList, true);
+//        AppUtils.getInstance().showProgressBar(mainRelativeList, true);
         JSONObject params = new JSONObject();
         try {
             params.put("month", passMonth);
@@ -162,7 +157,7 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    AppUtils.getInstance().showProgressBar(mainRelativeList, false);
+//                                    AppUtils.getInstance().showProgressBar(mainRelativeList, false);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -194,6 +189,16 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
         requestToGetList();
         super.onResume();
 
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
+        Log.i("@@", "AssetMaintainaceListFragment");
+        passYear = year;
+        passMonth = month;
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "maintenance");
+        setAdapterForMaterialList();
+        requestToGetList();
     }
 
     public class AssetMaintenanceListAdapter extends RealmRecyclerViewAdapter<AssetMaintenanceListItem, AssetMaintenanceListAdapter.MyViewHolder> {

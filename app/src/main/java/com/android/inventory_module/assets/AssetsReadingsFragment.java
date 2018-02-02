@@ -8,14 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -54,14 +52,6 @@ import timber.log.Timber;
 public class AssetsReadingsFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
     @BindView(R.id.rvRecyclerAssetList)
     RecyclerView rvMaterialList;
-    @BindView(R.id.textView_asset_appBarTitle)
-    TextView textViewAssetAppBarTitle;
-    @BindView(R.id.relative_layout_datePicker_assetList)
-    RelativeLayout relativeLayoutDatePickerAssetList;
-    @BindView(R.id.toolbarHome)
-    Toolbar toolbarHome;
-    @BindView(R.id.mainRelativeList)
-    LinearLayout mainRelativeList;
     private Context mContext;
     private Unbinder unbinder;
     private Realm realm;
@@ -190,7 +180,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
-            ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+            ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");
             requestAssetSummaryList();
         }
     }
@@ -203,7 +193,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public void fragmentBecameVisible() {
-        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");
         requestAssetSummaryList();
     }
 
@@ -224,7 +214,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         Log.i("@@", "AssetsReadingsFragment");
         passYear = year;
         passMonth = month;
-        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");
         setUpAssetListAdapter();
         requestAssetSummaryList();
     }
