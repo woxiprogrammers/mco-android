@@ -134,6 +134,8 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                 currentTextView_Count.setVisibility(View.GONE);
             } else if (moduleName.equalsIgnoreCase("Checklist")) {
                 currentTextView_Count.setVisibility(View.GONE);
+            } else {
+                currentTextView_Count.setVisibility(View.GONE);
             }
 
             /*TextView currentTextView = (TextView) holder.ll_sub_modules.getChildAt(textViewIndex);

@@ -136,7 +136,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     } else {
                         checkBox.setChecked(false);
                     }
-                    Toast.makeText(mContext, "" + checkBox.isChecked(), Toast.LENGTH_SHORT).show();
 
 //                    if (requestMaterialListItem.isIs_approved()) {
 //                        checkBox.setEnabled(false);
@@ -157,7 +156,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     } else {
                         checkBox.setChecked(false);
                     }
-                    Toast.makeText(mContext, "" + checkBox.isChecked(), Toast.LENGTH_SHORT).show();
 //                    if (requestMaterialListItem.isIs_approved()) {
 //                        checkBox.setEnabled(false);
 //                    } else {
@@ -185,7 +183,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 int noOfSubModules = vendorsItemRealmList.size();
                 if (itemViewIndex == R.id.linearLayoutVendorItem) {
                     RadioButton vendorRadioButton = itemView.findViewById(R.id.vendorRadioButton);
-                    Toast.makeText(mContext, "" + requestMaterialListItem.isCheckboxCheckedState(), Toast.LENGTH_SHORT).show();
 
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                         VendorsItem tempVendorsItem = vendorsItemRealmList.get(viewIndex);
@@ -340,6 +337,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Timber.d(String.valueOf(response));
                         Toast.makeText(mContext, response.optString("message") + "", Toast.LENGTH_SHORT).show();
                     }
 
@@ -351,8 +349,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 });
     }
 
-    public class MaterialRequestListAdapter extends RealmRecyclerViewAdapter<RequestMaterialListItem,
-            MaterialRequestListAdapter.MyViewHolder> {
+    public class MaterialRequestListAdapter extends RealmRecyclerViewAdapter<RequestMaterialListItem, MaterialRequestListAdapter.MyViewHolder> {
         private OrderedRealmCollection<RequestMaterialListItem> requestMaterialListItemOrderedRealmCollection;
         private OnComponentClickListener componentClickListener;
         private OnVendorClickListener vendorClickListener;

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
@@ -92,6 +93,7 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
     }
 
     private void requestToGetDetails() {
+
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_id", purchaseOrderId);
@@ -121,10 +123,14 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                                 @Override
                                 public void onSuccess() {
                                     progressBar.setVisibility(View.GONE);
-                                    if (response.getPurchaseOrderDetailData().getMaterials().size() > 0) {
-                                        setUpAdapter();
-                                        mob.setText("Mobile Number:- " + response.getPurchaseOrderDetailData().getVendorMobile());
-                                        textViewVenName.setText("Vendor Name:- " + response.getPurchaseOrderDetailData().getVendorName());
+                                    if (response.getPurchaseOrderDetailData().getMaterials() != null) {
+                                        if (response.getPurchaseOrderDetailData().getMaterials().size() > 0) {
+                                            setUpAdapter();
+                                            mob.setText("Mobile Number:- " + response.getPurchaseOrderDetailData().getVendorMobile());
+                                            textViewVenName.setText("Vendor Name:- " + response.getPurchaseOrderDetailData().getVendorName());
+                                        }
+                                    }else {
+                                        Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }, new Realm.Transaction.OnError() {
