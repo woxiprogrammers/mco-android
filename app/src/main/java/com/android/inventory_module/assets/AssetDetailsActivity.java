@@ -176,10 +176,15 @@ public class AssetDetailsActivity extends BaseActivity {
         startActivity(startIntent);
     }
 
-    @OnClick(R.id.relative_layout_datePicker_maintenance)
+    @OnClick(R.id.relative_layout_datePicker_readings)
     public void onDatePickerPurchaseRequestClicked() {
         AssetsReadingsFragment assetsReadingsFragment = (AssetsReadingsFragment) viewPagerAssets.getAdapter().instantiateItem(viewPagerAssets, 0);
         assetsReadingsFragment.onDatePickerClicked_purchaseRequest();
+    }
+    @OnClick(R.id.relative_layout_datePicker_maintenance)
+    public void onDatePickerMaintenanceClicked() {
+        AssetMaintenanceListFragment assetsReadingsFragment = (AssetMaintenanceListFragment) viewPagerAssets.getAdapter().instantiateItem(viewPagerAssets, 1);
+        assetsReadingsFragment.onDatePickerClicked_AssetMaintenance();
     }
 
     @OnClick(R.id.floating_add_button)
@@ -208,7 +213,7 @@ public class AssetDetailsActivity extends BaseActivity {
                 case 0:
                     return AssetsReadingsFragment.newInstance(inventoryComponentId, component_type_slug);
                 case 1:
-                    return AssetMaintainaceListFragment.newInstance();
+                    return AssetMaintenanceListFragment.newInstance();
                 default:
                     return null;
             }

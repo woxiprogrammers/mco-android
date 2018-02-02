@@ -8,13 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +21,7 @@ import com.android.inventory_module.MaitenanceFormActivity;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListData;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListItem;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListResponse;
+import com.android.purchase_module.purchase_request.MonthYearPickerDialog;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.FragmentInterface;
@@ -48,23 +47,21 @@ import io.realm.RealmResults;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AssetMaintainaceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
-
+public class AssetMaintenanceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
-    private View mParentView;
     private Context mContext;
     private Realm realm;
     private int passYear, passMonth;
 
-    public AssetMaintainaceListFragment() {
+    public AssetMaintenanceListFragment() {
         // Required empty public constructor
     }
 
-    public static AssetMaintainaceListFragment newInstance() {
+    public static AssetMaintenanceListFragment newInstance() {
 
         Bundle args = new Bundle();
-        AssetMaintainaceListFragment fragment = new AssetMaintainaceListFragment();
+        AssetMaintenanceListFragment fragment = new AssetMaintenanceListFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +69,7 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
         mContext = getActivity();
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
@@ -85,7 +82,9 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
 
     @Override
     public void fragmentBecameVisible() {
-
+        ((AssetDetailsActivity) mContext).setDatePickerFor("maintenance");
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "maintenance");
+        requestToGetList();
     }
 
     private void setAdapterForMaterialList() {
@@ -186,19 +185,31 @@ public class AssetMaintainaceListFragment extends Fragment implements FragmentIn
 
     @Override
     public void onResume() {
-        requestToGetList();
         super.onResume();
-
+        ((AssetDetailsActivity) mContext).setDatePickerFor("maintenance");
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "maintenance");
+        requestToGetList();
     }
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
-        Log.i("@@", "AssetMaintainaceListFragment");
         passYear = year;
         passMonth = month;
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "maintenance");
         setAdapterForMaterialList();
         requestToGetList();
+    }
+
+    public void onDatePickerClicked_AssetMaintenance() {
+        final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
+        Bundle bundleArgs = new Bundle();
+        bundleArgs.putInt("maxYear", 2019);
+        bundleArgs.putInt("minYear", 2016);
+        bundleArgs.putInt("currentYear", passYear);
+        bundleArgs.putInt("currentMonth", passMonth);
+        monthYearPickerDialog.setArguments(bundleArgs);
+        monthYearPickerDialog.setListener(AssetMaintenanceListFragment.this);
+        monthYearPickerDialog.show(getActivity().getSupportFragmentManager(), "MonthYearPickerDialog");
     }
 
     public class AssetMaintenanceListAdapter extends RealmRecyclerViewAdapter<AssetMaintenanceListItem, AssetMaintenanceListAdapter.MyViewHolder> {

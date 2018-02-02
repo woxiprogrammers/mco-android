@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
@@ -139,9 +140,13 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        Intent intent=new Intent(PurchaseOrderApproveActivity.this,PurchaseOrderMaterialRequestApproveActivity.class);
-                        intent.putExtra("purchase_order_request_id",purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
-                        startActivity(intent);
+                        if(!purchaseRequestListItems.get(position).isPurchaseOrderDone()){
+                            Intent intent=new Intent(PurchaseOrderApproveActivity.this,PurchaseOrderMaterialRequestApproveActivity.class);
+                            intent.putExtra("purchase_order_request_id",purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
+                            startActivity(intent);
+                        }else {
+                            Toast.makeText(mContext, "Purchase order approved successfully", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override

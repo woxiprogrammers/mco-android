@@ -180,6 +180,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
+            ((AssetDetailsActivity) mContext).setDatePickerFor("readings");
             ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");
             requestAssetSummaryList();
         }
@@ -193,6 +194,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public void fragmentBecameVisible() {
+        ((AssetDetailsActivity) mContext).setDatePickerFor("readings");
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");
         requestAssetSummaryList();
     }
