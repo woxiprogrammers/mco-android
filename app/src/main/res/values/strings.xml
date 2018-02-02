@@ -33,7 +33,6 @@
     <string name="remark">Remark:</string>
     <string name="button_request">REQUEST</string>
     <string name="asset_maintainance">Asset Maintainance</string>
-    <string name="please_enter_expiry_eate">Please Enter Expiry Date</string>
     <string name="please_enter_remark">Please Enter Remark</string>
     <string name="dialog_title_add_material">Add Material</string>
     <string name="super_admin">Super Admin</string>

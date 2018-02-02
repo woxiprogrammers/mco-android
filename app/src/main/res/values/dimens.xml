@@ -27,5 +27,4 @@
     <dimen name="app_bar_height_200dp">200dp</dimen>
     <dimen name="text_16sp">16sp</dimen>
     <dimen name="text_20sp">20sp</dimen>
-    <dimen name="text_12sp">12sp</dimen>
 </resources>
