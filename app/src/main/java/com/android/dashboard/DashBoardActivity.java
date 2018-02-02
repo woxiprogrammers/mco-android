@@ -203,7 +203,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 if (AppUtils.getInstance().checkNetworkState()) {
                     requestNotificationCountData();
                 } else {
-                    AppUtils.getInstance().showOfflineMessage("");
+                    AppUtils.getInstance().showOfflineMessage("DashBoardActivity");
                     setUpDashboardAdapterData();
                 }
                 DrawerLayout drawer = findViewById(R.id.drawer_layout);
