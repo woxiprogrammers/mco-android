@@ -92,7 +92,6 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
             params.put("image_id", drawingId);
             params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
             params.put("sub_category_id",getSubCatId);
-            Log.i("@SP", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

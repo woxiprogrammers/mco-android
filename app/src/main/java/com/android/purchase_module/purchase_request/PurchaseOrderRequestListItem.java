@@ -36,12 +36,23 @@ public class PurchaseOrderRequestListItem extends RealmObject{
 	@SerializedName("component_names")
 	private String materialName;
 
+	@SerializedName("purchase_order_done")
+	private boolean purchaseOrderDone;
+
 	public int getPurchaseOrderRequestId() {
 		return purchaseOrderRequestId;
 	}
 
 	public void setPurchaseOrderRequestId(int purchaseOrderRequestId) {
 		this.purchaseOrderRequestId = purchaseOrderRequestId;
+	}
+
+	public boolean isPurchaseOrderDone() {
+		return purchaseOrderDone;
+	}
+
+	public void setPurchaseOrderDone(boolean purchaseOrderDone) {
+		this.purchaseOrderDone = purchaseOrderDone;
 	}
 
 	public String getPurchaseRequestFormatId() {

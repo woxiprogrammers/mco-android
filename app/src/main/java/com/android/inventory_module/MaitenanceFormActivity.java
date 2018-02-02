@@ -12,15 +12,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
+import com.android.inventory_module.assets.asset_model.AssetMaintenanceListItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.ImageZoomDialogFragment;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -42,10 +45,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class MaitenanceFormActivity extends BaseActivity {
-
 
     @BindView(R.id.textViewCapturedSecond)
     TextView textViewCapturedSecond;
@@ -66,18 +69,33 @@ public class MaitenanceFormActivity extends BaseActivity {
     @BindView(R.id.editTextAddNote)
     EditText editTextAddNote;
 
-
     @BindView(R.id.linearLayoutAfterGrn)
     LinearLayout linearLayoutAfterGrn;
     @BindView(R.id.linearLayoutUploadImage)
     LinearLayout linearLayoutUploadImage;
     @BindView(R.id.linearLayoutCapturedImage)
     LinearLayout linearLayoutCapturedImage;
+    @BindView(R.id.editTextGrnNumber)
+    EditText editTextGrnNumber;
+    @BindView(R.id.lineraLayoutBillNumber)
+    LinearLayout lineraLayoutBillNumber;
+    @BindView(R.id.exceedAmount)
+    TextView exceedAmount;
+    @BindView(R.id.linearBillAmount)
+    LinearLayout linearBillAmount;
+    @BindView(R.id.mainRelativeLayout)
+    RelativeLayout mainRelativeLayout;
+    @BindView(R.id.linearLayoutOne)
+    LinearLayout linearLayoutOne;
 
     private Context mContext;
-    private String strCaptureTag="";
+    private String strCaptureTag = "";
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
+    private int maintenanceId;
+    private String strvendorName, strGrn;
+    private AssetMaintenanceListItem assetMaintenanceListItem;
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +112,47 @@ public class MaitenanceFormActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Maintenance");
         }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            maintenanceId = bundle.getInt("asset_maintenance_id");
+            strvendorName = bundle.getString("vendorName");
+            editTextVendorName.setText(strvendorName);
 
+        }
+        realm = Realm.getDefaultInstance();
+        assetMaintenanceListItem = realm.where(AssetMaintenanceListItem.class).equalTo("assetMaintenanceId", maintenanceId).findFirst();
+        if (!TextUtils.isEmpty(assetMaintenanceListItem.getGrn())) {
+            buttonGenerateGrn.setVisibility(View.GONE);
+            linearLayoutOne.setVisibility(View.GONE);
+            linearLayoutAfterGrn.setVisibility(View.VISIBLE);
+            editTextGrnNumber.setText(assetMaintenanceListItem.getGrn());
+            for (int index = 0; index < assetMaintenanceListItem.getImageItems().size(); index++) {
+                ImageView imageView = new ImageView(mContext);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(150, 150);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                linearLayoutCapturedImage.addView(imageView);
+                final int finalIndex = index;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + assetMaintenanceListItem.getImageItems().get(finalIndex).getImageUrl());
+                    }
+                });
+                AppUtils.getInstance().loadImageViaGlide(assetMaintenanceListItem.getImageItems().get(index).getImageUrl(), imageView, mContext);
+            }
+        } else {
+            buttonGenerateGrn.setVisibility(View.VISIBLE);
+            linearLayoutOne.setVisibility(View.VISIBLE);
+            linearLayoutAfterGrn.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void openImageZoomFragment(String url) {
+        ImageZoomDialogFragment imageZoomDialogFragment = ImageZoomDialogFragment.newInstance(url);
+        imageZoomDialogFragment.setCancelable(true);
+        imageZoomDialogFragment.show(getSupportFragmentManager(), "imageZoomDialogFragment");
     }
 
     @Override
@@ -107,22 +165,26 @@ public class MaitenanceFormActivity extends BaseActivity {
 
     @OnClick(R.id.buttonGenerateGrn)
     public void onClicked() {
-        linearLayoutAfterGrn.setVisibility(View.VISIBLE);
+        /*linearLayoutAfterGrn.setVisibility(View.VISIBLE);
         buttonGenerateGrn.setVisibility(View.GONE);
-        textViewCapture.setVisibility(View.GONE);
+        textViewCapture.setVisibility(View.GONE);*/
+        uploadImages_addItemToLocal("GRN", "pre_grn_request_maintenance");
 
     }
 
-    @OnClick({R.id.textViewCapturedSecond, R.id.textViewCapture})
+    @OnClick({R.id.textViewCapturedSecond, R.id.textViewCapture, R.id.buttonMaintenanceSubmit})
     public void onViewImageClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewCapturedSecond:
-                    strCaptureTag="FirstCapture";
-                    captureImage();
+                strCaptureTag = "FirstCapture";
+                captureImage();
                 break;
             case R.id.textViewCapture:
-                strCaptureTag="SecondCapture";
+                strCaptureTag = "SecondCapture";
                 captureImage();
+                break;
+            case R.id.buttonMaintenanceSubmit:
+                uploadImages_addItemToLocal("submit", "transaction_request_maintenance");
                 break;
         }
     }
@@ -234,17 +296,20 @@ public class MaitenanceFormActivity extends BaseActivity {
             editTextBillAmount.setError("Please enter bill amount");
             return;
         }
-        if (arrayImageFileList.size() == 0 || arrayImageFileList == null) {
+        if (arrayImageFileList.size() != 0 || arrayImageFileList == null) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
         JSONObject params = new JSONObject();
         try {
-            params.put("", "");
+            params.put("grn", editTextGrnNumber.getText().toString());
+            params.put("bill_number", editTextBillNumber.getText().toString());
+            params.put("bill_amount", editTextBillAmount.getText().toString());
+            params.put("remark", editTextAddNote.getText().toString());
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //ToDo URL
         AndroidNetworking.post(AppURL.API_SUBMIT_MAINENANCE + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToGenerateGrn")
                 .addJSONObjectBody(params)
@@ -254,7 +319,11 @@ public class MaitenanceFormActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -264,19 +333,16 @@ public class MaitenanceFormActivity extends BaseActivity {
                 });
     }
 
-
     private void requestToGenerateGrn() {
-        if (TextUtils.isEmpty(editTextVendorName.getText().toString())) {
-            editTextVendorName.setError("Please enter vendor name");
-            return;
-        }
-        if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
         JSONObject params = new JSONObject();
         try {
-            params.put("", "");
+            params.put("asset_maintenance_id", maintenanceId);
+            params.put("remark", editTextAddNote.getText().toString());
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -289,6 +355,14 @@ public class MaitenanceFormActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        try {
+                            strGrn = response.getString("grn_generated");
+
+                            editTextGrnNumber.setText(strGrn);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         linearLayoutAfterGrn.setVisibility(View.VISIBLE);
                         buttonGenerateGrn.setVisibility(View.GONE);
                         textViewCapture.setVisibility(View.GONE);
@@ -300,6 +374,5 @@ public class MaitenanceFormActivity extends BaseActivity {
                     }
                 });
     }
-
 
 }

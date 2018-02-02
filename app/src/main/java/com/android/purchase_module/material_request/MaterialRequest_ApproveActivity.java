@@ -1456,6 +1456,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
+            if(!purchaseMaterialListItem.isPurchase_order_created()){
+                holder.textViewItemName.setTextColor(getColor(R.color.colorBlack));
+            }else {
+                holder.textViewItemName.setTextColor(getColor(R.color.colorPrimary));
+            }
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
             holder.textViewItemStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseMaterialListItem.getComponentStatus()));
             holder.textViewItemUnits.setText("Qty : " +purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());

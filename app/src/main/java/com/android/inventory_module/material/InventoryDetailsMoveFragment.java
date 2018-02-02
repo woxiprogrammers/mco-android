@@ -585,7 +585,6 @@ public class InventoryDetailsMoveFragment extends Fragment implements View.OnCli
             params.put("type", transferType);
             params.put("quantity", strQuantity);
             params.put("images", jsonImageNameArray);
-            Log.i("@@MoveParams", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

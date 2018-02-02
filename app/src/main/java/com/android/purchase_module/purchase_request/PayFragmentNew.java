@@ -756,7 +756,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                         try {
                             arrayList.remove(materialNamesItem.getId());
                         } catch (Exception e) {
-                            Log.i("PayFragmentNew", "onCheckedChanged: key does not exist");
+                            e.printStackTrace();
                         }
                     }
                 }

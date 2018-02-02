@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class AssetsReadingsFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
-    @BindView(R.id.rv_material_list)
+    @BindView(R.id.rvRecyclerAssetList)
     RecyclerView rvMaterialList;
     private Context mContext;
     private Unbinder unbinder;
@@ -74,7 +75,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.recyclerview_lsiting_for_asset_summary, container, false);
+        View view = inflater.inflate(R.layout.layout_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
         Bundle bundleArgs = getArguments();
@@ -86,10 +87,6 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
             component_type_slug = bundleArgs.getString("component_type_slug");
         }
         setUpAssetListAdapter();
-        /*
-        if (AppUtils.getInstance().checkNetworkState()) {
-            requestAssetSummaryList();
-        }*/
         return view;
     }
 
@@ -183,7 +180,8 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
-            ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+            ((AssetDetailsActivity) mContext).setDatePickerFor("readings");
+            ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");
             requestAssetSummaryList();
         }
     }
@@ -196,7 +194,8 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
 
     @Override
     public void fragmentBecameVisible() {
-        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        ((AssetDetailsActivity) mContext).setDatePickerFor("readings");
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");
         requestAssetSummaryList();
     }
 
@@ -216,7 +215,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
         passYear = year;
         passMonth = month;
-        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear);
+        ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "readings");
         setUpAssetListAdapter();
         requestAssetSummaryList();
     }
@@ -241,7 +240,7 @@ public class AssetsReadingsFragment extends Fragment implements FragmentInterfac
         public void onBindViewHolder(MyViewHolder holder, int position) {
             AssetReadingsListDataItem assetReadingsListDataItem = summaryListItems.get(position);
 
-            holder.textViewAssetListName.setText(AppUtils.getInstance().getTime("yyyy-MM-dd","dd-MMM-yyyy",assetReadingsListDataItem.getDate()));
+            holder.textViewAssetListName.setText(AppUtils.getInstance().getTime("yyyy-MM-dd", "dd-MMM-yyyy", assetReadingsListDataItem.getDate()));
             holder.textviewWorkHour.setText(String.valueOf(assetReadingsListDataItem.getTotalWorkingHours()));
             if (component_type_slug.equalsIgnoreCase("fuel_and_electricity_dependent")) {
                 holder.linearLayoutForOtherAssets.setVisibility(View.GONE);

@@ -96,7 +96,6 @@ public class DrawingCommentFragment extends Fragment  implements FragmentInterfa
         final JSONObject params = new JSONObject();
         try {
             params.put("drawing_image_version_id", drawingId);
-            Log.i("@SP",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

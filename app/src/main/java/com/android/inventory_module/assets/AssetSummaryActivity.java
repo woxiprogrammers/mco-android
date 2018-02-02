@@ -189,11 +189,9 @@ public class AssetSummaryActivity extends BaseActivity {
                 holder.editTextSetTopUpTime.setText(assetReadingsListDataItem.getTopUpTime());
                 //////TopUp
                 if (!TextUtils.isEmpty(assetReadingsListDataItem.getTopUp())) {
-                    Log.i("@@CHeck", "sharvari");
                     holder.linearLayoutSetTopUp.setVisibility(View.VISIBLE);
                     holder.editTextSetTopUp.setText(assetReadingsListDataItem.getTopUp());
                 } else {
-                    Log.i("@@CHeck", "sharvari1");
                     holder.linearLayoutSetTopUp.setVisibility(View.GONE);
                 }
                 ////Top Up Time

@@ -44,6 +44,11 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         }
     }
 
+    // Define the method that allows the parent activity or fragment to define the listener
+    void setOnItemClickListener(OnItemClickListener listener) {
+        this.clickListener = listener;
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task_listing, parent, false);
@@ -160,11 +165,6 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
     public long getItemId(int index) {
         //noinspection ConstantConditions
         return getItem(index).getId();
-    }
-
-    // Define the method that allows the parent activity or fragment to define the listener
-    void setOnItemClickListener(OnItemClickListener listener) {
-        this.clickListener = listener;
     }
 
     // Define the listener interface

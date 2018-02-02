@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
@@ -45,11 +46,11 @@ import timber.log.Timber;
 
 public class PurchaseOrderApproveActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
 
-    @BindView(R.id.textView_readings_appBarTitle)
+    @BindView(R.id.textView_readings_appBarTitle_Maintenance)
     TextView textViewReadingsAppBarTitle;
-    @BindView(R.id.relative_layout_datePicker_readings)
+    @BindView(R.id.relative_layout_datePicker_maintenance)
     RelativeLayout relativeLayoutDatePickerReadings;
-    @BindView(R.id.toolbarAssetDetails)
+    @BindView(R.id.toolbarAssetMaintenanceReadings)
     Toolbar toolbarAssetDetails;
     @BindView(R.id.rv_purchase_order_list)
     RecyclerView rvPurchaseOrderList;
@@ -84,7 +85,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         setDateInAppBar(passMonth, passYear);
     }
 
-    @OnClick(R.id.relative_layout_datePicker_readings)
+    @OnClick(R.id.relative_layout_datePicker_maintenance)
     public void onDatePickerPurchaseRequestClicked() {
         final MonthYearPickerDialog monthYearPickerDialog = new MonthYearPickerDialog();
         Bundle bundleArgs = new Bundle();
@@ -139,9 +140,13 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        Intent intent=new Intent(PurchaseOrderApproveActivity.this,PurchaseOrderMaterialRequestApproveActivity.class);
-                        intent.putExtra("purchase_order_request_id",purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
-                        startActivity(intent);
+                        if(!purchaseRequestListItems.get(position).isPurchaseOrderDone()){
+                            Intent intent=new Intent(PurchaseOrderApproveActivity.this,PurchaseOrderMaterialRequestApproveActivity.class);
+                            intent.putExtra("purchase_order_request_id",purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
+                            startActivity(intent);
+                        }else {
+                            Toast.makeText(mContext, "Purchase order approved successfully", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override

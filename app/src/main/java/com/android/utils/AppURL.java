@@ -85,11 +85,13 @@ public class AppURL {
     public static final String API_INVENTORY_GET_GRN_DETAILS = BASE_URL + "inventory/component/get-grn-details?token=";
     public static final String API_DPR_SUB_CONTRACTOR_DATA = BASE_URL + "dpr/subcontractor/listing?token=";
     public static final String API_DPR_SUBCONTRACTOR_CATEGORY_DATA = BASE_URL + "dpr/category/listing?token=";
+    public static final String API_NOTIFICATION_DASHBOARD_COUNTS = BASE_URL + "notification/get-counts?token=";
     public static final String API_DPR_SUBCON_SAVE_DETAILS = BASE_URL + "dpr/subcontractor/save-details?token=";
     public static final String API_DPR_LISTING = BASE_URL + "dpr/subcontractor/dpr-detail-listing?token=";
-    public static final String API_GENERATE_GRN_ASSET_MAINT = BASE_URL + "";
-    public static final String API_SUBMIT_MAINENANCE = BASE_URL + "";
+    public static final String API_GENERATE_GRN_ASSET_MAINT = BASE_URL + "inventory/asset/maintenance-request/transaction/generate-grn?token=";
+    public static final String API_SUBMIT_MAINENANCE = BASE_URL + "inventory/asset/maintenance-request/transaction/create?token=";
     public static final String API_PURCHASE_ORDER_REQUEST_LIST = BASE_URL + "purchase/purchase-order-request/listing?token=";
     public static final String API_PURCHASE_ORDER_REQUEST_DETAILS_LIST = BASE_URL + "purchase/purchase-order-request/detail?token=";
-    public static final String API_NOTIFICATION_DASHBOARD_COUNTS = BASE_URL + "notification/get-counts?token=";
+    public static final String API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS = BASE_URL + "purchase/purchase-order-request/change-status?token=";
+    public static final String API_ASSET_MAINTENANCE_REQUEST_LISTING = BASE_URL + "inventory/asset/maintenance-request/listing?token=";
 }

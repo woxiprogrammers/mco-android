@@ -415,6 +415,8 @@ public class AppUtils {
             return "P R Admin Disapproved";
         } else if (strStatus.equalsIgnoreCase("purchase-requested")) {
             return "Purchase Requested";
+        }else if(strStatus.equalsIgnoreCase("Approved")){
+            return "Approved";
         }
         return "";
     }

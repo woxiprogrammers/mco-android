@@ -21,19 +21,19 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbarAssetDetails"
+                android:id="@+id/toolbarAssetMaintenanceReadings"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
 
                 <RelativeLayout
-                    android:id="@+id/relative_layout_datePicker_readings"
+                    android:id="@+id/relative_layout_datePicker_maintenance"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
 
                     <TextView
-                        android:id="@+id/textView_readings_appBarTitle"
+                        android:id="@+id/textView_readings_appBarTitle_Maintenance"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
@@ -45,7 +45,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toRightOf="@id/textView_readings_appBarTitle"
+                        android:layout_toRightOf="@id/textView_readings_appBarTitle_Maintenance"
                         android:paddingLeft="@dimen/dimen_8dp"
                         android:tint="@color/colorWhite"
                         app:srcCompat="@drawable/ic_arrow_down"/>

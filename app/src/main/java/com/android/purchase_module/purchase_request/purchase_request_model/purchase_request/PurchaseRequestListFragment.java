@@ -328,7 +328,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseRequestListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-            Log.i("@@Date",purchaseRequestListItem.getDate());
 
             holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " +AppUtils.getInstance().getTime("E, dd MMMM yyyy","dd-MMM-yyyy",purchaseRequestListItem.getDate()));
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
@@ -366,18 +365,5 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 ButterKnife.bind(this, itemView);
             }
         }
-    }
-    private String setTime(String strParse) {
-        final SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-        Date dateObj;
-        String newDateStr = null;
-        try {
-            dateObj = df.parse(strParse);
-            SimpleDateFormat fd = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-            newDateStr = fd.format(dateObj);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return  newDateStr;
     }
 }

@@ -31,15 +31,16 @@
                         android:id="@+id/textViewSetSourceName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Source Name"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Source Name:"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/editTextSourceSetName"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:enabled="false"/>
                 </LinearLayout>
 
 
@@ -52,16 +53,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Name Of Item"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Name Of Item:"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/editTextSetItemName"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
+                        android:background="@android:drawable/editbox_background_normal"
                         android:enabled="false"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:focusable="false"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -79,14 +81,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_3dp"
+                            android:layout_marginLeft="@dimen/dimen_4dp"
                             android:text="Quantity:"
                             android:textColor="@color/colorTextLight"/>
 
                         <EditText
                             android:id="@+id/edittextSetQuantity"
+                            style="@style/MyEditTextHeightSTyle"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:background="@android:drawable/editbox_background_normal"
                             android:digits="0123456789"
                             android:enabled="false"
@@ -103,14 +105,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_3dp"
+                            android:layout_marginLeft="@dimen/dimen_4dp"
                             android:text="Unit:"
                             android:textColor="@color/colorTextLight"/>
 
                         <EditText
                             android:id="@+id/editTextSetUnit"
+                            style="@style/MyEditTextHeightSTyle"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
                             android:background="@android:drawable/editbox_background_normal"
                             android:digits="0123456789"
                             android:enabled="false"
@@ -128,16 +130,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
                         android:text="@string/date"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/editTextSetDate"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
+                        android:background="@android:drawable/editbox_background_normal"
                         android:enabled="false"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:focusable="false"/>
                 </LinearLayout>
 
 
@@ -152,16 +155,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
                         android:text="@string/bill_number"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/editTesxtSetBillNumber"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
                         android:enabled="false"
-                        android:textColor="@color/colorTextLight"
-                        android:background="@android:drawable/editbox_background_normal"/>
+                        android:textColor="@color/colorTextLight"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -175,13 +179,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
                         android:text="@string/bill_amount"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
                         android:id="@+id/editTextSetBillamount"
+                        style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background_normal"
                         android:digits="0123456789"
                         android:enabled="false"
@@ -189,15 +194,13 @@
                 </LinearLayout>
 
 
-
-
                 <HorizontalScrollView
                     android:id="@+id/horizontalImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_4dp"
-                    android:visibility="gone"
-                    android:fadeScrollbars="false">
+                    android:fadeScrollbars="false"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/linearLayoutSetUploadImage"
@@ -207,7 +210,6 @@
                         android:orientation="horizontal">
                     </LinearLayout>
                 </HorizontalScrollView>
-
 
 
             </LinearLayout>
@@ -223,13 +225,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
                     android:text="@string/grn_number"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
                     android:id="@+id/editTextSetGrnNumber"
+                    style="@style/MyEditTextHeightSTyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background_normal"
                     android:enabled="false"/>
             </LinearLayout>
@@ -244,15 +247,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
                     android:text="@string/payableAmount"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
                     android:id="@+id/editTextSetPayableAmount"
+                    style="@style/MyEditTextHeightSTyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:enabled="false"/>
             </LinearLayout>
 
             <LinearLayout
@@ -266,15 +270,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
                     android:text="Reference Number"
                     android:textColor="@color/colorTextLight"/>
 
                 <EditText
                     android:id="@+id/editTextRefNum"
+                    style="@style/MyEditTextHeightSTyle"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:background="@android:drawable/editbox_background_normal"/>
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:enabled="false"/>
             </LinearLayout>
 
 
@@ -289,9 +294,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#FFD740"
+                    android:enabled="false"
                     android:hint="@string/tap_too_add_note"
                     android:padding="@dimen/dimen_16dp"
-                    android:enabled="false"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/dimen_16dp"/>
             </android.support.v7.widget.CardView>

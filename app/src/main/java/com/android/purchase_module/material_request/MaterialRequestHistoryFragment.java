@@ -174,7 +174,6 @@ public class MaterialRequestHistoryFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             final MaterialhistorydataItem materialhistorydataItem=materialsItemOrderedRealmCollection.get(position);
-            Log.i("@@History",materialhistorydataItem.getMessage());
             holder.textViewMaterialStatus.setText(materialhistorydataItem.getMessage());
 
         }

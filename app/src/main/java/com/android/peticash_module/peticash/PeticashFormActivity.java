@@ -508,7 +508,7 @@ public class PeticashFormActivity extends BaseActivity {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
             employeesearchdataItem = realm.where(EmployeeSearchDataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            textViewEmployeeName.setText(employeesearchdataItem.getEmployeeName() + " : " + employeesearchdataItem.getFormatEmployeeId());
+            textViewEmployeeName.setText("( " + employeesearchdataItem.getFormatEmployeeId() + " ) " + employeesearchdataItem.getEmployeeName() );
             textViewBalance.setText("Balance : " + employeesearchdataItem.getBalance());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
@@ -519,8 +519,6 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void validateEntries() {
-        String strSelectedSource = editTextSelectedSourceName.getText().toString();
-        String strItemName = editTextItemName.getText().toString();
         String strItemQuantity = edittextQuantity.getText().toString();
         String strBillNumber = editTextBillNumber.getText().toString();
         String strBillAmount = editTextBillamount.getText().toString();
@@ -907,7 +905,6 @@ public class PeticashFormActivity extends BaseActivity {
                         try {
                             JSONObject jsonObject = response.getJSONObject("data");
                             approved_amount = jsonObject.getString("approved_amount");
-                            Log.i("#@approved_amount", approved_amount);
                             editTextSalaryAmount.addTextChangedListener(textWatcherSalaryAmount);
                             editTextSiteName.setEnabled(false);
                             editTextEmpIdName.setEnabled(false);

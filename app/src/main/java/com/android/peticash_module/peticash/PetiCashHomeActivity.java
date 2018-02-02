@@ -309,11 +309,11 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                     = realm.where(PeticashTransactionStatsData.class)
                     .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findFirst();
             if (peticashTransactionStatsData != null && peticashTransactionStatsData.isValid()) {
-                mTextViewAllocatedAmount.setText("₹" + peticashTransactionStatsData.getAllocatedAmount());
-                mTextViewSalaryAmount.setText("₹" + peticashTransactionStatsData.getTotalSalaryAmount());
-                mTextViewAdvanceAmount.setText("₹" + peticashTransactionStatsData.getTotalAdvanceAmount());
-                mTextViewPurchaseAmount.setText("₹" + peticashTransactionStatsData.getTotalPurchaseAmount());
-                mTextViewRemainingAmount.setText("₹" + peticashTransactionStatsData.getRemainingAmount());
+                mTextViewAllocatedAmount.setText("₹ " + peticashTransactionStatsData.getAllocatedAmount());
+                mTextViewSalaryAmount.setText("₹ " + peticashTransactionStatsData.getTotalSalaryAmount());
+                mTextViewAdvanceAmount.setText("₹ " + peticashTransactionStatsData.getTotalAdvanceAmount());
+                mTextViewPurchaseAmount.setText("₹ " + peticashTransactionStatsData.getTotalPurchaseAmount());
+                mTextViewRemainingAmount.setText("₹ " + peticashTransactionStatsData.getRemainingAmount());
             }
         } finally {
             if (realm != null) realm.close();
