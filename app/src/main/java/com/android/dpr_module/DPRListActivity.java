@@ -266,6 +266,7 @@ public class DPRListActivity extends BaseActivity {
                 holder.textViewSubConName.setText(strSubConName);
             } else holder.textViewSubConName.setVisibility(View.GONE);
             holder.textViewCatName.setText(usersItem.getCat());
+            holder.textViewTotalCatCount.setText(""+usersItem.getNoOfUsers());
         }
 
         @Override
