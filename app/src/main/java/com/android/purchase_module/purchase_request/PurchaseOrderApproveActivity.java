@@ -133,7 +133,8 @@ public class PurchaseOrderApproveActivity extends BaseActivity
                 .equalTo("passYear", passYear)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .findAll();
-        PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
+        PurchaseRequestRvAdapter purchaseRequestRvAdapter
+                = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         rvPurchaseOrderList.setLayoutManager(new LinearLayoutManager(mContext));
         rvPurchaseOrderList.setHasFixedSize(true);
         rvPurchaseOrderList.setAdapter(purchaseRequestRvAdapter);
@@ -195,6 +196,11 @@ public class PurchaseOrderApproveActivity extends BaseActivity
                                     }
                                     realm.insertOrUpdate(response);
                                 }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    setUpPrAdapter(passMonth, passYear);
+                                }
                             }, new Realm.Transaction.OnError() {
                                 @Override
                                 public void onError(Throwable error) {
@@ -219,7 +225,8 @@ public class PurchaseOrderApproveActivity extends BaseActivity
     protected class PurchaseRequestRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderRequestListItem, PurchaseRequestRvAdapter.MyViewHolder> {
         private OrderedRealmCollection<PurchaseOrderRequestListItem> purchaseOrderRequestListItemOrderedRealmCollection;
 
-        PurchaseRequestRvAdapter(@Nullable OrderedRealmCollection<PurchaseOrderRequestListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        PurchaseRequestRvAdapter(@Nullable OrderedRealmCollection<PurchaseOrderRequestListItem> data,
+                                 boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             purchaseOrderRequestListItemOrderedRealmCollection = data;
         }
