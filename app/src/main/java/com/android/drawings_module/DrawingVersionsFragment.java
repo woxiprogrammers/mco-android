@@ -165,22 +165,12 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
                         DrawingDetailsActivity.imageName=versionsItem.getTitle();
                         DrawingDetailsActivity.imageUrl=imagePath + "/" +versionUrl;
                         ((DrawingDetailsActivity)mContext).setTitle();
-
                     }
 
                     @Override
                     public void onLongItemClick(View view, int position) {
                     }
                 }));
-        /*if (versionsItemRealmResults != null) {
-            versionsItemRealmResults.addChangeListener(new RealmChangeListener<RealmResults<VersionsItem>>() {
-                @Override
-                public void onChange(RealmResults<VersionsItem> assetsListItemRealmResults) {
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("versionsItemRealmResults");
-        }*/
     }
 
     @Override

@@ -11,9 +11,11 @@ public class AssetsListItem extends RealmObject {
     private String assetsName;
     @SerializedName("asset_id")
     private int asset_id;
+
     @PrimaryKey
     @SerializedName("inventory_component_id")
     private int id;
+
     @SerializedName("assets_units")
     private String assetsUnits;
     @SerializedName("total_work_hour")

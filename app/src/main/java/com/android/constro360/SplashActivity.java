@@ -76,8 +76,8 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("material-request", MaterialRequest_ApproveActivity.class.getName());
         aclKeyValuePair.put("vendor-assignment", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-order", PurchaseHomeActivity.class.getName());
-        aclKeyValuePair.put("purchase-bill", AwarenessHomeActivity.class.getName());
-        aclKeyValuePair.put("manage-amendment", DPRListActivity.class.getName());
+        aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
+        aclKeyValuePair.put("manage-amendment", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-history", PurchaseOrderApproveActivity.class.getName());
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
@@ -95,6 +95,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("manage-drawing", DrawingHomeActivity.class.getName());
         aclKeyValuePair.put("manage-dpr", DPRListActivity.class.getName());
         aclKeyValuePair.put("manage-general-awareness",AwarenessHomeActivity.class.getName());
+        aclKeyValuePair.put("purchase-order-request",PurchaseOrderApproveActivity.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);

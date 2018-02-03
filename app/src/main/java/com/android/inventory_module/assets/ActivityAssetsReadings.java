@@ -131,26 +131,7 @@ public class ActivityAssetsReadings extends BaseActivity {
             editTextStopTime.clearFocus();
         }
         if (slug.equalsIgnoreCase("fuel_dependent")) {
-           /* if (TextUtils.isEmpty(strTopUp)) {
-                editTextTopUp.setFocusableInTouchMode(true);
-                editTextTopUp.requestFocus();
-                editTextTopUp.setError("Enter Top Up");
-                return;
-            } else {
-                editTextTopUp.setError(null);
-                editTextTopUp.clearFocus();
-            }*/
 
-           /* if (TextUtils.isEmpty(strTopUpTime)) {
-                editTextTopUpTime.setFocusableInTouchMode(true);
-                editTextTopUpTime.requestFocus();
-                editTextTopUpTime.setError("Enter Top Up Time");
-                return;
-            } else {
-                editTextTopUpTime.setError(null);
-                editTextTopUpTime.clearFocus();
-            }
-*/
             if (TextUtils.isEmpty(strLtrPerUnit)) {
                 editTextLtrPerUnit.setFocusableInTouchMode(true);
                 editTextLtrPerUnit.requestFocus();
@@ -245,7 +226,7 @@ public class ActivityAssetsReadings extends BaseActivity {
         Intent intent = getIntent();
         if (intent != null) {
             setAssetTitle = intent.getStringExtra("asset_name");
-            intComponentId = intent.getIntExtra("componentId", -1);
+            intComponentId = intent.getIntExtra("componentId",-1);
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
