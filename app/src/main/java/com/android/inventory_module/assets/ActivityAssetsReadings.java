@@ -233,7 +233,7 @@ public class ActivityAssetsReadings extends BaseActivity {
             getSupportActionBar().setTitle(setAssetTitle);
         }
         realm = Realm.getDefaultInstance();
-        AssetsListItem assetsListItem = realm.where(AssetsListItem.class).equalTo("asset_id", intComponentId).findFirst();
+        AssetsListItem assetsListItem = realm.where(AssetsListItem.class).equalTo("id", intComponentId).findFirst();
         slug = assetsListItem.getSlug();
         elePerUnit = assetsListItem.getElectricityPerUnit();
         ltrPerUnit = assetsListItem.getLitrePerUnit();
