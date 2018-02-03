@@ -135,7 +135,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity
                 .findAll();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         rvPurchaseOrderList.setLayoutManager(new LinearLayoutManager(mContext));
-//        rvPurchaseOrderList.setHasFixedSize(true);
+        rvPurchaseOrderList.setHasFixedSize(true);
         rvPurchaseOrderList.setAdapter(purchaseRequestRvAdapter);
         rvPurchaseOrderList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 rvPurchaseOrderList,
