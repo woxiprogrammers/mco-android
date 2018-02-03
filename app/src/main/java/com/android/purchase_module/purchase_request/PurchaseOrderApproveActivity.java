@@ -22,7 +22,6 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestListItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestResponse;
-import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestdata;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -130,6 +129,9 @@ public class PurchaseOrderApproveActivity extends BaseActivity
     private void setUpPrAdapter(int passMonth, int passYear) {
         realm = Realm.getDefaultInstance();
         purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class)
+                .equalTo("passMonth", passMonth)
+                .equalTo("passYear", passYear)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .findAll();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         rvPurchaseOrderList.setLayoutManager(new LinearLayoutManager(mContext));
@@ -160,7 +162,6 @@ public class PurchaseOrderApproveActivity extends BaseActivity
     }
 
     private void requestOrderListOnline() {
-        //ToDo Params
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -184,9 +185,14 @@ public class PurchaseOrderApproveActivity extends BaseActivity
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(PurchaseOrderRequestResponse.class);
-                                    realm.delete(PurchaseOrderRequestdata.class);
-                                    realm.delete(PurchaseOrderRequestListItem.class);
+//                                    realm.delete(PurchaseOrderRequestResponse.class);
+//                                    realm.delete(PurchaseOrderRequestdata.class);
+//                                    realm.delete(PurchaseOrderRequestListItem.class);
+                                    for (PurchaseOrderRequestListItem orderRequestListItem
+                                            : response.getPurchaseOrderRequestdata().getPurchaseOrderRequestlist()) {
+                                        orderRequestListItem.setPassMonth(passMonth);
+                                        orderRequestListItem.setPassYear(passYear);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnError() {

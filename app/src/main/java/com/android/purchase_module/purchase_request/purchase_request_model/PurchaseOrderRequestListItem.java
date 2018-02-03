@@ -1,11 +1,13 @@
 package com.android.purchase_module.purchase_request.purchase_request_model;
 
+import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class PurchaseOrderRequestListItem extends RealmObject {
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     private int passMonth, passYear;
     @SerializedName("date")
     private String date;
