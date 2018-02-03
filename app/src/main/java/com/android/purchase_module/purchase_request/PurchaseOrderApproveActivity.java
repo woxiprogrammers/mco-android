@@ -83,7 +83,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
         setDateInAppBar(passMonth, passYear);
-        setUpPrAdapter();
+        setUpPrAdapter(passMonth, passYear);
     }
 
     @OnClick(R.id.relative_layout_datePicker_maintenance)
@@ -107,8 +107,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        int pageNumber = 0;
-        requestOrderListOnline(pageNumber);
+        requestOrderListOnline();
     }
 
     @Override
@@ -124,13 +123,14 @@ public class PurchaseOrderApproveActivity extends BaseActivity
         passYear = year;
         passMonth = month;
         setDateInAppBar(passMonth, passYear);
-//        setUpPrAdapter();
-        requestOrderListOnline(0);
+        setUpPrAdapter(passMonth, passYear);
+        requestOrderListOnline();
     }
 
-    private void setUpPrAdapter() {
+    private void setUpPrAdapter(int passMonth, int passYear) {
         realm = Realm.getDefaultInstance();
-        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class).findAll();
+        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class)
+                .findAll();
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         rvPurchaseOrderList.setLayoutManager(new LinearLayoutManager(mContext));
 //        rvPurchaseOrderList.setHasFixedSize(true);
@@ -159,7 +159,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity
                 }));
     }
 
-    private void requestOrderListOnline(int pageId) {
+    private void requestOrderListOnline() {
         //ToDo Params
         JSONObject params = new JSONObject();
         try {

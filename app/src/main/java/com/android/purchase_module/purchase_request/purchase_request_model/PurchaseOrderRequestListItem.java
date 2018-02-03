@@ -6,6 +6,7 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class PurchaseOrderRequestListItem extends RealmObject {
+    private int passMonth, passYear;
     @SerializedName("date")
     private String date;
     @PrimaryKey
@@ -76,5 +77,21 @@ public class PurchaseOrderRequestListItem extends RealmObject {
 
     public String getMaterialName() {
         return materialName;
+    }
+
+    public int getPassMonth() {
+        return passMonth;
+    }
+
+    public void setPassMonth(int passMonth) {
+        this.passMonth = passMonth;
+    }
+
+    public int getPassYear() {
+        return passYear;
+    }
+
+    public void setPassYear(int passYear) {
+        this.passYear = passYear;
     }
 }
