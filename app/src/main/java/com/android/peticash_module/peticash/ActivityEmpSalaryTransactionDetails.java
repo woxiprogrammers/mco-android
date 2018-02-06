@@ -161,7 +161,6 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             } else {
                 linearPayableAmount.setVisibility(View.GONE);
             }
-            //ToDo UnComment below code after getting values from API
             if (!empSalaryTransactionDetailData.getPf().isEmpty()) {
                 editTextPF.setText(empSalaryTransactionDetailData.getPf());
                 editTextPF.setVisibility(View.VISIBLE);

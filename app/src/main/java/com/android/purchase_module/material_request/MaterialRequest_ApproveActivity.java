@@ -1458,17 +1458,12 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
-            Log.i("@@", String.valueOf(purchaseMaterialListItem.isPurchase_order_created()));
-
-           /* if(!purchaseMaterialListItem.isPurchase_order_created()){
-                Log.i("@@if", String.valueOf(purchaseMaterialListItem.isPurchase_order_created()));
+            /*if(!purchaseMaterialListItem.isPurchase_order_created()){
                 holder.textViewItemName.setTextColor(getColor(R.color.colorPrimary));
             }else {
-                Log.i("@@else", String.valueOf(purchaseMaterialListItem.isPurchase_order_created()));
                 holder.textViewItemName.setTextColor(getColor(R.color.colorBlack));
-            }*/
-            Log.i("@@id", String.valueOf(purchaseMaterialListItem.getMaterialRequestComponentId()));
-
+            }
+            */
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
             holder.textViewItemStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseMaterialListItem.getComponentStatus()));
             holder.textViewItemUnits.setText("Qty : " +purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
@@ -1480,7 +1475,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
                 holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
             }
-            if (isAcces) {
+            if(isAcces) {
                 if (strStatus.equalsIgnoreCase("pending")) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                 } else {

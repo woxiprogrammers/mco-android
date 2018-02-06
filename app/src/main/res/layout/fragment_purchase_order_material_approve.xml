@@ -42,14 +42,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Cement PPC"
-                    android:textColor="@color/colorText"
-                    android:textSize="@dimen/dimen_16dp"/>
+                    style="@style/TextViewTitleStyle"
+                    android:textColor="@color/colorText"/>
 
                 <TextView
                     android:id="@+id/textView_item_quantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="100 Kg"
+                    style="@style/TextViewTitleStyle"
                     android:textColor="@color/colorTextLight"/>
             </LinearLayout>
         </LinearLayout>
