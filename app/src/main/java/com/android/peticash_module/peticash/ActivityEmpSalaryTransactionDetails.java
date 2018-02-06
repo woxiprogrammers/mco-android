@@ -58,6 +58,18 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
     EditText editTextSetSalaryRemark;
     @BindView(R.id.setStatus)
     TextView textViewSetStatus;
+    @BindView(R.id.editTextSetPT)
+    EditText editTextSetPT;
+    @BindView(R.id.editTextPF)
+    EditText editTextPF;
+    @BindView(R.id.linearLayoutSetPTPF)
+    LinearLayout linearLayoutSetPTPF;
+    @BindView(R.id.editTextSetESIC)
+    EditText editTextSetESIC;
+    @BindView(R.id.editTextSetTDS)
+    EditText editTextSetTDS;
+    @BindView(R.id.linearLayoutESICTDS)
+    LinearLayout linearLayoutESICTDS;
     private int transactionTypeId;
     private Realm realm;
     private String transactionDetailType;
@@ -106,9 +118,13 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
                 edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
                 linearSetLayoutForSalary.setVisibility(View.VISIBLE);
+//                linearLayoutSetPTPF.setVisibility(View.VISIBLE);
+//                linearLayoutESICTDS.setVisibility(View.VISIBLE);
             } else {
                 linearPayableAmount.setVisibility(View.GONE);
                 linearSetLayoutForSalary.setVisibility(View.GONE);
+                linearLayoutSetPTPF.setVisibility(View.GONE);
+                linearLayoutESICTDS.setVisibility(View.GONE);
             }
             if (!empSalaryTransactionDetailData.getPayableAmount().isEmpty()) {
                 edittextSetPayableAmount.setText(empSalaryTransactionDetailData.getPayableAmount());
@@ -116,6 +132,32 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             } else {
                 linearPayableAmount.setVisibility(View.GONE);
             }
+            //ToDo UnComment below code after getting values from API
+            /*if (!empSalaryTransactionDetailData.getPf().isEmpty()) {
+                editTextPF.setText(empSalaryTransactionDetailData.getPf());
+                editTextPF.setVisibility(View.VISIBLE);
+            } else {
+                editTextPF.setVisibility(View.GONE);
+            }
+            if (!empSalaryTransactionDetailData.getPt().isEmpty()) {
+                editTextSetPT.setVisibility(View.VISIBLE);
+                editTextSetPT.setText(empSalaryTransactionDetailData.getPt());
+            } else {
+                editTextSetPT.setVisibility(View.GONE);
+            }
+            if (!empSalaryTransactionDetailData.getEsic().isEmpty()) {
+                editTextSetESIC.setVisibility(View.VISIBLE);
+                editTextSetESIC.setText(empSalaryTransactionDetailData.getEsic());
+            } else {
+                editTextSetESIC.setVisibility(View.GONE);
+
+            }
+            if (!empSalaryTransactionDetailData.getTds().isEmpty()) {
+                editTextSetTDS.setVisibility(View.VISIBLE);
+                editTextSetTDS.setText(empSalaryTransactionDetailData.getTds());
+            } else {
+                editTextSetTDS.setVisibility(View.GONE);
+            }*/
             editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
             editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());
             textViewSetStatus.setText(empSalaryTransactionDetailData.getPeticashStatusName());
