@@ -30,7 +30,6 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
-import com.android.drawings_module.DrawingDetailsActivity;
 import com.android.peticash_module.peticashautosearchemployee.EmpSalaryTransactionDetailData;
 import com.android.peticash_module.peticashautosearchemployee.EmpSalaryTransactionDetailResponse;
 import com.android.utils.AppURL;
@@ -95,6 +94,8 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
     TextView downloadVoucher;
     @BindView(R.id.progressBarToLoadVoucher)
     ProgressBar progressBarToLoadVoucher;
+    @BindView(R.id.mainLinearLayoutViewSalary)
+    LinearLayout mainLinearLayoutViewSalary;
     private int transactionTypeId;
     private Realm realm;
     private String transactionDetailType;
@@ -146,8 +147,8 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
                 edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
                 linearSetLayoutForSalary.setVisibility(View.VISIBLE);
-//                linearLayoutSetPTPF.setVisibility(View.VISIBLE);
-//                linearLayoutESICTDS.setVisibility(View.VISIBLE);
+                linearLayoutSetPTPF.setVisibility(View.VISIBLE);
+                linearLayoutESICTDS.setVisibility(View.VISIBLE);
             } else {
                 linearPayableAmount.setVisibility(View.GONE);
                 linearSetLayoutForSalary.setVisibility(View.GONE);
@@ -161,7 +162,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 linearPayableAmount.setVisibility(View.GONE);
             }
             //ToDo UnComment below code after getting values from API
-            /*if (!empSalaryTransactionDetailData.getPf().isEmpty()) {
+            if (!empSalaryTransactionDetailData.getPf().isEmpty()) {
                 editTextPF.setText(empSalaryTransactionDetailData.getPf());
                 editTextPF.setVisibility(View.VISIBLE);
             } else {
@@ -185,7 +186,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 editTextSetTDS.setText(empSalaryTransactionDetailData.getTds());
             } else {
                 editTextSetTDS.setVisibility(View.GONE);
-            }*/
+            }
             editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
             if (!empSalaryTransactionDetailData.getRemark().isEmpty()) {
                 editTextSetSalaryRemark.setVisibility(View.VISIBLE);
@@ -270,10 +271,12 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
 
     @OnClick(R.id.downloadVoucher)
     public void onViewClicked() {
-            requestToGenerateVoucher();
+        requestToGenerateVoucher();
     }
 
     private void requestToGenerateVoucher() {
+        AppUtils.getInstance().initializeProgressBar(mainLinearLayoutViewSalary,mContext);
+        AppUtils.getInstance().showProgressBar(mainLinearLayoutViewSalary,true);
         JSONObject params = new JSONObject();
         try {
             params.put("peticash_transaction_id", transactionTypeId);
@@ -291,9 +294,10 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONObject jsonObject = response.getJSONObject("pdf_path");
-                             strPdfUrl = jsonObject.getString("pdf_url");
+                            strPdfUrl = jsonObject.getString("pdf_url");
                             Timber.d(strPdfUrl);
-                            downloadFile(BuildConfig.BASE_URL_MEDIA+ strPdfUrl);
+                            AppUtils.getInstance().showProgressBar(mainLinearLayoutViewSalary,false);
+                            downloadFile(BuildConfig.BASE_URL_MEDIA + strPdfUrl);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -307,11 +311,10 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 });
     }
 
-
-    private void requestToDeleteVoucher(){
-        JSONObject params=new JSONObject();
+    private void requestToDeleteVoucher() {
+        JSONObject params = new JSONObject();
         try {
-            params.put("pdf_path",strPdfUrl);
+            params.put("pdf_path", strPdfUrl);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -324,11 +327,11 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext,response.getString("message"),Toast.LENGTH_SHORT).show();
+                        /*try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        }
+                        }*/
 
                     }
 
@@ -474,6 +477,5 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 
 }
