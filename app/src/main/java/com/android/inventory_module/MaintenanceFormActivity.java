@@ -48,7 +48,7 @@ import id.zelory.compressor.Compressor;
 import io.realm.Realm;
 import timber.log.Timber;
 
-public class MaitenanceFormActivity extends BaseActivity {
+public class MaintenanceFormActivity extends BaseActivity {
 
     @BindView(R.id.textViewCapturedSecond)
     TextView textViewCapturedSecond;
@@ -90,7 +90,7 @@ public class MaitenanceFormActivity extends BaseActivity {
 
     private Context mContext;
     private String strCaptureTag = "";
-    private ArrayList<File> arrayImageFileList;
+    private ArrayList<File> arrayImageFileList=new ArrayList<>();
     private JSONArray jsonImageNameArray = new JSONArray();
     private int maintenanceId;
     private String strvendorName, strGrn;
@@ -107,7 +107,7 @@ public class MaitenanceFormActivity extends BaseActivity {
     }
 
     private void initializeViews() {
-        mContext = MaitenanceFormActivity.this;
+        mContext = MaintenanceFormActivity.this;
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Maintenance");
@@ -119,6 +119,7 @@ public class MaitenanceFormActivity extends BaseActivity {
             editTextVendorName.setText(strvendorName);
 
         }
+        AppUtils.getInstance().initializeProgressBar(mainRelativeLayout,mContext);
         realm = Realm.getDefaultInstance();
         assetMaintenanceListItem = realm.where(AssetMaintenanceListItem.class).equalTo("assetMaintenanceId", maintenanceId).findFirst();
         if (!TextUtils.isEmpty(assetMaintenanceListItem.getGrn())) {
@@ -296,10 +297,11 @@ public class MaitenanceFormActivity extends BaseActivity {
             editTextBillAmount.setError("Please enter bill amount");
             return;
         }
-        if (arrayImageFileList.size() != 0 || arrayImageFileList == null) {
+        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        AppUtils.getInstance().showProgressBar(mainRelativeLayout,true);
         JSONObject params = new JSONObject();
         try {
             params.put("grn", editTextGrnNumber.getText().toString());
@@ -321,6 +323,8 @@ public class MaitenanceFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
+                            AppUtils.getInstance().showProgressBar(mainRelativeLayout,false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -346,6 +350,7 @@ public class MaitenanceFormActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        AppUtils.getInstance().showProgressBar(mainRelativeLayout,true);
         AndroidNetworking.post(AppURL.API_GENERATE_GRN_ASSET_MAINT + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToGenerateGrn")
                 .addJSONObjectBody(params)
@@ -359,6 +364,7 @@ public class MaitenanceFormActivity extends BaseActivity {
                             strGrn = response.getString("grn_generated");
 
                             editTextGrnNumber.setText(strGrn);
+                            AppUtils.getInstance().showProgressBar(mainRelativeLayout,false);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

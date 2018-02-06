@@ -101,7 +101,7 @@
             android:name="com.android.dpr_module.DPRListActivity"
             android:parentActivityName="com.android.dashboard.DashBoardActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name="com.android.inventory_module.MaitenanceFormActivity"/>
+        <activity android:name="com.android.inventory_module.MaintenanceFormActivity"/>
         <activity android:name="com.android.purchase_module.purchase_request.PurchaseOrderMaterialRequestApproveActivity">
         </activity>
         <meta-data

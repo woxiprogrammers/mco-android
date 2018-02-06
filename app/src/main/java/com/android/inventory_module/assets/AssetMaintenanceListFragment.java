@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.inventory_module.MaitenanceFormActivity;
+import com.android.inventory_module.MaintenanceFormActivity;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListData;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListItem;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListResponse;
@@ -59,7 +59,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
     }
 
     public static AssetMaintenanceListFragment newInstance() {
-
         Bundle args = new Bundle();
         AssetMaintenanceListFragment fragment = new AssetMaintenanceListFragment();
         fragment.setArguments(args);
@@ -84,7 +83,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
     public void fragmentBecameVisible() {
         ((AssetDetailsActivity) mContext).setDatePickerFor("maintenance");
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "maintenance");
-        requestToGetList();
     }
 
     private void setAdapterForMaterialList() {
@@ -100,14 +98,22 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             public void onItemClick(View view, final int position) {
                 AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItems.get(position);
                 if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")) {
-                    if (!assetMaintenanceListItem.getGrn().equalsIgnoreCase("") && assetMaintenanceListItem.isIs_transaction_created()) {
-                        Intent intent = new Intent(getActivity(), MaitenanceFormActivity.class);
+                    if (TextUtils.isEmpty(assetMaintenanceListItem.getGrn())/*.equalsIgnoreCase("")*/ && !assetMaintenanceListItem.isIs_transaction_created()) {
+                        Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
                         intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
                         intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
                         startActivity(intent);
 
                     } else {
-                        Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
+                        if (!TextUtils.isEmpty(assetMaintenanceListItem.getGrn())) {
+                            Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
+                            intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
+                            intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
+
+                        }
 
                     }
                 } else {
