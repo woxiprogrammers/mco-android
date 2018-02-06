@@ -632,7 +632,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         alertDialog.show();
     }
 
-    //    bill_transaction
+    //bill_transaction
     private void uploadImages_addItemToLocal(final String strTag, final String imageFor) {
         if (AppUtils.getInstance().checkNetworkState()) {
             if (arrayImageFileList != null && arrayImageFileList.size() > 0) {

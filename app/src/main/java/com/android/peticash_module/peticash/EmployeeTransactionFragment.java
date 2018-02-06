@@ -171,7 +171,7 @@ public class EmployeeTransactionFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             employeeTransactionsItem = employeeTransactionsItemOrderedRealmCollection.get(position);
-            holder.textvieEmpSalaryDate.setText(employeeTransactionsItem.getDate());
+            holder.textvieEmpSalaryDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss","dd-MMM-yyyy",employeeTransactionsItem.getDate()));
             holder.textviewEmpSalaryType.setText(employeeTransactionsItem.getType());
             if (employeeTransactionsItem.getType().equalsIgnoreCase("Salary")) {
                 holder.textviewEmpSalaryAmount.setText(employeeTransactionsItem.getSalaryAmount());
