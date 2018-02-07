@@ -48,6 +48,7 @@ import io.realm.RealmResults;
  * A simple {@link Fragment} subclass.
  */
 public class AssetMaintenanceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
+
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     private Context mContext;
@@ -98,7 +99,7 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             public void onItemClick(View view, final int position) {
                 AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItems.get(position);
                 if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")) {
-                    if (TextUtils.isEmpty(assetMaintenanceListItem.getGrn())/*.equalsIgnoreCase("")*/ && !assetMaintenanceListItem.isIs_transaction_created()) {
+                    if (TextUtils.isEmpty(assetMaintenanceListItem.getGrn()) && !assetMaintenanceListItem.isIs_transaction_created()) {
                         Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
                         intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
                         intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
@@ -112,7 +113,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
                             startActivity(intent);
                         } else {
                             Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
-
                         }
 
                     }
@@ -128,7 +128,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
     }
 
     private void requestToGetList() {
-//        AppUtils.getInstance().showProgressBar(mainRelativeList, true);
         JSONObject params = new JSONObject();
         try {
             params.put("month", passMonth);
@@ -152,15 +151,14 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(AssetMaintenanceListResponse.class);
+                                    /*realm.delete(AssetMaintenanceListResponse.class);
                                     realm.delete(AssetMaintenanceListData.class);
-                                    realm.delete(AssetMaintenanceListItem.class);
+                                    realm.delete(AssetMaintenanceListItem.class);*/
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    AppUtils.getInstance().showProgressBar(mainRelativeList, false);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
