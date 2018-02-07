@@ -90,7 +90,7 @@ public class MaintenanceFormActivity extends BaseActivity {
 
     private Context mContext;
     private String strCaptureTag = "";
-    private ArrayList<File> arrayImageFileList = new ArrayList<>();
+    private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
     private int maintenanceId;
     private String strvendorName, strGrn;
@@ -296,13 +296,15 @@ public class MaintenanceFormActivity extends BaseActivity {
 
         if (TextUtils.isEmpty(editTextBillNumber.getText().toString())) {
             editTextBillNumber.setError("Please enter bill number");
+            editTextBillNumber.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(editTextBillAmount.getText().toString())) {
+            editTextBillAmount.requestFocus();
             editTextBillAmount.setError("Please enter bill amount");
             return;
         }
-        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
+        if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }

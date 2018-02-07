@@ -330,6 +330,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         Toast.makeText(mContext, response.optString("message") + "", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
 
                     @Override
