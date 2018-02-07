@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -102,7 +103,6 @@ public class MaintenanceFormActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maitenance_form);
         ButterKnife.bind(this);
-
         initializeViews();
     }
 
@@ -304,7 +304,7 @@ public class MaintenanceFormActivity extends BaseActivity {
             editTextBillAmount.setError("Please enter bill amount");
             return;
         }
-        if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+        if (arrayImageFileList == null || arrayImageFileList.size() > 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
@@ -345,6 +345,7 @@ public class MaintenanceFormActivity extends BaseActivity {
     }
 
     private void requestToGenerateGrn() {
+        //null
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
