@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +21,10 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.purchase_module.purchase_request.purchase_request_model.RequestMaterialListItem;
+import com.android.purchase_module.purchase_request.purchase_request_model.RequestedMaterialsResponse;
+import com.android.purchase_module.purchase_request.purchase_request_model.RequestmaterialsData;
+import com.android.purchase_module.purchase_request.purchase_request_model.VendorsItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.SlideAnimationUtil;
@@ -45,7 +48,6 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
-
     @BindView(R.id.rvList)
     RecyclerView rvList;
     private Context mContext;
@@ -80,7 +82,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         if (bundle != null) {
             intPurchaseOrderRequestId = bundle.getInt("purchase_order_request_id");
         }
-
     }
 
     @Override
@@ -98,7 +99,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 AppUtils.getInstance().showOfflineMessage("PurchaseRequestDetailsHomeActivity");
             }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -136,7 +136,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     } else {
                         checkBox.setChecked(false);
                     }
-
 //                    if (requestMaterialListItem.isIs_approved()) {
 //                        checkBox.setEnabled(false);
 //                    } else {
@@ -183,7 +182,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 int noOfSubModules = vendorsItemRealmList.size();
                 if (itemViewIndex == R.id.linearLayoutVendorItem) {
                     RadioButton vendorRadioButton = itemView.findViewById(R.id.vendorRadioButton);
-
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                         VendorsItem tempVendorsItem = vendorsItemRealmList.get(viewIndex);
                         jsonObject = new JSONObject();
@@ -220,15 +218,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
-
                     if (vendorRadioButton.isChecked()) {
                         vendorRadioButton.setChecked(false);
                     } else {
                         vendorRadioButton.setChecked(true);
                     }
-
                 }
-
             }
         });
     }
@@ -262,7 +257,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .getAsObject(RequestedMaterialsResponse.class, new ParsedRequestListener<RequestedMaterialsResponse>() {
                     @Override
                     public void onResponse(final RequestedMaterialsResponse response) {
-
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
@@ -272,14 +266,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                                     realm.delete(RequestmaterialsData.class);
                                     realm.delete(RequestMaterialListItem.class);
                                     realm.delete(VendorsItem.class);
-
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
                                     setUpPrAdapter();
-
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -307,7 +299,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
                         requestToChangeStatus();
                     }
                 })
@@ -339,12 +330,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         Toast.makeText(mContext, response.optString("message") + "", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
 
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestToChangeStatus");
-
                     }
                 });
     }
@@ -408,7 +399,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewRateWithTax = currentChildView.findViewById(R.id.textViewRateWithTax);
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
                 TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
-
                 textViewRateWithTax.setText("Rate Per Tax: " + vendorsItemRealmList.get(viewIndex).getRatePerTax());
                 textViewRateWithoutTax.setText("Rate Without Tax: " + vendorsItemRealmList.get(viewIndex).getRate());
                 textViewTotalWithTax.setText("Total With Tax: " + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());

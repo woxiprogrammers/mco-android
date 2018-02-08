@@ -708,6 +708,7 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("remark", "");
             else
                 params.put("remark", editTextAddNote.getText().toString());
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -890,6 +891,7 @@ public class PeticashFormActivity extends BaseActivity {
             } else {
                 params.put("type", "advance");
             }
+            Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
         }

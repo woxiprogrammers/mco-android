@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -1344,6 +1345,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.mTextViewAddedItemName.setText(purchaseMaterialListItem.getItem_name());
+
             holder.mTextViewMaterialQuantity_MR.setText(String.valueOf(purchaseMaterialListItem.getItem_quantity()));
             holder.mTextViewMaterialUnit_MR.setText(purchaseMaterialListItem.getItem_unit_name());
         }
@@ -1456,11 +1458,12 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
-            if(!purchaseMaterialListItem.isPurchase_order_created()){
-                holder.textViewItemName.setTextColor(getColor(R.color.colorBlack));
-            }else {
+            /*if(!purchaseMaterialListItem.isPurchase_order_created()){
                 holder.textViewItemName.setTextColor(getColor(R.color.colorPrimary));
+            }else {
+                holder.textViewItemName.setTextColor(getColor(R.color.colorBlack));
             }
+            */
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
             holder.textViewItemStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseMaterialListItem.getComponentStatus()));
             holder.textViewItemUnits.setText("Qty : " +purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
@@ -1472,7 +1475,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
                 holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
             }
-            if (isAcces) {
+            if(isAcces) {
                 if (strStatus.equalsIgnoreCase("pending")) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                 } else {

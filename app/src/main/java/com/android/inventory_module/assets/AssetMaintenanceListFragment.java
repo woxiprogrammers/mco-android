@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.inventory_module.MaitenanceFormActivity;
-import com.android.inventory_module.assets.asset_model.AssetMaintenanceListData;
+import com.android.inventory_module.MaintenanceFormActivity;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListItem;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListResponse;
 import com.android.purchase_module.purchase_request.MonthYearPickerDialog;
+import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.FragmentInterface;
@@ -48,6 +48,7 @@ import io.realm.RealmResults;
  * A simple {@link Fragment} subclass.
  */
 public class AssetMaintenanceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
+
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     private Context mContext;
@@ -59,7 +60,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
     }
 
     public static AssetMaintenanceListFragment newInstance() {
-
         Bundle args = new Bundle();
         AssetMaintenanceListFragment fragment = new AssetMaintenanceListFragment();
         fragment.setArguments(args);
@@ -75,7 +75,7 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
-        setAdapterForMaterialList();
+        setAdapterForMaterialList(passMonth, passYear);
         return mParentView;
 
     }
@@ -84,12 +84,15 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
     public void fragmentBecameVisible() {
         ((AssetDetailsActivity) mContext).setDatePickerFor("maintenance");
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "maintenance");
-        requestToGetList();
     }
 
-    private void setAdapterForMaterialList() {
+    private void setAdapterForMaterialList(int passMonth, int passYear) {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetMaintenanceListItem> assetMaintenanceListItems = realm.where(AssetMaintenanceListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        final RealmResults<AssetMaintenanceListItem> assetMaintenanceListItems = realm.where(AssetMaintenanceListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .equalTo("passMonth", passMonth)
+                .equalTo("passYear", passYear)
+                .findAllAsync();
         AssetMaintenanceListAdapter materialListAdapter = new AssetMaintenanceListAdapter(assetMaintenanceListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -100,14 +103,21 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             public void onItemClick(View view, final int position) {
                 AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItems.get(position);
                 if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")) {
-                    if (!assetMaintenanceListItem.getGrn().equalsIgnoreCase("") && assetMaintenanceListItem.isIs_transaction_created()) {
-                        Intent intent = new Intent(getActivity(), MaitenanceFormActivity.class);
+                    if (TextUtils.isEmpty(assetMaintenanceListItem.getGrn()) && !assetMaintenanceListItem.isIs_transaction_created()) {
+                        Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
                         intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
                         intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
                         startActivity(intent);
 
                     } else {
-                        Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
+                        if (!TextUtils.isEmpty(assetMaintenanceListItem.getGrn())) {
+                            Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
+                            intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
+                            intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
+                        }
 
                     }
                 } else {
@@ -122,7 +132,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
     }
 
     private void requestToGetList() {
-//        AppUtils.getInstance().showProgressBar(mainRelativeList, true);
         JSONObject params = new JSONObject();
         try {
             params.put("month", passMonth);
@@ -146,15 +155,20 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(AssetMaintenanceListResponse.class);
+                                    /*realm.delete(AssetMaintenanceListResponse.class);
                                     realm.delete(AssetMaintenanceListData.class);
-                                    realm.delete(AssetMaintenanceListItem.class);
+                                    realm.delete(AssetMaintenanceListItem.class);*/
+
+                                    for (AssetMaintenanceListItem maintenanceListItem
+                                            : response.getAssetMaintenanceListData().getAssetMaintenanceList()) {
+                                        maintenanceListItem.setPassMonth(passMonth);
+                                        maintenanceListItem.setPassYear(passYear);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-//                                    AppUtils.getInstance().showProgressBar(mainRelativeList, false);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -194,7 +208,7 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
         passYear = year;
         passMonth = month;
         ((AssetDetailsActivity) mContext).setDateInAppBar(passMonth, passYear, "maintenance");
-        setAdapterForMaterialList();
+        setAdapterForMaterialList(passMonth, passYear);
         requestToGetList();
     }
 

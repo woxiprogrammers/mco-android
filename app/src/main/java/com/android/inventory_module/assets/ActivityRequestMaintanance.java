@@ -56,6 +56,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
     TextView textViewCapture;
     @BindView(R.id.ll_addImage)
     LinearLayout llAddImage;
+    @BindView(R.id.mainLinearLayoutReqMaintenance)
+    LinearLayout mainLinearLayoutReqMaintenance;
     private Context mContext;
     private String strAssetName;
     private String strModelNumber;
@@ -158,8 +160,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
         if (extras != null) {
             strAssetName = extras.getStringExtra("key");
             strModelNumber = extras.getStringExtra("key1");
-            componentId = extras.getIntExtra("ComponentId", -1);
-            asset_id = extras.getIntExtra("asset_id", -1);
+            asset_id = extras.getIntExtra("assetId", -1);
         }
         editTextAssetName.setText(strAssetName);
         editTextAssetName.setEnabled(false);
@@ -183,6 +184,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
     }
 
     private void requestAssetMaintenance() {
+        AppUtils.getInstance().initializeProgressBar(mainLinearLayoutReqMaintenance, mContext);
+        AppUtils.getInstance().showProgressBar(mainLinearLayoutReqMaintenance, true);
         JSONObject params = new JSONObject();
         try {
             if (componentId != -1) {
@@ -206,6 +209,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            AppUtils.getInstance().showProgressBar(mainLinearLayoutReqMaintenance, false);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -220,42 +224,46 @@ public class ActivityRequestMaintanance extends BaseActivity {
     }
 
     private void uploadImages_addItemToLocal() {
-        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
-            File sendImageFile = arrayImageFileList.get(0);
-            File compressedImageFile = sendImageFile;
-            try {
-                compressedImageFile = new Compressor(this).compressToFile(sendImageFile);
-            } catch (IOException e) {
-                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
-            }
-            String strToken = AppUtils.getInstance().getCurrentToken();
-            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
-                    .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", "request-maintenance")
-                    .addHeaders(AppUtils.getInstance().getApiHeaders())
-                    .setTag("uploadImages_addItemToLocal")
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            arrayImageFileList.remove(0);
-                            try {
-                                String fileName = response.getString("filename");
-                                jsonImageNameArray.put(fileName);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+                File sendImageFile = arrayImageFileList.get(0);
+                File compressedImageFile = sendImageFile;
+                try {
+                    compressedImageFile = new Compressor(this).compressToFile(sendImageFile);
+                } catch (IOException e) {
+                    Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+                }
+                String strToken = AppUtils.getInstance().getCurrentToken();
+                AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                        .setPriority(Priority.MEDIUM)
+                        .addMultipartFile("image", compressedImageFile)
+                        .addMultipartParameter("image_for", "request-maintenance")
+                        .addHeaders(AppUtils.getInstance().getApiHeaders())
+                        .setTag("uploadImages_addItemToLocal")
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                arrayImageFileList.remove(0);
+                                try {
+                                    String fileName = response.getString("filename");
+                                    jsonImageNameArray.put(fileName);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                uploadImages_addItemToLocal();
                             }
-                            uploadImages_addItemToLocal();
-                        }
 
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
-                        }
-                    });
-        } else {
-            requestAssetMaintenance();
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                            }
+                        });
+            } else {
+                requestAssetMaintenance();
+            }
+        }else {
+            AppUtils.getInstance().showOfflineMessage("ActivityRequestMaintanance");
         }
     }
 }

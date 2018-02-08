@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestListItem;
+import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -44,8 +46,8 @@ import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class PurchaseOrderApproveActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
-
+public class PurchaseOrderApproveActivity extends BaseActivity
+        implements DatePickerDialog.OnDateSetListener {
     @BindView(R.id.textView_readings_appBarTitle_Maintenance)
     TextView textViewReadingsAppBarTitle;
     @BindView(R.id.relative_layout_datePicker_maintenance)
@@ -58,8 +60,6 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
     CoordinatorLayout container;
     private Context mContext;
     private int passYear, passMonth;
-    private int pageNumber = 0;
-    private int oldPageNumber;
     private Realm realm;
     private RealmResults<PurchaseOrderRequestListItem> purchaseRequestListItems;
 
@@ -70,7 +70,6 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         ButterKnife.bind(this);
         setSupportActionBar(toolbarAssetDetails);
         initializeViews();
-        setUpPrAdapter();
     }
 
     private void initializeViews() {
@@ -83,6 +82,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
         setDateInAppBar(passMonth, passYear);
+        setUpPrAdapter(passMonth, passYear);
     }
 
     @OnClick(R.id.relative_layout_datePicker_maintenance)
@@ -103,11 +103,10 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         textViewReadingsAppBarTitle.setText(strMonth + ", " + passYear);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
-        requestOrderListOnline(pageNumber);
+        requestOrderListOnline();
     }
 
     @Override
@@ -123,29 +122,37 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         passYear = year;
         passMonth = month;
         setDateInAppBar(passMonth, passYear);
-//        setUpPrAdapter();
-        requestOrderListOnline(0);
-
+        setUpPrAdapter(passMonth, passYear);
+        requestOrderListOnline();
     }
 
-    private void setUpPrAdapter() {
+    private void setUpPrAdapter(int passMonth, int passYear) {
         realm = Realm.getDefaultInstance();
-        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class).findAll();
-        PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
+        purchaseRequestListItems = realm.where(PurchaseOrderRequestListItem.class)
+                .equalTo("passMonth", passMonth)
+                .equalTo("passYear", passYear)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .findAll();
+        PurchaseRequestRvAdapter purchaseRequestRvAdapter
+                = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         rvPurchaseOrderList.setLayoutManager(new LinearLayoutManager(mContext));
-//        rvPurchaseOrderList.setHasFixedSize(true);
+        rvPurchaseOrderList.setHasFixedSize(true);
         rvPurchaseOrderList.setAdapter(purchaseRequestRvAdapter);
         rvPurchaseOrderList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
                 rvPurchaseOrderList,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
-                    public void onItemClick(View view, final int position) {
-                        if(!purchaseRequestListItems.get(position).isPurchaseOrderDone()){
-                            Intent intent=new Intent(PurchaseOrderApproveActivity.this,PurchaseOrderMaterialRequestApproveActivity.class);
-                            intent.putExtra("purchase_order_request_id",purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
-                            startActivity(intent);
-                        }else {
-                            Toast.makeText(mContext, "Purchase order approved successfully", Toast.LENGTH_SHORT).show();
+                    public void onItemClick(View view, int position) {
+                        if (!purchaseRequestListItems.get(position).isPurchaseOrderDone()) {
+                            if (AppUtils.getInstance().checkNetworkState()) {
+                                Intent intent = new Intent(mContext, PurchaseOrderMaterialRequestApproveActivity.class);
+                                intent.putExtra("purchase_order_request_id", purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
+                                startActivity(intent);
+                            } else {
+                                AppUtils.getInstance().showOfflineMessage("PurchaseOrderApproveActivity");
+                            }
+                        } else {
+                            Toast.makeText(mContext, "Purchase order already approved", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -155,8 +162,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                 }));
     }
 
-    private void requestOrderListOnline(int pageId) {
-        //ToDo Params
+    private void requestOrderListOnline() {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -175,21 +181,25 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
                 .getAsObject(PurchaseOrderRequestResponse.class, new ParsedRequestListener<PurchaseOrderRequestResponse>() {
                     @Override
                     public void onResponse(final PurchaseOrderRequestResponse response) {
-
                         realm = Realm.getDefaultInstance();
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(PurchaseOrderRequestResponse.class);
-                                    realm.delete(PurchaseOrderRequestdata.class);
-                                    realm.delete(PurchaseOrderRequestListItem.class);
+//                                    realm.delete(PurchaseOrderRequestResponse.class);
+//                                    realm.delete(PurchaseOrderRequestdata.class);
+//                                    realm.delete(PurchaseOrderRequestListItem.class);
+                                    for (PurchaseOrderRequestListItem orderRequestListItem
+                                            : response.getPurchaseOrderRequestdata().getPurchaseOrderRequestlist()) {
+                                        orderRequestListItem.setPassMonth(passMonth);
+                                        orderRequestListItem.setPassYear(passYear);
+                                    }
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    setUpPrAdapter();
+                                    setUpPrAdapter(passMonth, passYear);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -215,7 +225,8 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
     protected class PurchaseRequestRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderRequestListItem, PurchaseRequestRvAdapter.MyViewHolder> {
         private OrderedRealmCollection<PurchaseOrderRequestListItem> purchaseOrderRequestListItemOrderedRealmCollection;
 
-        PurchaseRequestRvAdapter(@Nullable OrderedRealmCollection<PurchaseOrderRequestListItem> data, boolean autoUpdate, boolean updateOnModification) {
+        PurchaseRequestRvAdapter(@Nullable OrderedRealmCollection<PurchaseOrderRequestListItem> data,
+                                 boolean autoUpdate, boolean updateOnModification) {
             super(data, autoUpdate, updateOnModification);
             purchaseOrderRequestListItemOrderedRealmCollection = data;
         }
@@ -232,7 +243,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
             holder.textViewPurchaseOrderReqMaterial.setText(purchaseOrderRequestListItem.getMaterialName());
             holder.textViewOrderId.setText(purchaseOrderRequestListItem.getPurchaseRequestFormatId());
             holder.textViewRequestedBy.setText("Requested by " + purchaseOrderRequestListItem.getUserName() +
-            "on " + AppUtils.getInstance().getTime("EEE, dd MMM yyyy","dd-MMM-yyyy", purchaseOrderRequestListItem.getDate()));
+                    "on " + AppUtils.getInstance().getTime("EEE, dd MMM yyyy", "dd-MMM-yyyy", purchaseOrderRequestListItem.getDate()));
         }
 
         @Override
@@ -246,7 +257,6 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-
             @BindView(R.id.textViewPurchaseOrderReqMaterial)
             TextView textViewPurchaseOrderReqMaterial;
             @BindView(R.id.textViewId)
@@ -264,5 +274,4 @@ public class PurchaseOrderApproveActivity extends BaseActivity implements DatePi
     }
     //PurchaseOrderApproveListFragment purchaseOrderApproveListFragment = PurchaseOrderApproveListFragment.newInstance();
     //PurchaseOrderMaterialApproveFragment purchaseOrderMaterialApproveFragment = PurchaseOrderMaterialApproveFragment.newInstance();
-
 }

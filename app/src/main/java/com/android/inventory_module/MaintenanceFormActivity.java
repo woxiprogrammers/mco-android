@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -48,7 +49,7 @@ import id.zelory.compressor.Compressor;
 import io.realm.Realm;
 import timber.log.Timber;
 
-public class MaitenanceFormActivity extends BaseActivity {
+public class MaintenanceFormActivity extends BaseActivity {
 
     @BindView(R.id.textViewCapturedSecond)
     TextView textViewCapturedSecond;
@@ -102,12 +103,11 @@ public class MaitenanceFormActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maitenance_form);
         ButterKnife.bind(this);
-
         initializeViews();
     }
 
     private void initializeViews() {
-        mContext = MaitenanceFormActivity.this;
+        mContext = MaintenanceFormActivity.this;
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Maintenance");
@@ -119,6 +119,7 @@ public class MaitenanceFormActivity extends BaseActivity {
             editTextVendorName.setText(strvendorName);
 
         }
+        AppUtils.getInstance().initializeProgressBar(mainRelativeLayout, mContext);
         realm = Realm.getDefaultInstance();
         assetMaintenanceListItem = realm.where(AssetMaintenanceListItem.class).equalTo("assetMaintenanceId", maintenanceId).findFirst();
         if (!TextUtils.isEmpty(assetMaintenanceListItem.getGrn())) {
@@ -242,47 +243,52 @@ public class MaitenanceFormActivity extends BaseActivity {
     }
 
     private void uploadImages_addItemToLocal(final String strTag, final String imageFor) {
-        if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
-            File sendImageFile = arrayImageFileList.get(0);
-            File compressedImageFile = sendImageFile;
-            try {
-                compressedImageFile = new Compressor(this).compressToFile(sendImageFile);
-            } catch (IOException e) {
-                Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
-            }
-            String strToken = AppUtils.getInstance().getCurrentToken();
-            AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
-                    .setPriority(Priority.MEDIUM)
-                    .addMultipartFile("image", compressedImageFile)
-                    .addMultipartParameter("image_for", imageFor)//ToDO image for tag
-                    .addHeaders(AppUtils.getInstance().getApiHeaders())
-                    .setTag("uploadImages_addItemToLocal")
-                    .setPercentageThresholdForCancelling(50)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                String fileName = response.getString("filename");
-                                jsonImageNameArray.put(fileName);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+                File sendImageFile = arrayImageFileList.get(0);
+                File compressedImageFile = sendImageFile;
+                try {
+                    compressedImageFile = new Compressor(this).compressToFile(sendImageFile);
+                } catch (IOException e) {
+                    Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+                }
+                String strToken = AppUtils.getInstance().getCurrentToken();
+                AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                        .setPriority(Priority.MEDIUM)
+                        .addMultipartFile("image", compressedImageFile)
+                        .addMultipartParameter("image_for", imageFor)//ToDO image for tag
+                        .addHeaders(AppUtils.getInstance().getApiHeaders())
+                        .setTag("uploadImages_addItemToLocal")
+                        .setPercentageThresholdForCancelling(50)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    String fileName = response.getString("filename");
+                                    jsonImageNameArray.put(fileName);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                arrayImageFileList.remove(0);
+                                uploadImages_addItemToLocal(strTag, imageFor);
                             }
-                            arrayImageFileList.remove(0);
-                            uploadImages_addItemToLocal(strTag, imageFor);
-                        }
 
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
-                        }
-                    });
-        } else {
-            if (strTag.equalsIgnoreCase("GRN"))
-                requestToGenerateGrn();
-            else if (strTag.equalsIgnoreCase("submit")) {
-                requestToSubmit();
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                            }
+                        });
+            } else {
+                if (strTag.equalsIgnoreCase("GRN"))
+                    requestToGenerateGrn();
+                else if (strTag.equalsIgnoreCase("submit")) {
+                    requestToSubmit();
+                }
             }
+        }else {
+            AppUtils.getInstance().showOfflineMessage("MaintenanceFormActivity");
+
         }
     }
 
@@ -290,16 +296,19 @@ public class MaitenanceFormActivity extends BaseActivity {
 
         if (TextUtils.isEmpty(editTextBillNumber.getText().toString())) {
             editTextBillNumber.setError("Please enter bill number");
+            editTextBillNumber.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(editTextBillAmount.getText().toString())) {
+            editTextBillAmount.requestFocus();
             editTextBillAmount.setError("Please enter bill amount");
             return;
         }
-        if (arrayImageFileList.size() != 0 || arrayImageFileList == null) {
+        if (arrayImageFileList == null || arrayImageFileList.size() > 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         JSONObject params = new JSONObject();
         try {
             params.put("grn", editTextGrnNumber.getText().toString());
@@ -321,6 +330,8 @@ public class MaitenanceFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
+                            AppUtils.getInstance().showProgressBar(mainRelativeLayout, false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -334,6 +345,7 @@ public class MaitenanceFormActivity extends BaseActivity {
     }
 
     private void requestToGenerateGrn() {
+        //null
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
@@ -346,6 +358,7 @@ public class MaitenanceFormActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         AndroidNetworking.post(AppURL.API_GENERATE_GRN_ASSET_MAINT + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToGenerateGrn")
                 .addJSONObjectBody(params)
@@ -359,6 +372,7 @@ public class MaitenanceFormActivity extends BaseActivity {
                             strGrn = response.getString("grn_generated");
 
                             editTextGrnNumber.setText(strGrn);
+                            AppUtils.getInstance().showProgressBar(mainRelativeLayout, false);
 
                         } catch (JSONException e) {
                             e.printStackTrace();

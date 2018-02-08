@@ -99,7 +99,7 @@ public class AssetDetailsActivity extends BaseActivity {
         if (extras != null) {
             strAssetName = extras.getStringExtra("assetName");
             strModelNumber = extras.getStringExtra("modelNumber");
-            inventoryComponentId = extras.getIntExtra("asset_id", -1);
+            inventoryComponentId = extras.getIntExtra("inventory_component_id", -1);
             asset_id = extras.getIntExtra("asset_id", -1);
             component_type_slug = extras.getStringExtra("component_type_slug");
         }
@@ -181,7 +181,7 @@ public class AssetDetailsActivity extends BaseActivity {
         Intent startIntent = new Intent(mContext, ActivityRequestMaintanance.class);
         startIntent.putExtra("key", strAssetName);
         startIntent.putExtra("key1", strModelNumber);
-        startIntent.putExtra("ComponentId", inventoryComponentId);
+        startIntent.putExtra("assetId", asset_id);
         startActivity(startIntent);
     }
 

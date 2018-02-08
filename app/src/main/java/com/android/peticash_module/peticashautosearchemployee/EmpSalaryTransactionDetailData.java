@@ -52,6 +52,50 @@ public class EmpSalaryTransactionDetailData extends RealmObject{
 	@SerializedName("per_day_wages")
 	private String perDayWages;
 
+	@SerializedName("pf")
+	private String pf;
+
+	@SerializedName("pt")
+	private String pt;
+
+	@SerializedName("esic")
+	private String esic;
+
+	@SerializedName("tds")
+	private String tds;
+
+	public String getPf() {
+		return pf;
+	}
+
+	public void setPf(String pf) {
+		this.pf = pf;
+	}
+
+	public String getPt() {
+		return pt;
+	}
+
+	public void setPt(String pt) {
+		this.pt = pt;
+	}
+
+	public String getEsic() {
+		return esic;
+	}
+
+	public void setEsic(String esic) {
+		this.esic = esic;
+	}
+
+	public String getTds() {
+		return tds;
+	}
+
+	public void setTds(String tds) {
+		this.tds = tds;
+	}
+
 	public String getPerDayWages() {
 		return perDayWages;
 	}

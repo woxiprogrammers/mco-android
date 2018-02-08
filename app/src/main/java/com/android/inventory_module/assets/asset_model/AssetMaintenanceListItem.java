@@ -6,117 +6,136 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class AssetMaintenanceListItem extends RealmObject{
+public class AssetMaintenanceListItem extends RealmObject {
+    private int passMonth, passYear;
 
-	@SerializedName("date")
-	private String date;
+    @SerializedName("date")
+    private String date;
 
-	@SerializedName("grn")
-	private String grn;
+    @SerializedName("grn")
+    private String grn;
 
-	@SerializedName("approved_vendor_name")
-	private String approvedVendorName;
+    @SerializedName("approved_vendor_name")
+    private String approvedVendorName;
 
-	@SerializedName("user_id")
-	private int userId;
+    @SerializedName("user_id")
+    private int userId;
 
-	@SerializedName("asset_maintenance_id")
-	private int assetMaintenanceId;
+    @PrimaryKey
+    @SerializedName("asset_maintenance_id")
+    private int assetMaintenanceId;
 
-	@SerializedName("user_name")
-	private String userName;
+    @SerializedName("user_name")
+    private String userName;
 
-	@SerializedName("approved_vendor_id")
-	private String approvedVendorId;
+    @SerializedName("approved_vendor_id")
+    private String approvedVendorId;
 
-	@SerializedName("status")
-	private String status;
+    @SerializedName("status")
+    private String status;
 
-	private boolean is_transaction_created;
+    private boolean is_transaction_created;
 
-	public boolean isIs_transaction_created() {
-		return is_transaction_created;
-	}
+    public boolean isIs_transaction_created() {
+        return is_transaction_created;
+    }
 
-	public void setIs_transaction_created(boolean is_transaction_created) {
-		this.is_transaction_created = is_transaction_created;
-	}
+    public void setIs_transaction_created(boolean is_transaction_created) {
+        this.is_transaction_created = is_transaction_created;
+    }
 
-	private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
+    private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
-	@SerializedName("images")
-	private RealmList<ImageItem> imageItems;
+    @SerializedName("images")
+    private RealmList<ImageItem> imageItems;
 
-	public RealmList<ImageItem> getImageItems() {
-		return imageItems;
-	}
+    public RealmList<ImageItem> getImageItems() {
+        return imageItems;
+    }
 
-	public void setImageItems(RealmList<ImageItem> imageItems) {
-		this.imageItems = imageItems;
-	}
+    public void setImageItems(RealmList<ImageItem> imageItems) {
+        this.imageItems = imageItems;
+    }
 
-	public void setDate(String date){
-		this.date = date;
-	}
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-	public String getDate(){
-		return date;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public void setGrn(String grn){
-		this.grn = grn;
-	}
+    public void setGrn(String grn) {
+        this.grn = grn;
+    }
 
-	public String getGrn(){
-		return grn;
-	}
+    public String getGrn() {
+        return grn;
+    }
 
-	public void setApprovedVendorName(String approvedVendorName){
-		this.approvedVendorName = approvedVendorName;
-	}
+    public void setApprovedVendorName(String approvedVendorName) {
+        this.approvedVendorName = approvedVendorName;
+    }
 
-	public String getApprovedVendorName(){
-		return approvedVendorName;
-	}
+    public String getApprovedVendorName() {
+        return approvedVendorName;
+    }
 
-	public void setUserId(int userId){
-		this.userId = userId;
-	}
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
-	public int getUserId(){
-		return userId;
-	}
+    public int getUserId() {
+        return userId;
+    }
 
-	public void setAssetMaintenanceId(int assetMaintenanceId){
-		this.assetMaintenanceId = assetMaintenanceId;
-	}
+    public void setAssetMaintenanceId(int assetMaintenanceId) {
+        this.assetMaintenanceId = assetMaintenanceId;
+    }
 
-	public int getAssetMaintenanceId(){
-		return assetMaintenanceId;
-	}
+    public int getAssetMaintenanceId() {
+        return assetMaintenanceId;
+    }
 
-	public void setUserName(String userName){
-		this.userName = userName;
-	}
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public String getUserName(){
-		return userName;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public void setApprovedVendorId(String approvedVendorId){
-		this.approvedVendorId = approvedVendorId;
-	}
+    public void setApprovedVendorId(String approvedVendorId) {
+        this.approvedVendorId = approvedVendorId;
+    }
 
-	public String getApprovedVendorId(){
-		return approvedVendorId;
-	}
+    public String getApprovedVendorId() {
+        return approvedVendorId;
+    }
 
-	public void setStatus(String status){
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public String getStatus(){
-		return status;
-	}
+    public String getStatus() {
+        return status;
+    }
+
+    public int getPassMonth() {
+        return passMonth;
+    }
+
+    public void setPassMonth(int passMonth) {
+        this.passMonth = passMonth;
+    }
+
+    public int getPassYear() {
+        return passYear;
+    }
+
+    public void setPassYear(int passYear) {
+        this.passYear = passYear;
+    }
 }
