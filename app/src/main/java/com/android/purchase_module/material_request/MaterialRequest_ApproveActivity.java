@@ -141,7 +141,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private int unitIDForDialog;
     RealmResults<UnitQuantityItem> unitQuantityItemRealmResults;
     private LinearLayout linearLayoutUnit;
-    private String slug = "",strSearchKeyword;
+    private String slug = "", strSearchKeyword;
     private boolean isApproveAccess;
     private boolean isSearch;
 
@@ -194,17 +194,15 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             }*/
         }
 
-
-
         imageViewSearchMaterial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(editTextSearchMaterial.getText().toString())){
-                        editTextSearchMaterial.setError("Please enter search keyword");
-                        return;
-                }else {
-                    isSearch=true;
-                    strSearchKeyword=editTextSearchMaterial.getText().toString();
+                if (TextUtils.isEmpty(editTextSearchMaterial.getText().toString())) {
+                    editTextSearchMaterial.setError("Please enter search keyword");
+                    return;
+                } else {
+                    isSearch = true;
+                    strSearchKeyword = editTextSearchMaterial.getText().toString();
                     getRequestedItemList();
                 }
             }
@@ -217,7 +215,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (TextUtils.isEmpty(charSequence.toString())) {
-                    isSearch=false;
+                    isSearch = false;
                     getRequestedItemList();
                 }
             }
@@ -226,7 +224,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
-
 
     }
 
@@ -424,8 +421,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            if(isSearch){
-                params.put("keyword",strSearchKeyword);
+            if (isSearch) {
+                params.put("keyword", strSearchKeyword);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1008,8 +1005,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                unitIDForDialog = unitQuantityItemRealmResults.get(spinner_select_units.getSelectedItemPosition()).getUnitId();
-                params.put("unit_id", unitIDForDialog);
+                int selectedPosition = spinner_select_units.getSelectedItemPosition();
+                if (selectedPosition <= unitQuantityItemRealmResults.size()) {
+                    unitIDForDialog = unitQuantityItemRealmResults.get(selectedPosition).getUnitId();
+                    params.put("unit_id", unitIDForDialog);
+                } else {
+                    Timber.d("Something wrong with unitQuantityItemRealmResults");
+                }
             }
             params.put("material_request_component_id", materialRequestComponentId);
             params.put("change_component_status_id_to", statusId);
@@ -1441,7 +1443,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                         MaterialRequestHistoryFragment materialRequestHistoryFragment = new MaterialRequestHistoryFragment();
                         Bundle bundleArgs = new Bundle();
                         bundleArgs.putString("item_name", arrPurchaseMaterialListItems.get(getAdapterPosition()).getItem_name());
-                        bundleArgs.putInt("compId",arrPurchaseMaterialListItems.get(getAdapterPosition()).getMaterialRequestComponentId());
+                        bundleArgs.putInt("compId", arrPurchaseMaterialListItems.get(getAdapterPosition()).getMaterialRequestComponentId());
                         materialRequestHistoryFragment.setArguments(bundleArgs);
                         materialRequestHistoryFragment.show(getSupportFragmentManager(), "MaterialRequestHistoryFragment");
                         break;
@@ -1466,7 +1468,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             */
             holder.textViewItemName.setText(purchaseMaterialListItem.getItem_name());
             holder.textViewItemStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseMaterialListItem.getComponentStatus()));
-            holder.textViewItemUnits.setText("Qty : " +purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
+            holder.textViewItemUnits.setText("Qty : " + purchaseMaterialListItem.getItem_quantity() + " " + purchaseMaterialListItem.getItem_unit_name());
             String strStatus = purchaseMaterialListItem.getComponentStatus();
             holder.buttonMoveToIndent.setVisibility(View.GONE);
             holder.textViewDate.setText("Created By " + purchaseMaterialListItem.getMaterialCreatedBy() + " at " + setTime(purchaseMaterialListItem.getCreatedAt()));
@@ -1475,7 +1477,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
                 holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
             }
-            if(isAcces) {
+            if (isAcces) {
                 if (strStatus.equalsIgnoreCase("pending")) {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.VISIBLE);
                 } else {
@@ -1511,7 +1513,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return  newDateStr;
+            return newDateStr;
         }
     }
 
