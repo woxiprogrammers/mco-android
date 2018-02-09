@@ -227,7 +227,6 @@
                     android:layout_height="wrap_content"
                     android:background="#FFD740"
                     android:hint="@string/tap_too_add_note"
-                    android:onClick="addNote"
                     android:padding="@dimen/dimen_16dp"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/dimen_16dp"/>
