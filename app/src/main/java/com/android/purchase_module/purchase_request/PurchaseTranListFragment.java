@@ -14,10 +14,10 @@ import android.widget.TextView;
 import com.android.constro360.R;
 import com.android.purchase_module.purchase_request.purchase_request_model.new_transaction_list.DSPurchaseOrderTransactionResponse;
 import com.android.purchase_module.purchase_request.purchase_request_model.new_transaction_list.PurchaseOrderTransactionListingItem;
-import com.android.utils.FragmentInterface;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseHomeActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerItemClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -69,16 +69,15 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         initializeViews();
-            requestPrListOnline(pageNumber);
-            setUpTransactionAdapter();
-
+        requestPrListOnline(pageNumber);
+        setUpTransactionAdapter();
         setHasOptionsMenu(true);
         return mParentView;
     }
 
     @Override
     public void fragmentBecameVisible() {
-            requestPrListOnline(pageNumber);
+        requestPrListOnline(pageNumber);
         if (isFromPurchaseRequestHome) {
             if (getUserVisibleHint() /*&& ((PurchaseHomeActivity) mContext) != null*/) {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
@@ -87,7 +86,6 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     }
 
     private void initializeViews() {
-
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
         Bundle bundle = getArguments();
@@ -221,9 +219,9 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             holder.textViewPurchaseGrn.setText(purchaseBillListItem.getGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getPurchaseOrderTransactionStatus());
             if (purchaseBillListItem.getPurchaseOrderTransactionStatus().equalsIgnoreCase("GRN Generated")) {
-                holder.textViewPurchaseRequestDate.setText("Created at " +AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy", purchaseBillListItem.getInTime()));
+                holder.textViewPurchaseRequestDate.setText("Created at " + AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy", purchaseBillListItem.getInTime()));
             } else {
-                holder.textViewPurchaseRequestDate.setText("Created at " +AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy", purchaseBillListItem.getOutTime()));
+                holder.textViewPurchaseRequestDate.setText("Created at " + AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy", purchaseBillListItem.getOutTime()));
             }
             if (isFromPurchaseRequestHome) {
                 holder.textViewPurchaseOrderFormat.setVisibility(View.VISIBLE);

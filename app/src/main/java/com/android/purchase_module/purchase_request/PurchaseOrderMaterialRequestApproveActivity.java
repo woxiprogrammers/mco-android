@@ -130,24 +130,22 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         ll_vendors.setVisibility(View.VISIBLE);
                     }
                 } else if (itemViewIndex == R.id.checkboxFrame) {
-                    CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
-                    if (requestMaterialListItem.isCheckboxCheckedState()) {
-                        checkBox.setChecked(true);
-                    } else {
-                        checkBox.setChecked(false);
+                    if (!requestMaterialListItem.isIs_approved()) {
+                        CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
+                        if (requestMaterialListItem.isCheckboxCheckedState()) {
+                            checkBox.setChecked(true);
+                        } else {
+                            checkBox.setChecked(false);
+                        }
+                        if (checkBox.isChecked()) {
+                            checkBox.setChecked(false);
+                            isCheckboxChecked = false;
+                        } else {
+                            checkBox.setChecked(true);
+                            isCheckboxChecked = true;
+                        }
+                        saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                     }
-//                    if (requestMaterialListItem.isIs_approved()) {
-//                        checkBox.setEnabled(false);
-//                    } else {
-                    if (checkBox.isChecked()) {
-                        checkBox.setChecked(false);
-                        isCheckboxChecked = false;
-                    } else {
-                        checkBox.setChecked(true);
-                        isCheckboxChecked = true;
-                    }
-                    saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
-//                    }
                 } else if (itemViewIndex == R.id.checkboxComponent) {
                     CheckBox checkBox = (CheckBox) itemView;
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
@@ -155,10 +153,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     } else {
                         checkBox.setChecked(false);
                     }
-//                    if (requestMaterialListItem.isIs_approved()) {
-//                        checkBox.setEnabled(false);
-//                    } else {
-                    //Because of some issue, we are getting opposite value of checkBox checked state.
                     if (checkBox.isChecked()) {
                         checkBox.setChecked(false);
                         isCheckboxChecked = false;
@@ -166,7 +160,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         checkBox.setChecked(true);
                         isCheckboxChecked = true;
                     }
-//                    }
                     saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                 }
             }
@@ -330,7 +323,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         Toast.makeText(mContext, response.optString("message") + "", Toast.LENGTH_SHORT).show();
-                        finish();
+                        onBackPressed();
                     }
 
                     @Override
@@ -404,49 +397,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 textViewTotalWithTax.setText("Total With Tax: " + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
                 vendorRadioButton.setText(vendorsItemRealmList.get(viewIndex).getVendorName());
                 vendorRadioButton.setClickable(false);
-                /*currentChildView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        *//*if (componentClickListener != null) {
-                            componentClickListener.onItemClick(view, holder.getAdapterPosition());
-                        }*//*
-                        for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
-                            LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
-                            RadioButton tempVendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
-                            tempVendorRadioButton.setChecked(false);
-                        }
-
-                        if (vendorRadioButton.isChecked()) {
-                            vendorRadioButton.setChecked(false);
-                        } else {
-                            vendorRadioButton.setChecked(true);
-                        }
-                    }
-                });*/
             }
-            /*holder.linearLayout_components.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (holder.ll_vendors.getVisibility() == View.VISIBLE) {
-                        holder.ll_vendors.setVisibility(View.GONE);
-                    } else {
-                        SlideAnimationUtil.slideInFromRight(holder.context, holder.ll_vendors);
-                        holder.ll_vendors.setVisibility(View.VISIBLE);
-                    }
-                }
-            });*/
-
-            /*holder.checkboxFrame.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (requestMaterialListItem.isIs_approved()) {
-                        Toast.makeText(mContext, "Already approved", Toast.LENGTH_SHORT).show();
-                        holder.checkboxComponent.setChecked(false);
-                    } else {
-                        holder.checkboxComponent.setChecked(true);
-                    }
-                }
-            });*/
         }
 
         @Override
