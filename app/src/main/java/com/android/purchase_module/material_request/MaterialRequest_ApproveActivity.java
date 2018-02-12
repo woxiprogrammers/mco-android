@@ -649,12 +649,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     if (!TextUtils.isEmpty(charSequence.toString()) && validationForQuotation) {
                         floatItemQuantity = Float.parseFloat(charSequence.toString().trim());
                         indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
-                        float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
-                        final int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
-                        if (floatComparison > 0) {
-                            textViewExceedQuantityForQuotation.setVisibility(View.VISIBLE);
-                        } else {
-                            textViewExceedQuantityForQuotation.setVisibility(View.GONE);
+                        if(searchMaterialListItem_fromResult != null){
+                            float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
+                            final int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
+                            if (floatComparison > 0) {
+                                textViewExceedQuantityForQuotation.setVisibility(View.VISIBLE);
+                            } else {
+                                textViewExceedQuantityForQuotation.setVisibility(View.GONE);
+                            }
                         }
                     }
                 }
@@ -756,10 +758,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     mEditTextQuantityMaterialAsset.setEnabled(false);
                 }
             }
-            Timber.d("AutoSearch complete");
-            if (realm != null) {
-                realm.close();
-            }
+
             if (alertDialog.isShowing()) {
                 if (isMaterial) {
                     if (searchMaterialListItem_fromResult != null) {
@@ -773,6 +772,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
             } else {
                 Timber.i("missing alert dialog");
+            }
+            Timber.d("AutoSearch complete");
+            if (realm != null) {
+                realm.close();
             }
         }
     }
@@ -1475,7 +1478,18 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
             if (!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())) {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
-                holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
+//                holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
+
+                if(strStatus.contains("disapproved")){
+                    holder.textviewApprovedBy.setText("Disapproved By : " + purchaseMaterialListItem.getApprovedBy());
+
+                }else if(strStatus.contains("approved")) {
+                    holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
+
+                }
+            }else {
+                holder.textviewApprovedBy.setVisibility(View.GONE);
+
             }
             if (isAcces) {
                 if (strStatus.equalsIgnoreCase("pending")) {

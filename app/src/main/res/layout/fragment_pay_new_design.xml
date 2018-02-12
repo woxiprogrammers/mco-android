@@ -141,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_4dp"
-                    android:text="Bill Number:"
+                    android:text="Challan Number:"
                     android:textColor="@color/colorTextLight"/>
                 <EditText
                     android:id="@+id/editTextBillumber"
