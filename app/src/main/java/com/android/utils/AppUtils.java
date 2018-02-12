@@ -415,7 +415,7 @@ public class AppUtils {
             return "P R Admin Disapproved";
         } else if (strStatus.equalsIgnoreCase("purchase-requested")) {
             return "Purchase Requested";
-        }else if(strStatus.equalsIgnoreCase("Approved")){
+        } else if (strStatus.equalsIgnoreCase("Approved")) {
             return "Approved";
         }
         return "";
@@ -430,11 +430,15 @@ public class AppUtils {
 
     public void showProgressBar(ViewGroup viewGroup, boolean isToShowProgress) {
         if (isToShowProgress) {
-            viewGroup.addView(view);
+            if (viewGroup != null) {
+                viewGroup.addView(view);
+            }
             progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.colorAccentDark), android.graphics.PorterDuff.Mode.MULTIPLY);
             progressBar.setVisibility(View.VISIBLE);
         } else {
-            viewGroup.removeView(view);
+            if (viewGroup != null) {
+                viewGroup.removeView(view);
+            }
             progressBar.setVisibility(View.GONE);
         }
     }

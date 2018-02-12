@@ -141,7 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_4dp"
-                    android:text="Bill Number:"
+                    android:text="Challan Number:"
                     android:textColor="@color/colorTextLight"/>
                 <EditText
                     android:id="@+id/editTextBillumber"
@@ -227,7 +227,6 @@
                     android:layout_height="wrap_content"
                     android:background="#FFD740"
                     android:hint="@string/tap_too_add_note"
-                    android:onClick="addNote"
                     android:padding="@dimen/dimen_16dp"
                     android:textColor="@color/colorText"
                     android:textSize="@dimen/dimen_16dp"/>

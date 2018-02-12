@@ -40,7 +40,7 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class PurchaseTranListFragment extends Fragment implements FragmentInterface {
-    @BindView(R.id.rv_material_list)
+    /*@BindView(R.id.rv_trans_list)*/
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
@@ -67,7 +67,8 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        mParentView = inflater.inflate(R.layout.layout_recycler_view_listing_for_bills, container, false);
+        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_trans_list);
         initializeViews();
         requestPrListOnline(pageNumber);
         setUpTransactionAdapter();
@@ -86,7 +87,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     }
 
     private void initializeViews() {
-        unbinder = ButterKnife.bind(this, mParentView);
+//        unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -195,7 +196,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         if (realm != null) {
             realm.close();
         }
-        unbinder.unbind();
+//        unbinder.unbind();
     }
 
     @SuppressWarnings("WeakerAccess")

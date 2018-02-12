@@ -53,9 +53,10 @@ import timber.log.Timber;
  * Created by Rohit.
  */
 public class PurchaseOrderListFragment extends Fragment implements FragmentInterface {
+
     private static int purchaseRequestId;
     private static boolean isFromPurchaseRequest;
-    @BindView(R.id.rv_material_list)
+
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
@@ -102,7 +103,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
-        unbinder = ButterKnife.bind(this, mParentView);
+//        unbinder = ButterKnife.bind(this, mParentView);
+        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_material_list);
         mContext = getActivity();
         Bundle bundle=getArguments();
         if(bundle != null){
@@ -119,7 +121,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         if (realm != null) {
             realm.close();
         }
-        unbinder.unbind();
+//        unbinder.unbind();
     }
 
     @Override

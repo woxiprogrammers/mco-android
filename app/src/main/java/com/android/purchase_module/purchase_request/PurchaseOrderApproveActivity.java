@@ -22,6 +22,7 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestListItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestResponse;
+import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestdata;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.RecyclerItemClickListener;
@@ -62,6 +63,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity
     private int passYear, passMonth;
     private Realm realm;
     private RealmResults<PurchaseOrderRequestListItem> purchaseRequestListItems;
+    private int currentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,9 +188,12 @@ public class PurchaseOrderApproveActivity extends BaseActivity
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    realm.delete(PurchaseOrderRequestResponse.class);
-//                                    realm.delete(PurchaseOrderRequestdata.class);
-//                                    realm.delete(PurchaseOrderRequestListItem.class);
+                                    if (currentPage == 0) {
+                                        realm.delete(PurchaseOrderRequestResponse.class);
+                                        realm.delete(PurchaseOrderRequestdata.class);
+                                        realm.delete(PurchaseOrderRequestListItem.class);
+                                        currentPage++;
+                                    }
                                     for (PurchaseOrderRequestListItem orderRequestListItem
                                             : response.getPurchaseOrderRequestdata().getPurchaseOrderRequestlist()) {
                                         orderRequestListItem.setPassMonth(passMonth);

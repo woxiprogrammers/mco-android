@@ -256,6 +256,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     @Override
     public void fragmentBecameVisible() {
+        Log.i("@@","fragmentBecameVisible");
         if (PayAndBillsActivity.isForViewOnly) {
             setData(true);
         } else {

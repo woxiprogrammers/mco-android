@@ -54,7 +54,6 @@ import timber.log.Timber;
 public class PurchaseOrderHistoryFragment extends Fragment implements FragmentInterface {
     private static int purchaseRequestId;
     private static boolean isFromPurchaseRequest;
-    @BindView(R.id.rv_order_list)
     RecyclerView recyclerView_commonListingView;
     private Unbinder unbinder;
     private Context mContext;
@@ -93,6 +92,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.purchase_order_list_recylcer_view, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
+        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_order_list);
         //Initialize Views
         initializeViews();
         requestPrListOnline();

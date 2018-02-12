@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,8 @@ import timber.log.Timber;
 public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     @BindView(R.id.rvList)
     RecyclerView rvList;
+    @BindView(R.id.relativeMatRequest)
+    RelativeLayout relativeMatRequest;
     private Context mContext;
     private Realm realm;
     private int intPurchaseOrderRequestId;
@@ -74,6 +77,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = PurchaseOrderMaterialRequestApproveActivity.this;
+        AppUtils.getInstance().initializeProgressBar(relativeMatRequest,mContext);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("");
@@ -306,6 +310,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     }
 
     private void requestToChangeStatus() {
+        AppUtils.getInstance().showProgressBar(relativeMatRequest,true);
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_request_components", jsonArray);
@@ -323,6 +328,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         Toast.makeText(mContext, response.optString("message") + "", Toast.LENGTH_SHORT).show();
+                        AppUtils.getInstance().showProgressBar(relativeMatRequest,false);
                         onBackPressed();
                     }
 
