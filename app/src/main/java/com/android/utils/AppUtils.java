@@ -312,29 +312,30 @@ public class AppUtils {
     }
 
     public void sendRegistrationToServer() {
-        String refreshedToken = AppUtils.getInstance().getString("firebaseRefreshedToken", "");
-        if (TextUtils.isEmpty(refreshedToken)) {
-            return;
-        }
-        if (AppUtils.getInstance().checkNetworkState()) {
-            AndroidNetworking.post(AppURL.API_SEND_FIREBASE_REFRESHED_TOKEN + AppUtils.getInstance().getCurrentToken())
-                    .addBodyParameter("firebaseRefreshedToken", refreshedToken)
-                    .setTag("sendRegistrationToServer")
-                    .setPriority(Priority.MEDIUM)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Timber.d(String.valueOf(response));
-                        }
+        String refreshedToken = AppUtils.getInstance().getString(AppConstants.PREFS_FIREBASE_REFRESH_TOKEN, "");
+        if (!TextUtils.isEmpty(refreshedToken)) {
+            if (AppUtils.getInstance().checkNetworkState()) {
+                AndroidNetworking.post(AppURL.API_SEND_FIREBASE_REFRESHED_TOKEN + AppUtils.getInstance().getCurrentToken())
+                        .addBodyParameter("firebaseRefreshedToken", refreshedToken)
+                        .setTag("sendRegistrationToServer")
+                        .setPriority(Priority.MEDIUM)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Timber.d(String.valueOf(response));
+                            }
 
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "sendRegistrationToServer");
-                        }
-                    });
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "sendRegistrationToServer");
+                            }
+                        });
+            } else {
+                AppUtils.getInstance().showOfflineMessage("MyFirebaseInstanceIDService");
+            }
         } else {
-            AppUtils.getInstance().showOfflineMessage("MyFirebaseInstanceIDService");
+            Toast.makeText(mContext, "FCM will not work", Toast.LENGTH_SHORT).show();
         }
     }
 

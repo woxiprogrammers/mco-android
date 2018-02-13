@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -53,7 +54,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DrawingDetailsActivity extends BaseActivity {
-
     @BindView(R.id.imageViewPreview)
     ImageView imageViewPreview;
     @BindView(R.id.textviewComments)
@@ -62,7 +62,6 @@ public class DrawingDetailsActivity extends BaseActivity {
     TextView textviewVersions;
     @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
-
     public static String imageUrl;
     @BindView(R.id.textViewDownloadImage)
     TextView textViewDownloadImage;
@@ -81,7 +80,6 @@ public class DrawingDetailsActivity extends BaseActivity {
         setContentView(R.layout.layout_drawing_details);
         ButterKnife.bind(this);
         initializeViews();
-
     }
 
     private void initializeViews() {
@@ -148,7 +146,6 @@ public class DrawingDetailsActivity extends BaseActivity {
         Button btnDismiss = dialogView.findViewById(R.id.button_dismiss_drawing_dialog);
         Button btnAddComment = dialogView.findViewById(R.id.button_assign_drawing_dialog);
         final EditText editTextAddComment = dialogView.findViewById(R.id.editTextAddComment);
-
         btnDismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,7 +189,6 @@ public class DrawingDetailsActivity extends BaseActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, drawingCommentFragment, "drawingCommentFragment");
         fragmentTransaction.commit();
-
     }
 
     private void getFragmentVersions() {
@@ -200,7 +196,6 @@ public class DrawingDetailsActivity extends BaseActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, drawingVersionsFragment, "drawingVersionsFragment");
         fragmentTransaction.commit();
-
     }
 
     private void requestToAddComment(String strComment) {
@@ -294,7 +289,6 @@ public class DrawingDetailsActivity extends BaseActivity {
             case DownloadManager.STATUS_FAILED:
                 msg = "Download failed!";
                 startThread(msg, false);
-
                 break;
             case DownloadManager.STATUS_PAUSED:
                 msg = "Download paused!";
@@ -315,6 +309,7 @@ public class DrawingDetailsActivity extends BaseActivity {
         }
         return (msg);
     }
+
     private void startThread(final String strMessage, final boolean isComplete) {
         Thread timer = new Thread() { //new thread
             public void run() {
@@ -329,7 +324,6 @@ public class DrawingDetailsActivity extends BaseActivity {
                 });
             }
         };
-
         timer.start();
     }
 
@@ -374,8 +368,13 @@ public class DrawingDetailsActivity extends BaseActivity {
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            String manufacturer = "xiaomi";
+            if (manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+                //this will open auto start screen where user can enable permission for your app
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
+                startActivity(intent);
+            }
         }
     }
-
-
 }

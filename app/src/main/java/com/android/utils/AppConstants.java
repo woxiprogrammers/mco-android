@@ -18,4 +18,5 @@ public interface AppConstants {
     int FCM_NOTIFICATION_ACTIVITY_REQUEST_CODE = 112;
     String FCM_CHANNEL_ID = "FCM_Default_Channel_Id";
     String FCM_CHANNEL_NAME = "FCM_Default_Channel_Name";
+    String PREFS_FIREBASE_REFRESH_TOKEN = "firebaseRefreshToken";
 }

@@ -171,23 +171,26 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 
     private void setUpDashboardAdapterData() {
         realm = Realm.getDefaultInstance();
-        modulesItemOrderedRealmCollection = realm.where(LoginResponseData.class).findFirst().getModules();
-        NotificationCountData notificationCountData = realm.where(NotificationCountData.class)
-                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .findFirst();
-        ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection, notificationCountData);
-        mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));
-        mRvTaskSelection.setAdapter(modulesAdapter);
-        mRvTaskSelection.setHasFixedSize(true);
-        modulesAdapter.setOnItemClickListener(new ModulesAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int modulePosition) {
-                int subModuleIndex = itemView.getId();
-                RealmList<SubModulesItem> subModulesItemRealmList = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules();
-                SubModulesItem subModulesItem = subModulesItemRealmList.get(subModuleIndex);
-                startCorrespondingAclActivity(subModulesItem, subModulesItemRealmList);
-            }
-        });
+        LoginResponseData loginResponseData = realm.where(LoginResponseData.class).findFirst();
+        if (loginResponseData != null) {
+            modulesItemOrderedRealmCollection = loginResponseData.getModules();
+            NotificationCountData notificationCountData = realm.where(NotificationCountData.class)
+                    .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                    .findFirst();
+            ModulesAdapter modulesAdapter = new ModulesAdapter(modulesItemOrderedRealmCollection, notificationCountData);
+            mRvTaskSelection.setLayoutManager(new LinearLayoutManager(mContext));
+            mRvTaskSelection.setAdapter(modulesAdapter);
+            mRvTaskSelection.setHasFixedSize(true);
+            modulesAdapter.setOnItemClickListener(new ModulesAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View itemView, int modulePosition) {
+                    int subModuleIndex = itemView.getId();
+                    RealmList<SubModulesItem> subModulesItemRealmList = modulesItemOrderedRealmCollection.get(modulePosition).getSubModules();
+                    SubModulesItem subModulesItem = subModulesItemRealmList.get(subModuleIndex);
+                    startCorrespondingAclActivity(subModulesItem, subModulesItemRealmList);
+                }
+            });
+        }
     }
 
     private void setUpDrawerData() {
