@@ -336,7 +336,7 @@ public class AppUtils {
                 AppUtils.getInstance().showOfflineMessage("MyFirebaseInstanceIDService");
             }
         } else {
-            Toast.makeText(mContext, "Please UNINSTALL & then INSTALL APP for FCM to work", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Please UNINSTALL & then INSTALL APP for Notifications to work", Toast.LENGTH_LONG).show();
         }
     }
 
