@@ -204,7 +204,7 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
             holder.linearLayoutQuoImg.removeAllViews();
             holder.textviewRatePerUnit.setText(materialsItem.getRatePerUnit());
             if (!TextUtils.isEmpty(materialsItem.getExpectedDeliveryDate())) {
-                holder.textviewExpDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd hh:mm:ss", "yyyy-MM-dd", materialsItem.getExpectedDeliveryDate()));
+                holder.textviewExpDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd hh:mm:ss", getString(R.string.expected_time_format), materialsItem.getExpectedDeliveryDate()));
                 holder.linearLayoutExpDate.setVisibility(View.VISIBLE);
             } else {
                 holder.linearLayoutExpDate.setVisibility(View.GONE);

@@ -37,6 +37,7 @@
     <string name="dialog_title_add_material">Add Material</string>
     <string name="super_admin">Super Admin</string>
     <string name="admin">Admin</string>
+    <string name="expected_time_format">dd/MM/yyyy</string>
     <string-array name="destination_array">
         <item>Site</item>
         <item>Client</item>

@@ -295,7 +295,7 @@ public class MaintenanceFormActivity extends BaseActivity {
     private void requestToSubmit() {
 
         if (TextUtils.isEmpty(editTextBillNumber.getText().toString())) {
-            editTextBillNumber.setError("Please enter bill number");
+            editTextBillNumber.setError("Please enter challan number");
             editTextBillNumber.requestFocus();
             return;
         }

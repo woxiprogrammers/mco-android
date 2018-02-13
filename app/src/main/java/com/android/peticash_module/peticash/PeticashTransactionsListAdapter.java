@@ -54,7 +54,7 @@ class PeticashTransactionsListAdapter extends RealmRecyclerViewAdapter<DatewiseT
          DatewiseTransactionsListItem modulesItem = modulesItemOrderedRealmCollection.get(position);
         final RealmList<TransactionListItem> modulesItemRealmList = modulesItem.getTransactionList();
 
-        holder.mTvTransactionDate.setText("Records On: " + AppUtils.getInstance().getTime("E, dd MMMM yyyy","dd-MMM-yyyy",modulesItem.getDate()));
+        holder.mTvTransactionDate.setText("Records On: " + AppUtils.getInstance().getTime("E, dd MMMM yyyy","dd/MM/yyyy",modulesItem.getDate()));
         holder.mTvNoOfTransactions.setText("Total no. of transactions: " + modulesItem.getTransactionList().size());
         int noOfChildViews = holder.mLlRemainingTransactionsExpandable.getChildCount();
         final int noOfSubModules = modulesItemRealmList.size();

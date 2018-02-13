@@ -144,6 +144,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private String slug = "", strSearchKeyword;
     private boolean isApproveAccess;
     private boolean isSearch;
+    private Button  buttonApproveDisapprove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -887,7 +888,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             edittext_unit = dialogView.findViewById(R.id.edittext_unit);
             spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
             mTextViewExceedQuantity = dialogView.findViewById(R.id.TextViewExceedQuantity);
-            final Button buttonApproveDisapprove = dialogView.findViewById(R.id.button_approve);
+              buttonApproveDisapprove = dialogView.findViewById(R.id.button_approve);
             final Button button_dismiss = dialogView.findViewById(R.id.button_dismiss);
             Button button_for_edit = dialogView.findViewById(R.id.button_for_edit);
             editText_name_material_asset.setText(arrPurchaseMaterialListItems.get(position).getItem_name());
@@ -909,6 +910,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    if(!TextUtils.isEmpty(charSequence.toString())){
+                        if(Integer.parseInt(charSequence.toString()) == 0 || Float.parseFloat(charSequence.toString()) == 0.0){
+                            Toast.makeText(mContext,"Please do not enter zero as a value",Toast.LENGTH_SHORT).show();
+                            buttonApproveDisapprove.setEnabled(false);
+                        }else {
+                            buttonApproveDisapprove.setEnabled(true);
+                        }
+                    }
                     if (!TextUtils.isEmpty(charSequence.toString()) && isQuotationMaterial) {
                         floatItemQuantity = Float.parseFloat(charSequence.toString());
                         indexItemUnit = spinner_select_units.getSelectedItemPosition();
