@@ -332,7 +332,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
 
-            holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " + AppUtils.getInstance().getTime("E, dd MMMM yyyy", "dd-MMM-yyyy", purchaseRequestListItem.getDate()));
+            holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " + AppUtils.getInstance().getTime("E, dd MMMM yyyy", getString(R.string.expected_time_format), purchaseRequestListItem.getDate()));
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
                 holder.textViewApproved.setText("Approved By : " + purchaseRequestListItem.getApprovedBy());

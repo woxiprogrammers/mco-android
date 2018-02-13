@@ -220,9 +220,9 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             holder.textViewPurchaseGrn.setText(purchaseBillListItem.getGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getPurchaseOrderTransactionStatus());
             if (purchaseBillListItem.getPurchaseOrderTransactionStatus().equalsIgnoreCase("GRN Generated")) {
-                holder.textViewPurchaseRequestDate.setText("Created at " + AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy", purchaseBillListItem.getInTime()));
+                holder.textViewPurchaseRequestDate.setText("Created at " + AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", getString(R.string.expected_time_format), purchaseBillListItem.getInTime()));
             } else {
-                holder.textViewPurchaseRequestDate.setText("Created at " + AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy", purchaseBillListItem.getOutTime()));
+                holder.textViewPurchaseRequestDate.setText("Created at " + AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", getString(R.string.expected_time_format), purchaseBillListItem.getOutTime()));
             }
             if (isFromPurchaseRequestHome) {
                 holder.textViewPurchaseOrderFormat.setVisibility(View.VISIBLE);

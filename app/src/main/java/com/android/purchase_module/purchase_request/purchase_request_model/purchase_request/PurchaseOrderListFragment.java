@@ -287,7 +287,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             holder.textviewClientName.setVisibility(View.VISIBLE);
             holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
             holder.textViewPurchaseRequestStatus.setText(purchaseOrderListItem.getStatus());
-            holder.textViewPurchaseRequestDate.setText("Created at "+ AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss","dd-MMM-yyyy HH:MM",purchaseOrderListItem.getDate())
+            holder.textViewPurchaseRequestDate.setText("Created at "+ AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss","dd/MM/yyyy HH:MM",purchaseOrderListItem.getDate())
             );
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());

@@ -244,7 +244,7 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             holder.textViewMaintNumber.setText("Maintenance Id " + assetMaintenanceListItem.getAssetMaintenanceId());
             holder.textViewReqName.setText("Requested by " + assetMaintenanceListItem.getUserName());
             holder.textViewStatus.setText(assetMaintenanceListItem.getStatus());
-            holder.textViewReqDate.setText(AppUtils.getInstance().getTime("EEE, dd MMM yyyy", "dd-MMM-yyyy", assetMaintenanceListItem.getDate()));
+            holder.textViewReqDate.setText(AppUtils.getInstance().getTime("EEE, dd MMM yyyy", getString(R.string.expected_time_format), assetMaintenanceListItem.getDate()));
 
         }
 
