@@ -313,6 +313,7 @@ public class AppUtils {
 
     public void sendRegistrationToServer() {
         String refreshedToken = AppUtils.getInstance().getString(AppConstants.PREFS_FIREBASE_REFRESH_TOKEN, "");
+        Timber.d("refreshedToken: " + refreshedToken);
         if (!TextUtils.isEmpty(refreshedToken)) {
             if (AppUtils.getInstance().checkNetworkState()) {
                 AndroidNetworking.post(AppURL.API_SEND_FIREBASE_REFRESHED_TOKEN + AppUtils.getInstance().getCurrentToken())
@@ -335,7 +336,7 @@ public class AppUtils {
                 AppUtils.getInstance().showOfflineMessage("MyFirebaseInstanceIDService");
             }
         } else {
-            Toast.makeText(mContext, "FCM will not work", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Please UNINSTALL & then INSTALL APP for FCM to work", Toast.LENGTH_LONG).show();
         }
     }
 

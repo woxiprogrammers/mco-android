@@ -21,7 +21,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Timber.d("Refreshed token: " + refreshedToken);
-        Toast.makeText(getBaseContext(), "FCM Token Refreshed", Toast.LENGTH_SHORT).show();
         AppUtils.getInstance().put(AppConstants.PREFS_FIREBASE_REFRESH_TOKEN, refreshedToken);
         boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
         if (isLoggedIn && !TextUtils.isEmpty(AppUtils.getInstance().getCurrentToken())) {
