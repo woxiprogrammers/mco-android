@@ -97,6 +97,7 @@ public class AwarenessHomeActivity extends BaseActivity {
     private String encodedString;
     private BroadcastReceiver downloadRecevier;
     private String getFileName;
+    private int dl_progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -428,7 +429,11 @@ public class AwarenessHomeActivity extends BaseActivity {
                     if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
                         downloading = false;
                     }
-                    final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
+                    try {
+                        dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
+                    } catch (NumberFormatException ex) {
+                        ex.printStackTrace();
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

@@ -93,6 +93,7 @@ public class DrawingDetailsActivity extends BaseActivity {
         call(drawingVersionId, imageUrl, true);
         if (bundle != null) {
             imageUrl = bundle.getString("url");
+            Log.i("@@Url",imageUrl);
             drawingVersionId = bundle.getInt("getDrawingImageVersionId");
             imageName = bundle.getString("imageName");
             subCatId = bundle.getInt("subId");

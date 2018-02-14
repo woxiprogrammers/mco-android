@@ -911,7 +911,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if(!TextUtils.isEmpty(charSequence.toString())){
-                        if(Integer.parseInt(charSequence.toString()) == 0 || Float.parseFloat(charSequence.toString()) == 0.0){
+                        if(Float.parseFloat(charSequence.toString()) == 0.0){
                             Toast.makeText(mContext,"Please do not enter zero as a value",Toast.LENGTH_SHORT).show();
                             buttonApproveDisapprove.setEnabled(false);
                         }else {
@@ -1016,14 +1016,17 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
         JSONObject params = new JSONObject();
         try {
-            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                int selectedPosition = spinner_select_units.getSelectedItemPosition();
-                if (selectedPosition <= unitQuantityItemRealmResults.size()) {
-                    unitIDForDialog = unitQuantityItemRealmResults.get(selectedPosition).getUnitId();
-                    params.put("unit_id", unitIDForDialog);
-                } else {
-                    Timber.d("Something wrong with unitQuantityItemRealmResults");
+            if(!slug.equalsIgnoreCase("Disapprove")){
+                if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                    int selectedPosition = spinner_select_units.getSelectedItemPosition();
+                    if (selectedPosition < unitQuantityItemRealmResults.size()) {
+                        unitIDForDialog = unitQuantityItemRealmResults.get(selectedPosition).getUnitId();
+                        params.put("unit_id", unitIDForDialog);
+                    } else {
+                        Timber.d("Something wrong with unitQuantityItemRealmResults");
+                    }
                 }
+
             }
             params.put("material_request_component_id", materialRequestComponentId);
             params.put("change_component_status_id_to", statusId);
