@@ -1531,7 +1531,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             String newDateStr = null;
             try {
                 dateObj = df.parse(strParse);
-                SimpleDateFormat fd = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                SimpleDateFormat fd = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 newDateStr = fd.format(dateObj);
             } catch (Exception e) {
                 e.printStackTrace();

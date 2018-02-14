@@ -149,6 +149,31 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 linearSetLayoutForSalary.setVisibility(View.VISIBLE);
                 linearLayoutSetPTPF.setVisibility(View.VISIBLE);
                 linearLayoutESICTDS.setVisibility(View.VISIBLE);
+                if (!empSalaryTransactionDetailData.getPf().isEmpty()) {
+                    editTextPF.setText(empSalaryTransactionDetailData.getPf());
+                    editTextPF.setVisibility(View.VISIBLE);
+                } else {
+                    editTextPF.setVisibility(View.GONE);
+                }
+                if (!empSalaryTransactionDetailData.getPt().isEmpty()) {
+                    editTextSetPT.setVisibility(View.VISIBLE);
+                    editTextSetPT.setText(empSalaryTransactionDetailData.getPt());
+                } else {
+                    editTextSetPT.setVisibility(View.GONE);
+                }
+                if (!empSalaryTransactionDetailData.getEsic().isEmpty()) {
+                    editTextSetESIC.setVisibility(View.VISIBLE);
+                    editTextSetESIC.setText(empSalaryTransactionDetailData.getEsic());
+                } else {
+                    editTextSetESIC.setVisibility(View.GONE);
+
+                }
+                if (!empSalaryTransactionDetailData.getTds().isEmpty()) {
+                    editTextSetTDS.setVisibility(View.VISIBLE);
+                    editTextSetTDS.setText(empSalaryTransactionDetailData.getTds());
+                } else {
+                    editTextSetTDS.setVisibility(View.GONE);
+                }
             } else {
                 linearPayableAmount.setVisibility(View.GONE);
                 linearSetLayoutForSalary.setVisibility(View.GONE);
@@ -161,31 +186,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             } else {
                 linearPayableAmount.setVisibility(View.GONE);
             }
-            if (!empSalaryTransactionDetailData.getPf().isEmpty()) {
-                editTextPF.setText(empSalaryTransactionDetailData.getPf());
-                editTextPF.setVisibility(View.VISIBLE);
-            } else {
-                editTextPF.setVisibility(View.GONE);
-            }
-            if (!empSalaryTransactionDetailData.getPt().isEmpty()) {
-                editTextSetPT.setVisibility(View.VISIBLE);
-                editTextSetPT.setText(empSalaryTransactionDetailData.getPt());
-            } else {
-                editTextSetPT.setVisibility(View.GONE);
-            }
-            if (!empSalaryTransactionDetailData.getEsic().isEmpty()) {
-                editTextSetESIC.setVisibility(View.VISIBLE);
-                editTextSetESIC.setText(empSalaryTransactionDetailData.getEsic());
-            } else {
-                editTextSetESIC.setVisibility(View.GONE);
 
-            }
-            if (!empSalaryTransactionDetailData.getTds().isEmpty()) {
-                editTextSetTDS.setVisibility(View.VISIBLE);
-                editTextSetTDS.setText(empSalaryTransactionDetailData.getTds());
-            } else {
-                editTextSetTDS.setVisibility(View.GONE);
-            }
             editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
             if (!empSalaryTransactionDetailData.getRemark().isEmpty()) {
                 editTextSetSalaryRemark.setVisibility(View.VISIBLE);
