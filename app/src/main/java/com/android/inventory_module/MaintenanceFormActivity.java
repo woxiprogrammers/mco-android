@@ -299,11 +299,11 @@ public class MaintenanceFormActivity extends BaseActivity {
             editTextBillNumber.requestFocus();
             return;
         }
-        if (TextUtils.isEmpty(editTextBillAmount.getText().toString())) {
+        /*if (TextUtils.isEmpty(editTextBillAmount.getText().toString())) {
             editTextBillAmount.requestFocus();
             editTextBillAmount.setError("Please enter bill amount");
             return;
-        }
+        }*/
         if (arrayImageFileList == null || arrayImageFileList.size() > 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
