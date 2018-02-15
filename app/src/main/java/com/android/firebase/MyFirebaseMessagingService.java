@@ -71,7 +71,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(strTitle)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(strBody))
                 .setContentText(strBody)
-                .setAutoCancel(false)
+                .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setGroup(strTag)
                 .setGroupSummary(true)

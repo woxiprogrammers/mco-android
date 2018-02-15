@@ -236,7 +236,9 @@ public class DrawingDetailsActivity extends BaseActivity {
 
     @OnClick(R.id.textViewDownloadImage)
     public void onViewClicked() {
+        Log.i("@@",imageUrl);
         downloadFile(BuildConfig.BASE_URL_MEDIA + imageUrl);
+
     }
 
     private void downloadFile(String url) {
@@ -248,8 +250,9 @@ public class DrawingDetailsActivity extends BaseActivity {
         request.setVisibleInDownloadsUi(true);
         request.allowScanningByMediaScanner();
         String nameOfFile = URLUtil.guessFileName(url, null, MimeTypeMap.getFileExtensionFromUrl(url));
+        request.setTitle(nameOfFile.replace("#",""));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile.replace("#",""));
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         final long downloadId = downloadManager.enqueue(request);
         progressBarDownloadImage = findViewById(R.id.progressBarDownloadImage);

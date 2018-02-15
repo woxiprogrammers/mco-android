@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -132,6 +133,9 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 setDetailsData();
                 AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
             }
+        }
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
         }
     }
 
@@ -295,10 +299,10 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                         try {
                             JSONObject jsonObject = response.getJSONObject("pdf_path");
                             strPdfUrl = jsonObject.getString("pdf_url");
-                            Timber.d(strPdfUrl);
+//                            Timber.d(strPdfUrl);
+                            Log.i("@@PDF",strPdfUrl);
                             AppUtils.getInstance().showProgressBar(mainLinearLayoutViewSalary,false);
                             downloadFile(BuildConfig.BASE_URL_MEDIA + strPdfUrl);
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

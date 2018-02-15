@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -379,6 +380,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                 if (view.getId() == R.id.imageviewDownload) {
                     try {
                         encodedString = URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
+
                         getFileName = BuildConfig.BASE_URL_MEDIA + getPath + "/" + encodedString;
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -388,6 +390,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                         ActivityCompat.requestPermissions(AwarenessHomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
                     } else {
                         downloadFile(getFileName);
+                        Log.i("@@Awa",getFileName);
                     }
                 }
             }
@@ -408,7 +411,8 @@ public class AwarenessHomeActivity extends BaseActivity {
         request.allowScanningByMediaScanner();
         String nameOfFile = URLUtil.guessFileName(url, null, MimeTypeMap.getFileExtensionFromUrl(url));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile);
+        request.setTitle(nameOfFile.replace("#",""));
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile.replace("#",""));
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         final long downloadId = downloadManager.enqueue(request);
         mProgressBar = findViewById(R.id.progressBar1);
