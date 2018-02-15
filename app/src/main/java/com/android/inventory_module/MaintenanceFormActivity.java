@@ -313,7 +313,13 @@ public class MaintenanceFormActivity extends BaseActivity {
         try {
             params.put("grn", editTextGrnNumber.getText().toString());
             params.put("bill_number", editTextBillNumber.getText().toString());
-            params.put("bill_amount", editTextBillAmount.getText().toString());
+            if(TextUtils.isEmpty(editTextBillAmount.getText().toString())){
+                params.put("bill_amount", "0");
+
+            }else {
+                params.put("bill_amount", editTextBillAmount.getText().toString());
+
+            }
             params.put("remark", editTextAddNote.getText().toString());
             params.put("images", jsonImageNameArray);
         } catch (JSONException e) {

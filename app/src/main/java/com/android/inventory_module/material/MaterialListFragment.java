@@ -193,6 +193,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logRealmExecutionError(anError);
+                        AppUtils.getInstance().showProgressBar(mainRelativeList, false);
                     }
                 });
     }
