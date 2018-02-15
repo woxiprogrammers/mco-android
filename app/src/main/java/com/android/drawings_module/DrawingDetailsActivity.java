@@ -90,14 +90,13 @@ public class DrawingDetailsActivity extends BaseActivity {
         }
         Bundle bundle = getIntent().getExtras();
         setTitle();
-        call(drawingVersionId, imageUrl, true);
         if (bundle != null) {
             imageUrl = bundle.getString("url");
-            Log.i("@@Url",imageUrl);
             drawingVersionId = bundle.getInt("getDrawingImageVersionId");
             imageName = bundle.getString("imageName");
             subCatId = bundle.getInt("subId");
         }
+        call(drawingVersionId, imageUrl, true);
         imageViewPreview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -236,7 +235,6 @@ public class DrawingDetailsActivity extends BaseActivity {
 
     @OnClick(R.id.textViewDownloadImage)
     public void onViewClicked() {
-        Log.i("@@",imageUrl);
         downloadFile(BuildConfig.BASE_URL_MEDIA + imageUrl);
 
     }

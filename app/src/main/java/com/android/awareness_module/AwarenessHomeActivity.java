@@ -390,7 +390,6 @@ public class AwarenessHomeActivity extends BaseActivity {
                         ActivityCompat.requestPermissions(AwarenessHomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
                     } else {
                         downloadFile(getFileName);
-                        Log.i("@@Awa",getFileName);
                     }
                 }
             }

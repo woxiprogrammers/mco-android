@@ -135,7 +135,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.i("@AA", "Destroy");
         recyclerView_commonListingView.setAdapter(null);
         if (realm != null) {
             realm.close();

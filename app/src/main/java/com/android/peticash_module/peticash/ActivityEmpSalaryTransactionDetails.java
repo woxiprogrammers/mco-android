@@ -299,8 +299,6 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                         try {
                             JSONObject jsonObject = response.getJSONObject("pdf_path");
                             strPdfUrl = jsonObject.getString("pdf_url");
-//                            Timber.d(strPdfUrl);
-                            Log.i("@@PDF",strPdfUrl);
                             AppUtils.getInstance().showProgressBar(mainLinearLayoutViewSalary,false);
                             downloadFile(BuildConfig.BASE_URL_MEDIA + strPdfUrl);
                         } catch (JSONException e) {
