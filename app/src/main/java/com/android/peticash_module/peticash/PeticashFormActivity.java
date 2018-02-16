@@ -223,6 +223,7 @@ public class PeticashFormActivity extends BaseActivity {
     private ProgressDialog progressDialog;
     private String approved_amount;
     private boolean isSalary;
+    private int intBalance;
     private TextWatcher textWatcherSalaryAmount = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -508,7 +509,8 @@ public class PeticashFormActivity extends BaseActivity {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
             employeesearchdataItem = realm.where(EmployeeSearchDataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            textViewEmployeeName.setText("( " + employeesearchdataItem.getFormatEmployeeId() + " ) " + employeesearchdataItem.getEmployeeName() );
+            intBalance = employeesearchdataItem.getBalance();
+            textViewEmployeeName.setText("( " + employeesearchdataItem.getFormatEmployeeId() + " ) " + employeesearchdataItem.getEmployeeName());
             textViewBalance.setText("Balance : " + employeesearchdataItem.getBalance());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
             getPerWeges = employeesearchdataItem.getPerDayWages();
@@ -522,7 +524,6 @@ public class PeticashFormActivity extends BaseActivity {
         String strItemQuantity = edittextQuantity.getText().toString();
         String strBillNumber = editTextBillNumber.getText().toString();
         String strBillAmount = editTextBillamount.getText().toString();
-
         if (TextUtils.isEmpty(strItemQuantity)) {
             edittextQuantity.setFocusableInTouchMode(true);
             edittextQuantity.requestFocus();
@@ -663,7 +664,6 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestForSalaryOrAdvance() {
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
-
         JSONObject params = new JSONObject();
         try {
             params.put("employee_id", primaryKey);
@@ -722,10 +722,8 @@ public class PeticashFormActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             AppUtils.getInstance().showProgressBar(mainRelativeLayout, false);
-
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -753,9 +751,7 @@ public class PeticashFormActivity extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-
             params.put("source_slug", "hand");
-
             params.put("source_name", editTextSelectedSourceName.getText().toString());
             params.put("name", editTextItemName.getText().toString().toLowerCase());
             params.put("quantity", edittextQuantity.getText().toString());
@@ -783,7 +779,6 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("bill_amount", editTextBillamount.getText().toString());
             params.put("date", currentDate);
             params.put("images", jsonImageNameArray);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -818,7 +813,6 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestForPurchasePayment() {
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
-
         JSONObject params = new JSONObject();
         try {
             params.put("peticash_transaction_id", peticashTransactionId);
@@ -841,7 +835,6 @@ public class PeticashFormActivity extends BaseActivity {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             AppUtils.getInstance().showProgressBar(mainRelativeLayout, false);
-
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -856,7 +849,7 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void requestForViewPament() {
-        if(isSalary){
+        if (isSalary) {
             AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         }
         JSONObject params = new JSONObject();
@@ -864,6 +857,7 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("project_site_id", project_site_id);
             if (isSalary) {
                 params.put("type", "salary");
+                params.put("balance", intBalance);
                 params.put("employee_id", primaryKey);
                 params.put("per_day_wages", getPerWeges);
                 params.put("working_days", edittextDay.getText().toString());
@@ -912,7 +906,6 @@ public class PeticashFormActivity extends BaseActivity {
                             editTextEmpIdName.setEnabled(false);
                             spinnerCategoryArray.setEnabled(false);
                             if (isSalary) {
-
                                 edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
                                 Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                                 String amount = jsonObject.getString("payable_amount");
