@@ -90,13 +90,13 @@ public class DrawingDetailsActivity extends BaseActivity {
         }
         Bundle bundle = getIntent().getExtras();
         setTitle();
-        call(drawingVersionId, imageUrl, true);
         if (bundle != null) {
             imageUrl = bundle.getString("url");
             drawingVersionId = bundle.getInt("getDrawingImageVersionId");
             imageName = bundle.getString("imageName");
             subCatId = bundle.getInt("subId");
         }
+        call(drawingVersionId, imageUrl, true);
         imageViewPreview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -236,6 +236,7 @@ public class DrawingDetailsActivity extends BaseActivity {
     @OnClick(R.id.textViewDownloadImage)
     public void onViewClicked() {
         downloadFile(BuildConfig.BASE_URL_MEDIA + imageUrl);
+
     }
 
     private void downloadFile(String url) {
@@ -247,8 +248,9 @@ public class DrawingDetailsActivity extends BaseActivity {
         request.setVisibleInDownloadsUi(true);
         request.allowScanningByMediaScanner();
         String nameOfFile = URLUtil.guessFileName(url, null, MimeTypeMap.getFileExtensionFromUrl(url));
+        request.setTitle(nameOfFile.replace("#",""));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile.replace("#",""));
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         final long downloadId = downloadManager.enqueue(request);
         progressBarDownloadImage = findViewById(R.id.progressBarDownloadImage);

@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -97,6 +98,7 @@ public class AwarenessHomeActivity extends BaseActivity {
     private String encodedString;
     private BroadcastReceiver downloadRecevier;
     private String getFileName;
+    private int dl_progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -378,6 +380,7 @@ public class AwarenessHomeActivity extends BaseActivity {
                 if (view.getId() == R.id.imageviewDownload) {
                     try {
                         encodedString = URLEncoder.encode(fileDetailsItemRealmResults.get(position).getName(), "UTF-8");
+
                         getFileName = BuildConfig.BASE_URL_MEDIA + getPath + "/" + encodedString;
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -407,7 +410,8 @@ public class AwarenessHomeActivity extends BaseActivity {
         request.allowScanningByMediaScanner();
         String nameOfFile = URLUtil.guessFileName(url, null, MimeTypeMap.getFileExtensionFromUrl(url));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile);
+        request.setTitle(nameOfFile.replace("#",""));
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile.replace("#",""));
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         final long downloadId = downloadManager.enqueue(request);
         mProgressBar = findViewById(R.id.progressBar1);
@@ -428,7 +432,11 @@ public class AwarenessHomeActivity extends BaseActivity {
                     if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
                         downloading = false;
                     }
-                    final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
+                    try {
+                        dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
+                    } catch (NumberFormatException ex) {
+                        ex.printStackTrace();
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

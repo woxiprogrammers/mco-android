@@ -84,7 +84,7 @@ dependencies {
     compile 'com.xeoh.android:checkboxgroup:1.0.1'
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     compile 'com.google.firebase:firebase-messaging:11.8.0'
-    compile 'com.github.RohitSurwase.UCE-Handler:uce_handler:1.1'
+    compile 'com.github.RohitSurwase.UCE-Handler:uce_handler:1.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

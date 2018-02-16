@@ -144,7 +144,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private String slug = "", strSearchKeyword;
     private boolean isApproveAccess;
     private boolean isSearch;
-    private Button  buttonApproveDisapprove;
+    private Button buttonApproveDisapprove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -650,7 +650,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     if (!TextUtils.isEmpty(charSequence.toString()) && validationForQuotation) {
                         floatItemQuantity = Float.parseFloat(charSequence.toString().trim());
                         indexItemUnit = mSpinnerUnits.getSelectedItemPosition();
-                        if(searchMaterialListItem_fromResult != null){
+                        if (searchMaterialListItem_fromResult != null) {
                             float floatItemMaxQuantity = searchMaterialListItem_fromResult.getUnitQuantity().get(indexItemUnit).getQuantity();
                             final int floatComparison = Float.compare(floatItemQuantity, floatItemMaxQuantity);
                             if (floatComparison > 0) {
@@ -888,7 +888,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             edittext_unit = dialogView.findViewById(R.id.edittext_unit);
             spinner_select_units = dialogView.findViewById(R.id.spinner_select_units);
             mTextViewExceedQuantity = dialogView.findViewById(R.id.TextViewExceedQuantity);
-              buttonApproveDisapprove = dialogView.findViewById(R.id.button_approve);
+            buttonApproveDisapprove = dialogView.findViewById(R.id.button_approve);
             final Button button_dismiss = dialogView.findViewById(R.id.button_dismiss);
             Button button_for_edit = dialogView.findViewById(R.id.button_for_edit);
             editText_name_material_asset.setText(arrPurchaseMaterialListItems.get(position).getItem_name());
@@ -910,11 +910,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if(!TextUtils.isEmpty(charSequence.toString())){
-                        if(Integer.parseInt(charSequence.toString()) == 0 || Float.parseFloat(charSequence.toString()) == 0.0){
-                            Toast.makeText(mContext,"Please do not enter zero as a value",Toast.LENGTH_SHORT).show();
+                    if (!TextUtils.isEmpty(charSequence.toString())) {
+                        if (Float.parseFloat(charSequence.toString()) == 0.0) {
+                            Toast.makeText(mContext, "Please do not enter zero as a value", Toast.LENGTH_SHORT).show();
                             buttonApproveDisapprove.setEnabled(false);
-                        }else {
+                        } else {
                             buttonApproveDisapprove.setEnabled(true);
                         }
                     }
@@ -1016,13 +1016,15 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         int materialRequestComponentId = purchaseMaterialListItem.getMaterialRequestComponentId();
         JSONObject params = new JSONObject();
         try {
-            if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
-                int selectedPosition = spinner_select_units.getSelectedItemPosition();
-                if (selectedPosition <= unitQuantityItemRealmResults.size()) {
-                    unitIDForDialog = unitQuantityItemRealmResults.get(selectedPosition).getUnitId();
-                    params.put("unit_id", unitIDForDialog);
-                } else {
-                    Timber.d("Something wrong with unitQuantityItemRealmResults");
+            if (!slug.equalsIgnoreCase("Disapprove")) {
+                if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
+                    int selectedPosition = spinner_select_units.getSelectedItemPosition();
+                    if (selectedPosition < unitQuantityItemRealmResults.size() && selectedPosition != -1) {
+                        unitIDForDialog = unitQuantityItemRealmResults.get(selectedPosition).getUnitId();
+                        params.put("unit_id", unitIDForDialog);
+                    } else {
+                        Timber.d("Something wrong with unitQuantityItemRealmResults");
+                    }
                 }
             }
             params.put("material_request_component_id", materialRequestComponentId);
@@ -1489,14 +1491,14 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
 //                holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
 
-                if(strStatus.contains("disapproved")){
+                if (strStatus.contains("disapproved")) {
                     holder.textviewApprovedBy.setText("Disapproved By : " + purchaseMaterialListItem.getApprovedBy());
 
-                }else if(strStatus.contains("approved")) {
+                } else if (strStatus.contains("approved")) {
                     holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
 
                 }
-            }else {
+            } else {
                 holder.textviewApprovedBy.setVisibility(View.GONE);
 
             }
@@ -1531,7 +1533,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             String newDateStr = null;
             try {
                 dateObj = df.parse(strParse);
-                SimpleDateFormat fd = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                SimpleDateFormat fd = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 newDateStr = fd.format(dateObj);
             } catch (Exception e) {
                 e.printStackTrace();

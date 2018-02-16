@@ -152,7 +152,9 @@ public class SiteMoveInActivity extends BaseActivity {
             params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
             params.put("name", "site");
             params.put("type", "IN");
-            params.put("inventory_component_id", inventoryComponentId);
+            if(inventoryComponentId != 0){
+                params.put("inventory_component_id", inventoryComponentId);
+            }
             params.put("component_name", editTextSiteName.getText().toString());
             params.put("is_material", isMaterial);
             params.put("quantity", edtQuantity.getText().toString());

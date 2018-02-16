@@ -60,6 +60,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private JSONArray jsonArray = new JSONArray();
     private boolean isCheckboxChecked;
     private boolean isMaterialSelected;
+    private String subModulesItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,14 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
+        MenuItem menuItem=menu.findItem(R.id.action_approve);
+        if(subModulesItemList.contains("approve-purchase-order-request")){
+            menuItem.setVisible(true);
+
+        }else {
+            menuItem.setVisible(false);
+
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -85,6 +94,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             intPurchaseOrderRequestId = bundle.getInt("purchase_order_request_id");
+            subModulesItemList=bundle.getString("subModulesItemList");
         }
     }
 
@@ -105,6 +115,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     protected void onResume() {

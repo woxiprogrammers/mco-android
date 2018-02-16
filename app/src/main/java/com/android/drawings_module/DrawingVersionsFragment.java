@@ -44,9 +44,7 @@ import timber.log.Timber;
  */
 public class DrawingVersionsFragment extends Fragment implements FragmentInterface {
 
-    @BindView(R.id.rvVersionList)
-    RecyclerView rvVersionList;
-    Unbinder unbinder;
+    private RecyclerView rvVersionList;
     private Realm realm;
     private Context mContext;
     private int drawingId,getSubCatId;
@@ -68,7 +66,7 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_version_comment, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        rvVersionList=view.findViewById(R.id.rvVersionList);
         mContext=getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -176,7 +174,6 @@ public class DrawingVersionsFragment extends Fragment implements FragmentInterfa
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     public class VersionListAdapter extends RealmRecyclerViewAdapter<VersionsItem, VersionListAdapter.MyViewHolder> {

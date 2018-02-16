@@ -64,6 +64,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity
     private Realm realm;
     private RealmResults<PurchaseOrderRequestListItem> purchaseRequestListItems;
     private int currentPage = 0;
+    private String subModulesItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,11 @@ public class PurchaseOrderApproveActivity extends BaseActivity
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            subModulesItemList = bundle.getString("subModulesItemList");
+
         }
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
@@ -149,6 +155,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity
                             if (AppUtils.getInstance().checkNetworkState()) {
                                 Intent intent = new Intent(mContext, PurchaseOrderMaterialRequestApproveActivity.class);
                                 intent.putExtra("purchase_order_request_id", purchaseRequestListItems.get(position).getPurchaseOrderRequestId());
+                                intent.putExtra("subModulesItemList",subModulesItemList);
                                 startActivity(intent);
                             } else {
                                 AppUtils.getInstance().showOfflineMessage("PurchaseOrderApproveActivity");
@@ -248,7 +255,7 @@ public class PurchaseOrderApproveActivity extends BaseActivity
             holder.textViewPurchaseOrderReqMaterial.setText(purchaseOrderRequestListItem.getMaterialName());
             holder.textViewOrderId.setText(purchaseOrderRequestListItem.getPurchaseRequestFormatId());
             holder.textViewRequestedBy.setText("Requested by " + purchaseOrderRequestListItem.getUserName() +
-                    "on " + AppUtils.getInstance().getTime("EEE, dd MMM yyyy", "dd-MMM-yyyy", purchaseOrderRequestListItem.getDate()));
+                    "on " + AppUtils.getInstance().getTime("EEE, dd MMM yyyy", getString(R.string.expected_time_format), purchaseOrderRequestListItem.getDate()));
         }
 
         @Override

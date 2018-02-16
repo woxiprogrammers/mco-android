@@ -275,8 +275,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
                 });
     }
 
-
-
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {
         private OrderedRealmCollection<PurchaseOrderListItem> arrPurchaseOrderListItems;
@@ -300,7 +298,8 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
             holder.textViewPurchaseRequestId.setText(purchaseOrderListItem.getPurchaseOrderFormatId());
             holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseOrderListItem.getStatus()));
-            holder.textViewPurchaseRequestDate.setText(purchaseOrderListItem.getDate());
+
+            holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss","dd/MM/yyyy",purchaseOrderListItem.getDate()));
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
             if (!purchaseOrderListItem.getPurchaseOrderStatusSlug().equalsIgnoreCase("close")) {
