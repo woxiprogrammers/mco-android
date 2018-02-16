@@ -27,7 +27,14 @@
             android:scaleType="centerCrop"
             android:src="@drawable/img_building"
             app:layout_collapseMode="parallax"/>
-
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:layout_gravity="right"
+            android:background="@drawable/ic_autosearch_"
+            android:scaleType="centerCrop"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
