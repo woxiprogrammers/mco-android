@@ -48,6 +48,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (stringMap.containsKey("title")) {
             strTitle = stringMap.get("title");
         }
+
         Intent intent = new Intent(this, DashBoardActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, AppConstants.FCM_NOTIFICATION_ACTIVITY_REQUEST_CODE /* Request code */, intent,

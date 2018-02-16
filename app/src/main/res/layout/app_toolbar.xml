@@ -33,6 +33,7 @@
             android:fitsSystemWindows="true"
             android:layout_margin="@dimen/dimen_8dp"
             android:layout_gravity="right"
+            android:visibility="gone"
             android:background="@drawable/ic_autosearch_"
             android:scaleType="centerCrop"/>
         <LinearLayout

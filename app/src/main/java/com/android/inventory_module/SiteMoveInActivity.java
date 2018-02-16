@@ -81,6 +81,7 @@ public class SiteMoveInActivity extends BaseActivity {
     private int unitId, projectSiteIdFrom, inventoryComponentId;
     private String strComponentName;
     private int reference_id;
+    private String strEnteredGrn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +166,7 @@ public class SiteMoveInActivity extends BaseActivity {
             params.put("remark", edtSiteTransferRemark.getText().toString());
             params.put("images", jsonImageNameArray);
             params.put("reference_id",reference_id);
+            params.put("grn",strEnteredGrn);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -318,6 +320,7 @@ public class SiteMoveInActivity extends BaseActivity {
                             edtQuantity.setText(quantity);
                             String unitName = jsonObject.getString("unit_name");
                             editTextUnit.setText(unitName);
+                            strEnteredGrn=editTextEnteredGrn.getText().toString();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
