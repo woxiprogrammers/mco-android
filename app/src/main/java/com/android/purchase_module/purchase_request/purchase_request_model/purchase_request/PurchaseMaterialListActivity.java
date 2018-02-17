@@ -547,7 +547,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 }
             }
         };
-        purchaseMaterialListRealmResult_All = realm.where(PurchaseMaterialListItem.class).equalTo("componentStatus", getString(R.string.tag_in_indent)).or().equalTo("componentStatus", getString(R.string.tag_p_r_assigned)).findAllSortedAsync("componentStatus", Sort.ASCENDING);
+        purchaseMaterialListRealmResult_All = realm.where(PurchaseMaterialListItem.class)
+                .equalTo("componentStatus", getString(R.string.tag_in_indent)).or()
+                .equalTo("componentStatus", getString(R.string.tag_p_r_assigned))
+                .findAllSortedAsync("componentStatus", Sort.ASCENDING);
         PurchaseMaterialRvAdapter purchaseMaterialRvAdapter = new PurchaseMaterialRvAdapter(purchaseMaterialListRealmResult_All, true, true, recyclerViewClickListener);
         recyclerView_materialList.setAdapter(purchaseMaterialRvAdapter);
         /*if (purchaseMaterialListRealmResult_All != null) {
