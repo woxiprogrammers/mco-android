@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -156,7 +155,7 @@ public class SiteMoveInActivity extends BaseActivity {
             params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
             params.put("name", "site");
             params.put("type", "IN");
-            if(inventoryComponentId != 0){
+            if (inventoryComponentId != 0) {
                 params.put("inventory_component_id", inventoryComponentId);
             }
             params.put("component_name", strComponentName);
@@ -165,8 +164,8 @@ public class SiteMoveInActivity extends BaseActivity {
             params.put("unit_id", unitId);
             params.put("remark", edtSiteTransferRemark.getText().toString());
             params.put("images", jsonImageNameArray);
-            params.put("reference_id",reference_id);
-            params.put("grn",strEnteredGrn);
+            params.put("reference_id", reference_id);
+            params.put("grn", strEnteredGrn);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -309,8 +308,8 @@ public class SiteMoveInActivity extends BaseActivity {
                             editTextEnteredGrn.setEnabled(false);
                             unitId = jsonObject.getInt("unit_id");
                             projectSiteIdFrom = jsonObject.getInt("project_site_id_from");
-                            reference_id=jsonObject.getInt("reference_id");
-                            strComponentName=jsonObject.getString("material_name");
+                            reference_id = jsonObject.getInt("reference_id");
+                            strComponentName = jsonObject.getString("material_name");
                             inventoryComponentId = jsonObject.getInt("inventory_component_id");
                             String projectSiteNameFrom = jsonObject.getString("project_site_name_from");
                             editTextSiteName.setText(projectSiteNameFrom);
@@ -320,7 +319,7 @@ public class SiteMoveInActivity extends BaseActivity {
                             edtQuantity.setText(quantity);
                             String unitName = jsonObject.getString("unit_name");
                             editTextUnit.setText(unitName);
-                            strEnteredGrn=editTextEnteredGrn.getText().toString();
+                            strEnteredGrn = editTextEnteredGrn.getText().toString();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -329,7 +328,7 @@ public class SiteMoveInActivity extends BaseActivity {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logRealmExecutionError(anError);
-                        Toast.makeText(mContext,"Please enter correct GRN",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Please enter correct GRN", Toast.LENGTH_SHORT).show();
                         AppUtils.getInstance().showProgressBar(mainRelative, false);
                     }
                 });
