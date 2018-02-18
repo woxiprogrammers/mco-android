@@ -89,13 +89,13 @@ public class DrawingDetailsActivity extends BaseActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
         }
         Bundle bundle = getIntent().getExtras();
-        setTitle();
         if (bundle != null) {
             imageUrl = bundle.getString("url");
             drawingVersionId = bundle.getInt("getDrawingImageVersionId");
             imageName = bundle.getString("imageName");
             subCatId = bundle.getInt("subId");
         }
+        setTitle();
         call(drawingVersionId, imageUrl, true);
         imageViewPreview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
