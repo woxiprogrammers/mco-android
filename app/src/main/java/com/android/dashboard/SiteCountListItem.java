@@ -2,9 +2,11 @@ package com.android.dashboard;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class SiteCountListItem extends RealmObject{
 
+	@PrimaryKey
 	@SerializedName("project_site_id")
 	private int projectSiteId;
 

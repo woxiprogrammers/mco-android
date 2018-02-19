@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,8 +100,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private String strProjectName = "";
     private RealmResults<ProjectsItem> projectsItemRealmResults;
     private AlertDialog alert_Dialog;
-    private TextView textViewSites;
+    private TextView textViewSites, textViewSitesCount;
     private View dialogView;
+    private View inflatedView = null;
+    private LinearLayout linearLayoutOfSite;
 
     @Override
     public void onBackPressed() {
@@ -271,7 +274,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             strProjectName = projectsItem.getProject_name();
             String strClientCompanyName = projectsItem.getClient_company_name();
             mProjectName.setText(strProjectName);
-
             mTextViewClientName.setText(strClientCompanyName);
         }
     }
@@ -376,17 +378,37 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     }
 
     private void inflateLayoutForSites() {
-        Log.i("@@", "method");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.layout_linear, null);
+        alertDialogBuilder.setView(dialogView);
+        LinearLayout linearLayout = dialogView.findViewById(R.id.linearLayout);
+
         alert_Dialog = alertDialogBuilder.create();
         realm = Realm.getDefaultInstance();
         RealmResults<SiteCountListItem> siteCountListItemRealmResults = realm.where(SiteCountListItem.class).findAll();
         for (int i = 0; i < siteCountListItemRealmResults.size(); i++) {
-            SiteCountListItem siteCountListItem = siteCountListItemRealmResults.get(i);
-            dialogView = LayoutInflater.from(mContext).inflate(R.layout.inflate_layout_assigned_sites, null);
-            textViewSites = dialogView.findViewById(R.id.textViewSites);
+            final SiteCountListItem siteCountListItem = siteCountListItemRealmResults.get(i);
+            inflatedView = LayoutInflater.from(mContext).inflate(R.layout.inflate_layout_assigned_sites, null);
+            textViewSites = inflatedView.findViewById(R.id.textViewSites);
+            textViewSitesCount = inflatedView.findViewById(R.id.textViewSitesCount);
+            linearLayoutOfSite = inflatedView.findViewById(R.id.linearLayoutOfSite);
+            textViewSitesCount.setText("" + siteCountListItem.getSiteCount());
             textViewSites.setText(siteCountListItem.getProjectSiteName());
-
+            linearLayoutOfSite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                        setUp
+                    Log.i("@@Id", String.valueOf(view.getId()));
+                    mTextViewClientName.setText("Client");
+                    int projectId = siteCountListItem.getProjectSiteId();
+                    AppUtils.getInstance().put(getString(R.string.key_project_id), projectId);
+                    Timber.i("Current Site ID: " + AppUtils.getInstance().getInt(getString(R.string.key_project_id), -1));
+                    mProjectName.setText(siteCountListItem.getProjectSiteName());
+//                    setUpDashboardAdapterData();
+                    alert_Dialog.dismiss();
+                }
+            });
+            linearLayout.addView(inflatedView);
         }
 
         alert_Dialog = alertDialogBuilder.create();
