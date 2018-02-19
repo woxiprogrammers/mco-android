@@ -96,4 +96,5 @@ public class AppURL {
     public static final String API_ASSET_MAINTENANCE_REQUEST_LISTING = BASE_URL + "inventory/asset/maintenance-request/listing?token=";
     public static final String API_PETICASH_SALARY_GENERATE_VOUCHER = BASE_URL + "peticash/employee-salary/generate-payment-voucher?token=";
     public static final String API_PETICASH_SALARY_DELETE_VOUCHER = BASE_URL + "peticash/employee-salary/delete-payment-voucher?token=";
+    public static final String API_SITE_COUNT_URL="http://www.mocky.io/v2/5a8a60022f00006200e46f58";
 }

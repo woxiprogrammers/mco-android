@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,6 +75,8 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     @BindView(R.id.projectName)
     TextView mProjectName;
+    @BindView(R.id.imageViewSiteCount)
+    ImageView imageViewSiteCount;
     private Context mContext;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     private Realm realm;
@@ -348,5 +351,13 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         Type type = new TypeToken<HashMap<String, String>>() {
         }.getType();
         return gson.fromJson(hashMapString, type);
+    }
+
+    private void setSiteCount(){
+
+    }
+
+    private void getCount(){
+
     }
 }

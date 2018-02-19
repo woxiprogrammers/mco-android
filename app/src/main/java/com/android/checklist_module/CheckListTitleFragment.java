@@ -149,6 +149,7 @@ public class CheckListTitleFragment extends Fragment {
                     break;
                 } else {
                     mLinearLayoutReassignTo.setVisibility(View.GONE);
+                    //Review ACL
                     if (subModuleTag.contains("management") && assignedTo == AppUtils.getInstance().getCurrentUserId()) {
                         mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
                     } else {
