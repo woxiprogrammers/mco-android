@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -70,7 +71,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     Toolbar toolbar;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.appBarLayout)
+    @BindView(R.id.appBarLayoutToolbar)
     AppBarLayout appBarLayout;
     @BindView(R.id.rv_task_selection)
     RecyclerView mRvTaskSelection;
@@ -80,10 +81,14 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     @BindView(R.id.projectName)
     TextView mProjectName;
-    @BindView(R.id.imageViewSiteCount)
-    FrameLayout imageViewSiteCount;
     @BindView(R.id.cart_badge)
     TextView cartBadge;
+    @BindView(R.id.jh)
+    ImageView jh;
+    @BindView(R.id.layoutone)
+    CoordinatorLayout layoutone;
+    @BindView(R.id.imageViewSiteCount)
+    FrameLayout imageViewSiteCount;
 
     private int setSiteBadgeCount = 0;
     private Context mContext;
@@ -162,6 +167,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         initializeViews();
         setUpDrawerData();
         getCount();
+
     }
 
     @Override
@@ -251,6 +257,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 }
             }
         });
+
     }
 
     private void setUpStaticValues(int selectedId) {
@@ -264,6 +271,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             strProjectName = projectsItem.getProject_name();
             String strClientCompanyName = projectsItem.getClient_company_name();
             mProjectName.setText(strProjectName);
+
             mTextViewClientName.setText(strClientCompanyName);
         }
     }
@@ -368,8 +376,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     }
 
     private void inflateLayoutForSites() {
-        Toast.makeText(mContext,"Hii",Toast.LENGTH_SHORT).show();
-        Log.i("@@","method");
+        Log.i("@@", "method");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         alert_Dialog = alertDialogBuilder.create();
         realm = Realm.getDefaultInstance();
@@ -436,8 +443,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 
     @OnClick(R.id.imageViewSiteCount)
     public void onViewClicked() {
-        Toast.makeText(mContext,"Hii",Toast.LENGTH_SHORT).show();
-        Log.i("@@","click");
+        Toast.makeText(mContext, "Hii", Toast.LENGTH_SHORT).show();
 
         inflateLayoutForSites();
     }
