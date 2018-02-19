@@ -1,5 +1,6 @@
 package com.android.dashboard;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +14,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -52,6 +56,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -76,7 +81,11 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     @BindView(R.id.projectName)
     TextView mProjectName;
     @BindView(R.id.imageViewSiteCount)
-    ImageView imageViewSiteCount;
+    FrameLayout imageViewSiteCount;
+    @BindView(R.id.cart_badge)
+    TextView cartBadge;
+
+    private int setSiteBadgeCount = 0;
     private Context mContext;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     private Realm realm;
@@ -84,6 +93,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private TextView userName;
     private String strProjectName = "";
     private RealmResults<ProjectsItem> projectsItemRealmResults;
+    private AlertDialog alert_Dialog;
+    private TextView textViewSites;
+    private View dialogView;
 
     @Override
     public void onBackPressed() {
@@ -149,6 +161,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Calling function to initialize required views.
         initializeViews();
         setUpDrawerData();
+        getCount();
     }
 
     @Override
@@ -241,6 +254,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     }
 
     private void setUpStaticValues(int selectedId) {
+
         ProjectsItem projectsItem = projectsItemRealmResults.get(selectedId);
         if (projectsItem != null) {
             mTextViewClientName.setText(projectsItem.getClient_company_name());
@@ -353,11 +367,78 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         return gson.fromJson(hashMapString, type);
     }
 
-    private void setSiteCount(){
+    private void inflateLayoutForSites() {
+        Toast.makeText(mContext,"Hii",Toast.LENGTH_SHORT).show();
+        Log.i("@@","method");
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        alert_Dialog = alertDialogBuilder.create();
+        realm = Realm.getDefaultInstance();
+        RealmResults<SiteCountListItem> siteCountListItemRealmResults = realm.where(SiteCountListItem.class).findAll();
+        for (int i = 0; i < siteCountListItemRealmResults.size(); i++) {
+            SiteCountListItem siteCountListItem = siteCountListItemRealmResults.get(i);
+            dialogView = LayoutInflater.from(mContext).inflate(R.layout.inflate_layout_assigned_sites, null);
+            textViewSites = dialogView.findViewById(R.id.textViewSites);
+            textViewSites.setText(siteCountListItem.getProjectSiteName());
+
+        }
+
+        alert_Dialog = alertDialogBuilder.create();
+        alert_Dialog.show();
 
     }
 
-    private void getCount(){
+    private void getCount() {
+        AndroidNetworking.get(AppURL.API_SITE_COUNT_URL /*+ AppUtils.getInstance().getCurrentToken()*/)
+//                .addJSONObjectBody(params)
+//                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getCount")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsObject(SiteCountResponse.class, new ParsedRequestListener<SiteCountResponse>() {
+                    @Override
+                    public void onResponse(final SiteCountResponse response) {
+                        try {
+                            realm = Realm.getDefaultInstance();
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    for (int i = 0; i < response.getSitecountData().getSiteCountList().size(); i++) {
+                                        setSiteBadgeCount = setSiteBadgeCount + response.getSitecountData().getSiteCountList().get(i).getSiteCount();
+                                    }
+                                    cartBadge.setText(String.valueOf(setSiteBadgeCount));
+                                    Log.i("@@Count", String.valueOf(setSiteBadgeCount));
 
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    @OnClick(R.id.imageViewSiteCount)
+    public void onViewClicked() {
+        Toast.makeText(mContext,"Hii",Toast.LENGTH_SHORT).show();
+        Log.i("@@","click");
+
+        inflateLayoutForSites();
     }
 }
