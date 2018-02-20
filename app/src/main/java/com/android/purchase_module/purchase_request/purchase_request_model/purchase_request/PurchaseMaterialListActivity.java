@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -539,7 +540,10 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         RecyclerViewClickListener recyclerViewClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Log.i("@@onItemClick","onItemClick");
+                Log.i("@@Pos", String.valueOf(position));
                 if (view.getId() == R.id.imageView_deleteMaterial_createPR) {
+                    Log.i("@@view.getId()", String.valueOf(position));
                     ImageView mImageViewDeleteAddedItem = view.findViewById(R.id.imageView_deleteMaterial_createPR);
                     deleteSelectedItemFromList(position, mImageViewDeleteAddedItem);
                 } else {
@@ -860,6 +864,41 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 
         }
 
+        /*mImageViewDeleteAddedItem.setEnabled(false);
+        Toast.makeText(mContext, "Wait, deleting Item.", Toast.LENGTH_SHORT).show();
+        if (purchaseMaterialListRealmResult_All != null && !purchaseMaterialListRealmResult_All.isEmpty()) {
+            PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResult_All.get(position);
+            if (position <= purchaseMaterialListRealmResult_All.size() && position != -1) {
+                final int primaryKey = purchaseMaterialListItem.getPrimaryKey();
+                realm = Realm.getDefaultInstance();
+                try {
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.where(PurchaseMaterialListItem.class).equalTo("primaryKey", primaryKey).findFirst().deleteFromRealm();
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(mContext, "Item deleted", Toast.LENGTH_SHORT).show();
+                            mImageViewDeleteAddedItem.setEnabled(false);
+                        }
+                    }, new Realm.Transaction.OnError() {
+                        @Override
+                        public void onError(Throwable error) {
+                            Toast.makeText(mContext, "Delete Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            mImageViewDeleteAddedItem.setEnabled(true);
+                        }
+                    });
+                } finally {
+                    if (realm != null) {
+                        realm.close();
+                    }
+                }
+            }
+
+        }
+*/
     }
 
     @SuppressWarnings("WeakerAccess")

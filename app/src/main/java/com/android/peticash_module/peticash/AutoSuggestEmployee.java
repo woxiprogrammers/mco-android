@@ -86,7 +86,7 @@ public class AutoSuggestEmployee extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mStrSearch = s.toString();
-                if (mStrSearch.length() > 2) {
+                if (mStrSearch.length() >= 2) {
                     requestAutoSearchEmployee(mStrSearch);
                 }
             }
