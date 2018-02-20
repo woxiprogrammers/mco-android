@@ -330,7 +330,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("@@Pa",params.toString());
         AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)

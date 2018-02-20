@@ -540,12 +540,13 @@ public class PurchaseMaterialListActivity extends BaseActivity {
         RecyclerViewClickListener recyclerViewClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Log.i("@@onItemClick","onItemClick");
-                Log.i("@@Pos", String.valueOf(position));
                 if (view.getId() == R.id.imageView_deleteMaterial_createPR) {
-                    Log.i("@@view.getId()", String.valueOf(position));
                     ImageView mImageViewDeleteAddedItem = view.findViewById(R.id.imageView_deleteMaterial_createPR);
-                    deleteSelectedItemFromList(position, mImageViewDeleteAddedItem);
+                    try {
+                        deleteSelectedItemFromList(position, mImageViewDeleteAddedItem);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
                 }
@@ -831,74 +832,39 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private void deleteSelectedItemFromList(int position, final ImageView mImageViewDeleteAddedItem) {
         mImageViewDeleteAddedItem.setEnabled(false);
         Toast.makeText(mContext, "Wait, deleting Item.", Toast.LENGTH_SHORT).show();
-        if (purchaseMaterialListRealmResult_All != null && !purchaseMaterialListRealmResult_All.isEmpty()) {
-            PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResult_All.get(position);
-            if (position <= purchaseMaterialListRealmResult_All.size() && position != -1) {
-                final int primaryKey = purchaseMaterialListItem.getPrimaryKey();
-                realm = Realm.getDefaultInstance();
-                try {
-                    realm.executeTransactionAsync(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            realm.where(PurchaseMaterialListItem.class).equalTo("primaryKey", primaryKey).findFirst().deleteFromRealm();
-                        }
-                    }, new Realm.Transaction.OnSuccess() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(mContext, "Item deleted", Toast.LENGTH_SHORT).show();
-                            mImageViewDeleteAddedItem.setEnabled(false);
-                        }
-                    }, new Realm.Transaction.OnError() {
-                        @Override
-                        public void onError(Throwable error) {
-                            Toast.makeText(mContext, "Delete Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                            mImageViewDeleteAddedItem.setEnabled(true);
-                        }
-                    });
-                } finally {
-                    if (realm != null) {
-                        realm.close();
-                    }
+//        if (purchaseMaterialListRealmResult_All != null && !purchaseMaterialListRealmResult_All.isEmpty()) {
+//            if (position <= purchaseMaterialListRealmResult_All.size() && position != -1) {
+        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResult_All.get(position);
+        final int primaryKey = purchaseMaterialListItem.getPrimaryKey();
+        realm = Realm.getDefaultInstance();
+        try {
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.where(PurchaseMaterialListItem.class).equalTo("primaryKey", primaryKey).findFirst().deleteFromRealm();
                 }
-            }
-
-        }
-
-        /*mImageViewDeleteAddedItem.setEnabled(false);
-        Toast.makeText(mContext, "Wait, deleting Item.", Toast.LENGTH_SHORT).show();
-        if (purchaseMaterialListRealmResult_All != null && !purchaseMaterialListRealmResult_All.isEmpty()) {
-            PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResult_All.get(position);
-            if (position <= purchaseMaterialListRealmResult_All.size() && position != -1) {
-                final int primaryKey = purchaseMaterialListItem.getPrimaryKey();
-                realm = Realm.getDefaultInstance();
-                try {
-                    realm.executeTransactionAsync(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            realm.where(PurchaseMaterialListItem.class).equalTo("primaryKey", primaryKey).findFirst().deleteFromRealm();
-                        }
-                    }, new Realm.Transaction.OnSuccess() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(mContext, "Item deleted", Toast.LENGTH_SHORT).show();
-                            mImageViewDeleteAddedItem.setEnabled(false);
-                        }
-                    }, new Realm.Transaction.OnError() {
-                        @Override
-                        public void onError(Throwable error) {
-                            Toast.makeText(mContext, "Delete Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                            mImageViewDeleteAddedItem.setEnabled(true);
-                        }
-                    });
-                } finally {
-                    if (realm != null) {
-                        realm.close();
-                    }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(mContext, "Item deleted", Toast.LENGTH_SHORT).show();
+                    mImageViewDeleteAddedItem.setEnabled(false);
                 }
+            }, new Realm.Transaction.OnError() {
+                @Override
+                public void onError(Throwable error) {
+                    Toast.makeText(mContext, "Delete Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    mImageViewDeleteAddedItem.setEnabled(true);
+                }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
             }
-
         }
-*/
+//            }
+
+//        }
+
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -957,12 +923,12 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             });
             holder.imageView_edit.setOnClickListener(
                     new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(mContext, "Hii", Toast.LENGTH_SHORT).show();
-                    openDialog(position, arrPurchaseMaterialListItems, getItemId(position));
-                }
-            });
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(mContext, "Hii", Toast.LENGTH_SHORT).show();
+                            openDialog(position, arrPurchaseMaterialListItems, getItemId(position));
+                        }
+                    });
         }
 
         @Override
@@ -1051,7 +1017,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                                 purchaseMaterialListItem.setInIndentMaterialUpdated(true);
                                 purchaseMaterialListItem.setRemark(editextDialogRemark.getText().toString());
                                 purchaseMaterialListItem.setItem_quantity(Float.parseFloat(editText_quantity_material_asset.getText().toString()));
-                                if(isEditClicked){
+                                if (isEditClicked) {
                                     if (unitQuantityItemRealmResults != null && !unitQuantityItemRealmResults.isEmpty()) {
                                         unitIDForDialog = unitQuantityItemRealmResults.get(spinner_select_units.getSelectedItemPosition()).getUnitId();
                                         purchaseMaterialListItem.setItem_unit_id(unitIDForDialog);
@@ -1087,7 +1053,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                 editText_name_material_asset.setEnabled(true);
                 edittext_unit.setEnabled(true);
                 editText_quantity_material_asset.setEnabled(true);
-                isEditClicked=true;
+                isEditClicked = true;
                 checkAvailability(arrPurchaseMaterialListItems.get(position).getMaterialRequestComponentId());
             }
         });
