@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -212,7 +213,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         try {
                             jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
                             jsonObject.put("is_approved", true);
-                            jsonArray.put(jsonObject);
+//                            jsonArray.put(jsonObject);
                             isMaterialSelected = true;
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -221,12 +222,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         try {
                             jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
                             jsonObject.put("is_approved", false);
-                            jsonArray.put(jsonObject);
                             isMaterialSelected = false;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
+                    jsonArray.put(jsonObject);
                     if (vendorRadioButton.isChecked()) {
                         vendorRadioButton.setChecked(false);
                     } else {
@@ -329,6 +330,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.i("@@Pa",params.toString());
         AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)

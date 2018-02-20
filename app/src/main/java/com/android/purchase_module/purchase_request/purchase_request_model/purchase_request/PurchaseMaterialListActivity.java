@@ -827,33 +827,39 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private void deleteSelectedItemFromList(int position, final ImageView mImageViewDeleteAddedItem) {
         mImageViewDeleteAddedItem.setEnabled(false);
         Toast.makeText(mContext, "Wait, deleting Item.", Toast.LENGTH_SHORT).show();
-        PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResult_All.get(position);
-        final int primaryKey = purchaseMaterialListItem.getPrimaryKey();
-        realm = Realm.getDefaultInstance();
-        try {
-            realm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.where(PurchaseMaterialListItem.class).equalTo("primaryKey", primaryKey).findFirst().deleteFromRealm();
+        if (purchaseMaterialListRealmResult_All != null && !purchaseMaterialListRealmResult_All.isEmpty()) {
+            PurchaseMaterialListItem purchaseMaterialListItem = purchaseMaterialListRealmResult_All.get(position);
+            if (position <= purchaseMaterialListRealmResult_All.size() && position != -1) {
+                final int primaryKey = purchaseMaterialListItem.getPrimaryKey();
+                realm = Realm.getDefaultInstance();
+                try {
+                    realm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.where(PurchaseMaterialListItem.class).equalTo("primaryKey", primaryKey).findFirst().deleteFromRealm();
+                        }
+                    }, new Realm.Transaction.OnSuccess() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(mContext, "Item deleted", Toast.LENGTH_SHORT).show();
+                            mImageViewDeleteAddedItem.setEnabled(false);
+                        }
+                    }, new Realm.Transaction.OnError() {
+                        @Override
+                        public void onError(Throwable error) {
+                            Toast.makeText(mContext, "Delete Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            mImageViewDeleteAddedItem.setEnabled(true);
+                        }
+                    });
+                } finally {
+                    if (realm != null) {
+                        realm.close();
+                    }
                 }
-            }, new Realm.Transaction.OnSuccess() {
-                @Override
-                public void onSuccess() {
-                    Toast.makeText(mContext, "Item deleted", Toast.LENGTH_SHORT).show();
-                    mImageViewDeleteAddedItem.setEnabled(false);
-                }
-            }, new Realm.Transaction.OnError() {
-                @Override
-                public void onError(Throwable error) {
-                    Toast.makeText(mContext, "Delete Failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    mImageViewDeleteAddedItem.setEnabled(true);
-                }
-            });
-        } finally {
-            if (realm != null) {
-                realm.close();
             }
+
         }
+
     }
 
     @SuppressWarnings("WeakerAccess")

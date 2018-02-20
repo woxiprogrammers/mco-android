@@ -83,7 +83,7 @@ public class SplashActivity extends BaseActivity {
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
-        aclKeyValuePair.put("asset-maintainance", ActivityTransferRequest.class.getName());
+        aclKeyValuePair.put("asset-maintainance", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-management", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("inventory-history", InventoryHomeActivity.class.getName());
         //bh
@@ -96,6 +96,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("manage-drawing", DrawingHomeActivity.class.getName());
         aclKeyValuePair.put("manage-dpr", DPRListActivity.class.getName());
         aclKeyValuePair.put("manage-general-awareness",AwarenessHomeActivity.class.getName());
+        aclKeyValuePair.put("component-transfer",ActivityTransferRequest.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
