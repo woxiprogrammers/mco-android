@@ -9,10 +9,12 @@ android {
         applicationId 'com.mcon.android'
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '1.5'
+//        versionName '1.5'
+//        versionCode 6
+        versionName '1.0'
+        versionCode 1
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 6
         multiDexEnabled true
         flavorDimensions "prod"
 //        multiDexEnabled true

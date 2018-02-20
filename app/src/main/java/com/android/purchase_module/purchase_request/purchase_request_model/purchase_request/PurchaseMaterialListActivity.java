@@ -14,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,15 +31,15 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponse;
+import com.android.purchase_module.material_request.AutoSuggestActivity;
 import com.android.purchase_module.material_request.material_request_model.AssetSearchResponse;
 import com.android.purchase_module.material_request.material_request_model.AssetSearchResponseData;
-import com.android.purchase_module.material_request.AutoSuggestActivity;
 import com.android.purchase_module.material_request.material_request_model.MaterialSearchResponse;
 import com.android.purchase_module.material_request.material_request_model.MaterialSearchResponseData;
 import com.android.purchase_module.material_request.material_request_model.SearchAssetListItem;
 import com.android.purchase_module.material_request.material_request_model.SearchMaterialListItem;
 import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
+import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponse;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -541,11 +540,11 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             @Override
             public void onItemClick(View view, int position) {
                 if (view.getId() == R.id.imageView_deleteMaterial_createPR) {
-                    ImageView mImageViewDeleteAddedItem = view.findViewById(R.id.imageView_deleteMaterial_createPR);
                     try {
+                        ImageView mImageViewDeleteAddedItem = view.findViewById(R.id.imageView_deleteMaterial_createPR);
                         deleteSelectedItemFromList(position, mImageViewDeleteAddedItem);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Timber.e("Exception Occurred: ", e);
                     }
                 } else {
                     Toast.makeText(mContext, "Item Clicked", Toast.LENGTH_SHORT).show();
@@ -862,9 +861,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
             }
         }
 //            }
-
 //        }
-
     }
 
     @SuppressWarnings("WeakerAccess")
