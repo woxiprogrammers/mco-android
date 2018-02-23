@@ -1,5 +1,6 @@
 package com.android.dashboard;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +14,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +56,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -74,6 +80,12 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     @BindView(R.id.projectName)
     TextView mProjectName;
+    @BindView(R.id.cart_badge)
+    TextView cartBadge;
+    @BindView(R.id.imageViewSiteCount)
+    FrameLayout imageViewSiteCount;
+
+    private int setSiteBadgeCount = 0;
     private Context mContext;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     private Realm realm;
@@ -81,6 +93,11 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private TextView userName;
     private String strProjectName = "";
     private RealmResults<ProjectsItem> projectsItemRealmResults;
+    private AlertDialog alert_Dialog;
+    private TextView textViewSites, textViewSitesCount;
+    private View dialogView;
+    private View inflatedView = null;
+    private LinearLayout linearLayoutOfSite;
 
     @Override
     public void onBackPressed() {
@@ -146,6 +163,8 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Calling function to initialize required views.
         initializeViews();
         setUpDrawerData();
+        //ToDo Uncomment after count done
+//        getCount();
     }
 
     @Override
@@ -348,5 +367,96 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         Type type = new TypeToken<HashMap<String, String>>() {
         }.getType();
         return gson.fromJson(hashMapString, type);
+    }
+
+    private void inflateLayoutForSites() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.layout_linear, null);
+        alertDialogBuilder.setView(dialogView);
+        LinearLayout linearLayout = dialogView.findViewById(R.id.linearLayout);
+
+        alert_Dialog = alertDialogBuilder.create();
+        realm = Realm.getDefaultInstance();
+        RealmResults<ProjectsNotificationCountItem> siteCountListItemRealmResults = realm.where(ProjectsNotificationCountItem.class).findAll();
+        for (int i = 0; i < siteCountListItemRealmResults.size(); i++) {
+            final ProjectsNotificationCountItem siteCountListItem = siteCountListItemRealmResults.get(i);
+            inflatedView = LayoutInflater.from(mContext).inflate(R.layout.inflate_layout_assigned_sites, null);
+            textViewSites = inflatedView.findViewById(R.id.textViewSites);
+            textViewSitesCount = inflatedView.findViewById(R.id.textViewSitesCount);
+            linearLayoutOfSite = inflatedView.findViewById(R.id.linearLayoutOfSite);
+            textViewSitesCount.setText("" + siteCountListItem.getNotificationCount());
+            textViewSites.setText(siteCountListItem.getProjectSiteName());
+            linearLayoutOfSite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                        setUp
+                    Log.i("@@Id", String.valueOf(view.getId()));
+                    mTextViewClientName.setText("Client");
+                    int projectId = siteCountListItem.getProjectSiteId();
+                    AppUtils.getInstance().put(getString(R.string.key_project_id), projectId);
+                    Timber.i("Current Site ID: " + AppUtils.getInstance().getInt(getString(R.string.key_project_id), -1));
+                    mProjectName.setText(siteCountListItem.getProjectSiteName());
+//                    setUpDashboardAdapterData();
+                    alert_Dialog.dismiss();
+                }
+            });
+            linearLayout.addView(inflatedView);
+        }
+
+        alert_Dialog = alertDialogBuilder.create();
+        alert_Dialog.show();
+
+    }
+
+    private void getCount() {
+        AndroidNetworking.get(AppURL.API_SITE_COUNT_URL + AppUtils.getInstance().getCurrentToken())
+//                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getCount")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsObject(NotificationCountResponseSite.class, new ParsedRequestListener<NotificationCountResponseSite>() {
+                    @Override
+                    public void onResponse(final NotificationCountResponseSite response) {
+                        try {
+                            realm = Realm.getDefaultInstance();
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    for (int i = 0; i < response.getNotificationCountData().getProjectsNotificationCount().size(); i++) {
+                                        setSiteBadgeCount = setSiteBadgeCount + response.getNotificationCountData().getProjectsNotificationCount().get(i).getNotificationCount();
+                                    }
+                                    cartBadge.setText(String.valueOf(setSiteBadgeCount));
+                                    Log.i("@@Count", String.valueOf(setSiteBadgeCount));
+
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    @OnClick(R.id.imageViewSiteCount)
+    public void onViewClicked() {
+        inflateLayoutForSites();
     }
 }
