@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class NotificationCountResponse extends RealmObject{
+public class NotificationCountResponseSite extends RealmObject{
 
-	@SerializedName("notificationCountData")
-	private NotificationCountData notificationCountData;
+	@SerializedName("data")
+	private NotificationCountDataSite notificationCountData;
 
 	@SerializedName("message")
 	private String message;
 
-	public void setNotificationCountData(NotificationCountData notificationCountData){
+	public void setNotificationCountData(NotificationCountDataSite notificationCountData){
 		this.notificationCountData = notificationCountData;
 	}
 
-	public NotificationCountData getNotificationCountData(){
+	public NotificationCountDataSite getNotificationCountData(){
 		return notificationCountData;
 	}
 
