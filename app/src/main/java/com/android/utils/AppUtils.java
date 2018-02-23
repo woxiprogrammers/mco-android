@@ -57,11 +57,9 @@ public class AppUtils {
                     "[a-zA-Z0-9][a-zA-Z0-9-]{0,25}" +
                     ")+"
     );
-    ViewGroup viewGroup;
-    View view;
-    boolean isToShowProgress;
-    ProgressBar progressBar;
-    private String strToken;
+    private View view;
+    private ProgressBar progressBar;
+    private String strToken = "";
     private String strLoggedInAt;
     private String strUserRole;
     private int intCurrentUserId;
@@ -361,7 +359,9 @@ public class AppUtils {
                 @Override
                 public void execute(Realm realm) {
                     LoginResponse loginResponse = realm.where(LoginResponse.class).findFirst();
-                    strToken = loginResponse.getToken();
+                    if (loginResponse != null) {
+                        strToken = loginResponse.getToken();
+                    }
                 }
             });
         } catch (Exception e) {
