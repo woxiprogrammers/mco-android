@@ -1,22 +1,22 @@
-package com.android.dashboard;
+package com.android.dashboard.notification_model;
 
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class NotificationCountResponseSite extends RealmObject{
+public class NotificationCountSiteResponse extends RealmObject{
 
 	@SerializedName("data")
-	private NotificationCountDataSite notificationCountData;
+	private NotificationCountSiteData notificationCountData;
 
 	@SerializedName("message")
 	private String message;
 
-	public void setNotificationCountData(NotificationCountDataSite notificationCountData){
+	public void setNotificationCountData(NotificationCountSiteData notificationCountData){
 		this.notificationCountData = notificationCountData;
 	}
 
-	public NotificationCountDataSite getNotificationCountData(){
+	public NotificationCountSiteData getNotificationCountData(){
 		return notificationCountData;
 	}
 

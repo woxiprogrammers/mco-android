@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.dashboard.notification_model.NotificationCountSiteResponse;
+import com.android.dashboard.notification_model.ProjectsNotificationCountItem;
 import com.android.firebase.counts_model.NotificationCountData;
 import com.android.firebase.counts_model.NotificationCountResponse;
 import com.android.login_mvp.LoginActivity;
@@ -415,9 +417,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 .setTag("getCount")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsObject(NotificationCountResponseSite.class, new ParsedRequestListener<NotificationCountResponseSite>() {
+                .getAsObject(NotificationCountSiteResponse.class, new ParsedRequestListener<NotificationCountSiteResponse>() {
                     @Override
-                    public void onResponse(final NotificationCountResponseSite response) {
+                    public void onResponse(final NotificationCountSiteResponse response) {
                         try {
                             realm = Realm.getDefaultInstance();
                             realm.executeTransactionAsync(new Realm.Transaction() {

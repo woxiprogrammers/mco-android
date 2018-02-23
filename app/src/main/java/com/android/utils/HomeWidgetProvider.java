@@ -9,8 +9,8 @@ import android.widget.RemoteViews;
 
 import com.android.constro360.R;
 import com.android.constro360.SplashActivity;
-import com.android.dashboard.NotificationCountResponseSite;
-import com.android.dashboard.ProjectsNotificationCountItem;
+import com.android.dashboard.notification_model.NotificationCountSiteResponse;
+import com.android.dashboard.notification_model.ProjectsNotificationCountItem;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -47,9 +47,9 @@ public class HomeWidgetProvider extends AppWidgetProvider {
                 .setTag("getTotalNotificationCount")
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsObject(NotificationCountResponseSite.class, new ParsedRequestListener<NotificationCountResponseSite>() {
+                .getAsObject(NotificationCountSiteResponse.class, new ParsedRequestListener<NotificationCountSiteResponse>() {
                     @Override
-                    public void onResponse(NotificationCountResponseSite response) {
+                    public void onResponse(NotificationCountSiteResponse response) {
                         int notificationCount = 0;
                         try {
                             for (ProjectsNotificationCountItem projectsNotificationCountItem :

@@ -1,11 +1,11 @@
-package com.android.dashboard;
+package com.android.dashboard.notification_model;
 
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
-public class NotificationCountDataSite extends RealmObject{
+public class NotificationCountSiteData extends RealmObject{
 
 	@SerializedName("projectsNotificationCount")
 	private RealmList<ProjectsNotificationCountItem> projectsNotificationCount;
