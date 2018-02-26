@@ -377,7 +377,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.layout_linear, null);
         alertDialogBuilder.setView(dialogView);
         LinearLayout linearLayout = dialogView.findViewById(R.id.linearLayout);
-
         alert_Dialog = alertDialogBuilder.create();
         realm = Realm.getDefaultInstance();
         RealmResults<ProjectsNotificationCountItem> siteCountListItemRealmResults = realm.where(ProjectsNotificationCountItem.class).findAll();
@@ -392,6 +391,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             linearLayoutOfSite = inflatedView.findViewById(R.id.linearLayoutOfSite);
             textViewSitesCount.setText("" + siteCountListItem.getNotificationCount());
             textViewSites.setText(siteCountListItem.getProjectSiteName());
+            if(AppUtils.getInstance().getCurrentSiteId() == siteCountListItem.getProjectSiteId()){
+                textViewSites.setTextColor(getColor(R.color.colorPrimaryDark));
+                textViewSitesCount.setTextColor(getColor(R.color.colorPrimaryDark));
+            }
             linearLayoutOfSite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -400,13 +403,11 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                     AppUtils.getInstance().put(getString(R.string.key_project_id), projectId);
                     Timber.i("Current Site ID: " + AppUtils.getInstance().getInt(getString(R.string.key_project_id), -1));
                     mProjectName.setText(siteCountListItem.getProjectName());
-//                    setUpDashboardAdapterData();
                     alert_Dialog.dismiss();
                 }
             });
             linearLayout.addView(inflatedView);
         }
-
         alert_Dialog = alertDialogBuilder.create();
         alert_Dialog.show();
 
@@ -414,7 +415,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 
     private void getCount() {
         AndroidNetworking.post(AppURL.API_SITE_COUNT_URL + AppUtils.getInstance().getCurrentToken())
-//                .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("getCount")
                 .setPriority(Priority.MEDIUM)
@@ -460,6 +460,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 
     @OnClick(R.id.imageViewSiteCount)
     public void onViewClicked() {
-        inflateLayoutForSites();
+        if(AppUtils.getInstance().checkNetworkState()){
+            inflateLayoutForSites();
+        }else {
+            AppUtils.getInstance().showOfflineMessage("DashBoardSiteSwitch");
+        }
     }
 }
