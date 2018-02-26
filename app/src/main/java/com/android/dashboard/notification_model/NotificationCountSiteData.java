@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 
 public class NotificationCountSiteData extends RealmObject{
 
-	@SerializedName("projectsNotificationCount")
+	@SerializedName("projects")
 	private RealmList<ProjectsNotificationCountItem> projectsNotificationCount;
 
 	public void setProjectsNotificationCount(RealmList<ProjectsNotificationCountItem> projectsNotificationCount){

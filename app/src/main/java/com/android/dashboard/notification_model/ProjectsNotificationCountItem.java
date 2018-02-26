@@ -3,10 +3,13 @@ package com.android.dashboard.notification_model;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class ProjectsNotificationCountItem extends RealmObject {
     @SerializedName("project_site_address")
     private String projectSiteAddress;
+
+    @PrimaryKey
     @SerializedName("project_site_id")
     private int projectSiteId;
     @SerializedName("project_site_name")
