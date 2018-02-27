@@ -7,6 +7,8 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class NotificationCountData extends RealmObject {
+
+
     @PrimaryKey
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
     @SerializedName("material_request_disapproved_count")
@@ -18,8 +20,87 @@ public class NotificationCountData extends RealmObject {
     @SerializedName("purchase_request_create_count")
     private int purchaseRequestCreateCount;
 
+    @SerializedName("purchase_order_create_count")
+    private int purchaseOrderCreateCount;
+
+    @SerializedName("purchase_order_bill_create_count")
+    private int purchaseOrderBillCreateCount;
+
+    @SerializedName("purchase_order_request_create_count")
+    private int purchaseOrderRequestCreateCount;
+
+    @SerializedName("material_site_out_transfer_create_count")
+    private int materialSiteOutTransferCreateCount;
+
+    @SerializedName("material_site_out_transfer_approve_count")
+    private int materialSiteOutTransferApproveCount;
+
+    @SerializedName("checklist_assigned_count")
+    private int checklistAssignedCount;
+
+    @SerializedName("review_checklist_count")
+    private int reviewChecklistCount;
+
+
+
     public int getMaterialRequestDisapprovedCount() {
         return materialRequestDisapprovedCount;
+    }
+
+    public int getPurchaseOrderCreateCount() {
+        return purchaseOrderCreateCount;
+    }
+
+    public void setPurchaseOrderCreateCount(int purchaseOrderCreateCount) {
+        this.purchaseOrderCreateCount = purchaseOrderCreateCount;
+    }
+
+    public int getPurchaseOrderBillCreateCount() {
+        return purchaseOrderBillCreateCount;
+    }
+
+    public void setPurchaseOrderBillCreateCount(int purchaseOrderBillCreateCount) {
+        this.purchaseOrderBillCreateCount = purchaseOrderBillCreateCount;
+    }
+
+    public int getPurchaseOrderRequestCreateCount() {
+        return purchaseOrderRequestCreateCount;
+    }
+
+    public void setPurchaseOrderRequestCreateCount(int purchaseOrderRequestCreateCount) {
+        this.purchaseOrderRequestCreateCount = purchaseOrderRequestCreateCount;
+    }
+
+    public int getMaterialSiteOutTransferCreateCount() {
+        return materialSiteOutTransferCreateCount;
+    }
+
+    public void setMaterialSiteOutTransferCreateCount(int materialSiteOutTransferCreateCount) {
+        this.materialSiteOutTransferCreateCount = materialSiteOutTransferCreateCount;
+    }
+
+    public int getMaterialSiteOutTransferApproveCount() {
+        return materialSiteOutTransferApproveCount;
+    }
+
+    public void setMaterialSiteOutTransferApproveCount(int materialSiteOutTransferApproveCount) {
+        this.materialSiteOutTransferApproveCount = materialSiteOutTransferApproveCount;
+    }
+
+    public int getChecklistAssignedCount() {
+        return checklistAssignedCount;
+    }
+
+    public void setChecklistAssignedCount(int checklistAssignedCount) {
+        this.checklistAssignedCount = checklistAssignedCount;
+    }
+
+    public int getReviewChecklistCount() {
+        return reviewChecklistCount;
+    }
+
+    public void setReviewChecklistCount(int reviewChecklistCount) {
+        this.reviewChecklistCount = reviewChecklistCount;
     }
 
     public void setMaterialRequestDisapprovedCount(int materialRequestDisapprovedCount) {

@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -395,6 +394,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                 textViewSites.setTextColor(getColor(R.color.colorPrimaryDark));
                 textViewSitesCount.setTextColor(getColor(R.color.colorPrimaryDark));
             }
+            final int finalI = i;
             linearLayoutOfSite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -403,6 +403,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                     AppUtils.getInstance().put(getString(R.string.key_project_id), projectId);
                     Timber.i("Current Site ID: " + AppUtils.getInstance().getInt(getString(R.string.key_project_id), -1));
                     mProjectName.setText(siteCountListItem.getProjectName());
+                    projectSpinner.setSelection(finalI);
                     alert_Dialog.dismiss();
                 }
             });
