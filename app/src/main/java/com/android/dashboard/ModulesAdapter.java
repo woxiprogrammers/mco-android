@@ -125,7 +125,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         Timber.d("purchase request: " + intCount);
                         currentTextView_Count.setVisibility(View.GONE);
                     }
-                } else if(strSumModuleName.equalsIgnoreCase("Purchase Order")){
+                } else if (strSumModuleName.equalsIgnoreCase("Purchase Order")) {
                     int intCount = notificationCountData.getPurchaseOrderCreateCount();
                     if (intCount > 0) {
                         Timber.d("Purchase Order: " + intCount);
@@ -134,7 +134,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         Timber.d("Purchase Order: " + intCount);
                         currentTextView_Count.setVisibility(View.GONE);
                     }
-                }else {
+                } else {
                     currentTextView_Count.setVisibility(View.GONE);
 
                 }
@@ -143,7 +143,28 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             } else if (moduleName.equalsIgnoreCase("Inventory")) {
                 currentTextView_Count.setVisibility(View.GONE);
             } else if (moduleName.equalsIgnoreCase("Checklist")) {
-                currentTextView_Count.setVisibility(View.GONE);
+                if (strSumModuleName.equalsIgnoreCase("Checklist Management")) {
+                    int intCount = notificationCountData.getChecklistAssignedCount();
+                    if (intCount > 0) {
+                        Timber.d("Purchase Order: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("Purchase Order: " + intCount);
+                        currentTextView_Count.setVisibility(View.GONE);
+                    }
+                } else if (strSumModuleName.equalsIgnoreCase("Checklist Management")) {
+                    int intCount = notificationCountData.getChecklistAssignedCount();
+                    if (intCount > 0) {
+                        Timber.d("Purchase Order: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("Purchase Order: " + intCount);
+                        currentTextView_Count.setVisibility(View.GONE);
+                    }
+                } else {
+                    currentTextView_Count.setVisibility(View.GONE);
+
+                }
             } else {
                 currentTextView_Count.setVisibility(View.GONE);
             }
