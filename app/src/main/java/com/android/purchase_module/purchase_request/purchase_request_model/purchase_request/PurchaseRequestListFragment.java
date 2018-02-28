@@ -53,6 +53,7 @@ import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
@@ -259,7 +260,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
-                .contains("date", strMonth).findAllAsync();
+                .contains("date", strMonth).findAllSortedAsync("id", Sort.DESCENDING);
+        ;
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);

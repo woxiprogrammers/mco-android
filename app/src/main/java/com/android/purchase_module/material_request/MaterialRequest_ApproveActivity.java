@@ -32,7 +32,6 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponse;
 import com.android.login_mvp.login_model.PermissionsItem;
 import com.android.purchase_module.material_request.material_request_model.AssetSearchResponse;
 import com.android.purchase_module.material_request.material_request_model.AssetSearchResponseData;
@@ -42,9 +41,10 @@ import com.android.purchase_module.material_request.material_request_model.Reque
 import com.android.purchase_module.material_request.material_request_model.SearchAssetListItem;
 import com.android.purchase_module.material_request.material_request_model.SearchMaterialListItem;
 import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
+import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponse;
+import com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.AvailableUsersItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.MaterialImageItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseMaterialListItem;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.AvailableUsersItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -106,6 +106,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     EditText editTextSearchMaterial;
     @BindView(R.id.imageViewSearchMaterial)
     ImageView imageViewSearchMaterial;
+    @BindView(R.id.mainLinearLayoutMatRequest)
+    LinearLayout mainLinearLayoutMatRequest;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
@@ -156,6 +158,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         mContext = MaterialRequest_ApproveActivity.this;
+        AppUtils.getInstance().initializeProgressBar(mainLinearLayoutMatRequest,mContext);
         deleteExistingItemEntries();
         strToken = AppUtils.getInstance().getCurrentToken();
         Bundle bundle = getIntent().getExtras();
@@ -283,6 +286,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     @OnClick(R.id.button_submit_purchase_request)
     public void onSubmitClicked() {
+        Log.i("@@Click", "click");
         if (AppUtils.getInstance().checkNetworkState()) {
             validateAndSubmitRequest();
         } else {
@@ -291,8 +295,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void validateAndSubmitRequest() {
+
         realm = Realm.getDefaultInstance();
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(materialListRealmResults_New);
+        buttonSubmitPurchaseRequest.setEnabled(false);
         JSONObject params = new JSONObject();
         /*int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId;
@@ -325,6 +331,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             Timber.d("Exception occurred: " + e.getMessage());
         }
         Timber.d(String.valueOf(params));
+        AppUtils.getInstance().showProgressBar(mainLinearLayoutMatRequest,true);
         if (jsonArrayPurchaseMaterialListItems.length() > 0) {
             AndroidNetworking.post(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
                     .setPriority(Priority.MEDIUM)
@@ -338,6 +345,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                             linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                             mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                             getRequestedItemList();
+                            AppUtils.getInstance().showProgressBar(mainLinearLayoutMatRequest,false);
                         }
 
                         @Override

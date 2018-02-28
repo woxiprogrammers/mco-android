@@ -437,10 +437,16 @@ public class AppUtils {
             progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.colorAccentDark), android.graphics.PorterDuff.Mode.MULTIPLY);
             progressBar.setVisibility(View.VISIBLE);
         } else {
-            if (viewGroup != null) {
-                viewGroup.removeView(view);
+            try {
+                if (viewGroup != null) {
+                    viewGroup.removeView(view);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            progressBar.setVisibility(View.GONE);
+            if(progressBar != null){
+                progressBar.setVisibility(View.GONE);
+            }
         }
     }
 

@@ -134,7 +134,17 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         Timber.d("Purchase Order: " + intCount);
                         currentTextView_Count.setVisibility(View.GONE);
                     }
-                } else {
+                } else if(strSumModuleName.equalsIgnoreCase("Purchase Bill")){
+                    int intCount = notificationCountData.getPurchaseOrderBillCreateCount();
+                    if (intCount > 0) {
+                        Timber.d("Purchase Bill: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("Purchase Bill: " + intCount);
+                        currentTextView_Count.setVisibility(View.GONE);
+                    }
+
+                } else{
                     currentTextView_Count.setVisibility(View.GONE);
 
                 }
