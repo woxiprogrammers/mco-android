@@ -24,10 +24,11 @@
 
             <TextView
                 android:id="@+id/textView_itemName"
+                style="@style/TextViewTitleStyle"
                 android:layout_width="0dp"
-                android:text="Material/Asset Name"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:text="Material/Asset Name"/>
 
         </LinearLayout>
 
@@ -40,10 +41,11 @@
                 android:id="@+id/textview_QuantityUnit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="100 KG"
+                style="@style/TextViewTitleStyle"
                 android:layout_marginTop="@dimen/dimen_8dp"
-                android:textSize="@dimen/text_14sp"/>
+                android:text="100 KG"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,18 +55,17 @@
             <TextView
                 android:id="@+id/textView_rate"
                 android:layout_width="0dp"
-                android:text="Rate "
                 android:layout_height="wrap_content"
-                android:layout_weight="0.7"/>
+                android:layout_weight="0.7"
+                android:text="Rate "/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Tax"
                 android:layout_weight="0.3"
+                android:text="Tax"
                 android:textSize="@dimen/text_14sp"/>
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -76,23 +77,24 @@
                 android:id="@+id/textView_TransferTo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.6"
                 android:layout_marginTop="@dimen/dimen_8dp"
-                android:text="Transfer To :- "
-                android:textSize="@dimen/text_14sp"/>
-
+                android:layout_weight="0.6"
+                style="@style/TextViewChildStyle"
+                android:text="Transfer To :- "/>
 
 
         </LinearLayout>
+
         <TextView
             android:id="@+id/textViewApprove"
+            style="@style/TextViewChildStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8dp"
             android:background="@drawable/background_button_pressed"
             android:gravity="center"
             android:padding="@dimen/dimen_8dp"
             android:text="Approve"
-            android:layout_marginTop="@dimen/dimen_8dp"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/text_14sp"/>
     </LinearLayout>

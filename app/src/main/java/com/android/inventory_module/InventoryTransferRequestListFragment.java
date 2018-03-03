@@ -243,7 +243,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
         public void onBindViewHolder(MyViewHolder holder, int position) {
             RequestComponentListingItem requestComponentListingItem = requestComponentListingItemOrderedRealmCollection.get(position);
             holder.textViewItemName.setText(requestComponentListingItem.getComponentName());
-            holder.textviewQuantityUnit.setText(requestComponentListingItem.getQuantity() + " " + requestComponentListingItem.getUnit());
+            holder.textviewQuantityUnit.setText("Qty : " +requestComponentListingItem.getQuantity() + " " + requestComponentListingItem.getUnit());
             holder.textViewTransferTo.setText("Transfer To : - " + requestComponentListingItem.getProjectSiteTo());
         }
 
