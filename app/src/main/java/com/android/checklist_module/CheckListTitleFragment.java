@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,8 +72,6 @@ public class CheckListTitleFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.spinner_reassignTo)
     Spinner mSpinnerReassignTo;
-    @BindView(R.id.btn_checkList_checkpointSubmit)
-    Button mBtnCheckListCheckpointSubmit;
     @BindView(R.id.linearLayout_reassignTo)
     LinearLayout mLinearLayoutReassignTo;
     @BindView(R.id.linearLayout_reassignTo_innerLayout)
@@ -108,6 +107,8 @@ public class CheckListTitleFragment extends Fragment {
     private boolean isViewOnly;
     private boolean isUserViewOnly;
     private String subModuleTag;
+    Button mBtnCheckListCheckpointSubmit;
+
 
     public CheckListTitleFragment() {
         // Required empty public constructor
@@ -131,6 +132,7 @@ public class CheckListTitleFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recyclerview_for_checklist_title, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
+        mBtnCheckListCheckpointSubmit=view.findViewById(R.id.btn_checkList_checkpointSubmit);
         Bundle bundleArgs = getArguments();
         if (bundleArgs != null) {
             projectSiteUserChecklistAssignmentId = bundleArgs.getInt("projectSiteUserChecklistAssignmentId");
@@ -319,6 +321,7 @@ public class CheckListTitleFragment extends Fragment {
 
     @OnClick(R.id.btn_checkList_checkpointSubmit)
     public void onCheckpointSubmitClicked() {
+        Log.i("@@Click","Click");
         if (AppUtils.getInstance().checkNetworkState()) {
             requestToChangeChecklistStatus(true);
         } else {
@@ -600,6 +603,7 @@ public class CheckListTitleFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         try {
+                            Log.i("@@Success","Success");
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             if (isFromState.equalsIgnoreCase("assigned")) {
                                 isFromState = "progress";
@@ -619,6 +623,7 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestToChangeChecklistStatus");
+                        Log.i("@@Error","Error");
                     }
                 });
     }
