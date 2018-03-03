@@ -41,7 +41,27 @@ public class NotificationCountData extends RealmObject {
     @SerializedName("review_checklist_count")
     private int reviewChecklistCount;
 
+    @SerializedName("salary_request_count")
+    private int salaryRequestCount;
 
+    @SerializedName("salary_approved_count")
+    private int salaryApprovedCount;
+
+    public int getSalaryRequestCount() {
+        return salaryRequestCount;
+    }
+
+    public void setSalaryRequestCount(int salaryRequestCount) {
+        this.salaryRequestCount = salaryRequestCount;
+    }
+
+    public int getSalaryApprovedCount() {
+        return salaryApprovedCount;
+    }
+
+    public void setSalaryApprovedCount(int salaryApprovedCount) {
+        this.salaryApprovedCount = salaryApprovedCount;
+    }
 
     public int getMaterialRequestDisapprovedCount() {
         return materialRequestDisapprovedCount;

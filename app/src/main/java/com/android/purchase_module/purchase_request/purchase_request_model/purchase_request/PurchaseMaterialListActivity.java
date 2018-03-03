@@ -367,7 +367,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                         setResult(RESULT_OK);
                         finish();
                     }
-
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");

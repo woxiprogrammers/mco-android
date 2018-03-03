@@ -76,14 +76,38 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             }
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
         } else if (moduleName.equalsIgnoreCase("Peticash")) {
+            int intCount = notificationCountData.getSalaryApprovedCount()
+                    + notificationCountData.getSalaryRequestCount();
+            if (intCount > 0) {
+                Timber.d("Peticash Count: " + intCount);
+                holder.moduleCount.setText(String.valueOf(intCount));
+            } else {
+                Timber.d("Peticash Count: " + intCount);
+                holder.moduleCount.setVisibility(View.GONE);
+            }
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_peticash);
-            holder.moduleCount.setVisibility(View.GONE);
         } else if (moduleName.equalsIgnoreCase("Inventory")) {
+            int intCount = notificationCountData.getMaterialSiteOutTransferApproveCount()
+                    + notificationCountData.getMaterialSiteOutTransferCreateCount();
+            if (intCount > 0) {
+                Timber.d("Purchase Count: " + intCount);
+                holder.moduleCount.setText(String.valueOf(intCount));
+            } else {
+                Timber.d("Purchase Count: " + intCount);
+                holder.moduleCount.setVisibility(View.GONE);
+            }
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_inventory2);
-            holder.moduleCount.setVisibility(View.GONE);
         } else if (moduleName.equalsIgnoreCase("Checklist")) {
+            int intCount = notificationCountData.getChecklistAssignedCount()
+                    + notificationCountData.getReviewChecklistCount();
+            if (intCount > 0) {
+                Timber.d("Checklist Count: " + intCount);
+                holder.moduleCount.setText(String.valueOf(intCount));
+            } else {
+                Timber.d("Checklist Count: " + intCount);
+                holder.moduleCount.setVisibility(View.GONE);
+            }
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_checklist);
-            holder.moduleCount.setVisibility(View.GONE);
         } else {
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_purchase);
             holder.moduleCount.setVisibility(View.GONE);
@@ -159,7 +183,20 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
 
                 }
             } else if (moduleName.equalsIgnoreCase("Peticash")) {
-                currentTextView_Count.setVisibility(View.GONE);
+                if (strSumModuleName.equalsIgnoreCase("Peticash Management")) {
+                    int intCount = notificationCountData.getSalaryApprovedCount()
+                            + notificationCountData.getSalaryRequestCount();
+                    if (intCount > 0) {
+                        Timber.d("Peticash Management: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("Peticash Management: " + intCount);
+                        currentTextView_Count.setVisibility(View.GONE);
+                    }
+                } else {
+                    currentTextView_Count.setVisibility(View.GONE);
+                }
+
             } else if (moduleName.equalsIgnoreCase("Inventory")) {
                 if (strSumModuleName.equalsIgnoreCase("Component Transfer")) {
                     int intCount = notificationCountData.getMaterialSiteOutTransferApproveCount()
