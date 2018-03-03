@@ -2,6 +2,7 @@ package com.android.dashboard;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,6 +91,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
             }
             holder.imageViewModule.setBackgroundResource(R.drawable.ic_peticash);
         } else if (moduleName.equalsIgnoreCase("Inventory")) {
+
             int intCount = notificationCountData.getMaterialSiteOutTransferApproveCount()
                     + notificationCountData.getMaterialSiteOutTransferCreateCount();
             if (intCount > 0) {
