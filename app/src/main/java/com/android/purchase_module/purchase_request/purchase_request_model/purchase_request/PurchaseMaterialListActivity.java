@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,6 +91,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     RecyclerView recyclerView_materialList;
     @BindView(R.id.button_submit_purchase_request)
     Button buttonSubmitPurchaseRequest;
+
+
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_All;
@@ -349,6 +352,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     }
 
     private void submitPurchaseRequest(JSONObject params) {
+        buttonSubmitPurchaseRequest.setEnabled(false);
         String strToken = AppUtils.getInstance().getCurrentToken();
         AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
