@@ -134,7 +134,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         Timber.d("Purchase Order: " + intCount);
                         currentTextView_Count.setVisibility(View.GONE);
                     }
-                } else if(strSumModuleName.equalsIgnoreCase("Purchase Bill")){
+                } else if (strSumModuleName.equalsIgnoreCase("Purchase Bill")) {
                     int intCount = notificationCountData.getPurchaseOrderBillCreateCount();
                     if (intCount > 0) {
                         Timber.d("Purchase Bill: " + intCount);
@@ -144,36 +144,58 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         currentTextView_Count.setVisibility(View.GONE);
                     }
 
-                } else{
+                }else if(strSumModuleName.equalsIgnoreCase("Purchase Order Request")){
+                    int intCount = notificationCountData.getPurchaseOrderRequestCreateCount();
+                    if (intCount > 0) {
+                        Timber.d("Purchase Order Request: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("Purchase Order Request: " + intCount);
+                        currentTextView_Count.setVisibility(View.GONE);
+                    }
+                }
+                else {
                     currentTextView_Count.setVisibility(View.GONE);
 
                 }
             } else if (moduleName.equalsIgnoreCase("Peticash")) {
                 currentTextView_Count.setVisibility(View.GONE);
             } else if (moduleName.equalsIgnoreCase("Inventory")) {
-                currentTextView_Count.setVisibility(View.GONE);
-            } else if (moduleName.equalsIgnoreCase("Checklist")) {
-                if (strSumModuleName.equalsIgnoreCase("Checklist Management")) {
-                    int intCount = notificationCountData.getChecklistAssignedCount();
+                if (strSumModuleName.equalsIgnoreCase("Component Transfer")) {
+                    int intCount = notificationCountData.getMaterialSiteOutTransferApproveCount()
+                            + notificationCountData.getMaterialSiteOutTransferCreateCount();
                     if (intCount > 0) {
-                        Timber.d("Purchase Order: " + intCount);
+                        Timber.d("Component Transfer: " + intCount);
                         currentTextView_Count.setText(String.valueOf(intCount));
                     } else {
-                        Timber.d("Purchase Order: " + intCount);
-                        currentTextView_Count.setVisibility(View.GONE);
-                    }
-                } else if (strSumModuleName.equalsIgnoreCase("Checklist Management")) {
-                    int intCount = notificationCountData.getChecklistAssignedCount();
-                    if (intCount > 0) {
-                        Timber.d("Purchase Order: " + intCount);
-                        currentTextView_Count.setText(String.valueOf(intCount));
-                    } else {
-                        Timber.d("Purchase Order: " + intCount);
+                        Timber.d("Component Transfer: " + intCount);
                         currentTextView_Count.setVisibility(View.GONE);
                     }
                 } else {
                     currentTextView_Count.setVisibility(View.GONE);
+                }
 
+            } else if (moduleName.equalsIgnoreCase("Checklist")) {
+                if (strSumModuleName.equalsIgnoreCase("Checklist User Assignment")) {
+                    int intCount = notificationCountData.getChecklistAssignedCount();
+                    if (intCount > 0) {
+                        Timber.d("Checklist User Assignment: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("Checklist User Assignment: " + intCount);
+                        currentTextView_Count.setVisibility(View.GONE);
+                    }
+                } else if (strSumModuleName.equalsIgnoreCase("Checklist Recheck")) {
+                    int intCount = notificationCountData.getReviewChecklistCount();
+                    if (intCount > 0) {
+                        Timber.d("Checklist Recheck: " + intCount);
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        Timber.d("Checklist Recheck: " + intCount);
+                        currentTextView_Count.setVisibility(View.GONE);
+                    }
+                } else {
+                    currentTextView_Count.setVisibility(View.GONE);
                 }
             } else {
                 currentTextView_Count.setVisibility(View.GONE);
