@@ -25,7 +25,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -91,8 +91,8 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     RecyclerView recyclerView_materialList;
     @BindView(R.id.button_submit_purchase_request)
     Button buttonSubmitPurchaseRequest;
-
-
+    @BindView(R.id.progressBarToAddRequest)
+    ProgressBar progressBarToAddRequest;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_All;
@@ -353,6 +353,7 @@ public class PurchaseMaterialListActivity extends BaseActivity {
 
     private void submitPurchaseRequest(JSONObject params) {
         buttonSubmitPurchaseRequest.setEnabled(false);
+        progressBarToAddRequest.setVisibility(View.VISIBLE);
         String strToken = AppUtils.getInstance().getCurrentToken();
         AndroidNetworking.post(AppURL.API_SUBMIT_PURCHASE_REQUEST + strToken)
                 .setPriority(Priority.MEDIUM)
@@ -364,9 +365,13 @@ public class PurchaseMaterialListActivity extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         deleteExistingItemEntries();
+                        if(progressBarToAddRequest != null){
+                            progressBarToAddRequest.setVisibility(View.GONE);
+                        }
                         setResult(RESULT_OK);
                         finish();
                     }
+
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "submitPurchaseRequest");

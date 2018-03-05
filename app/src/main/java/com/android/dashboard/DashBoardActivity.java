@@ -165,8 +165,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Calling function to initialize required views.
         initializeViews();
         setUpDrawerData();
-        //ToDo Uncomment after count done
-        getCount();
+        if(AppUtils.getInstance().checkNetworkState()){
+            getCount();
+        }
     }
 
     @Override
