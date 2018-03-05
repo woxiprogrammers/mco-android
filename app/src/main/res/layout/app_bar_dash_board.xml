@@ -19,14 +19,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:clipToPadding="false"
+        android:layout_margin="@dimen/dimen_10dp"
         android:focusable="true">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_8dp"
             android:background="@drawable/ic_notification_count"
             android:fitsSystemWindows="true"
+            android:layout_margin="@dimen/dimen_14dp"
             android:scaleType="centerCrop"/>
 
         <TextView
