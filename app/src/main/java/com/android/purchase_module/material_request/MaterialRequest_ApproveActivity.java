@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -108,6 +109,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     ImageView imageViewSearchMaterial;
     @BindView(R.id.mainLinearLayoutMatRequest)
     LinearLayout mainLinearLayoutMatRequest;
+    @BindView(R.id.progressBarToAddMatRequest)
+    ProgressBar progressBarToAddMatRequest;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
@@ -158,7 +161,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         mContext = MaterialRequest_ApproveActivity.this;
-        AppUtils.getInstance().initializeProgressBar(mainLinearLayoutMatRequest,mContext);
+        AppUtils.getInstance().initializeProgressBar(mainLinearLayoutMatRequest, mContext);
         deleteExistingItemEntries();
         strToken = AppUtils.getInstance().getCurrentToken();
         Bundle bundle = getIntent().getExtras();
@@ -197,7 +200,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 }
             }*/
         }
-
         imageViewSearchMaterial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -228,7 +230,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
-
     }
 
     @Override
@@ -286,7 +287,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
 
     @OnClick(R.id.button_submit_purchase_request)
     public void onSubmitClicked() {
-        Log.i("@@Click", "click");
         if (AppUtils.getInstance().checkNetworkState()) {
             validateAndSubmitRequest();
         } else {
@@ -295,11 +295,11 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     }
 
     private void validateAndSubmitRequest() {
-
         realm = Realm.getDefaultInstance();
         List<PurchaseMaterialListItem> purchaseMaterialListItems_New = realm.copyFromRealm(materialListRealmResults_New);
         buttonSubmitPurchaseRequest.setEnabled(false);
         JSONObject params = new JSONObject();
+        progressBarToAddMatRequest.setVisibility(View.VISIBLE);
         /*int index = mSpinnerSelectAssignTo.getSelectedItemPosition();
         int userId;
         if (availableUserArray != null && !availableUserArray.isEmpty()) {
@@ -331,7 +331,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             Timber.d("Exception occurred: " + e.getMessage());
         }
         Timber.d(String.valueOf(params));
-        AppUtils.getInstance().showProgressBar(mainLinearLayoutMatRequest,true);
         if (jsonArrayPurchaseMaterialListItems.length() > 0) {
             AndroidNetworking.post(AppURL.API_SUBMIT_MATERIAL_REQUEST + strToken)
                     .setPriority(Priority.MEDIUM)
@@ -345,7 +344,10 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                             linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                             mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                             getRequestedItemList();
-                            AppUtils.getInstance().showProgressBar(mainLinearLayoutMatRequest,false);
+                            if(progressBarToAddMatRequest != null){
+                                progressBarToAddMatRequest.setVisibility(View.GONE);
+                            }
+                            buttonSubmitPurchaseRequest.setEnabled(true);
                         }
 
                         @Override
@@ -767,7 +769,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     mEditTextQuantityMaterialAsset.setEnabled(false);
                 }
             }
-
             if (alertDialog.isShowing()) {
                 if (isMaterial) {
                     if (searchMaterialListItem_fromResult != null) {
@@ -1369,7 +1370,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseMaterialListItem purchaseMaterialListItem = arrPurchaseMaterialListItems.get(position);
             holder.mTextViewAddedItemName.setText(purchaseMaterialListItem.getItem_name());
-
             holder.mTextViewMaterialQuantity_MR.setText(String.valueOf(purchaseMaterialListItem.getItem_quantity()));
             holder.mTextViewMaterialUnit_MR.setText(purchaseMaterialListItem.getItem_unit_name());
         }
@@ -1498,17 +1498,13 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             if (!TextUtils.isEmpty(purchaseMaterialListItem.getApprovedBy())) {
                 holder.textviewApprovedBy.setVisibility(View.VISIBLE);
 //                holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
-
                 if (strStatus.contains("disapproved")) {
                     holder.textviewApprovedBy.setText("Disapproved By : " + purchaseMaterialListItem.getApprovedBy());
-
                 } else if (strStatus.contains("approved")) {
                     holder.textviewApprovedBy.setText("Approved By : " + purchaseMaterialListItem.getApprovedBy());
-
                 }
             } else {
                 holder.textviewApprovedBy.setVisibility(View.GONE);
-
             }
             if (isAcces) {
                 if (strStatus.equalsIgnoreCase("pending")) {
@@ -1516,7 +1512,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 } else {
                     holder.linearLayoutApproveDisapprove.setVisibility(View.INVISIBLE);
                 }
-
                 if ((strStatus.equalsIgnoreCase("manager-approved") || strStatus.equalsIgnoreCase("admin-approved"))) {
                     holder.buttonMoveToIndent.setVisibility(View.VISIBLE);
                 } else {

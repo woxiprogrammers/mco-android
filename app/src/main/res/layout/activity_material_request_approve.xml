@@ -54,7 +54,6 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,7 +78,6 @@
                 android:layout_margin="@dimen/dimen_5dp"
                 android:layout_weight="0.05"
                 android:background="@drawable/ic_autosearch_"/>
-
         </LinearLayout>
 
         <LinearLayout
@@ -115,20 +113,31 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_material_list_material_request_approve"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/button_submit_purchase_request"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="@dimen/dimen_10dp"
-                android:layout_marginTop="@dimen/dimen_10dp"
-                android:text="SUBMIT"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_material_list_material_request_approve"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBarToAddMatRequest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/button_submit_purchase_request"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_marginBottom="@dimen/dimen_10dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:text="SUBMIT"/>
+            </FrameLayout>
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
