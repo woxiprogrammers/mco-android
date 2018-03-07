@@ -661,7 +661,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                arrayImageFileList.remove(0);
+                                try {
+                                    arrayImageFileList.remove(0);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                                 uploadImages_addItemToLocal(strTag, imageFor);
                             }
 

@@ -56,7 +56,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:digits="0123456789"
-                android:text="1111111120"
                 android:gravity="left"
                 android:hint="@string/prompt_mobile_number"
                 android:imeOptions="actionNext"
@@ -81,7 +80,6 @@
                 android:hint="@string/prompt_password"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionDone"
-                android:text="123456"
                 android:inputType="textPassword"
                 android:paddingLeft="@dimen/dimen_40dp"/>
         </android.support.design.widget.TextInputLayout>
