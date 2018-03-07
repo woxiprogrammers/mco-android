@@ -91,20 +91,36 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|right"
                 android:orientation="horizontal">
-
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/drawable_background_circle">
                 <ImageView
                     android:id="@+id/iv_approve"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimen_8dp"
                     android:background="@drawable/ic_approve"/>
+                </FrameLayout>
 
-                <ImageView
-                    android:id="@+id/iv_disapprove"
+                <View
+                    android:layout_width="@dimen/dimen_16dp"
+                    android:layout_height="wrap_content">
+
+                </View>
+
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dimen_8dp"
-                    android:background="@drawable/ic_disapprove"/>
+                    android:background="@drawable/drawable_background_circle">
+
+                    <ImageView
+                        android:id="@+id/iv_disapprove"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimen_8dp"
+                        android:background="@drawable/ic_disapprove"/>
+                </FrameLayout>
             </LinearLayout>
 
 

@@ -411,9 +411,18 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewRateWithTax = currentChildView.findViewById(R.id.textViewRateWithTax);
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
                 TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
+                TextView textViewExpDeliveryDate=currentChildView.findViewById(R.id.textViewExpDeliveryDate);
+                TextView textViewTranAmount=currentChildView.findViewById(R.id.textViewTranAmount);
+                TextView textViewTotalTransAmount=currentChildView.findViewById(R.id.textViewTotalTransAmount);
                 textViewRateWithTax.setText("Rate Per Tax: " + vendorsItemRealmList.get(viewIndex).getRatePerTax());
                 textViewRateWithoutTax.setText("Rate Without Tax: " + vendorsItemRealmList.get(viewIndex).getRate());
                 textViewTotalWithTax.setText("Total With Tax: " + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
+
+                textViewExpDeliveryDate.setText(textViewExpDeliveryDate.getText().toString() +
+                AppUtils.getInstance().getTime("yyyy-MM-dd","dd/MM/yyyy",vendorsItemRealmList.get(viewIndex).getExpectedDeliveryDate()));
+
+                textViewTranAmount.setText(textViewTranAmount.getText().toString() +vendorsItemRealmList.get(viewIndex).getTransportationAmount());
+                textViewTotalTransAmount.setText(textViewTotalTransAmount.getText().toString() + vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 vendorRadioButton.setText(vendorsItemRealmList.get(viewIndex).getVendorName());
                 vendorRadioButton.setClickable(false);
             }

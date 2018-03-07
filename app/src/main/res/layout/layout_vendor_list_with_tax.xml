@@ -42,6 +42,24 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_10dp"
             android:text="Total With Tax"/>
+        <TextView
+            android:id="@+id/textViewExpDeliveryDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:text="Expected Delivery Date: "/>
+        <TextView
+            android:id="@+id/textViewTranAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:text="Transportation Amount: "/>
+        <TextView
+            android:id="@+id/textViewTotalTransAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:text="Total Transportation Amount: "/>
     </LinearLayout>
 
 </LinearLayout>
