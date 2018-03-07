@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -291,6 +292,12 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             );
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
+            holder.imageViewIsEmailSent.setVisibility(View.VISIBLE);
+            if(purchaseOrderListItem.isEmailSent()){
+                holder.imageViewIsEmailSent.setBackgroundResource(R.drawable.ic_order_completed);
+            }else {
+                holder.imageViewIsEmailSent.setBackgroundResource(R.drawable.ic_purchase_order_processing);
+            }
             if (!purchaseOrderListItem.getPurchaseOrderStatusSlug().equalsIgnoreCase("close")) {
                 holder.linearLayoutClosePO.setVisibility(View.VISIBLE);
             }
@@ -329,6 +336,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             TextView textViewClose;
             @BindView(R.id.linearLayoutClosePO)
             LinearLayout linearLayoutClosePO;
+            @BindView(R.id.imageViewIsEmailSent)
+            ImageView imageViewIsEmailSent;
 
             MyViewHolder(View itemView) {
                 super(itemView);

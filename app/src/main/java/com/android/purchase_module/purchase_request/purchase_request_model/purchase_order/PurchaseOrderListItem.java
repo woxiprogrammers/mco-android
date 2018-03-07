@@ -57,6 +57,9 @@ public class PurchaseOrderListItem extends RealmObject {
     @SerializedName("remaining_quantity")
     private String remainingQuantity;
 
+    @SerializedName("is_email_sent")
+    private boolean emailSent;
+
     @SerializedName("images")
     private RealmList<ImageItem> listOfImages;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
@@ -67,6 +70,14 @@ public class PurchaseOrderListItem extends RealmObject {
 
     public String getGrnGenerated() {
         return grnGenerated;
+    }
+
+    public boolean isEmailSent() {
+        return emailSent;
+    }
+
+    public void setEmailSent(boolean emailSent) {
+        this.emailSent = emailSent;
     }
 
     public void setGrnGenerated(String grnGenerated) {
