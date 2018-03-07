@@ -243,6 +243,7 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     }
 
     private void validateEntries() {
+        btnMoveOut.setEnabled(false);
         String strSourceName = edtUserName.getText().toString();
         if (TextUtils.isEmpty(strSourceName)) {
             edtUserName.setError(getString(R.string.please_enter) + " " + " User Name");
@@ -335,8 +336,8 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             AppUtils.getInstance().showProgressBar(mainRelative,false);
-
                             getActivity().finish();
+                            btnMoveOut.setEnabled(true);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

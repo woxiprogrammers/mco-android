@@ -106,7 +106,12 @@ public class MoveOutAssetNewActivity extends BaseActivity {
                 chooseAction(Constants.TYPE_MULTI_CAPTURE, MultiCameraActivity.class);
                 break;
             case R.id.btnMoveOut:
-                validateEntries();
+                if(AppUtils.getInstance().checkNetworkState()){
+
+                    validateEntries();
+                }else {
+                    AppUtils.getInstance().showOfflineMessage("AssetMoveOut");
+                }
                 break;
         }
     }
@@ -181,6 +186,7 @@ public class MoveOutAssetNewActivity extends BaseActivity {
     }
 
     private void requestToMoveOut() {
+        btnMoveOut.setEnabled(false);
         AppUtils.getInstance().initializeProgressBar(mainRelativeAsset,mContext);
         AppUtils.getInstance().showProgressBar(mainRelativeAsset,true);
         JSONObject params = new JSONObject();
@@ -209,6 +215,7 @@ public class MoveOutAssetNewActivity extends BaseActivity {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             AppUtils.getInstance().showProgressBar(mainRelativeAsset,false);
+                            btnMoveOut.setEnabled(true);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();

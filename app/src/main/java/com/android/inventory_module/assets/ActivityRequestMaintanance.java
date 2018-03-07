@@ -184,6 +184,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
     }
 
     private void requestAssetMaintenance() {
+        buttonRequest.setEnabled(false);
         AppUtils.getInstance().initializeProgressBar(mainLinearLayoutReqMaintenance, mContext);
         AppUtils.getInstance().showProgressBar(mainLinearLayoutReqMaintenance, true);
         JSONObject params = new JSONObject();
@@ -210,6 +211,7 @@ public class ActivityRequestMaintanance extends BaseActivity {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             AppUtils.getInstance().showProgressBar(mainLinearLayoutReqMaintenance, false);
+                            buttonRequest.setEnabled(true);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();

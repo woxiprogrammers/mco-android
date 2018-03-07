@@ -157,6 +157,7 @@ public class ActivityAssetsReadings extends BaseActivity {
     }
 
     private void requestToCreateReadings() {
+        buttonSubmit.setEnabled(false);
         AppUtils.getInstance().showProgressBar(mainRelativeAssetReading,true);
         JSONObject params = new JSONObject();
         try {
@@ -198,6 +199,7 @@ public class ActivityAssetsReadings extends BaseActivity {
                             if (!isExceed) {
                                 finish();
                             }
+                            buttonSubmit.setEnabled(true);
                             AppUtils.getInstance().showProgressBar(mainRelativeAssetReading,false);
                         } catch (JSONException e) {
                             e.printStackTrace();

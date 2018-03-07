@@ -663,6 +663,7 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void requestForSalaryOrAdvance() {
+        buttonSalarySubmit.setEnabled(false);
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         JSONObject params = new JSONObject();
         try {
@@ -779,7 +780,6 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("bill_amount", editTextBillamount.getText().toString());
             params.put("date", currentDate);
             params.put("images", jsonImageNameArray);
-            Log.i("@@Params",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

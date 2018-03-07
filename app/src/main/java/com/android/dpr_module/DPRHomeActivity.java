@@ -73,6 +73,7 @@ public class DPRHomeActivity extends BaseActivity {
     }
 
     private void requestToSaveDetails() {
+        buttonSubmit.setEnabled(false);
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < linearLayoutCategory.getChildCount(); i++) {
@@ -114,6 +115,7 @@ public class DPRHomeActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            buttonSubmit.setEnabled(true);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
