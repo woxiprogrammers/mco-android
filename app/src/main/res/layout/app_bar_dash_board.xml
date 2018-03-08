@@ -25,7 +25,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_notification_count"
+            app:srcCompat="@drawable/ic_notification_count"
             android:fitsSystemWindows="true"
             android:layout_margin="@dimen/dimen_14dp"
             android:scaleType="centerCrop"/>
@@ -38,7 +38,7 @@
             android:layout_marginEnd="-5dp"
             android:layout_marginRight="-5dp"
             android:layout_marginTop="3dp"
-            android:background="@drawable/badge_drawable"
+            app:srcCompat="@drawable/badge_drawable"
             android:gravity="center"
             android:padding="5dp"
             android:text="0"

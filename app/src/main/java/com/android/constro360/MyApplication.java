@@ -1,6 +1,7 @@
 package com.android.constro360;
 
 import android.app.Application;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.android.utils.AppConstants;
 import com.android.utils.AppUtils;
@@ -20,6 +21,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         AndroidNetworking.initialize(getApplicationContext());
         // initialize Realm
         Realm.init(this);
