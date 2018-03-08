@@ -96,7 +96,6 @@ public class PurchaseMaterialListActivity extends BaseActivity {
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> purchaseMaterialListRealmResult_All;
-    private List<AvailableUsersItem> availableUserArray;
     private AlertDialog alertDialog;
     private boolean isMaterial;
     private TextView mTextViewTitleMaterialAsset;
