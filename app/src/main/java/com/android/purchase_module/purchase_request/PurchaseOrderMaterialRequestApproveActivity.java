@@ -414,7 +414,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewExpDeliveryDate=currentChildView.findViewById(R.id.textViewExpDeliveryDate);
                 TextView textViewTranAmount=currentChildView.findViewById(R.id.textViewTranAmount);
                 TextView textViewTotalTransAmount=currentChildView.findViewById(R.id.textViewTotalTransAmount);
-                textViewRateWithTax.setText("Rate Per Tax: " + vendorsItemRealmList.get(viewIndex).getRatePerTax());
+                textViewRateWithTax.setText("Rate With Tax: " + vendorsItemRealmList.get(viewIndex).getRatePerTax());
                 textViewRateWithoutTax.setText("Rate Without Tax: " + vendorsItemRealmList.get(viewIndex).getRate());
                 textViewTotalWithTax.setText("Total With Tax: " + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
 

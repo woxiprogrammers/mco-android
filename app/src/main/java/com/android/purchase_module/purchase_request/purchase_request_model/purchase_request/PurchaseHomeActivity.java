@@ -126,7 +126,7 @@ public class PurchaseHomeActivity extends BaseActivity {
 
     class PurchaseHomeViewPagerAdapter extends FragmentStatePagerAdapter {
         private String[] arrTabTitles = {
-                "Purchase \nRequest", "Purchase \nOrder", "Purchase \nBill", "Purchase \nHistory"
+                "Purchase \nRequest", "Purchase \nOrder", "GRN", "Purchase \nHistory"
         };
 
         PurchaseHomeViewPagerAdapter(FragmentManager fragmentManager) {
