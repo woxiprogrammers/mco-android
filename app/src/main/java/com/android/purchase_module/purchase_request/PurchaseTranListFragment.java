@@ -34,6 +34,7 @@ import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import timber.log.Timber;
 
 /**
@@ -100,9 +101,9 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         if (isFromPurchaseRequestHome) {
-            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
+            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
         } else {
-            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("purchaseOrderId", intPrimaryKey).findAll();
+            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("purchaseOrderId", intPrimaryKey).findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
         }
         PurchaseTransAdapter purchaseBillRvAdapter = new PurchaseTransAdapter(purchaseBillListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));

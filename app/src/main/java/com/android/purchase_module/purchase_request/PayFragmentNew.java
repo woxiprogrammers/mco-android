@@ -387,6 +387,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     private void requestToGenerateGrn() {
 
+        buttonActionGenerateGrn.setEnabled(false);
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
@@ -417,9 +418,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             editTextGrnNum.setText(grnNUm);
                             buttonActionGenerateGrn.setVisibility(View.GONE);
                             linearLayoutToVisible.setVisibility(View.VISIBLE);
-//                            checkBox.setEnabled(false);
-//                            linearLayoutInflateNames.setEnabled(false);
-//                            frameLayoutEdit.setEnabled(false);
+                            buttonActionGenerateGrn.setEnabled(true);
                             linearLayoutMatImg.setVisibility(View.GONE);
                             AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,false);
                         } catch (JSONException e) {

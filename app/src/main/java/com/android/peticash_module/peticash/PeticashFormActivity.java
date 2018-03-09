@@ -740,6 +740,7 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestToGenerateGRN() {
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
+        buttonGenerateGrn.setEnabled(false);
         int intSelectedPos = spinnerMiscCategoryArray.getSelectedItemPosition();
         try {
             if (jsonArray != null) {
@@ -800,6 +801,7 @@ public class PeticashFormActivity extends BaseActivity {
                             peticashTransactionId = jsonObject.getInt("peticash_transaction_id");
                             setEnabledFalse();
                             AppUtils.getInstance().showProgressBar(mainRelativeLayout, false);
+                            buttonGenerateGrn.setEnabled(true);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
