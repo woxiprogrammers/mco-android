@@ -430,23 +430,27 @@ public class AppUtils {
     }
 
     public void showProgressBar(ViewGroup viewGroup, boolean isToShowProgress) {
-        if (isToShowProgress) {
-            if (viewGroup != null) {
-                viewGroup.addView(view);
-            }
-            progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.colorAccentDark), android.graphics.PorterDuff.Mode.MULTIPLY);
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            try {
+        try {
+
+            if (isToShowProgress) {
+
+                if (viewGroup != null) {
+                    viewGroup.addView(view);
+                }
+                progressBar.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(mContext, R.color.colorAccentDark), android.graphics.PorterDuff.Mode.MULTIPLY);
+                progressBar.setVisibility(View.VISIBLE);
+
+            } else {
                 if (viewGroup != null) {
                     viewGroup.removeView(view);
                 }
-            }catch (Exception e){
-                e.printStackTrace();
+
+                if(progressBar != null){
+                    progressBar.setVisibility(View.GONE);
+                }
             }
-            if(progressBar != null){
-                progressBar.setVisibility(View.GONE);
-            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

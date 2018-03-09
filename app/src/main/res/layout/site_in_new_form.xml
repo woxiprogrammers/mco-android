@@ -58,7 +58,6 @@
                 </HorizontalScrollView>
 
                 <Button
-                    android:id="@+id/buttonActionGenerateGrn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
@@ -72,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,8 +87,8 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <FrameLayout
-                        style="@style/MySpinnerStyle"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@android:drawable/editbox_background"
                         android:visibility="visible">
 
@@ -99,6 +98,7 @@
                             android:layout_height="wrap_content"/>
                     </FrameLayout>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -113,26 +113,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        style="@style/MyEditTextHeightSTyle"
-                        android:layout_width="match_parent"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:focusable="false"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_4dp"
-                        android:text="Transportation Charges:"
-                        android:textColor="@color/colorTextLight"/>
-
-                    <EditText
+                        android:id="@+id/editTextSetGenGrn"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -252,6 +233,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/editTextSetTranCharge"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -272,6 +254,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/ediTextSetTransTax"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -292,6 +275,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/editTextSetCompName"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -312,6 +296,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/editTextSetDriverName"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -332,6 +317,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/ediTextSiteInMob"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -352,6 +338,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
+                        android:id="@+id/ediTextSetSiteInVehNum"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"

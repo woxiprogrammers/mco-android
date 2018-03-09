@@ -79,6 +79,19 @@
                     android:layout_marginBottom="@dimen/dimen_5dp"
                     android:text="Generate GRN"
                     android:visibility="visible"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center">
+
+                    <ProgressBar
+                        android:id="@+id/progressToGenerateGRN"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
+                </FrameLayout>
             </LinearLayout>
 
             <LinearLayout

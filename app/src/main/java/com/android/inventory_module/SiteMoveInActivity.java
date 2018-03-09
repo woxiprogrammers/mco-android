@@ -95,7 +95,7 @@ public class SiteMoveInActivity extends BaseActivity {
         setContentView(R.layout.activity_site_move_in_new);
         ButterKnife.bind(this);
         initializeViews();
-        getGRN();
+//        getGRN();
     }
 
     private void initializeViews() {

@@ -13,7 +13,6 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -144,6 +144,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     TextView textViewShowMessage;
     @BindView(R.id.mainRelativePurchaseOrderTrans)
     RelativeLayout mainRelativePurchaseOrderTrans;
+    @BindView(R.id.progressToGenerateGRN)
+    ProgressBar progressToGenerateGRN;
     private ArrayList<Integer> arrayList;
     Unbinder unbinder;
     private static int orderId;
@@ -193,9 +195,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         unbinder = ButterKnife.bind(this, view);
         layout = view.findViewById(R.id.layoutView);
         mContext = getActivity();
-        AppUtils.getInstance().initializeProgressBar(mainRelativePurchaseOrderTrans,mContext);
+        AppUtils.getInstance().initializeProgressBar(mainRelativePurchaseOrderTrans, mContext);
         initializeViews();
-
         return view;
     }
 
@@ -205,7 +206,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
         realm = Realm.getDefaultInstance();
         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
-
         float quantity = Float.parseFloat(purchaseOrderListItem.getRemainingQuantity());
         if (isHaveCreateAccess) {
             linearLayoutFirstLayout.setVisibility(View.VISIBLE);
@@ -245,7 +245,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         } else {
             linearLayoutFirstLayout.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -272,6 +271,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionGenerateGrn:
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
+                buttonActionGenerateGrn.setEnabled(false);
                 break;
             case R.id.textViewCaptureTransImg:
                 isForImage = false;
@@ -279,6 +279,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionSubmit:
                 validateEntries();
+                buttonActionSubmit.setEnabled(false);
                 break;
         }
     }
@@ -386,13 +387,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToGenerateGrn() {
-
-        buttonActionGenerateGrn.setEnabled(false);
+        progressToGenerateGRN.setVisibility(View.VISIBLE);
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-        AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,true);
+//        AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, true);
         JSONObject params = new JSONObject();
         /**/
         try {
@@ -418,9 +418,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             editTextGrnNum.setText(grnNUm);
                             buttonActionGenerateGrn.setVisibility(View.GONE);
                             linearLayoutToVisible.setVisibility(View.VISIBLE);
-                            buttonActionGenerateGrn.setEnabled(true);
                             linearLayoutMatImg.setVisibility(View.GONE);
-                            AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,false);
+
+                            progressToGenerateGRN.setVisibility(View.GONE);
+//                            AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -455,8 +456,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 }
             }
         }
-        AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,true);
-
+        AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, true);
         try {
             params.put("vehicle_number", strVehicleNumber);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
@@ -486,8 +486,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             ((PayAndBillsActivity) mContext).moveFragments(true);
                             clearData();
                             nestedScrollView.setVisibility(View.GONE);
-                            AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans,false);
-
+                            AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -662,7 +661,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                                 }
                                 try {
                                     arrayImageFileList.remove(0);
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 uploadImages_addItemToLocal(strTag, imageFor);
