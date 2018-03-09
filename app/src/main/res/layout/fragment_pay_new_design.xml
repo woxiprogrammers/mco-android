@@ -4,255 +4,282 @@
     android:id="@+id/mainRelativePurchaseOrderTrans"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-<android.support.v4.widget.NestedScrollView
-    android:id="@+id/nestedScrollView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_8dp"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/dimen_16dp">
-        <include
-            android:id="@+id/layoutView"
-            layout="@layout/layout_details_for_purchase_bill"
-            android:visibility="gone"/>
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/linearLayoutFirstLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dimen_8dp"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dimen_16dp"
-            android:visibility="visible">
-            <TextView
-                android:id="@+id/textViewVendor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dimen_3dp"
-                android:textColor="@color/colorTextLight"/>
-            <LinearLayout
-                android:id="@+id/linearLayoutMatImg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_16dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/textViewCaptureMatImg"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:drawableTop="@android:drawable/ic_menu_camera"
-                    android:gravity="center_horizontal"
-                    android:text="Capture Images"/>
-            </LinearLayout>
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_4dp"
-                android:fadeScrollbars="false">
-                <LinearLayout
-                    android:id="@+id/llAddMatImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal">
-                </LinearLayout>
-            </HorizontalScrollView>
-            <Button
-                android:id="@+id/buttonActionGenerateGrn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="@dimen/dimen_5dp"
-                android:text="Generate GRN"
-                android:visibility="visible"/>
-        </LinearLayout>
+            android:paddingBottom="@dimen/dimen_16dp">
 
-        <LinearLayout
-            android:id="@+id/linearLayoutToVisible"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            <include
+                android:id="@+id/layoutView"
+                layout="@layout/layout_details_for_purchase_bill"
+                android:visibility="gone"/>
 
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_4dp"
-                android:fadeScrollbars="false">
-                <LinearLayout
-                    android:id="@+id/showImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal">
-                </LinearLayout>
-            </HorizontalScrollView>
             <LinearLayout
+                android:id="@+id/linearLayoutFirstLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_3dp"
-                    android:text="Materials:"
-                    android:textColor="@color/colorTextLight"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/linearLayoutInflateNames"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/linearLayoutGrnNum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_margin="@dimen/dimen_8dp"
                 android:orientation="vertical"
+                android:paddingBottom="@dimen/dimen_16dp"
                 android:visibility="visible">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_3dp"
-                    android:text="GRN Number:"
-                    android:textColor="@color/colorTextLight"/>
-                <EditText
-                    android:id="@+id/editTextGrnNum"
-                    android:layout_width="match_parent"
-                    style="@style/MyEditTextHeightSTyle"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:enabled="false"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_4dp"
-                    android:text="Challan Number:"
-                    android:textColor="@color/colorTextLight"/>
-                <EditText
-                    android:id="@+id/editTextBillumber"
-                    android:layout_width="match_parent"
-                    style="@style/MyEditTextHeightSTyle"
-                    android:background="@android:drawable/editbox_background_normal"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_3dp"
-                    android:text="Vehicle Number:"
-                    android:textColor="@color/colorTextLight"/>
-                <EditText
-                    android:id="@+id/editTextVehNum"
-                    android:layout_width="match_parent"
-                    style="@style/MyEditTextHeightSTyle"
-                    android:background="@android:drawable/editbox_background_normal"/>
-            </LinearLayout>
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
                 <TextView
+                    android:id="@+id/textViewVendor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_3dp"
-                    android:text="Bill Amount:"
                     android:textColor="@color/colorTextLight"/>
-                <EditText
-                    android:id="@+id/editTextBillAmount"
-                    android:layout_width="match_parent"
-                    style="@style/MyEditTextHeightSTyle"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:inputType="number"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/linearLayoutTransImg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_16dp"
-                android:orientation="horizontal"
-                android:visibility="visible">
-                <TextView
-                    android:id="@+id/textViewCaptureTransImg"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:drawableTop="@android:drawable/ic_menu_camera"
-                    android:gravity="center_horizontal"
-                    android:text="Capture Images"/>
-            </LinearLayout>
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_4dp"
-                android:fadeScrollbars="false">
+
                 <LinearLayout
-                    android:id="@+id/ll_PaymentImageLayout"
+                    android:id="@+id/linearLayoutMatImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_16dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewCaptureMatImg"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:drawableTop="@android:drawable/ic_menu_camera"
+                        android:gravity="center_horizontal"
+                        android:text="Capture Images"/>
+                </LinearLayout>
+
+                <HorizontalScrollView
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_4dp"
+                    android:fadeScrollbars="false">
+
+                    <LinearLayout
+                        android:id="@+id/llAddMatImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <Button
+                    android:id="@+id/buttonActionGenerateGrn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_marginBottom="@dimen/dimen_5dp"
+                    android:text="Generate GRN"
+                    android:visibility="visible"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutToVisible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_4dp"
+                    android:fadeScrollbars="false">
+
+                    <LinearLayout
+                        android:id="@+id/showImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="Materials:"
+                        android:textColor="@color/colorTextLight"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutInflateNames"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_5dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutGrnNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="GRN Number:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextGrnNum"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:enabled="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Challan Number:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextBillumber"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="Vehicle Number:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextVehNum"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_3dp"
+                        android:text="Bill Amount:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextBillAmount"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:inputType="number"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutTransImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_16dp"
                     android:orientation="horizontal"
                     android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/textViewCaptureTransImg"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:drawableTop="@android:drawable/ic_menu_camera"
+                        android:gravity="center_horizontal"
+                        android:text="Capture Images"/>
                 </LinearLayout>
-            </HorizontalScrollView>
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
-                <EditText
-                    android:id="@+id/editextTransRemark"
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_4dp"
+                    android:fadeScrollbars="false">
+
+                    <LinearLayout
+                        android:id="@+id/ll_PaymentImageLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#FFD740"
-                    android:hint="@string/tap_too_add_note"
-                    android:padding="@dimen/dimen_16dp"
-                    android:textColor="@color/colorText"
-                    android:textSize="@dimen/dimen_16dp"/>
-            </android.support.v7.widget.CardView>
-            <Button
-                android:id="@+id/buttonActionSubmit"
+                    android:layout_marginBottom="8dp">
+
+                    <EditText
+                        android:id="@+id/editextTransRemark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFD740"
+                        android:hint="@string/tap_too_add_note"
+                        android:padding="@dimen/dimen_16dp"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_16dp"/>
+                </android.support.v7.widget.CardView>
+
+                <Button
+                    android:id="@+id/buttonActionSubmit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_marginBottom="@dimen/dimen_5dp"
+                    android:text="Material Received"
+                    android:visibility="visible"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textViewShowMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="@dimen/dimen_5dp"
-                android:text="Material Received"
-                android:visibility="visible"/>
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Purchase Order Completed"
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"/>
         </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/textViewShowMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Purchase Order Completed"
-            android:textColor="@color/colorAccent"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:gravity="center"/>
-    </LinearLayout>
-
-
-</android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

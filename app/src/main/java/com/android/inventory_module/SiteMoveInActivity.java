@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,8 @@ public class SiteMoveInActivity extends BaseActivity {
     EditText editTextSiteName;
     @BindView(R.id.mainRelative)
     RelativeLayout mainRelative;
+    @BindView(R.id.spinnerSelectGrn)
+    Spinner spinnerSelectGrn;
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private JSONArray jsonImageNameArray = new JSONArray();
@@ -81,6 +85,9 @@ public class SiteMoveInActivity extends BaseActivity {
     private String strComponentName;
     private int reference_id;
     private String strEnteredGrn;
+    private JSONArray jsonArrayGrn;
+    ArrayList<String> grnNameArray;
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +95,7 @@ public class SiteMoveInActivity extends BaseActivity {
         setContentView(R.layout.activity_site_move_in_new);
         ButterKnife.bind(this);
         initializeViews();
+        getGRN();
     }
 
     private void initializeViews() {
@@ -332,6 +340,36 @@ public class SiteMoveInActivity extends BaseActivity {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                         Toast.makeText(mContext, "Please enter correct GRN", Toast.LENGTH_SHORT).show();
                         AppUtils.getInstance().showProgressBar(mainRelative, false);
+                    }
+                });
+    }
+
+    private void getGRN() {
+        AndroidNetworking.get(AppURL.API_GRN_URL)
+                .setTag("getGRN")
+//                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArrayGrn = response.getJSONArray("grn_list");
+                            grnNameArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArrayGrn.length(); i++) {
+                                JSONObject jsonObject = jsonArrayGrn.getJSONObject(i);
+                                grnNameArray.add(jsonObject.getString("grn_name") );
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, grnNameArray);
+                            spinnerSelectGrn.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
                     }
                 });
     }
