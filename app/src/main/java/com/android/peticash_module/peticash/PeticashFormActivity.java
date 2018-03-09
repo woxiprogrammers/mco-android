@@ -294,6 +294,7 @@ public class PeticashFormActivity extends BaseActivity {
     public void onViewImageClicked(View view) {
         switch (view.getId()) {
             case R.id.button_generate_grn:
+                buttonGenerateGrn.setEnabled(false);
                 if (AppUtils.getInstance().checkNetworkState()) {
                     validateEntries();
                 } else {
@@ -301,6 +302,7 @@ public class PeticashFormActivity extends BaseActivity {
                 }
                 break;
             case R.id.button_pay_with_peticash:
+                buttonPayWithPeticash.setEnabled(false);
                 if (AppUtils.getInstance().checkNetworkState()) {
                     uploadImages_addItemToLocal("billPayment", "peticash_purchase_payment_transaction");
                 } else {
@@ -320,6 +322,7 @@ public class PeticashFormActivity extends BaseActivity {
     //Salary
     @OnClick(R.id.button_salary_submit)
     public void onViewClicked() {
+        buttonSalarySubmit.setEnabled(false);
         if (AppUtils.getInstance().checkNetworkState()) {
             validationForSalaryAdvance();
         } else {
@@ -663,7 +666,6 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void requestForSalaryOrAdvance() {
-        buttonSalarySubmit.setEnabled(false);
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         JSONObject params = new JSONObject();
         try {
@@ -740,7 +742,6 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestToGenerateGRN() {
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
-        buttonGenerateGrn.setEnabled(false);
         int intSelectedPos = spinnerMiscCategoryArray.getSelectedItemPosition();
         try {
             if (jsonArray != null) {
@@ -1127,6 +1128,7 @@ public class PeticashFormActivity extends BaseActivity {
 
     @OnClick(R.id.button_view_amount)
     public void onViewClickedAmount() {
+        buttonViewAmount.setEnabled(false);
         if (TextUtils.isEmpty(editTextEmpIdName.getText().toString())) {
             editTextEmpIdName.requestFocus();
             editTextEmpIdName.setFocusable(true);
