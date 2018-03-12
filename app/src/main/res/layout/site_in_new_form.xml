@@ -22,7 +22,7 @@
                 android:layout_margin="@dimen/dimen_8dp"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/dimen_16dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/linearLayoutMatImg"
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,14 +88,15 @@
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/MySpinnerStyle"
                         android:background="@android:drawable/editbox_background"
                         android:visibility="visible">
 
                         <Spinner
                             android:id="@+id/spinnerSelectGrn"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="match_parent"
+                            android:entries="@array/grn_array"/>
                     </FrameLayout>
                 </LinearLayout>
 

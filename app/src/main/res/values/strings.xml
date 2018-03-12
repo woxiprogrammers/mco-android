@@ -73,6 +73,11 @@
         <item>Salary</item>
         <item>Advance</item>
     </string-array>
+    <string-array name="grn_array">
+        <item>GRN20180289</item>
+        <item>GRN20180281</item>
+        <item>GRN20180283</item>
+    </string-array>
     <string name="title_activity_asset_details">AssetDetailsActivity</string>
     <string name="assets_readings">Readings</string>
     <string name="dialog_title_add_asset">Add Asset</string>
