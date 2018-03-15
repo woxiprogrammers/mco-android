@@ -392,9 +392,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-//        AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, true);
         JSONObject params = new JSONObject();
-        /**/
         try {
             params.put("purchase_order_id", orderId);
             params.put("images", jsonImageNameArray);

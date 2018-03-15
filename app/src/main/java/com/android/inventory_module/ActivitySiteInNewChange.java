@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,18 +19,33 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.purchase_module.purchase_request.PayAndBillsActivity;
+import com.android.purchase_module.purchase_request.purchase_request_model.purchase_details.MaterialNamesItem;
 import com.android.utils.AppConstants;
+import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
 import com.vlk.multimager.utils.Params;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import id.zelory.compressor.Compressor;
+import timber.log.Timber;
 
 public class ActivitySiteInNewChange extends BaseActivity {
     @BindView(R.id.textViewSiteInFirstImage)
@@ -85,6 +101,10 @@ public class ActivitySiteInNewChange extends BaseActivity {
     private Context mContext;
     private ArrayList<File> arrayImageFileList;
     private boolean isFirstImage;
+    private JSONArray jsonImageNameArray = new JSONArray();
+    private JSONArray jsonArrayGrn;
+    ArrayList<String> grnNameArray;
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +139,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
             case R.id.buttonSiteInGrn:
                 break;
             case R.id.textView_capture:
+                isFirstImage=false;
                 break;
             case R.id.btnSubmit:
                 break;
@@ -175,4 +196,165 @@ public class ActivitySiteInNewChange extends BaseActivity {
             }
         }
     }
+
+
+    private void uploadImages_addItemToLocal(final String strTag, final String imageFor) {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
+                File sendImageFile = arrayImageFileList.get(0);
+                File compressedImageFile = sendImageFile;
+                try {
+                    compressedImageFile = new Compressor(mContext).compressToFile(sendImageFile);
+                } catch (IOException e) {
+                    Timber.i("IOException", "uploadImages_addItemToLocal: image compression failed");
+                }
+                String strToken = AppUtils.getInstance().getCurrentToken();
+                AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
+                        .setPriority(Priority.MEDIUM)
+                        .addMultipartFile("image", compressedImageFile)
+                        .addMultipartParameter("image_for", imageFor)
+                        .addHeaders(AppUtils.getInstance().getApiHeaders())
+                        .setTag("uploadImages_addItemToLocal")
+                        .setPercentageThresholdForCancelling(50)
+                        .build()
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    String fileName = response.getString("filename");
+                                    jsonImageNameArray.put(fileName);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    arrayImageFileList.remove(0);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                uploadImages_addItemToLocal(strTag, imageFor);
+                            }
+
+                            @Override
+                            public void onError(ANError anError) {
+                                AppUtils.getInstance().logApiError(anError, "uploadImages_addItemToLocal");
+                            }
+                        });
+            } else {
+                if (strTag.equalsIgnoreCase("requestToGenerateGrn"))
+                    requestToGenerateGrn();
+                else if (strTag.equalsIgnoreCase("requestToPayment")) {
+//                    requestToPayment();
+                }
+            }
+        } else {
+            AppUtils.getInstance().showOfflineMessage("PayFragmentNew");
+        }
+    }
+
+    private void requestToGenerateGrn() {
+//        progressToGenerateGRN.setVisibility(View.VISIBLE);
+        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
+            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            return;
+        }
+        getGRN();
+
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
+            params.put("images", jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //ToDo APP URL
+        AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_SITE_IN + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToGenerateGrn")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            linearLayoutDetails.setVisibility(View.VISIBLE);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    private void requestToSubmit() {
+        JSONObject params = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+       //ToDo params
+        try {
+
+            params.put("images", jsonImageNameArray);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //ToDo URL
+        AndroidNetworking.post(AppURL.API_SUBMIT_SITE_IN_NEW + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToSubmit")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+    private void getGRN() {
+        AndroidNetworking.get(AppURL.API_GRN_URL)
+                .setTag("getGRN")
+//                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArrayGrn = response.getJSONArray("grn_list");
+                            grnNameArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArrayGrn.length(); i++) {
+                                JSONObject jsonObject = jsonArrayGrn.getJSONObject(i);
+                                grnNameArray.add(jsonObject.getString("grn_name") );
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, grnNameArray);
+                            spinnerSelectGrn.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
+                    }
+                });
+    }
+
+
 }

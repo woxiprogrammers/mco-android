@@ -99,4 +99,6 @@ public class AppURL {
 
     public static final String API_SITE_COUNT_URL = BASE_URL+"notification/project-site/get-count?token=";
     public static final String API_GRN_URL="http://www.mocky.io/v2/5aa2276e2f0000840dd4639d";
+    public static final String API_REQUEST_GENRATE_GRN_SITE_IN = BASE_URL +"";
+    public static final String API_SUBMIT_SITE_IN_NEW = BASE_URL + "";
 }
