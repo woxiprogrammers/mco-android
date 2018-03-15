@@ -101,4 +101,5 @@ public class AppURL {
     public static final String API_GRN_URL="http://www.mocky.io/v2/5aa2276e2f0000840dd4639d";
     public static final String API_REQUEST_GENRATE_GRN_SITE_IN = BASE_URL +"";
     public static final String API_SUBMIT_SITE_IN_NEW = BASE_URL + "";
+    public static final String API_INVENTORY_GET_GRN_DETAILS_FROM_GRN = BASE_URL + "";
 }

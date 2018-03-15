@@ -12,6 +12,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -117,6 +118,7 @@
                         android:id="@+id/editTextSetGenGrn"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
+                        android:enabled="false"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>
@@ -142,6 +144,7 @@
                         android:background="@android:drawable/editbox_background_normal"
                         android:enabled="false"
                         android:focusable="false"
+
                         android:textColor="@color/black"/>
                 </LinearLayout>
 
@@ -163,6 +166,7 @@
                         android:id="@+id/editTextName"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
+                        android:enabled="false"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>
@@ -237,6 +241,7 @@
                         android:id="@+id/editTextSetTranCharge"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
+                        android:enabled="false"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>
@@ -258,6 +263,7 @@
                         android:id="@+id/ediTextSetTransTax"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
+                        android:enabled="false"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>
@@ -279,6 +285,7 @@
                         android:id="@+id/editTextSetCompName"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
+                        android:enabled="false"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>
@@ -300,6 +307,7 @@
                         android:id="@+id/editTextSetDriverName"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
+                        android:enabled="false"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>
@@ -321,6 +329,7 @@
                         android:id="@+id/ediTextSiteInMob"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
+                        android:enabled="false"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>
@@ -342,6 +351,7 @@
                         android:id="@+id/ediTextSetSiteInVehNum"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
+                        android:enabled="false"
                         android:background="@android:drawable/editbox_background_normal"
                         android:focusable="false"/>
                 </LinearLayout>

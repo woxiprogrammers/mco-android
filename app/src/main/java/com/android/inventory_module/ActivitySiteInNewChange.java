@@ -137,11 +137,24 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 isFirstImage=true;
                 break;
             case R.id.buttonSiteInGrn:
+                if(AppUtils.getInstance().checkNetworkState()){
+                    uploadImages_addItemToLocal("requestToGenerateGrn","");//ToDo ask to harsha
+                }else {
+                    AppUtils.getInstance().showOfflineMessage("SiteInActivity");
+                }
+
+
                 break;
             case R.id.textView_capture:
                 isFirstImage=false;
+                captureImage();
                 break;
             case R.id.btnSubmit:
+                if(AppUtils.getInstance().checkNetworkState()){
+                    uploadImages_addItemToLocal("submit","");//ToDo ask to harsha
+                }else {
+                    AppUtils.getInstance().showOfflineMessage("SiteInActivity");
+                }
                 break;
         }
     }
@@ -242,8 +255,8 @@ public class ActivitySiteInNewChange extends BaseActivity {
             } else {
                 if (strTag.equalsIgnoreCase("requestToGenerateGrn"))
                     requestToGenerateGrn();
-                else if (strTag.equalsIgnoreCase("requestToPayment")) {
-//                    requestToPayment();
+                else if (strTag.equalsIgnoreCase("submit")) {
+                    requestToSubmit();
                 }
             }
         } else {
@@ -252,12 +265,11 @@ public class ActivitySiteInNewChange extends BaseActivity {
     }
 
     private void requestToGenerateGrn() {
-//        progressToGenerateGRN.setVisibility(View.VISIBLE);
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-        getGRN();
+        requestToGetGRN();
 
         JSONObject params = new JSONObject();
         try {
@@ -326,7 +338,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                     }
                 });
     }
-    private void getGRN() {
+    private void requestToGetGRN() {
         AndroidNetworking.get(AppURL.API_GRN_URL)
                 .setTag("getGRN")
 //                .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -352,6 +364,63 @@ public class ActivitySiteInNewChange extends BaseActivity {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
+                    }
+                });
+    }
+
+    private void requestToGetDetailsFromGrn(){
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //ToDo Change URl
+        AndroidNetworking.post(AppURL.API_INVENTORY_GET_GRN_DETAILS_FROM_GRN + AppUtils.getInstance().getCurrentToken())
+                .setTag("API_SALARY_VIEW_PAYMENT")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            //ToDO Set Values
+                           /* linearLayoutDetails.setVisibility(View.VISIBLE);
+                            isMaterial = jsonObject.getBoolean("is_material");
+                            if (isMaterial) {
+                                textviewName.setText("Material Name");
+                            } else {
+                                textviewName.setText("Asset Name");
+                            }
+                            textViewItemDetails.setVisibility(View.GONE);
+                            editTextEnteredGrn.setEnabled(false);
+                            unitId = jsonObject.getInt("unit_id");
+                            projectSiteIdFrom = jsonObject.getInt("project_site_id_from");
+                            reference_id = jsonObject.getInt("reference_id");
+                            strComponentName = jsonObject.getString("material_name");
+                            inventoryComponentId = jsonObject.getInt("inventory_component_id");
+                            String projectSiteNameFrom = jsonObject.getString("project_site_name_from");
+                            editTextSiteName.setText(projectSiteNameFrom);
+                            String material_name = jsonObject.getString("material_name");
+                            editTextName.setText(material_name);
+                            String quantity = jsonObject.getString("quantity");
+                            edtQuantity.setText(quantity);
+                            String unitName = jsonObject.getString("unit_name");
+                            editTextUnit.setText(unitName);
+                            strEnteredGrn = editTextEnteredGrn.getText().toString();*/
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                        Toast.makeText(mContext, "Please enter correct GRN", Toast.LENGTH_SHORT).show();
+                        AppUtils.getInstance().showProgressBar(mainRelative, false);
                     }
                 });
     }
