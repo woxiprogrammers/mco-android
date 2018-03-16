@@ -16,13 +16,39 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:text="Select GRN:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    style="@style/MySpinnerStyle"
+                    android:background="@android:drawable/editbox_background"
+                    android:visibility="visible">
+
+                    <Spinner
+                        android:id="@+id/spinnerSelectGrn"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/linearLayoutFirstLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dimen_8dp"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/dimen_16dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:id="@+id/linearLayoutMatImg"
@@ -74,32 +100,6 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_4dp"
-                        android:text="Select GRN:"
-                        android:textColor="@color/colorTextLight"/>
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        style="@style/MySpinnerStyle"
-                        android:background="@android:drawable/editbox_background"
-                        android:visibility="visible">
-
-                        <Spinner
-                            android:id="@+id/spinnerSelectGrn"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:entries="@array/grn_array"/>
-                    </FrameLayout>
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

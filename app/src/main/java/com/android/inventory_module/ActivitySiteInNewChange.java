@@ -5,8 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -105,6 +109,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
     private JSONArray jsonArrayGrn;
     ArrayList<String> grnNameArray;
     private ArrayAdapter<String> adapter;
+    private int grnId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +117,11 @@ public class ActivitySiteInNewChange extends BaseActivity {
         setContentView(R.layout.site_in_new_form);
         ButterKnife.bind(this);
         initializeviews();
+        if(AppUtils.getInstance().checkNetworkState()){
+            requestToGetGRN();
+        }else {
+            AppUtils.getInstance().showOfflineMessage("SiteIn");
+        }
     }
 
     private void initializeviews() {
@@ -120,6 +130,17 @@ public class ActivitySiteInNewChange extends BaseActivity {
             getSupportActionBar().setTitle("Site In");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        spinnerSelectGrn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
+                String selectedString = (String) adapterView.getItemAtPosition(selectedId);
+                setProjectNameFromIndex(selectedString);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
     }
 
     @Override
@@ -130,6 +151,17 @@ public class ActivitySiteInNewChange extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void setProjectNameFromIndex(String selectedString) {
+        int selectedIndex = grnNameArray.indexOf(selectedString);
+        try {
+            JSONObject jsonObject = jsonArrayGrn.getJSONObject(selectedIndex);
+            grnId = jsonObject.getInt("id");
+            requestToGetDetailsFromGrn();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     @OnClick({R.id.textViewSiteInFirstImage, R.id.buttonSiteInGrn, R.id.textView_capture, R.id.btnSubmit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -269,7 +301,6 @@ public class ActivitySiteInNewChange extends BaseActivity {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-        requestToGetGRN();
 
         JSONObject params = new JSONObject();
         try {
@@ -348,11 +379,12 @@ public class ActivitySiteInNewChange extends BaseActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            jsonArrayGrn = response.getJSONArray("grn_list");
+                            JSONObject jsonObject=response.getJSONObject("data");
+                            jsonArrayGrn = jsonObject.getJSONArray("grn");
                             grnNameArray = new ArrayList<>();
                             for (int i = 0; i < jsonArrayGrn.length(); i++) {
-                                JSONObject jsonObject = jsonArrayGrn.getJSONObject(i);
-                                grnNameArray.add(jsonObject.getString("grn_name") );
+                                JSONObject jsonObject1 = jsonArrayGrn.getJSONObject(i);
+                                grnNameArray.add(jsonObject1.getString("grn") );
                             }
                             adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, grnNameArray);
                             spinnerSelectGrn.setAdapter(adapter);
@@ -371,13 +403,15 @@ public class ActivitySiteInNewChange extends BaseActivity {
     private void requestToGetDetailsFromGrn(){
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id_to", AppUtils.getInstance().getCurrentSiteId());
+            //ToDo params
+            params.put("id", grnId);
+            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //ToDo Change URl
-        AndroidNetworking.post(AppURL.API_INVENTORY_GET_GRN_DETAILS_FROM_GRN + AppUtils.getInstance().getCurrentToken())
-                .setTag("API_SALARY_VIEW_PAYMENT")
+        //ToDo Change URL
+        AndroidNetworking.post(AppURL.API_INVENTORY_GET_GRN_DETAILS + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToGetDetailsFromGrn")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
