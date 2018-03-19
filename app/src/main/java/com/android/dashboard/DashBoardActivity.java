@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -86,7 +88,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     TextView cartBadge;
     @BindView(R.id.imageViewSiteCount)
     FrameLayout imageViewSiteCount;
-
+    @BindView(R.id.imageViewToRefresh)
+    ImageView imageViewToRefresh;
+    @BindView(R.id.mainCoordinatorLayout)
+    CoordinatorLayout mainCoordinatorLayout;
     private int setSiteBadgeCount = 0;
     private Context mContext;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
@@ -165,7 +170,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         //Calling function to initialize required views.
         initializeViews();
         setUpDrawerData();
-        if(AppUtils.getInstance().checkNetworkState()){
+        if (AppUtils.getInstance().checkNetworkState()) {
             getCount();
         }
     }
@@ -186,6 +191,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
      */
     private void initializeViews() {
         mContext = DashBoardActivity.this;
+        AppUtils.getInstance().initializeProgressBar(mainCoordinatorLayout,mContext);
         View headerLayout = navView.inflateHeaderView(R.layout.nav_header_dash_board);
         projectSpinner = headerLayout.findViewById(R.id.project_spinner);
         userName = headerLayout.findViewById(R.id.userName);
@@ -383,15 +389,15 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         for (int i = 0; i < siteCountListItemRealmResults.size(); i++) {
             final ProjectsNotificationCountItem siteCountListItem = siteCountListItemRealmResults.get(i);
             inflatedView = LayoutInflater.from(mContext).inflate(R.layout.inflate_layout_assigned_sites, null);
-            LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0,20,0,20);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 20, 0, 20);
             inflatedView.setLayoutParams(layoutParams);
             textViewSites = inflatedView.findViewById(R.id.textViewSites);
             textViewSitesCount = inflatedView.findViewById(R.id.textViewSitesCount);
             linearLayoutOfSite = inflatedView.findViewById(R.id.linearLayoutOfSite);
             textViewSitesCount.setText("" + siteCountListItem.getNotificationCount());
             textViewSites.setText(siteCountListItem.getProjectSiteName());
-            if(AppUtils.getInstance().getCurrentSiteId() == siteCountListItem.getProjectSiteId()){
+            if (AppUtils.getInstance().getCurrentSiteId() == siteCountListItem.getProjectSiteId()) {
                 textViewSites.setTextColor(getColor(R.color.colorPrimaryDark));
                 textViewSitesCount.setTextColor(getColor(R.color.colorPrimaryDark));
             }
@@ -412,7 +418,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         }
         alert_Dialog = alertDialogBuilder.create();
         alert_Dialog.show();
-
     }
 
     private void getCount() {
@@ -434,11 +439,11 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    AppUtils.getInstance().showProgressBar(mainCoordinatorLayout,false);
                                     for (int i = 0; i < response.getNotificationCountData().getProjectsNotificationCount().size(); i++) {
                                         setSiteBadgeCount = setSiteBadgeCount + response.getNotificationCountData().getProjectsNotificationCount().get(i).getNotificationCount();
                                     }
                                     cartBadge.setText(String.valueOf(setSiteBadgeCount));
-
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -462,10 +467,18 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
 
     @OnClick(R.id.imageViewSiteCount)
     public void onViewClicked() {
-        if(AppUtils.getInstance().checkNetworkState()){
+        if (AppUtils.getInstance().checkNetworkState()) {
             inflateLayoutForSites();
-        }else {
+        } else {
             AppUtils.getInstance().showOfflineMessage("DashBoardSiteSwitch");
+        }
+    }
+
+    @OnClick(R.id.imageViewToRefresh)
+    public void onViewClick() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            AppUtils.getInstance().showProgressBar(mainCoordinatorLayout,true);
+            getCount();
         }
     }
 }

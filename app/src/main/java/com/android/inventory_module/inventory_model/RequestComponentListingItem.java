@@ -4,6 +4,7 @@ import com.android.utils.AppUtils;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class RequestComponentListingItem extends RealmObject {
     /*
@@ -19,6 +20,7 @@ public class RequestComponentListingItem extends RealmObject {
     private String unit;
     @SerializedName("quantity")
     private String quantity;
+    @PrimaryKey
     @SerializedName("inventory_component_transfer_id")
     private int inventoryComponentTransferId;
     @SerializedName("component_name")

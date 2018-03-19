@@ -176,6 +176,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 captureImage();
                 break;
             case R.id.buttonSiteInGrn:
+                buttonSiteInGrn.setEnabled(false);
                 if (AppUtils.getInstance().checkNetworkState()) {
                     uploadImages_addItemToLocal("requestToGenerateGrn", "inventory_transfer");//ToDo ask to harsha
                 } else {
@@ -187,6 +188,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 captureImage();
                 break;
             case R.id.btnSubmit:
+                btnSubmit.setEnabled(false);
                 if (AppUtils.getInstance().checkNetworkState()) {
                     uploadImages_addItemToLocal("submit", "inventory_transfer");//ToDo ask to harsha
                 } else {
