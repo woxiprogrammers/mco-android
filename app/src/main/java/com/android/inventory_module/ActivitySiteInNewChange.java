@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,15 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
-import com.android.purchase_module.purchase_request.PayAndBillsActivity;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_details.MaterialNamesItem;
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
@@ -123,6 +118,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
         setContentView(R.layout.site_in_new_form);
         ButterKnife.bind(this);
         initializeviews();
+
         if (AppUtils.getInstance().checkNetworkState()) {
             requestToGetGRN();
         } else {
@@ -136,6 +132,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
             getSupportActionBar().setTitle("Site In");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        AppUtils.getInstance().initializeProgressBar(mainRelative,mContext);
         spinnerSelectGrn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
@@ -415,6 +412,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -435,6 +433,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+                            AppUtils.getInstance().showProgressBar(mainRelative,false);
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             JSONObject jsonObject = response.getJSONObject("data");
                             buttonSiteInGrn.setVisibility(View.GONE);
@@ -458,14 +457,15 @@ public class ActivitySiteInNewChange extends BaseActivity {
 
     //API call submit final Site In
     private void requestToSubmit() {
-        /*if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+        if (arrayImageFileList == null || arrayImageFileList.size() > 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
-        }*/
+        }
         if (TextUtils.isEmpty(edtSiteTransferRemark.getText().toString())) {
             edtSiteTransferRemark.setError("Please enter remark");
             return;
         }
+        AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {
             params.put("inventory_component_transfer_id", inventoryComponentId);
@@ -485,6 +485,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            AppUtils.getInstance().showProgressBar(mainRelative,false);
                             finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
