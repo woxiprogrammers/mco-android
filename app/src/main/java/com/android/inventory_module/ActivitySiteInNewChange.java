@@ -110,6 +110,9 @@ public class ActivitySiteInNewChange extends BaseActivity {
     ArrayList<String> grnNameArray;
     private ArrayAdapter<String> adapter;
     private int grnId;
+    private boolean isMaterial;
+    private int unitId, projectSiteId, inventoryComponentId, relatedInventoryComponentId;
+    private String strComponentName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,9 +120,9 @@ public class ActivitySiteInNewChange extends BaseActivity {
         setContentView(R.layout.site_in_new_form);
         ButterKnife.bind(this);
         initializeviews();
-        if(AppUtils.getInstance().checkNetworkState()){
+        if (AppUtils.getInstance().checkNetworkState()) {
             requestToGetGRN();
-        }else {
+        } else {
             AppUtils.getInstance().showOfflineMessage("SiteIn");
         }
     }
@@ -157,34 +160,32 @@ public class ActivitySiteInNewChange extends BaseActivity {
             JSONObject jsonObject = jsonArrayGrn.getJSONObject(selectedIndex);
             grnId = jsonObject.getInt("id");
             requestToGetDetailsFromGrn();
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
     @OnClick({R.id.textViewSiteInFirstImage, R.id.buttonSiteInGrn, R.id.textView_capture, R.id.btnSubmit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.textViewSiteInFirstImage:
-                isFirstImage=true;
+                isFirstImage = true;
                 break;
             case R.id.buttonSiteInGrn:
-                if(AppUtils.getInstance().checkNetworkState()){
-                    uploadImages_addItemToLocal("requestToGenerateGrn","");//ToDo ask to harsha
-                }else {
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    uploadImages_addItemToLocal("requestToGenerateGrn", "");//ToDo ask to harsha
+                } else {
                     AppUtils.getInstance().showOfflineMessage("SiteInActivity");
                 }
-
-
                 break;
             case R.id.textView_capture:
-                isFirstImage=false;
+                isFirstImage = false;
                 captureImage();
                 break;
             case R.id.btnSubmit:
-                if(AppUtils.getInstance().checkNetworkState()){
-                    uploadImages_addItemToLocal("submit","");//ToDo ask to harsha
-                }else {
+                if (AppUtils.getInstance().checkNetworkState()) {
+                    uploadImages_addItemToLocal("submit", "");//ToDo ask to harsha
+                } else {
                     AppUtils.getInstance().showOfflineMessage("SiteInActivity");
                 }
                 break;
@@ -242,7 +243,6 @@ public class ActivitySiteInNewChange extends BaseActivity {
         }
     }
 
-
     private void uploadImages_addItemToLocal(final String strTag, final String imageFor) {
         if (AppUtils.getInstance().checkNetworkState()) {
             if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
@@ -296,95 +296,30 @@ public class ActivitySiteInNewChange extends BaseActivity {
         }
     }
 
-    private void requestToGenerateGrn() {
-        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
-            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
-            params.put("images", jsonImageNameArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //ToDo APP URL
-        AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_SITE_IN + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToGenerateGrn")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            linearLayoutDetails.setVisibility(View.VISIBLE);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
-    }
-
-    private void requestToSubmit() {
-        JSONObject params = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-       //ToDo params
-        try {
-
-            params.put("images", jsonImageNameArray);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //ToDo URL
-        AndroidNetworking.post(AppURL.API_SUBMIT_SITE_IN_NEW + AppUtils.getInstance().getCurrentToken())
-                .setTag("requestToSubmit")
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                    }
-                });
-    }
+    //API call to get site out GRNs
     private void requestToGetGRN() {
-        AndroidNetworking.get(AppURL.API_GRN_URL)
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_GRN_URL + AppUtils.getInstance().getCurrentToken())
                 .setTag("getGRN")
-//                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONObject jsonObject=response.getJSONObject("data");
+                            JSONObject jsonObject = response.getJSONObject("data");
                             jsonArrayGrn = jsonObject.getJSONArray("grn");
                             grnNameArray = new ArrayList<>();
                             for (int i = 0; i < jsonArrayGrn.length(); i++) {
                                 JSONObject jsonObject1 = jsonArrayGrn.getJSONObject(i);
-                                grnNameArray.add(jsonObject1.getString("grn") );
+                                grnNameArray.add(jsonObject1.getString("grn"));
                             }
                             adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, grnNameArray);
                             spinnerSelectGrn.setAdapter(adapter);
@@ -400,12 +335,11 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 });
     }
 
-    private void requestToGetDetailsFromGrn(){
+    //API call after selecting GRN
+    private void requestToGetDetailsFromGrn() {
         JSONObject params = new JSONObject();
         try {
-            //ToDo params
-            params.put("id", grnId);
-            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
+            params.put("grn", spinnerSelectGrn.getSelectedItem().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -421,30 +355,37 @@ public class ActivitySiteInNewChange extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONObject jsonObject = response.getJSONObject("data");
-                            //ToDO Set Values
-                           /* linearLayoutDetails.setVisibility(View.VISIBLE);
-                            isMaterial = jsonObject.getBoolean("is_material");
-                            if (isMaterial) {
-                                textviewName.setText("Material Name");
-                            } else {
-                                textviewName.setText("Asset Name");
+                            linearLayoutDetails.setVisibility(View.VISIBLE);
+                            if (jsonObject != null) {
+                                isMaterial = jsonObject.getBoolean("is_material");
+                                unitId = jsonObject.getInt("unit_id");
+                                projectSiteId = jsonObject.getInt("project_site_id");
+                                strComponentName = jsonObject.getString("material_name");
+                                relatedInventoryComponentId = jsonObject.getInt("related_inventory_component_transfer_id");
+                                String projectSiteNameFrom = jsonObject.getString("project_site_name_from");
+                                editTextSiteName.setText(projectSiteNameFrom);
+                                String material_name = jsonObject.getString("material_name");
+                                editTextName.setText(material_name);
+                                String quantity = jsonObject.getString("quantity");
+                                edtQuantity.setText(quantity);
+                                String unitName = jsonObject.getString("unit_name");
+                                editTextUnit.setText(unitName);
+                                String companyName = jsonObject.getString("company_name");
+                                editTextSetCompName.setText(companyName);
+                                String transportationAmount = jsonObject.getString("transportation_amount");
+                                editTextSetTranCharge.setText(transportationAmount);
+                                String transportationTaxAmount = jsonObject.getString("transportation_tax_amount");
+                                ediTextSetTransTax.setText(transportationTaxAmount);
+                                String driverName = jsonObject.getString("driver_name");
+                                editTextSetDriverName.setText(driverName);
+                                String mobileNumber = jsonObject.getString("mobile");
+                                ediTextSiteInMob.setText(mobileNumber);
+                                if (isMaterial) {
+                                    textviewName.setText("Material Name");
+                                } else {
+                                    textviewName.setText("Asset Name");
+                                }
                             }
-                            textViewItemDetails.setVisibility(View.GONE);
-                            editTextEnteredGrn.setEnabled(false);
-                            unitId = jsonObject.getInt("unit_id");
-                            projectSiteIdFrom = jsonObject.getInt("project_site_id_from");
-                            reference_id = jsonObject.getInt("reference_id");
-                            strComponentName = jsonObject.getString("material_name");
-                            inventoryComponentId = jsonObject.getInt("inventory_component_id");
-                            String projectSiteNameFrom = jsonObject.getString("project_site_name_from");
-                            editTextSiteName.setText(projectSiteNameFrom);
-                            String material_name = jsonObject.getString("material_name");
-                            editTextName.setText(material_name);
-                            String quantity = jsonObject.getString("quantity");
-                            edtQuantity.setText(quantity);
-                            String unitName = jsonObject.getString("unit_name");
-                            editTextUnit.setText(unitName);
-                            strEnteredGrn = editTextEnteredGrn.getText().toString();*/
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -459,5 +400,83 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 });
     }
 
+    //API call to generate GRN
+    private void requestToGenerateGrn() {
+        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
+            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            return;
+        }
+        JSONObject params = new JSONObject();
+        try {
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            params.put("related_inventory_component_transfer_id", inventoryComponentId);
+            params.put("quantity", edtQuantity.getText().toString());
+            params.put("images", jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_SITE_IN + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToGenerateGrn")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            linearLayoutFirstLayout.setVisibility(View.VISIBLE);
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            JSONObject jsonObject = response.getJSONObject("data");
+                            buttonSiteInGrn.setVisibility(View.GONE);
+                            if (jsonObject != null) {
+                                inventoryComponentId = jsonObject.getInt("inventory_component_id");
+                                String generatedGrn=jsonObject.getString("grn");
+                                editTextSetGenGrn.setText(generatedGrn);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
+
+    //API call submit final Site In
+    private void requestToSubmit() {
+        JSONObject params = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        //ToDo params
+        try {
+            params.put("images", jsonImageNameArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //ToDo URL
+        AndroidNetworking.post(AppURL.API_SUBMIT_SITE_IN_NEW + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestToSubmit")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+    }
 }

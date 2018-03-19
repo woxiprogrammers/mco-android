@@ -98,7 +98,7 @@ public class AppURL {
     public static final String API_PETICASH_SALARY_DELETE_VOUCHER = BASE_URL + "peticash/employee-salary/delete-payment-voucher?token=";
 
     public static final String API_SITE_COUNT_URL = BASE_URL+"notification/project-site/get-count?token=";
-    public static final String API_GRN_URL="http://www.mocky.io/v2/5aab98f32e00001000138de8";
-    public static final String API_REQUEST_GENRATE_GRN_SITE_IN = BASE_URL +"";
+    public static final String API_GRN_URL=BASE_URL + "inventory/get-site-out-GRN?token=";
+    public static final String API_REQUEST_GENRATE_GRN_SITE_IN = BASE_URL +"inventory/generate-grn?token=";
     public static final String API_SUBMIT_SITE_IN_NEW = BASE_URL + "";
 }

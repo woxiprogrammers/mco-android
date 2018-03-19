@@ -41,57 +41,6 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayoutFirstLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_8dp"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/dimen_16dp"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:id="@+id/linearLayoutMatImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dimen_16dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/textViewSiteInFirstImage"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:drawableTop="@android:drawable/ic_menu_camera"
-                        android:gravity="center_horizontal"
-                        android:text="Capture Images"/>
-                </LinearLayout>
-
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dimen_4dp"
-                    android:fadeScrollbars="false">
-
-                    <LinearLayout
-                        android:id="@+id/linearLayoutFirstSiteIn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:orientation="horizontal">
-                    </LinearLayout>
-                </HorizontalScrollView>
-
-                <Button
-                    android:id="@+id/buttonSiteInGrn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="@dimen/dimen_5dp"
-                    android:text="Generate GRN"
-                    android:visibility="visible"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayoutDetails"
@@ -101,27 +50,6 @@
                 android:visibility="gone">
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_4dp"
-                        android:text="Generated GRN:"
-                        android:textColor="@color/colorTextLight"/>
-
-                    <EditText
-                        android:id="@+id/editTextSetGenGrn"
-                        style="@style/MyEditTextHeightSTyle"
-                        android:layout_width="match_parent"
-                        android:enabled="false"
-                        android:background="@android:drawable/editbox_background_normal"
-                        android:focusable="false"/>
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -374,6 +302,78 @@
                     </LinearLayout>
                 </HorizontalScrollView>
 
+                <Button
+                    android:id="@+id/buttonSiteInGrn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_marginBottom="@dimen/dimen_5dp"
+                    android:text="Generate GRN"
+                    android:visibility="visible"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayoutFirstLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dimen_16dp"
+                android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Generated GRN:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/editTextSetGenGrn"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:enabled="false"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutMatImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_16dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewSiteInFirstImage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:drawableTop="@android:drawable/ic_menu_camera"
+                        android:gravity="center_horizontal"
+                        android:text="Capture Images"/>
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_4dp"
+                    android:fadeScrollbars="false">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutFirstSiteIn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+                </HorizontalScrollView>
+
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -403,6 +403,7 @@
                     android:text="Submit"
                     android:textColor="@color/colorWhite"/>
             </LinearLayout>
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>
