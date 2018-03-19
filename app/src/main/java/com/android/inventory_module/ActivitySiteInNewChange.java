@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.android.purchase_module.purchase_request.purchase_request_model.purch
 import com.android.utils.AppConstants;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.MySpinner;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
@@ -61,7 +63,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
     @BindView(R.id.linearLayoutFirstLayout)
     LinearLayout linearLayoutFirstLayout;
     @BindView(R.id.spinnerSelectGrn)
-    Spinner spinnerSelectGrn;
+    MySpinner spinnerSelectGrn;
     @BindView(R.id.editTextSetGenGrn)
     EditText editTextSetGenGrn;
     @BindView(R.id.siteName)
@@ -113,6 +115,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
     private boolean isMaterial;
     private int unitId, projectSiteId, inventoryComponentId, relatedInventoryComponentId;
     private String strComponentName;
+    private int check = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +139,11 @@ public class ActivitySiteInNewChange extends BaseActivity {
         spinnerSelectGrn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedId, long l) {
-                String selectedString = (String) adapterView.getItemAtPosition(selectedId);
-                setProjectNameFromIndex(selectedString);
+                linearLayoutDetails.setVisibility(View.GONE);
+                if (++check > 1) {
+                    String selectedString = (String) adapterView.getItemAtPosition(selectedId);
+                    setProjectNameFromIndex(selectedString);
+                }
             }
 
             @Override
@@ -170,10 +176,11 @@ public class ActivitySiteInNewChange extends BaseActivity {
         switch (view.getId()) {
             case R.id.textViewSiteInFirstImage:
                 isFirstImage = true;
+                captureImage();
                 break;
             case R.id.buttonSiteInGrn:
                 if (AppUtils.getInstance().checkNetworkState()) {
-                    uploadImages_addItemToLocal("requestToGenerateGrn", "");//ToDo ask to harsha
+                    uploadImages_addItemToLocal("requestToGenerateGrn", "inventory_transfer");//ToDo ask to harsha
                 } else {
                     AppUtils.getInstance().showOfflineMessage("SiteInActivity");
                 }
@@ -184,7 +191,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 break;
             case R.id.btnSubmit:
                 if (AppUtils.getInstance().checkNetworkState()) {
-                    uploadImages_addItemToLocal("submit", "");//ToDo ask to harsha
+                    uploadImages_addItemToLocal("submit", "inventory_transfer");//ToDo ask to harsha
                 } else {
                     AppUtils.getInstance().showOfflineMessage("SiteInActivity");
                 }
@@ -193,7 +200,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
     }
 
     private void captureImage() {
-        Intent intent = new Intent(mContext, ActivitySiteInNewChange.class);
+        Intent intent = new Intent(mContext, MultiCameraActivity.class);
         Params params = new Params();
         params.setCaptureLimit(AppConstants.IMAGE_PICK_CAPTURE_LIMIT);
         params.setToolbarColor(R.color.colorPrimaryLight);
@@ -300,7 +307,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
     private void requestToGetGRN() {
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", AppUtils.getInstance().toString());
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -362,8 +369,8 @@ public class ActivitySiteInNewChange extends BaseActivity {
                                 projectSiteId = jsonObject.getInt("project_site_id");
                                 strComponentName = jsonObject.getString("material_name");
                                 relatedInventoryComponentId = jsonObject.getInt("related_inventory_component_transfer_id");
-                                String projectSiteNameFrom = jsonObject.getString("project_site_name_from");
-                                editTextSiteName.setText(projectSiteNameFrom);
+                                String projectDetails = jsonObject.getString("project_details");
+                                editTextSiteName.setText(projectDetails);
                                 String material_name = jsonObject.getString("material_name");
                                 editTextName.setText(material_name);
                                 String quantity = jsonObject.getString("quantity");
@@ -380,6 +387,8 @@ public class ActivitySiteInNewChange extends BaseActivity {
                                 editTextSetDriverName.setText(driverName);
                                 String mobileNumber = jsonObject.getString("mobile");
                                 ediTextSiteInMob.setText(mobileNumber);
+                                String vehicleNumber = jsonObject.getString("vehicle_number");
+                                ediTextSetSiteInVehNum.setText(vehicleNumber);
                                 if (isMaterial) {
                                     textviewName.setText("Material Name");
                                 } else {
@@ -409,7 +418,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("related_inventory_component_transfer_id", inventoryComponentId);
+            params.put("related_inventory_component_transfer_id", relatedInventoryComponentId);
             params.put("quantity", edtQuantity.getText().toString());
             params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
@@ -429,9 +438,10 @@ public class ActivitySiteInNewChange extends BaseActivity {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             JSONObject jsonObject = response.getJSONObject("data");
                             buttonSiteInGrn.setVisibility(View.GONE);
+                            textViewCapture.setVisibility(View.GONE);
                             if (jsonObject != null) {
                                 inventoryComponentId = jsonObject.getInt("inventory_component_id");
-                                String generatedGrn=jsonObject.getString("grn");
+                                String generatedGrn = jsonObject.getString("grn");
                                 editTextSetGenGrn.setText(generatedGrn);
                             }
                         } catch (JSONException e) {
@@ -448,15 +458,22 @@ public class ActivitySiteInNewChange extends BaseActivity {
 
     //API call submit final Site In
     private void requestToSubmit() {
+        /*if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            return;
+        }*/
+        if (TextUtils.isEmpty(edtSiteTransferRemark.getText().toString())) {
+            edtSiteTransferRemark.setError("Please enter remark");
+            return;
+        }
         JSONObject params = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        //ToDo params
         try {
+            params.put("inventory_component_transfer_id", inventoryComponentId);
+            params.put("remark", edtSiteTransferRemark.getText().toString());
             params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //ToDo URL
         AndroidNetworking.post(AppURL.API_SUBMIT_SITE_IN_NEW + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToSubmit")
                 .addJSONObjectBody(params)
@@ -468,6 +485,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
