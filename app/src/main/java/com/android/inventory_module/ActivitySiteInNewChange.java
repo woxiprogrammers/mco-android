@@ -434,7 +434,6 @@ public class ActivitySiteInNewChange extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_SITE_IN + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToGenerateGrn")
                 .addJSONObjectBody(params)
