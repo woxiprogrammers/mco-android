@@ -271,7 +271,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionGenerateGrn:
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
-                buttonActionGenerateGrn.setEnabled(false);
                 break;
             case R.id.textViewCaptureTransImg:
                 isForImage = false;
@@ -390,6 +389,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        buttonActionGenerateGrn.setEnabled(false);
         progressToGenerateGRN.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {

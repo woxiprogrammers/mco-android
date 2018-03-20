@@ -188,11 +188,17 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 break;
             case R.id.btnSubmit:
                 if (AppUtils.getInstance().checkNetworkState()) {
-                    if (arrayImageFileList == null || arrayImageFileList.size()== 0) {
-                        Toast.makeText(mContext, "Please2 add at least one image", Toast.LENGTH_LONG).show();
+                    if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+                        Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    uploadImages_addItemToLocal("submit", "inventory_transfer");//ToDo ask to harsha
+
+                    if (TextUtils.isEmpty(edtSiteTransferRemark.getText().toString())) {
+                        edtSiteTransferRemark.requestFocus();
+                        edtSiteTransferRemark.setError("Please enter remark");
+                        return;
+                    }
+                    uploadImages_addItemToLocal("submit", "inventory_transfer");
                 } else {
                     AppUtils.getInstance().showOfflineMessage("SiteInActivity");
                 }
@@ -418,7 +424,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
             return;
         }
         buttonSiteInGrn.setEnabled(false);
-//        AppUtils.getInstance().showProgressBar(mainRelative,true);
+        AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -428,9 +434,8 @@ public class ActivitySiteInNewChange extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        linearLayoutFirstLayout.setVisibility(View.VISIBLE);
 
-       /* AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_SITE_IN + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(AppURL.API_REQUEST_GENRATE_GRN_SITE_IN + AppUtils.getInstance().getCurrentToken())
                 .setTag("requestToGenerateGrn")
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -460,16 +465,11 @@ public class ActivitySiteInNewChange extends BaseActivity {
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
-                });*/
+                });
     }
 
     //API call submit final Site In
     private void requestToSubmit() {
-        if (TextUtils.isEmpty(edtSiteTransferRemark.getText().toString())) {
-            edtSiteTransferRemark.requestFocus();
-            edtSiteTransferRemark.setError("Please enter remark");
-            return;
-        }
         btnSubmit.setEnabled(false);
         AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();

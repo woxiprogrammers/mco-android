@@ -321,7 +321,6 @@ public class CheckListTitleFragment extends Fragment {
 
     @OnClick(R.id.btn_checkList_checkpointSubmit)
     public void onCheckpointSubmitClicked() {
-        Log.i("@@Click","Click");
         if (AppUtils.getInstance().checkNetworkState()) {
             requestToChangeChecklistStatus(true);
         } else {
@@ -603,7 +602,6 @@ public class CheckListTitleFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         try {
-                            Log.i("@@Success","Success");
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             if (isFromState.equalsIgnoreCase("assigned")) {
                                 isFromState = "progress";
@@ -623,7 +621,6 @@ public class CheckListTitleFragment extends Fragment {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestToChangeChecklistStatus");
-                        Log.i("@@Error","Error");
                     }
                 });
     }

@@ -442,14 +442,10 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                                     AppUtils.getInstance().showProgressBar(mainCoordinatorLayout,false);
                                     int setSiteBadgeCount=0;
                                     for (int i = 0; i < response.getNotificationCountData().getProjectsNotificationCount().size(); i++) {
-                                        Log.i("@@Vali", String.valueOf(i));
 
                                         setSiteBadgeCount = setSiteBadgeCount + response.getNotificationCountData().getProjectsNotificationCount().get(i).getNotificationCount();
-                                        Log.i("@@ValCountFor", String.valueOf(response.getNotificationCountData().getProjectsNotificationCount().get(i).getNotificationCount()));
-                                        Log.i("@@ValSetBadgeCountFor", String.valueOf(setSiteBadgeCount));
                                     }
                                     cartBadge.setText(String.valueOf(setSiteBadgeCount));
-                                    Log.i("@@ValSetSiteBadgeCount", String.valueOf(setSiteBadgeCount));
 
                                 }
                             }, new Realm.Transaction.OnError() {

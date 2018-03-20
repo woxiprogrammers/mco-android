@@ -178,7 +178,6 @@ public class PurchaseOrderApproveActivity extends BaseActivity
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("month", passMonth);
             params.put("year", passYear);
-            Log.i("@@P",params.toString());
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();

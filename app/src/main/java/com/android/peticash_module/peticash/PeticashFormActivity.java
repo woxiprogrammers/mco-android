@@ -617,7 +617,6 @@ public class PeticashFormActivity extends BaseActivity {
                 }
             } else {
                 edittextQuantity.setText("1");
-//                edittextQuantity.setFocusable(false);
                 if (isNewItem) {
                     searchAssetListItem_fromResult = searchAssetListItem_fromResult_staticNew;
                     linearLayoutMiscCategory.setVisibility(View.VISIBLE);
@@ -634,7 +633,6 @@ public class PeticashFormActivity extends BaseActivity {
             if (realm != null) {
                 realm.close();
             }
-//            if (alertDialog.isShowing()) {
             if (isMaterial) {
                 if (searchMaterialListItem_fromResult != null) {
                     editTextItemName.setText(searchMaterialListItem_fromResult.getMaterialName());
@@ -1121,6 +1119,7 @@ public class PeticashFormActivity extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
+                        Log.i("@@Error","error");
                         AppUtils.getInstance().logApiError(anError, "getSystemSites");
                     }
                 });
