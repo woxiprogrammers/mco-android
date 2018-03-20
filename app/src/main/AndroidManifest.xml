@@ -88,13 +88,11 @@
         </service>
 
         <activity android:name="com.android.inventory_module.ActivityTransferRequest"/>
-        <activity android:name="com.android.inventory_module.ActivitySiteMoveIn"/>
         <activity android:name="com.android.inventory_module.AutoSuggestInventoryComponent"/>
         <activity
             android:name="com.android.purchase_module.purchase_request.PurchaseOrderApproveActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name="com.android.inventory_module.SiteMoveInActivity"/>
         <activity android:name=".BaseActivity"/>
         <activity android:name="com.android.inventory_module.assets.MoveOutAssetNewActivity"/>
         <activity

@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -92,7 +93,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     ImageView imageViewToRefresh;
     @BindView(R.id.mainCoordinatorLayout)
     CoordinatorLayout mainCoordinatorLayout;
-    private int setSiteBadgeCount = 0;
     private Context mContext;
     private OrderedRealmCollection<ModulesItem> modulesItemOrderedRealmCollection;
     private Realm realm;
@@ -440,10 +440,17 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                                 @Override
                                 public void onSuccess() {
                                     AppUtils.getInstance().showProgressBar(mainCoordinatorLayout,false);
+                                    int setSiteBadgeCount=0;
                                     for (int i = 0; i < response.getNotificationCountData().getProjectsNotificationCount().size(); i++) {
+                                        Log.i("@@Vali", String.valueOf(i));
+
                                         setSiteBadgeCount = setSiteBadgeCount + response.getNotificationCountData().getProjectsNotificationCount().get(i).getNotificationCount();
+                                        Log.i("@@ValCountFor", String.valueOf(response.getNotificationCountData().getProjectsNotificationCount().get(i).getNotificationCount()));
+                                        Log.i("@@ValSetBadgeCountFor", String.valueOf(setSiteBadgeCount));
                                     }
                                     cartBadge.setText(String.valueOf(setSiteBadgeCount));
+                                    Log.i("@@ValSetSiteBadgeCount", String.valueOf(setSiteBadgeCount));
+
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -479,6 +486,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         if (AppUtils.getInstance().checkNetworkState()) {
             AppUtils.getInstance().showProgressBar(mainCoordinatorLayout,true);
             getCount();
+            setUpDrawerData();
+        }else {
+            AppUtils.getInstance().showOfflineMessage("DashBoardActivity");
         }
     }
 }

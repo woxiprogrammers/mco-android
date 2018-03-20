@@ -141,7 +141,11 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
-        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).equalTo("purchaseOrderStatusSlug","close").findAllAsync();
+        purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).
+                equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .equalTo("purchaseOrderStatusSlug","close").or()
+                .equalTo("purchaseOrderStatusSlug","completed").
+                        findAllAsync();
 
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override

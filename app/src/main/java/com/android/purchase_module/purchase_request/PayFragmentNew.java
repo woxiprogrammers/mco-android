@@ -209,7 +209,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         float quantity = Float.parseFloat(purchaseOrderListItem.getRemainingQuantity());
         if (isHaveCreateAccess) {
             linearLayoutFirstLayout.setVisibility(View.VISIBLE);
-            if (quantity == 0 || quantity == 0.0) {
+            if (quantity == 0 || quantity < 0 || quantity == 0.0) {
                 textViewShowMessage.setVisibility(View.VISIBLE);
                 linearLayoutFirstLayout.setVisibility(View.GONE);
             } else {
@@ -279,7 +279,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionSubmit:
                 validateEntries();
-                buttonActionSubmit.setEnabled(false);
                 break;
         }
     }
@@ -387,11 +386,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToGenerateGrn() {
-        progressToGenerateGRN.setVisibility(View.VISIBLE);
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        progressToGenerateGRN.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_id", orderId);
@@ -455,6 +454,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             }
         }
         AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, true);
+        buttonActionSubmit.setEnabled(false);
+
         try {
             params.put("vehicle_number", strVehicleNumber);
             if (!editTextBillAmount.getText().toString().isEmpty()) {
