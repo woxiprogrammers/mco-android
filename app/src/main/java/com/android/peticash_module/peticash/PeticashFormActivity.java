@@ -473,7 +473,7 @@ public class PeticashFormActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!TextUtils.isEmpty(charSequence.toString())) {
-                    if (Integer.parseInt(charSequence.toString()) > Integer.parseInt(amountLimit)) {
+                    if (Long.parseLong(charSequence.toString()) > Long.parseLong(amountLimit)) {
                         exceedAmount.setVisibility(View.VISIBLE);
                         exceedAmount.setText("Amount should be below " + amountLimit);
                         buttonGenerateGrn.setVisibility(View.GONE);
@@ -1168,6 +1168,7 @@ public class PeticashFormActivity extends BaseActivity {
                         try {
                             jsonArrayForSite = response.getJSONArray("data");
                             siteNameArray = new ArrayList<>();
+                            Log.i("@@Array", String.valueOf(jsonArray));
                             for (int i = 0; i < jsonArrayForSite.length(); i++) {
                                 JSONObject jsonObject = jsonArrayForSite.getJSONObject(i);
                                 siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
