@@ -74,6 +74,7 @@
                     style="@style/MyEditTextHeightSTyle"
                     android:background="@android:drawable/editbox_background_normal"
                     android:digits="0123456789."
+                    android:maxLength="11"
                     android:inputType="number"/>
             </LinearLayout>
 

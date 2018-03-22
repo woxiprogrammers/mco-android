@@ -213,6 +213,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_3dp"
                         android:text="Bill Amount:"
+                        android:maxLength="11"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
