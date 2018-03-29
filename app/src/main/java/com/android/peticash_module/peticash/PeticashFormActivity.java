@@ -322,7 +322,6 @@ public class PeticashFormActivity extends BaseActivity {
     //Salary
     @OnClick(R.id.button_salary_submit)
     public void onViewClicked() {
-        buttonSalarySubmit.setEnabled(false);
         if (AppUtils.getInstance().checkNetworkState()) {
             validationForSalaryAdvance();
         } else {
@@ -676,6 +675,7 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestForSalaryOrAdvance() {
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
+        buttonSalarySubmit.setEnabled(false);
         JSONObject params = new JSONObject();
         try {
             params.put("employee_id", primaryKey);
@@ -1182,7 +1182,7 @@ public class PeticashFormActivity extends BaseActivity {
                             Log.i("@@Array", String.valueOf(jsonArray));
                             for (int i = 0; i < jsonArrayForSite.length(); i++) {
                                 JSONObject jsonObject = jsonArrayForSite.getJSONObject(i);
-                                siteNameArray.add(jsonObject.getString("project_site_name") + ", " + jsonObject.getString("project_name"));
+                                siteNameArray.add(jsonObject.getString("project_name"));
                             }
                             adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
                             editTextSiteName.setAdapter(adapter);
