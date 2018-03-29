@@ -726,7 +726,7 @@ public class PeticashFormActivity extends BaseActivity {
             if (jsonImageNameArray != null) {
                 params.put("images", jsonImageNameArray);
             }
-            if (TextUtils.isEmpty(editTextAddNote.getText().toString()))
+            if (TextUtils.isEmpty(editTextAddtonoteforsalary.getText().toString()))
                 params.put("remark", "");
             else
                 params.put("remark", editTextAddtonoteforsalary.getText().toString());
