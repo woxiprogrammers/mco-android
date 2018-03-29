@@ -973,7 +973,6 @@ public class PeticashFormActivity extends BaseActivity {
                         try {
                             jsonArrayForSite = response.getJSONArray("data");
                             siteNameArray = new ArrayList<>();
-                            Log.i("@@Array", String.valueOf(jsonArray));
                             for (int i = 0; i < jsonArrayForSite.length(); i++) {
                                 JSONObject jsonObject = jsonArrayForSite.getJSONObject(i);
                                 siteNameArray.add(jsonObject.getString("project_name"));
@@ -1176,7 +1175,6 @@ public class PeticashFormActivity extends BaseActivity {
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.i("@@Error","error");
                         AppUtils.getInstance().logApiError(anError, "getSystemSites");
                     }
                 });
