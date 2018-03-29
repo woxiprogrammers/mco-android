@@ -60,7 +60,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
     private JSONArray jsonArray = new JSONArray();
     private boolean isCheckboxChecked;
-    private boolean isMaterialSelected;
+    private boolean isMaterialSelected,isApproveClicked;
     private String subModulesItemList;
 
     @Override
@@ -77,10 +77,11 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         MenuItem menuItem=menu.findItem(R.id.action_approve);
         if(subModulesItemList.contains("approve-purchase-order-request")){
             menuItem.setVisible(true);
-
         }else {
             menuItem.setVisible(false);
-
+        }
+        if(isApproveClicked){
+            menuItem.setVisible(false);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -309,6 +310,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        isApproveClicked=true;
+                        invalidateOptionsMenu();
                         requestToChangeStatus();
                     }
                 })

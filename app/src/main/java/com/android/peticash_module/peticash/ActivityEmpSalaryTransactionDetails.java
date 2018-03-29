@@ -192,6 +192,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             }
 
             editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
+            Log.i("@@REMARK", empSalaryTransactionDetailData.getRemark()  );
             if (!empSalaryTransactionDetailData.getRemark().isEmpty()) {
                 editTextSetSalaryRemark.setVisibility(View.VISIBLE);
                 editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());

@@ -294,7 +294,6 @@ public class PeticashFormActivity extends BaseActivity {
     public void onViewImageClicked(View view) {
         switch (view.getId()) {
             case R.id.button_generate_grn:
-                buttonGenerateGrn.setEnabled(false);
                 if (AppUtils.getInstance().checkNetworkState()) {
                     validateEntries();
                 } else {
@@ -526,6 +525,7 @@ public class PeticashFormActivity extends BaseActivity {
         String strItemQuantity = edittextQuantity.getText().toString();
         String strBillNumber = editTextBillNumber.getText().toString();
         String strBillAmount = editTextBillamount.getText().toString();
+        String purchaseRemark=editTextAddNote.getText().toString();
         if (TextUtils.isEmpty(strItemQuantity)) {
             edittextQuantity.setFocusableInTouchMode(true);
             edittextQuantity.requestFocus();
@@ -552,6 +552,16 @@ public class PeticashFormActivity extends BaseActivity {
         } else {
             editTextBillamount.setError(null);
             editTextBillamount.clearFocus();
+        }
+
+        if(TextUtils.isEmpty(purchaseRemark)){
+            editTextAddNote.setError("Please enter remark");
+            editTextAddNote.requestFocus();
+            editTextAddNote.setFocusableInTouchMode(true);
+            return;
+        }else {
+            editTextAddNote.setError(null);
+            editTextAddNote.clearFocus();
         }
         uploadImages_addItemToLocal("requestToGrnGeneration", "peticash_purchase_transaction");
     }
@@ -751,6 +761,7 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestToGenerateGRN() {
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
+        buttonGenerateGrn.setEnabled(false);
         int intSelectedPos = spinnerMiscCategoryArray.getSelectedItemPosition();
         try {
             if (jsonArray != null) {
@@ -791,6 +802,7 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("bill_amount", editTextBillamount.getText().toString());
             params.put("date", currentDate);
             params.put("images", jsonImageNameArray);
+            params.put("remark",editTextAddNote.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -949,6 +961,38 @@ public class PeticashFormActivity extends BaseActivity {
                 });
     }
 
+    private void requestToGetSystemSites() {
+        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
+                .setTag("requestToGetSystemSites")
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            jsonArrayForSite = response.getJSONArray("data");
+                            siteNameArray = new ArrayList<>();
+                            Log.i("@@Array", String.valueOf(jsonArray));
+                            for (int i = 0; i < jsonArrayForSite.length(); i++) {
+                                JSONObject jsonObject = jsonArrayForSite.getJSONObject(i);
+                                siteNameArray.add(jsonObject.getString("project_name"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
+                            editTextSiteName.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
+                    }
+                });
+    }
+
+
     @OnClick(R.id.textViewCapturFirst)
     public void onFirstCapClicked(View view) {
         switch (view.getId()) {
@@ -1096,6 +1140,7 @@ public class PeticashFormActivity extends BaseActivity {
         editTextItemName.setEnabled(false);
         textViewCapturFirst.setEnabled(false);
         editTextAddNote.setEnabled(false);
+
         /////////////
         linearLayoutGRN.setVisibility(View.VISIBLE);
         linearLayoutPayableAmount.setVisibility(View.VISIBLE);
@@ -1103,6 +1148,7 @@ public class PeticashFormActivity extends BaseActivity {
         buttonGenerateGrn.setVisibility(View.GONE);
         buttonPayWithPeticash.setVisibility(View.VISIBLE);
         layoutCapture.setVisibility(View.VISIBLE);
+        textViewCapturFirst.setVisibility(View.GONE);
     }
 
     private void setMiscelleneousCategories() {
@@ -1167,34 +1213,4 @@ public class PeticashFormActivity extends BaseActivity {
         }
     }
 
-    private void requestToGetSystemSites() {
-        AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
-                .setTag("requestToGetSystemSites")
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            jsonArrayForSite = response.getJSONArray("data");
-                            siteNameArray = new ArrayList<>();
-                            Log.i("@@Array", String.valueOf(jsonArray));
-                            for (int i = 0; i < jsonArrayForSite.length(); i++) {
-                                JSONObject jsonObject = jsonArrayForSite.getJSONObject(i);
-                                siteNameArray.add(jsonObject.getString("project_name"));
-                            }
-                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, siteNameArray);
-                            editTextSiteName.setAdapter(adapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestToGetSystemSites");
-                    }
-                });
-    }
 }
