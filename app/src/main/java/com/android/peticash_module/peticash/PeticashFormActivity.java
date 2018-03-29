@@ -561,6 +561,7 @@ public class PeticashFormActivity extends BaseActivity {
         String strEmployeeIDOrName = editTextEmpIdName.getText().toString();
         String strSalaryAmount = editTextSalaryAmount.getText().toString();
         String strTotalDays = edittextDay.getText().toString();
+        String remark=editTextAddtonoteforsalary.getText().toString();
         if (TextUtils.isEmpty(strEmployeeIDOrName)) {
             editTextEmpIdName.setFocusableInTouchMode(true);
             editTextEmpIdName.requestFocus();
@@ -589,6 +590,16 @@ public class PeticashFormActivity extends BaseActivity {
         } else {
             editTextSalaryAmount.setError(null);
             editTextSalaryAmount.clearFocus();
+        }
+
+        if(TextUtils.isEmpty(remark)){
+            editTextAddtonoteforsalary.setFocusableInTouchMode(true);
+            editTextAddtonoteforsalary.requestFocus();
+            editTextAddtonoteforsalary.setError("Please enter remark");
+            return;
+        }else {
+            editTextAddtonoteforsalary.setError(null);
+            editTextAddtonoteforsalary.clearFocus();
         }
         uploadImages_addItemToLocal("Salary", "peticash_salary_transaction");
     }
@@ -708,7 +719,7 @@ public class PeticashFormActivity extends BaseActivity {
             if (TextUtils.isEmpty(editTextAddNote.getText().toString()))
                 params.put("remark", "");
             else
-                params.put("remark", editTextAddNote.getText().toString());
+                params.put("remark", editTextAddtonoteforsalary.getText().toString());
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
