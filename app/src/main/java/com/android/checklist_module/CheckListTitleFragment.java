@@ -520,13 +520,7 @@ public class CheckListTitleFragment extends Fragment {
                                     }, new Realm.Transaction.OnSuccess() {
                                         @Override
                                         public void onSuccess() {
-                                            Log.i("@@Id", String.valueOf(parentProjectSiteUserChecklistAssignmentId));
-                                            Log.i("@@STate",isFromState);
-                                            parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class)
-                                                    /*.equalTo("parentProjectSiteUserChecklistAssignmentId", parentProjectSiteUserChecklistAssignmentId)*/
-                                                    /*.equalTo("isFromState", isFromState)*/.findAll();
-
-                                            Log.i("@@Result", String.valueOf(parentCheckPointsItemRealmResults));
+                                            parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class).findAll();
                                             ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
                                             rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
                                             rvChecklistTitle.setHasFixedSize(true);

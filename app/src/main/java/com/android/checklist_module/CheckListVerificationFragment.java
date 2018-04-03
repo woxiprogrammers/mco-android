@@ -178,7 +178,7 @@ public class CheckListVerificationFragment extends Fragment {
                     } else {
                         linearLayoutChecklistImg.setVisibility(View.GONE);
                     }
-                    if (parentCheckPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                    if (parentCheckPointsItem.isProjectSiteUserCheckpointIsOk()) {
                         radioButtonOk.setChecked(true);
                         radioButtonNotOk.setEnabled(false);
                     } else {
@@ -201,7 +201,7 @@ public class CheckListVerificationFragment extends Fragment {
                 }
                 intNumberOfImages = checkPointsItem.getProjectSiteUserCheckpointImages().size();
                 if (isFromState.equalsIgnoreCase("completed") || isFromState.equalsIgnoreCase("review")) {
-                    if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                    if (checkPointsItem.isProjectSiteUserCheckpointIsOk()) {
                         radioButtonOk.setChecked(true);
                         radioButtonNotOk.setEnabled(false);
                     } else {
@@ -209,7 +209,7 @@ public class CheckListVerificationFragment extends Fragment {
                         radioButtonOk.setEnabled(false);
                     }
                 } else {
-                    if (checkPointsItem.getProjectSiteUserCheckpointIsChecked()) {
+                    if (checkPointsItem.isProjectSiteUserCheckpointIsOk()) {
                         radioButtonOk.setChecked(true);
                     } else {
                         radioButtonNotOk.setChecked(true);
