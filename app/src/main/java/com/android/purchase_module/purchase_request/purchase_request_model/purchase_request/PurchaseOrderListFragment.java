@@ -151,8 +151,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             @Override
             public void onItemClick(View view, final int position) {
                 if (view.getId() == R.id.textViewdetails) {
-                    PurchaseOrdermaterialDetailF
-                    ragment purchaseOrdermaterialDetailFragment = new PurchaseOrdermaterialDetailFragment();
+                    PurchaseOrdermaterialDetailFragment purchaseOrdermaterialDetailFragment = new PurchaseOrdermaterialDetailFragment();
                     Bundle bundleArgs = new Bundle();
                     bundleArgs.putInt("purchase_order_id", purchaseOrderListItems.get(position).getId());
                     purchaseOrdermaterialDetailFragment.setArguments(bundleArgs);
