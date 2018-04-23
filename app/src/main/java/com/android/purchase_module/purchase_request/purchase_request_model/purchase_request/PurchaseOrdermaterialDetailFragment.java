@@ -114,9 +114,9 @@ public class PurchaseOrdermaterialDetailFragment extends DialogFragment {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-//                                    realm.delete(PurchaseOrderMaterialDetailResponse.class);
-//                                    realm.delete(MaterialsItem.class);
-//                                    realm.delete(PurchaseOrderDetailData.class);
+                                    realm.delete(PurchaseOrderMaterialDetailResponse.class);
+                                    realm.delete(MaterialsItem.class);
+                                    realm.delete(PurchaseOrderDetailData.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
