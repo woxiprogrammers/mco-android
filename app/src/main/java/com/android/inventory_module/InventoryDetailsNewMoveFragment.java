@@ -6,11 +6,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,7 +68,7 @@ import static android.app.Activity.RESULT_OK;
 public class InventoryDetailsNewMoveFragment extends Fragment implements FragmentInterface {
     private static int inventoryComponentId;
     @BindView(R.id.edt_userName)
-    EditText edtUserName;
+    AutoCompleteTextView edtUserName;
     @BindView(R.id.edt_quantity)
     EditText edtQuantity;
     @BindView(R.id.spinnerUnits)
@@ -85,6 +89,9 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     private JSONArray jsonImageNameArray = new JSONArray();
     private Context mContext;
     private Realm realm;
+    private JSONArray jsonArrayForName;
+    private ArrayList<String> userNameArray;
+    private ArrayAdapter<String> adapter;
 
     @Override
     public void fragmentBecameVisible() {
@@ -153,8 +160,8 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.fragment_new_inventory_details_move, container, false);
-        initializeViews();
         unbinder = ButterKnife.bind(this, mParentView);
+        initializeViews();
         return mParentView;
     }
 
@@ -165,6 +172,28 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
             inventoryComponentId = bundle.getInt("inventoryCompid");
         }
         checkAvailability(inventoryComponentId);
+        edtUserName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.toString() != null){
+                    if(AppUtils.getInstance().checkNetworkState())
+                        requestToGetUserName(charSequence.toString());
+                    else
+                        AppUtils.getInstance().showOfflineMessage("GetUserName");
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private void checkAvailability(int materialRequestComponentId) {
@@ -359,5 +388,43 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
         params.setButtonTextColor(R.color.colorWhite);
         intent.putExtra(Constants.KEY_PARAMS, params);
         startActivityForResult(intent, type);
+    }
+
+    private void requestToGetUserName(String strSearch) {
+        JSONObject params=new JSONObject();
+        try {
+            params.put("employee_name",strSearch);
+            params.put("project_site_id",AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_AUTO_SUGGEST_FOR_PETICASH_EMPLOYEE)
+                .setPriority(Priority.MEDIUM)
+                .addJSONObjectBody(params)
+                .setTag("requestToGetUserName")
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.i("@@",response.toString());
+                            jsonArrayForName = response.getJSONArray("data");
+                            userNameArray = new ArrayList<>();
+                            for (int i = 0; i < jsonArrayForName.length(); i++) {
+                                JSONObject jsonObject = jsonArrayForName.getJSONObject(i);
+                                userNameArray.add(jsonObject.getString("employee_name") + " - " + jsonObject.getString("format_employee_id"));
+                            }
+                            adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, userNameArray);
+                            edtUserName.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestToGetUserName");
+                    }
+                });
     }
 }

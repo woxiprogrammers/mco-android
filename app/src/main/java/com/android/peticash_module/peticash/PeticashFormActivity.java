@@ -182,6 +182,7 @@ public class PeticashFormActivity extends BaseActivity {
     LinearLayout linearLayoutPTPF;
     @BindView(R.id.linearLayoutESICTDS)
     LinearLayout linearLayoutESICTDS;
+
     @BindView(R.id.editTextSiteName)
     AutoCompleteTextView editTextSiteName;
     @BindView(R.id.mainRelativeLayout)

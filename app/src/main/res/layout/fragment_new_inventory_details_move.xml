@@ -29,10 +29,15 @@
                     android:text="User Name"
                     android:textColor="@color/colorTextLight"/>
 
-
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/edt_userName"
                     android:layout_width="match_parent"
+                    style="@style/MyEditTextHeightSTyle"
+                    android:background="@android:drawable/editbox_background_normal"/>
+                <EditText
+                    android:id="@+id/edt_userNameold"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
                     style="@style/MyEditTextHeightSTyle"
                     android:background="@android:drawable/editbox_background_normal"/>
             </LinearLayout>
