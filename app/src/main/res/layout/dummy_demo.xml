@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_4dp"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dimen_8dp">
+
+    <LinearLayout
+        android:id="@+id/linearLayoutVendorItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/vendorRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dimen_12dp"
+            android:paddingLeft="@dimen/dimen_4dp"
+            android:paddingTop="@dimen/dimen_12dp"
+            android:text="First Vendor Name"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dimen_4dp"
+            android:paddingLeft="@dimen/dimen_12dp"
+            android:paddingTop="@dimen/dimen_4dp"
+            android:background="@color/transparent_color"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="left"
+                android:text="Qty"/>
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="left"
+                android:text="Rate"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="left"
+                android:text="GST"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="left"
+                android:text="Amount"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_4dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="Material"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/textViewQty"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:text="100"
+                android:gravity="left"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/textViewRateWithoutTax"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:text="100"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/textViewGST"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:text="200"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/textViewTotalWithTax"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:gravity="left"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:text="200"/>
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorLightGrey"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_4dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="Transportation"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/textViewTransQty"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:text="100"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/textViewTranAmount"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:gravity="left"
+                android:text="200"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/textViewTransGST"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:text="20"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLightGrey"
+                />
+            <TextView
+                android:id="@+id/textViewTotalTransAmount"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:text="200"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorLightGrey"
+            />
+        <TextView
+            android:id="@+id/textViewExpDeliveryDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:text="Expected Delivery Date: "
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/textViewRateWithTax"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:text="Rate With Tax"
+            android:visibility="gone"
+            />
+
+
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

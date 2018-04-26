@@ -417,15 +417,29 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewExpDeliveryDate=currentChildView.findViewById(R.id.textViewExpDeliveryDate);
                 TextView textViewTranAmount=currentChildView.findViewById(R.id.textViewTranAmount);
                 TextView textViewTotalTransAmount=currentChildView.findViewById(R.id.textViewTotalTransAmount);
-                textViewRateWithTax.setText("Rate With Tax: " + vendorsItemRealmList.get(viewIndex).getRatePerTax());
-                textViewRateWithoutTax.setText("Rate Without Tax: " + vendorsItemRealmList.get(viewIndex).getRate());
-                textViewTotalWithTax.setText("Total With Tax: " + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
+                TextView textViewTransGST=currentChildView.findViewById(R.id.textViewTransGST);
+                TextView textViewGST=currentChildView.findViewById(R.id.textViewGST);
+                TextView textViewQty=currentChildView.findViewById(R.id.textViewQty);
+                TextView textViewTransQty=currentChildView.findViewById(R.id.textViewTransQty);
+                textViewTransQty.setText(requestMaterialListItem.getQuantity());
+                textViewQty.setText(requestMaterialListItem.getQuantity());
+                Float rateWithTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRatePerTax());
+                Float rateWithoutTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRate());
+                Float resultMaterialGST=rateWithTax -rateWithoutTax;
+                textViewGST.setText(""+resultMaterialGST);
+                Float totalTransAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
+                Float transAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTransportationAmount());
+                Float result=totalTransAmount - transAmount;
+                textViewTransGST.setText("" + result);
+//              textViewRateWithTax.setText("Rate With Tax: " + vendorsItemRealmList.get(viewIndex).getRatePerTax());
+                textViewRateWithoutTax.setText("" + vendorsItemRealmList.get(viewIndex).getRate());
+                textViewTotalWithTax.setText("" + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
 
                 textViewExpDeliveryDate.setText(textViewExpDeliveryDate.getText().toString() +
                 AppUtils.getInstance().getTime("yyyy-MM-dd","dd/MM/yyyy",vendorsItemRealmList.get(viewIndex).getExpectedDeliveryDate()));
 
-                textViewTranAmount.setText(textViewTranAmount.getText().toString() +vendorsItemRealmList.get(viewIndex).getTransportationAmount());
-                textViewTotalTransAmount.setText(textViewTotalTransAmount.getText().toString() + vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
+                textViewTranAmount.setText(/*textViewTranAmount.getText().toString()*/"" +vendorsItemRealmList.get(viewIndex).getTransportationAmount());
+                textViewTotalTransAmount.setText(/*textViewTotalTransAmount.getText().toString() */""+ vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 vendorRadioButton.setText(vendorsItemRealmList.get(viewIndex).getVendorName());
                 vendorRadioButton.setClickable(false);
             }
@@ -461,7 +475,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
                 }
                 for (int indexView = 0; indexView < intMaxSize; indexView++) {
-                    View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
+                    View childLayout = LayoutInflater.from(context).inflate(R.layout.dummy_demo, null);
                     childLayout.setId(indexView);
                     LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);
                     final int finalIndexView = indexView;
