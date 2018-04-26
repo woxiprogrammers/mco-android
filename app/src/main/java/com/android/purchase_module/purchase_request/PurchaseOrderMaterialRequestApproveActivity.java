@@ -411,7 +411,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                 LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
                 RadioButton vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
-                TextView textViewRateWithTax = currentChildView.findViewById(R.id.textViewRateWithTax);
+                TextView textViewTotalBillAmt = currentChildView.findViewById(R.id.textViewTotalBillAmt);
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
                 TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
                 TextView textViewExpDeliveryDate=currentChildView.findViewById(R.id.textViewExpDeliveryDate);
@@ -423,23 +423,29 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewTransQty=currentChildView.findViewById(R.id.textViewTransQty);
                 textViewTransQty.setText(requestMaterialListItem.getQuantity());
                 textViewQty.setText(requestMaterialListItem.getQuantity());
-                Float rateWithTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRatePerTax());
-                Float rateWithoutTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRate());
-                Float resultMaterialGST=rateWithTax -rateWithoutTax;
-                textViewGST.setText(""+resultMaterialGST);
+                float rateWithTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRatePerTax());
+                float rateWithoutTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRate());
+                float resultMaterialGST=rateWithTax -rateWithoutTax;
+                textViewGST.setText(String.valueOf(resultMaterialGST));
                 Float totalTransAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 Float transAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTransportationAmount());
                 Float result=totalTransAmount - transAmount;
-                textViewTransGST.setText("" + result);
-//              textViewRateWithTax.setText("Rate With Tax: " + vendorsItemRealmList.get(viewIndex).getRatePerTax());
-                textViewRateWithoutTax.setText("" + vendorsItemRealmList.get(viewIndex).getRate());
-                textViewTotalWithTax.setText("" + vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
+                textViewTransGST.setText(String.valueOf(result));
+
+                float matVal=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
+                float transVal=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
+                float resultBillAMount=matVal + transVal;
+                textViewTotalBillAmt.setText(textViewTotalBillAmt.getText().toString()+ resultBillAMount);
+
+
+                textViewRateWithoutTax.setText(vendorsItemRealmList.get(viewIndex).getRate());
+                textViewTotalWithTax.setText(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
 
                 textViewExpDeliveryDate.setText(textViewExpDeliveryDate.getText().toString() +
                 AppUtils.getInstance().getTime("yyyy-MM-dd","dd/MM/yyyy",vendorsItemRealmList.get(viewIndex).getExpectedDeliveryDate()));
 
-                textViewTranAmount.setText(/*textViewTranAmount.getText().toString()*/"" +vendorsItemRealmList.get(viewIndex).getTransportationAmount());
-                textViewTotalTransAmount.setText(/*textViewTotalTransAmount.getText().toString() */""+ vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
+                textViewTranAmount.setText(vendorsItemRealmList.get(viewIndex).getTransportationAmount());
+                textViewTotalTransAmount.setText(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 vendorRadioButton.setText(vendorsItemRealmList.get(viewIndex).getVendorName());
                 vendorRadioButton.setClickable(false);
             }
@@ -475,7 +481,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
                 }
                 for (int indexView = 0; indexView < intMaxSize; indexView++) {
-                    View childLayout = LayoutInflater.from(context).inflate(R.layout.dummy_demo, null);
+                    View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
                     LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);
                     final int finalIndexView = indexView;
