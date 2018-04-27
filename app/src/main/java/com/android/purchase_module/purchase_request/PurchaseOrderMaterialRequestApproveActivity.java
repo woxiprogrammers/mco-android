@@ -420,8 +420,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewTransGST=currentChildView.findViewById(R.id.textViewTransGST);
                 TextView textViewGST=currentChildView.findViewById(R.id.textViewGST);
                 TextView textViewQty=currentChildView.findViewById(R.id.textViewQty);
-                TextView textViewTransQty=currentChildView.findViewById(R.id.textViewTransQty);
-                textViewTransQty.setText(requestMaterialListItem.getQuantity());
                 textViewQty.setText(requestMaterialListItem.getQuantity());
                 float rateWithTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRatePerTax());
                 float rateWithoutTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRate());

@@ -150,13 +150,12 @@
                 android:background="@color/colorLightGrey"
                 />
             <TextView
-                android:id="@+id/textViewTransQty"
                 android:layout_width="0dp"
                 android:layout_weight="0.3"
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:layout_marginLeft="@dimen/dimen_10dp"
-                android:text="100"/>
+                android:text="1"/>
             <View
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
