@@ -421,14 +421,15 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewGST=currentChildView.findViewById(R.id.textViewGST);
                 TextView textViewQty=currentChildView.findViewById(R.id.textViewQty);
                 textViewQty.setText(requestMaterialListItem.getQuantity());
-                float rateWithTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRatePerTax());
+                /*float rateWithTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRatePerTax());
                 float rateWithoutTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRate());
-                float resultMaterialGST=rateWithTax -rateWithoutTax;
-                textViewGST.setText(String.valueOf(resultMaterialGST));
-                Float totalTransAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
+                float resultMaterialGST=rateWithTax -rateWithoutTax;*/
+                textViewGST.setText(vendorsItemRealmList.get(viewIndex).getGst());
+
+                /*Float totalTransAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 Float transAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTransportationAmount());
-                Float result=totalTransAmount - transAmount;
-                textViewTransGST.setText(String.valueOf(result));
+                Float result=totalTransAmount - transAmount;*/
+                textViewTransGST.setText(vendorsItemRealmList.get(viewIndex).getTransportationGst());
 
                 float matVal=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
                 float transVal=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());

@@ -77,6 +77,12 @@ public class VendorsItem extends RealmObject{
 	@SerializedName("total_transportation_amount")
 	private String totalTransportationAmount;
 
+	@SerializedName("gst")
+	private String gst;
+
+	@SerializedName("transportation_gst")
+	private String transportationGst;
+
 	public void setRate(String rate){
 		this.rate = rate;
 	}
@@ -87,6 +93,22 @@ public class VendorsItem extends RealmObject{
 
 	public void setVendorId(int vendorId){
 		this.vendorId = vendorId;
+	}
+
+	public String getGst() {
+		return gst;
+	}
+
+	public void setGst(String gst) {
+		this.gst = gst;
+	}
+
+	public String getTransportationGst() {
+		return transportationGst;
+	}
+
+	public void setTransportationGst(String transportationGst) {
+		this.transportationGst = transportationGst;
 	}
 
 	public int getVendorId(){
