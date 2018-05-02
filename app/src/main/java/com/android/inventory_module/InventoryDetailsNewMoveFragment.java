@@ -349,7 +349,7 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
                 params.put("unit_id", unitId);
             }
             params.put("remark", editTextAddNote.getText().toString());
-            params.put("image", jsonImageNameArray);
+            params.put("images", jsonImageNameArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
