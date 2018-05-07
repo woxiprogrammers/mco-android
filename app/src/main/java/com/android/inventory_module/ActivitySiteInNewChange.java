@@ -423,7 +423,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-        buttonSiteInGrn.setEnabled(false);
+        buttonSiteInGrn.setVisibility(View.GONE);
         AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {
@@ -448,7 +448,6 @@ public class ActivitySiteInNewChange extends BaseActivity {
                             AppUtils.getInstance().showProgressBar(mainRelative,false);
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             JSONObject jsonObject = response.getJSONObject("data");
-                            buttonSiteInGrn.setVisibility(View.GONE);
                             textViewCapture.setVisibility(View.GONE);
                             if (jsonObject != null) {
                                 inventoryComponentId = jsonObject.getInt("inventory_component_id");

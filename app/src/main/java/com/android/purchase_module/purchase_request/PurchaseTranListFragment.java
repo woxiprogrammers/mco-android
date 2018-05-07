@@ -221,7 +221,6 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
 
             holder.textViewPurchaseGrn.setText(purchaseBillListItem.getGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getPurchaseOrderTransactionStatus());
-            holder.textViewGrnQuantity.setVisibility(View.VISIBLE);
            /* if(purchaseBillListItem.getTransactionData() != null){
                 holder.textViewGrnQuantity.setText(purchaseBillListItem.getTransactionData().get(position).getMaterialQuantity());
             }*/

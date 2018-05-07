@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.inventory_module.inventory_model.RequestComponentData;
 import com.android.inventory_module.inventory_model.RequestComponentListingItem;
 import com.android.inventory_module.inventory_model.RequestComponentResponse;
 import com.android.utils.AppURL;
@@ -184,9 +185,9 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
                                     realm.executeTransactionAsync(new Realm.Transaction() {
                                         @Override
                                         public void execute(Realm realm) {
-//                                    realm.delete(RequestComponentResponse.class);
-//                                    realm.delete(RequestComponentData.class);
-//                                    realm.delete(RequestComponentListingItem.class);
+                                            realm.delete(RequestComponentResponse.class);
+                                            realm.delete(RequestComponentData.class);
+                                            realm.delete(RequestComponentListingItem.class);
                                             realm.insertOrUpdate(response);
                                         }
                                     }, new Realm.Transaction.OnSuccess() {
@@ -243,7 +244,7 @@ public class InventoryTransferRequestListFragment extends Fragment implements Fr
         public void onBindViewHolder(MyViewHolder holder, int position) {
             RequestComponentListingItem requestComponentListingItem = requestComponentListingItemOrderedRealmCollection.get(position);
             holder.textViewItemName.setText(requestComponentListingItem.getComponentName());
-            holder.textviewQuantityUnit.setText("Qty : " +requestComponentListingItem.getQuantity() + " " + requestComponentListingItem.getUnit());
+            holder.textviewQuantityUnit.setText("Qty : " + requestComponentListingItem.getQuantity() + " " + requestComponentListingItem.getUnit());
             holder.textViewTransferTo.setText("Transfer To : - " + requestComponentListingItem.getProjectSiteTo());
         }
 
