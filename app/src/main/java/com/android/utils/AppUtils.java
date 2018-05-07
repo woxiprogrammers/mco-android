@@ -324,7 +324,6 @@ public class AppUtils {
                             public void onResponse(JSONObject response) {
                                 Timber.d(String.valueOf(response));
                             }
-
                             @Override
                             public void onError(ANError anError) {
                                 AppUtils.getInstance().logApiError(anError, "sendRegistrationToServer");

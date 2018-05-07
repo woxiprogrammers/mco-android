@@ -34,7 +34,13 @@
                 android:layout_height="wrap_content"
                 style="@style/MyTextViewLabelStyle"/>
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/textView_grn_quantity"
+            style="@style/TextViewChildStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PON201734"
+            android:visibility="gone"/>
         <TextView
             android:id="@+id/textView_purchase_order_format"
             style="@style/TextViewChildStyle"

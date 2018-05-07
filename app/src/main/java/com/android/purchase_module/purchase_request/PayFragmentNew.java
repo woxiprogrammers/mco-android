@@ -126,8 +126,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     EditText editTextSetInTime;
     @BindView(R.id.editTextSetOutTime)
     EditText editTextSetOutTime;
-    @BindView(R.id.editTextSetBillAmount)
-    EditText editTextSetBillAmount;
+    /*@BindView(R.id.editTextSetBillAmount)
+    EditText editTextSetBillAmount;*/
     @BindView(R.id.linearLayoutSetBillAmount)
     LinearLayout linearLayoutSetBillAmount;
     @BindView(R.id.linearLayoutSetPaymentImageLayout)
@@ -389,7 +389,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-        buttonActionGenerateGrn.setEnabled(false);
+        buttonActionGenerateGrn.setVisibility(View.GONE);
         progressToGenerateGRN.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
@@ -413,10 +413,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             JSONObject jsonObject = response.getJSONObject("data");
                             String grnNUm = jsonObject.getString("grn");
                             editTextGrnNum.setText(grnNUm);
-                            buttonActionGenerateGrn.setVisibility(View.GONE);
                             linearLayoutToVisible.setVisibility(View.VISIBLE);
                             linearLayoutMatImg.setVisibility(View.GONE);
-
                             progressToGenerateGRN.setVisibility(View.GONE);
 //                            AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, false);
                         } catch (JSONException e) {
@@ -455,14 +453,13 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
         AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, true);
         buttonActionSubmit.setEnabled(false);
-
         try {
             params.put("vehicle_number", strVehicleNumber);
-            if (!editTextBillAmount.getText().toString().isEmpty()) {
+           /* if (!editTextBillAmount.getText().toString().isEmpty()) {
                 params.put("bill_amount", editTextBillAmount.getText().toString());
             } else {
                 params.put("bill_amount", null);
-            }
+            }*/
             params.put("remark", editextTransRemark.getText().toString());
             params.put("bill_number", strChallanNumber);
             params.put("grn", editTextGrnNum.getText().toString());
@@ -672,9 +669,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             }
                         });
             } else {
-                if (strTag.equalsIgnoreCase("requestToGenerateGrn"))
+                if (strTag.equalsIgnoreCase("requestToGenerateGrn")) {
                     requestToGenerateGrn();
-                else if (strTag.equalsIgnoreCase("requestToPayment")) {
+                } else if (strTag.equalsIgnoreCase("requestToPayment")) {
                     requestToPayment();
                 }
             }
@@ -695,7 +692,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 editTextSetBillumber.setText(purchaseBIllDetailsItems.getBillNumber());
                 editTextSetVehNum.setText(purchaseBIllDetailsItems.getVehicleNumber());
                 editTextSetOutTime.setText(purchaseBIllDetailsItems.getOutTime());
-                editTextSetBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
+//                editTextSetBillAmount.setText(purchaseBIllDetailsItems.getBillAmount());
                 editTextSetGrnNum.setText(purchaseBIllDetailsItems.getGrn());
                 editTextSetInTime.setText(purchaseBIllDetailsItems.getInTime());
                 editextSetTransRemark.setText(purchaseBIllDetailsItems.getRemark());
@@ -719,7 +716,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void clearData() {
         editTextBillumber.setText("");
         editTextVehNum.setText("");
-        editTextBillAmount.setText("");
+//        editTextBillAmount.setText("");
     }
 
     private void loadImage(final String strUrl, LinearLayout linearLayout) {

@@ -218,8 +218,13 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseOrderTransactionListingItem purchaseBillListItem = purchaseOrderTransactionListingItemOrderedRealmCollection.get(position);
+
             holder.textViewPurchaseGrn.setText(purchaseBillListItem.getGrn());
             holder.textViewPurchaseRequestStatus.setText(purchaseBillListItem.getPurchaseOrderTransactionStatus());
+            holder.textViewGrnQuantity.setVisibility(View.VISIBLE);
+           /* if(purchaseBillListItem.getTransactionData() != null){
+                holder.textViewGrnQuantity.setText(purchaseBillListItem.getTransactionData().get(position).getMaterialQuantity());
+            }*/
             if (purchaseBillListItem.getPurchaseOrderTransactionStatus().equalsIgnoreCase("GRN Generated")) {
                 holder.textViewPurchaseRequestDate.setText("Created at " + AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", getString(R.string.expected_time_format), purchaseBillListItem.getInTime()));
             } else {
@@ -253,6 +258,8 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             TextView textViewPurchaseRequestMaterials;
             @BindView(R.id.textView_purchase_order_format)
             TextView textViewPurchaseOrderFormat;
+            @BindView(R.id.textView_grn_quantity)
+            TextView textViewGrnQuantity;
 
             MyViewHolder(View itemView) {
                 super(itemView);
