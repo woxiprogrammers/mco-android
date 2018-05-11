@@ -371,7 +371,7 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void initializeViews() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        final Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         int passMonth = calendar.get(Calendar.MONTH) + 1;
         int passYear = calendar.get(Calendar.YEAR);
         int passDay = calendar.get(Calendar.DAY_OF_MONTH);
@@ -448,9 +448,18 @@ public class PeticashFormActivity extends BaseActivity {
 
         spinnerPaid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                linerLayoutBankName.setVisibility(View.VISIBLE);
-                linerLayoutSelectPaymentMode.setVisibility(View.VISIBLE);
+            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedPosition, long l) {
+                switch (selectedPosition){
+                    case 0:
+                        linerLayoutBankName.setVisibility(View.VISIBLE);
+                        linerLayoutSelectPaymentMode.setVisibility(View.VISIBLE);
+                        break;
+
+                    case 1:
+                        linerLayoutBankName.setVisibility(View.GONE);
+                        linerLayoutSelectPaymentMode.setVisibility(View.GONE);
+                        break;
+                }
             }
 
             @Override
