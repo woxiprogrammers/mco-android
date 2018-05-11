@@ -3,12 +3,14 @@ package com.android.peticash_module.peticash.peticash_models;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class BanksItem extends RealmObject{
 
 	@SerializedName("account_number")
 	private String accountNumber;
 
+	@PrimaryKey
 	@SerializedName("bank_id")
 	private int bankId;
 

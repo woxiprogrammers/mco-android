@@ -409,28 +409,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/linerLayoutRefNo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reference Number :"
-                    android:layout_marginLeft="@dimen/dimen_4dp"
-                    android:textColor="@color/colorTextLight"/>
-
-                <EditText
-                    android:id="@+id/editTextRefNo"
-                    android:layout_width="match_parent"
-                    style="@style/MyEditTextHeightSTyle"
-                    android:background="@android:drawable/editbox_background_normal"
-                    android:focusable="false"/>
-            </LinearLayout>
 
             <Button
                 android:id="@+id/button_view_amount"

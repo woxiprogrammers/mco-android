@@ -27,6 +27,9 @@ import android.widget.Toast;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
+import com.android.peticash_module.peticash.peticash_models.BankInfoResponse;
+import com.android.peticash_module.peticash.peticash_models.BanksItem;
+import com.android.peticash_module.peticash.peticash_models.Banksdata;
 import com.android.peticash_module.peticashautosearchemployee.EmployeeSearchDataItem;
 import com.android.purchase_module.material_request.AutoSuggestActivity;
 import com.android.purchase_module.material_request.material_request_model.SearchAssetListItem;
@@ -40,6 +43,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.vlk.multimager.activities.MultiCameraActivity;
 import com.vlk.multimager.utils.Constants;
 import com.vlk.multimager.utils.Image;
@@ -62,6 +66,7 @@ import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class PeticashFormActivity extends BaseActivity {
@@ -199,12 +204,11 @@ public class PeticashFormActivity extends BaseActivity {
     Spinner spinnerPaymentMode;
     @BindView(R.id.linerLayoutSelectPaymentMode)
     LinearLayout linerLayoutSelectPaymentMode;
-    @BindView(R.id.editTextRefNo)
-    EditText editTextRefNo;
-    @BindView(R.id.linerLayoutRefNo)
-    LinearLayout linerLayoutRefNo;
+
     @BindView(R.id.linerLayoutBankName)
     LinearLayout linerLayoutBankName;
+    @BindView(R.id.spinnerBankName)
+    Spinner spinnerBankName;
     private View layoutEmployeeInfo;
     private int primaryKey;
     private JSONArray jsonImageNameArray = new JSONArray();
@@ -271,6 +275,10 @@ public class PeticashFormActivity extends BaseActivity {
         public void afterTextChanged(Editable editable) {
         }
     };
+    private RealmResults<BanksItem> bankItemRealmResults;
+    private int bankId;
+    private float bankBalance;
+    private boolean isBankSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -389,6 +397,7 @@ public class PeticashFormActivity extends BaseActivity {
                         break;
                     case 1:
                         isSalary = true;
+                        getBankInfo();
                         linearLayoutForSalary.setVisibility(View.VISIBLE);
                         layoutEmployeeInfo.setVisibility(View.VISIBLE);
                         linearLayoutForCategoryPurchase.setVisibility(View.GONE);
@@ -445,16 +454,15 @@ public class PeticashFormActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
         spinnerPaid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedPosition, long l) {
-                switch (selectedPosition){
+                switch (selectedPosition) {
                     case 0:
+                        isBankSelected=true;
                         linerLayoutBankName.setVisibility(View.VISIBLE);
                         linerLayoutSelectPaymentMode.setVisibility(View.VISIBLE);
                         break;
-
                     case 1:
                         linerLayoutBankName.setVisibility(View.GONE);
                         linerLayoutSelectPaymentMode.setVisibility(View.GONE);
@@ -485,6 +493,18 @@ public class PeticashFormActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+            }
+        });
+        spinnerBankName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                RealmResults<BanksItem> banksItemRealmResults=realm.where(BanksItem.class).findAll();
+                bankId=banksItemRealmResults.get(i).getBankId();
+                bankBalance= Float.parseFloat(banksItemRealmResults.get(i).getBalanceAmount());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
         editTextSiteName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -725,6 +745,15 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("date", currentDate);
             params.put("amount", editTextSalaryAmount.getText().toString());
             params.put("project_site_id", project_site_id);
+
+            //ToDo sharvari uncomment below code
+            if(isBankSelected){
+                params.put("paid_from","bank");
+                params.put("payment_mode_slug",spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
+                params.put("bank_id",bankId);
+            }else {
+                params.put("paid_from","peticash");
+            }
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
                 params.put("days", edittextDay.getText().toString());
                 if (TextUtils.isEmpty(editTextPT.getText().toString())) {
@@ -919,6 +948,7 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("per_day_wages", getPerWeges);
                 params.put("working_days", edittextDay.getText().toString());
                 params.put("advance_after_last_salary", intAdvanceAmount);//ToDo Ask for amount
+
                 if (TextUtils.isEmpty(editTextPT.getText().toString())) {
                     params.put("pt", 0);
                 } else {
@@ -1241,7 +1271,58 @@ public class PeticashFormActivity extends BaseActivity {
         }
     }
 
-    private void getBankInfo(){
+    private void getBankInfo() {
+        AndroidNetworking.get(AppURL.API_BANK_INFO_URL + AppUtils.getInstance().getCurrentToken())
+                .setPriority(Priority.MEDIUM)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setTag("getBankInfo")
+                .build()
+                .getAsObject(BankInfoResponse.class, new ParsedRequestListener<BankInfoResponse>() {
+                    @Override
+                    public void onResponse(final BankInfoResponse response) {
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.delete(BankInfoResponse.class);
+                                    realm.delete(Banksdata.class);
+                                    realm.delete(BanksItem.class);
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    realm = Realm.getDefaultInstance();
+                                    bankItemRealmResults = realm.where(BanksItem.class).findAll();
+                                    List<BanksItem> unitQuantityItems = realm.copyFromRealm(bankItemRealmResults);
+                                    ArrayList<String> arrayOfUsers = new ArrayList<String>();
+                                    for (BanksItem currentUser : unitQuantityItems) {
+                                        String strUserName = currentUser.getBankName();
+                                        arrayOfUsers.add(strUserName);
+                                    }
+                                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
+                                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                    spinnerBankName.setAdapter(arrayAdapter);
 
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "getBankInfo");
+                    }
+                });
     }
 }
