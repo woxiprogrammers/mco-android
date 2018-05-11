@@ -101,4 +101,5 @@ public class AppURL {
     public static final String API_GRN_URL=BASE_URL + "inventory/get-site-out-GRN?token=";
     public static final String API_REQUEST_GENRATE_GRN_SITE_IN = BASE_URL +"inventory/generate-grn?token=";
     public static final String API_SUBMIT_SITE_IN_NEW = BASE_URL + "inventory/post-grn-transfer?token=";
+    public static final String API_BANK_INFO_URL="http://www.mocky.io/v2/5af543835500005f347a54ff";
 }

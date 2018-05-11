@@ -1240,4 +1240,8 @@ public class PeticashFormActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
+
+    private void getBankInfo(){
+
+    }
 }
