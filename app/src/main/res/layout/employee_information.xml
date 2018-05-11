@@ -14,6 +14,87 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/linerLayoutSelectPaidOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Paid By"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:textColor="@color/colorTextLight"/>
+                <FrameLayout
+                    style="@style/MySpinnerStyle"
+                    android:layout_width="match_parent"
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/spinnerPaid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:entries="@array/paid_by_array"
+                        />
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linerLayoutBankName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bank Name :"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:textColor="@color/colorTextLight"/>
+                <FrameLayout
+                    style="@style/MySpinnerStyle"
+                    android:layout_width="match_parent"
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/spinnerBankName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linerLayoutSelectPaymentMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Payment Mode"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:textColor="@color/colorTextLight"/>
+                <FrameLayout
+                    style="@style/MySpinnerStyle"
+                    android:layout_width="match_parent"
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/spinnerPaymentMode"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:entries="@array/array_payment_mode"
+                        />
+                </FrameLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linerLayoutSelectedNames"
@@ -327,6 +408,30 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linerLayoutRefNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reference Number :"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editTextRefNo"
+                    android:layout_width="match_parent"
+                    style="@style/MyEditTextHeightSTyle"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:focusable="false"/>
+            </LinearLayout>
+
             <Button
                 android:id="@+id/button_view_amount"
                 android:layout_width="match_parent"

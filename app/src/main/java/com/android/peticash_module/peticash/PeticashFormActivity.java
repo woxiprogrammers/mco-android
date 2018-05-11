@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -182,7 +181,6 @@ public class PeticashFormActivity extends BaseActivity {
     LinearLayout linearLayoutPTPF;
     @BindView(R.id.linearLayoutESICTDS)
     LinearLayout linearLayoutESICTDS;
-
     @BindView(R.id.editTextSiteName)
     AutoCompleteTextView editTextSiteName;
     @BindView(R.id.mainRelativeLayout)
@@ -193,6 +191,20 @@ public class PeticashFormActivity extends BaseActivity {
     Spinner spinnerMiscCategoryArray;
     @BindView(R.id.linearLayoutUnits)
     LinearLayout linearLayoutUnits;
+    @BindView(R.id.spinnerPaid)
+    Spinner spinnerPaid;
+    @BindView(R.id.linerLayoutSelectPaidOption)
+    LinearLayout linerLayoutSelectPaidOption;
+    @BindView(R.id.spinnerPaymentMode)
+    Spinner spinnerPaymentMode;
+    @BindView(R.id.linerLayoutSelectPaymentMode)
+    LinearLayout linerLayoutSelectPaymentMode;
+    @BindView(R.id.editTextRefNo)
+    EditText editTextRefNo;
+    @BindView(R.id.linerLayoutRefNo)
+    LinearLayout linerLayoutRefNo;
+    @BindView(R.id.linerLayoutBankName)
+    LinearLayout linerLayoutBankName;
     private View layoutEmployeeInfo;
     private int primaryKey;
     private JSONArray jsonImageNameArray = new JSONArray();
@@ -433,6 +445,18 @@ public class PeticashFormActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+
+        spinnerPaid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                linerLayoutBankName.setVisibility(View.VISIBLE);
+                linerLayoutSelectPaymentMode.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
         edittextDay.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -526,7 +550,7 @@ public class PeticashFormActivity extends BaseActivity {
         String strItemQuantity = edittextQuantity.getText().toString();
         String strBillNumber = editTextBillNumber.getText().toString();
         String strBillAmount = editTextBillamount.getText().toString();
-        String purchaseRemark=editTextAddNote.getText().toString();
+        String purchaseRemark = editTextAddNote.getText().toString();
         if (TextUtils.isEmpty(strItemQuantity)) {
             edittextQuantity.setFocusableInTouchMode(true);
             edittextQuantity.requestFocus();
@@ -554,13 +578,12 @@ public class PeticashFormActivity extends BaseActivity {
             editTextBillamount.setError(null);
             editTextBillamount.clearFocus();
         }
-
-        if(TextUtils.isEmpty(purchaseRemark)){
+        if (TextUtils.isEmpty(purchaseRemark)) {
             editTextAddNote.setError("Please enter remark");
             editTextAddNote.requestFocus();
             editTextAddNote.setFocusableInTouchMode(true);
             return;
-        }else {
+        } else {
             editTextAddNote.setError(null);
             editTextAddNote.clearFocus();
         }
@@ -571,7 +594,7 @@ public class PeticashFormActivity extends BaseActivity {
         String strEmployeeIDOrName = editTextEmpIdName.getText().toString();
         String strSalaryAmount = editTextSalaryAmount.getText().toString();
         String strTotalDays = edittextDay.getText().toString();
-        String remark=editTextAddtonoteforsalary.getText().toString();
+        String remark = editTextAddtonoteforsalary.getText().toString();
         if (TextUtils.isEmpty(strEmployeeIDOrName)) {
             editTextEmpIdName.setFocusableInTouchMode(true);
             editTextEmpIdName.requestFocus();
@@ -601,13 +624,12 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSalaryAmount.setError(null);
             editTextSalaryAmount.clearFocus();
         }
-
-        if(TextUtils.isEmpty(remark)){
+        if (TextUtils.isEmpty(remark)) {
             editTextAddtonoteforsalary.setFocusableInTouchMode(true);
             editTextAddtonoteforsalary.requestFocus();
             editTextAddtonoteforsalary.setError("Please enter remark");
             return;
-        }else {
+        } else {
             editTextAddtonoteforsalary.setError(null);
             editTextAddtonoteforsalary.clearFocus();
         }
@@ -803,7 +825,7 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("bill_amount", editTextBillamount.getText().toString());
             params.put("date", currentDate);
             params.put("images", jsonImageNameArray);
-            params.put("remark",editTextAddNote.getText().toString());
+            params.put("remark", editTextAddNote.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -992,7 +1014,6 @@ public class PeticashFormActivity extends BaseActivity {
                 });
     }
 
-
     @OnClick(R.id.textViewCapturFirst)
     public void onFirstCapClicked(View view) {
         switch (view.getId()) {
@@ -1140,7 +1161,6 @@ public class PeticashFormActivity extends BaseActivity {
         editTextItemName.setEnabled(false);
         textViewCapturFirst.setEnabled(false);
         editTextAddNote.setEnabled(false);
-
         /////////////
         linearLayoutGRN.setVisibility(View.VISIBLE);
         linearLayoutPayableAmount.setVisibility(View.VISIBLE);
@@ -1211,5 +1231,4 @@ public class PeticashFormActivity extends BaseActivity {
             e.printStackTrace();
         }
     }
-
 }

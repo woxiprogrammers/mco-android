@@ -68,15 +68,20 @@
         <item>RTGS</item>
         <item>Internet-Banking</item>
     </string-array>
+    <string-array name="array_payment_mode">
+        <item>Internet-Banking</item>
+        <item>Cheque</item>
+        <item>NEFT</item>
+        <item>RTGS</item>
+    </string-array>
     <string-array name="category_array">
         <item>Purchase</item>
         <item>Salary</item>
         <item>Advance</item>
     </string-array>
-    <string-array name="grn_array">
-        <item>GRN20180289</item>
-        <item>GRN20180281</item>
-        <item>GRN20180283</item>
+    <string-array name="paid_by_array">
+        <item>Bank</item>
+        <item>Peticash</item>
     </string-array>
     <string name="title_activity_asset_details">AssetDetailsActivity</string>
     <string name="assets_readings">Readings</string>
