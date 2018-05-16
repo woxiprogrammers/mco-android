@@ -407,7 +407,6 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.i("@@",response.toString());
                             jsonArrayForName = response.getJSONArray("data");
                             userNameArray = new ArrayList<>();
                             for (int i = 0; i < jsonArrayForName.length(); i++) {

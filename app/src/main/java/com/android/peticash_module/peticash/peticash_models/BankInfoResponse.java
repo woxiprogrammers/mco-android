@@ -6,7 +6,7 @@ import io.realm.RealmObject;
 
 public class BankInfoResponse extends RealmObject{
 
-	@SerializedName("banksdata")
+	@SerializedName("data")
 	private Banksdata banksdata;
 
 	@SerializedName("message")

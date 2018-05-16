@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.awareness_module.awareness_model.MainCategoriesItem;
 import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
@@ -249,7 +251,7 @@ public class PeticashFormActivity extends BaseActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (!TextUtils.isEmpty(charSequence.toString())) {
-                if (Float.parseFloat(charSequence.toString()) > Float.parseFloat(approved_amount)) {
+                if (Long.parseLong(charSequence.toString()) > Long.parseLong(approved_amount)) {
                     buttonSalarySubmit.setVisibility(View.GONE);
                     if (isSalary) {
                         textViewDenyTransaction.setVisibility(View.VISIBLE);
@@ -277,8 +279,8 @@ public class PeticashFormActivity extends BaseActivity {
     };
     private RealmResults<BanksItem> bankItemRealmResults;
     private int bankId;
-    private float bankBalance;
     private boolean isBankSelected;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -413,6 +415,7 @@ public class PeticashFormActivity extends BaseActivity {
                         break;
                     case 2:
                         isSalary = false;
+                        getBankInfo();
                         linearLayoutForSalary.setVisibility(View.GONE);
                         buttonViewAmount.setVisibility(View.GONE);
                         layoutEmployeeInfo.setVisibility(View.VISIBLE);
@@ -457,6 +460,8 @@ public class PeticashFormActivity extends BaseActivity {
         spinnerPaid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedPosition, long l) {
+
+
                 switch (selectedPosition) {
                     case 0:
                         isBankSelected=true;
@@ -500,7 +505,6 @@ public class PeticashFormActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 RealmResults<BanksItem> banksItemRealmResults=realm.where(BanksItem.class).findAll();
                 bankId=banksItemRealmResults.get(i).getBankId();
-                bankBalance= Float.parseFloat(banksItemRealmResults.get(i).getBalanceAmount());
             }
 
             @Override
@@ -752,7 +756,7 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("payment_mode_slug",spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
                 params.put("bank_id",bankId);
             }else {
-                params.put("paid_from","peticash");
+                params.put("paid_from","cash");
             }
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
                 params.put("days", edittextDay.getText().toString());
@@ -948,6 +952,9 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("per_day_wages", getPerWeges);
                 params.put("working_days", edittextDay.getText().toString());
                 params.put("advance_after_last_salary", intAdvanceAmount);//ToDo Ask for amount
+                if(spinnerPaid.getSelectedItem().toString().equalsIgnoreCase("Bank")){
+                    params.put("bank_id",bankId);
+                }
 
                 if (TextUtils.isEmpty(editTextPT.getText().toString())) {
                     params.put("pt", 0);

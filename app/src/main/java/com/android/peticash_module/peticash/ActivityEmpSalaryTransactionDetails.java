@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -153,26 +154,26 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 linearSetLayoutForSalary.setVisibility(View.VISIBLE);
                 linearLayoutSetPTPF.setVisibility(View.VISIBLE);
                 linearLayoutESICTDS.setVisibility(View.VISIBLE);
-                if (!empSalaryTransactionDetailData.getPf().isEmpty()) {
+                if (!TextUtils.isEmpty(empSalaryTransactionDetailData.getPf())) {
                     editTextPF.setText(empSalaryTransactionDetailData.getPf());
                     editTextPF.setVisibility(View.VISIBLE);
                 } else {
                     editTextPF.setVisibility(View.GONE);
                 }
-                if (!empSalaryTransactionDetailData.getPt().isEmpty()) {
+                if (!TextUtils.isEmpty(empSalaryTransactionDetailData.getPt())) {
                     editTextSetPT.setVisibility(View.VISIBLE);
                     editTextSetPT.setText(empSalaryTransactionDetailData.getPt());
                 } else {
                     editTextSetPT.setVisibility(View.GONE);
                 }
-                if (!empSalaryTransactionDetailData.getEsic().isEmpty()) {
+                if (!TextUtils.isEmpty(empSalaryTransactionDetailData.getEsic())) {
                     editTextSetESIC.setVisibility(View.VISIBLE);
                     editTextSetESIC.setText(empSalaryTransactionDetailData.getEsic());
                 } else {
                     editTextSetESIC.setVisibility(View.GONE);
 
                 }
-                if (!empSalaryTransactionDetailData.getTds().isEmpty()) {
+                if (!TextUtils.isEmpty(empSalaryTransactionDetailData.getTds())) {
                     editTextSetTDS.setVisibility(View.VISIBLE);
                     editTextSetTDS.setText(empSalaryTransactionDetailData.getTds());
                 } else {
@@ -184,7 +185,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 linearLayoutSetPTPF.setVisibility(View.GONE);
                 linearLayoutESICTDS.setVisibility(View.GONE);
             }
-            if (!empSalaryTransactionDetailData.getPayableAmount().isEmpty()) {
+            if (!TextUtils.isEmpty(empSalaryTransactionDetailData.getPayableAmount())) {
                 edittextSetPayableAmount.setText(empSalaryTransactionDetailData.getPayableAmount());
                 linearPayableAmount.setVisibility(View.VISIBLE);
             } else {
@@ -192,11 +193,12 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             }
 
             editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
-            if (!empSalaryTransactionDetailData.getRemark().isEmpty()) {
+            if(TextUtils.isEmpty(empSalaryTransactionDetailData.getRemark())){
+                editTextSetSalaryRemark.setVisibility(View.GONE);
+
+            }else {
                 editTextSetSalaryRemark.setVisibility(View.VISIBLE);
                 editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());
-            } else {
-                editTextSetSalaryRemark.setVisibility(View.GONE);
             }
             textViewSetStatus.setText(empSalaryTransactionDetailData.getPeticashStatusName());
             if (empSalaryTransactionDetailData.getListOfImages().size() > 0) {
