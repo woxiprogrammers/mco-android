@@ -50,6 +50,52 @@
                         android:padding="@dimen/dimen_8dp"
                         android:text="Download Voucher"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/linerLayoutSetPaidFrom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Paid From :"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edittextSetPaidFrom"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:enabled="false"
+                        android:focusable="false"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/linerLayoutSetBankName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Bank Name :"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edittextSetBankName"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:enabled="false"
+                        android:focusable="false"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/linerLayoutSetSelectedNames"
