@@ -69,7 +69,8 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                     + notificationCountData.getPurchaseRequestDisapprovedCount()
                     +notificationCountData.getPurchaseOrderBillCreateCount()
                     +notificationCountData.getPurchaseOrderCreateCount()
-                    +notificationCountData.getPurchaseOrderRequestCreateCount();
+                    +notificationCountData.getPurchaseOrderRequestCreateCount()
+                    +notificationCountData.getPurchaseRequestApprovedCount();
 //            holder.moduleCount.setText(String.valueOf(intCount));
             if (intCount > 0) {
                 Timber.d("Purchase Count: " + intCount);
@@ -146,7 +147,8 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                     }
                 } else if (strSumModuleName.equalsIgnoreCase("purchase request")) {
                     int intCount = notificationCountData.getPurchaseRequestCreateCount()
-                            + notificationCountData.getPurchaseRequestDisapprovedCount();
+                            + notificationCountData.getPurchaseRequestDisapprovedCount()
+                            +notificationCountData.getPurchaseRequestApprovedCount();
                     if (intCount > 0) {
                         Timber.d("purchase request: " + intCount);
                         currentTextView_Count.setText(String.valueOf(intCount));

@@ -98,6 +98,14 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
     ProgressBar progressBarToLoadVoucher;
     @BindView(R.id.mainLinearLayoutViewSalary)
     LinearLayout mainLinearLayoutViewSalary;
+    @BindView(R.id.edittextSetPaymentMode)
+    EditText edittextSetPaymentMode;
+    @BindView(R.id.linerLayoutSetPaymentMode)
+    LinearLayout linerLayoutSetPaymentMode;
+    @BindView(R.id.edittextSetBankName)
+    EditText edittextSetBankName;
+    @BindView(R.id.linerLayoutSetBankName)
+    LinearLayout linerLayoutSetBankName;
     private int transactionTypeId;
     private Realm realm;
     private String transactionDetailType;
@@ -148,6 +156,18 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         if (empSalaryTransactionDetailData != null) {
             edittextSetEmpName.setText(empSalaryTransactionDetailData.getEmployeeName());
             editTextSetSalaryDate.setText(empSalaryTransactionDetailData.getDate());
+            if(!TextUtils.isEmpty(empSalaryTransactionDetailData.getPaymentType())){
+                linerLayoutSetPaymentMode.setVisibility(View.VISIBLE);
+                edittextSetPaymentMode.setText(empSalaryTransactionDetailData.getPaymentType());
+            }else {
+                linerLayoutSetPaymentMode.setVisibility(View.GONE);
+            }
+            if(!TextUtils.isEmpty(empSalaryTransactionDetailData.getBankName())){
+                linerLayoutSetBankName.setVisibility(View.VISIBLE);
+                edittextSetBankName.setText(empSalaryTransactionDetailData.getBankName());
+            }else {
+                linerLayoutSetBankName.setVisibility(View.GONE);
+            }
             if (transactionDetailType.equalsIgnoreCase("Salary")) {
                 edittextSetDay.setText(empSalaryTransactionDetailData.getDays());
                 edittextWeihges.setText(empSalaryTransactionDetailData.getPerDayWages());
@@ -171,7 +191,6 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                     editTextSetESIC.setText(empSalaryTransactionDetailData.getEsic());
                 } else {
                     editTextSetESIC.setVisibility(View.GONE);
-
                 }
                 if (!TextUtils.isEmpty(empSalaryTransactionDetailData.getTds())) {
                     editTextSetTDS.setVisibility(View.VISIBLE);
@@ -191,12 +210,10 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             } else {
                 linearPayableAmount.setVisibility(View.GONE);
             }
-
             editTextSetSalaryAmount.setText(empSalaryTransactionDetailData.getAmount());
-            if(TextUtils.isEmpty(empSalaryTransactionDetailData.getRemark())){
+            if (TextUtils.isEmpty(empSalaryTransactionDetailData.getRemark())) {
                 editTextSetSalaryRemark.setVisibility(View.GONE);
-
-            }else {
+            } else {
                 editTextSetSalaryRemark.setVisibility(View.VISIBLE);
                 editTextSetSalaryRemark.setText(empSalaryTransactionDetailData.getRemark());
             }
@@ -281,8 +298,8 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
     }
 
     private void requestToGenerateVoucher() {
-        AppUtils.getInstance().initializeProgressBar(mainLinearLayoutViewSalary,mContext);
-        AppUtils.getInstance().showProgressBar(mainLinearLayoutViewSalary,true);
+        AppUtils.getInstance().initializeProgressBar(mainLinearLayoutViewSalary, mContext);
+        AppUtils.getInstance().showProgressBar(mainLinearLayoutViewSalary, true);
         JSONObject params = new JSONObject();
         try {
             params.put("peticash_transaction_id", transactionTypeId);
@@ -301,7 +318,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                         try {
                             JSONObject jsonObject = response.getJSONObject("pdf_path");
                             strPdfUrl = jsonObject.getString("pdf_url");
-                            AppUtils.getInstance().showProgressBar(mainLinearLayoutViewSalary,false);
+                            AppUtils.getInstance().showProgressBar(mainLinearLayoutViewSalary, false);
                             downloadFile(BuildConfig.BASE_URL_MEDIA + strPdfUrl);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -336,7 +353,6 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }*/
-
                     }
 
                     @Override
@@ -397,7 +413,6 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             case DownloadManager.STATUS_FAILED:
                 msg = "Download failed!";
                 startThread(msg, false);
-
                 break;
             case DownloadManager.STATUS_PAUSED:
                 msg = "Download paused!";
@@ -434,7 +449,6 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                 });
             }
         };
-
         timer.start();
     }
 
@@ -481,5 +495,4 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 }

@@ -51,11 +51,12 @@
                         android:text="Download Voucher"/>
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/linerLayoutSetPaidFrom"
+                    android:id="@+id/linerLayoutSetPaymentMode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
 
                     <TextView
@@ -66,7 +67,7 @@
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
-                        android:id="@+id/edittextSetPaidFrom"
+                        android:id="@+id/edittextSetPaymentMode"
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
@@ -78,7 +79,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
 
                     <TextView

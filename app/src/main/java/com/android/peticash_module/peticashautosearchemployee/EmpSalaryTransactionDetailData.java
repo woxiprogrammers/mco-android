@@ -7,6 +7,12 @@ import io.realm.RealmObject;
 
 public class EmpSalaryTransactionDetailData extends RealmObject{
 
+
+//	payment_type_name & bank_name in detail
+
+	@SerializedName("bank_name")
+	private String bankName;
+
 	@SerializedName("date")
 	private String date;
 
@@ -36,6 +42,16 @@ public class EmpSalaryTransactionDetailData extends RealmObject{
 
 	@SerializedName("peticash_status_name")
 	private String peticashStatusName;
+
+
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
 
 	@SerializedName("peticash_transaction_id")
 	private int peticashTransactionId;
