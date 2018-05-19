@@ -469,6 +469,7 @@ public class PeticashFormActivity extends BaseActivity {
                         linerLayoutSelectPaymentMode.setVisibility(View.VISIBLE);
                         break;
                     case 1:
+                        isBankSelected=false;
                         linerLayoutBankName.setVisibility(View.GONE);
                         linerLayoutSelectPaymentMode.setVisibility(View.GONE);
                         break;
@@ -796,6 +797,7 @@ public class PeticashFormActivity extends BaseActivity {
             else
                 params.put("remark", editTextAddtonoteforsalary.getText().toString());
             Timber.d(String.valueOf(params));
+            Log.i("@@",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -938,13 +940,17 @@ public class PeticashFormActivity extends BaseActivity {
                 });
     }
 
-    private void requestForViewPament() {
+    private void requestForViewPament()
+    {
         if (isSalary) {
             AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         }
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", project_site_id);
+            if(isBankSelected){
+                params.put("bank_id",bankId);
+            }
             if (isSalary) {
                 params.put("type", "salary");
                 params.put("balance", intBalance);
@@ -952,9 +958,6 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("per_day_wages", getPerWeges);
                 params.put("working_days", edittextDay.getText().toString());
                 params.put("advance_after_last_salary", intAdvanceAmount);//ToDo Ask for amount
-                if(spinnerPaid.getSelectedItem().toString().equalsIgnoreCase("Bank")){
-                    params.put("bank_id",bankId);
-                }
 
                 if (TextUtils.isEmpty(editTextPT.getText().toString())) {
                     params.put("pt", 0);
@@ -980,6 +983,7 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("type", "advance");
             }
             Timber.d(String.valueOf(params));
+            Log.i("@@",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1029,6 +1033,7 @@ public class PeticashFormActivity extends BaseActivity {
                     }
                 });
     }
+
 
     private void requestToGetSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)

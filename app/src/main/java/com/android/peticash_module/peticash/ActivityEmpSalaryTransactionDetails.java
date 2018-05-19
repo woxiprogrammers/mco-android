@@ -17,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -152,20 +151,19 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
         realm = Realm.getDefaultInstance();
         empSalaryTransactionDetailData = realm.where(EmpSalaryTransactionDetailData.class)
                 .equalTo("peticashTransactionId", transactionTypeId).findFirst();
-        Timber.d("empSalaryTransactionDetailData: " + empSalaryTransactionDetailData);
         if (empSalaryTransactionDetailData != null) {
             edittextSetEmpName.setText(empSalaryTransactionDetailData.getEmployeeName());
             editTextSetSalaryDate.setText(empSalaryTransactionDetailData.getDate());
-            if(!TextUtils.isEmpty(empSalaryTransactionDetailData.getPaymentType())){
+            if (!TextUtils.isEmpty(empSalaryTransactionDetailData.getPaymentType())) {
                 linerLayoutSetPaymentMode.setVisibility(View.VISIBLE);
                 edittextSetPaymentMode.setText(empSalaryTransactionDetailData.getPaymentType());
-            }else {
+            } else {
                 linerLayoutSetPaymentMode.setVisibility(View.GONE);
             }
-            if(!TextUtils.isEmpty(empSalaryTransactionDetailData.getBankName())){
+            if (!TextUtils.isEmpty(empSalaryTransactionDetailData.getBankName())) {
                 linerLayoutSetBankName.setVisibility(View.VISIBLE);
                 edittextSetBankName.setText(empSalaryTransactionDetailData.getBankName());
-            }else {
+            } else {
                 linerLayoutSetBankName.setVisibility(View.GONE);
             }
             if (transactionDetailType.equalsIgnoreCase("Salary")) {

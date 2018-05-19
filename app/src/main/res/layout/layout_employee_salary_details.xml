@@ -50,6 +50,7 @@
                         android:padding="@dimen/dimen_8dp"
                         android:text="Download Voucher"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/linerLayoutSetPaymentMode"
                     android:layout_width="match_parent"
@@ -63,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_4dp"
-                        android:text="Paid From :"
+                        android:text="Payment Mode :"
                         android:textColor="@color/colorTextLight"/>
 
                     <EditText
