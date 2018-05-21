@@ -157,6 +157,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void getServerVersion() {
+        //ToDo Sharvari do versioning stuff
         if (AppUtils.getInstance().checkNetworkState()) {
             AndroidNetworking.post(AppURL.API_GET_SERVER_VERSION + AppUtils.getInstance().getCurrentToken())
                     .setTag("getServerVersion")
