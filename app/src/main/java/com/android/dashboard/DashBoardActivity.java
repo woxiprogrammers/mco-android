@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.dashboard.notification_model.NotificationCountSiteData;
 import com.android.dashboard.notification_model.NotificationCountSiteResponse;
 import com.android.dashboard.notification_model.ProjectsNotificationCountItem;
 import com.android.firebase.counts_model.NotificationCountData;
@@ -434,6 +435,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
+                                    realm.delete(NotificationCountSiteResponse.class);
+                                    realm.delete(NotificationCountSiteData.class);
+                                    realm.delete(ProjectsNotificationCountItem.class);
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
@@ -442,7 +446,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
                                     AppUtils.getInstance().showProgressBar(mainCoordinatorLayout,false);
                                     int setSiteBadgeCount=0;
                                     for (int i = 0; i < response.getNotificationCountData().getProjectsNotificationCount().size(); i++) {
-
                                         setSiteBadgeCount = setSiteBadgeCount + response.getNotificationCountData().getProjectsNotificationCount().get(i).getNotificationCount();
                                     }
                                     cartBadge.setText(String.valueOf(setSiteBadgeCount));
