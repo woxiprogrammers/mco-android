@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -46,6 +47,7 @@ public class SplashActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         boolean notFirstTime = AppUtils.getInstance().getBoolean(AppConstants.IS_APP_FIRST_TIME, false);
         if (!notFirstTime) {
+            Log.i("@@isnotIf", "if");
             storeAclKeyValueToLocal();
         }
         new Handler().postDelayed(new Runnable() {
@@ -54,9 +56,11 @@ public class SplashActivity extends BaseActivity {
                 boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
                 if (isLoggedIn && !TextUtils.isEmpty(AppUtils.getInstance().getCurrentToken())) {
                     requestLatestAcl();
+                    Log.i("@@requestLatestAcl", "requestLatestAcl");
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();
+                    Log.i("@@Intent", "Intent");
                 }
             }
         }, 500);
@@ -79,7 +83,7 @@ public class SplashActivity extends BaseActivity {
         aclKeyValuePair.put("purchase-bill", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("manage-amendment", PurchaseHomeActivity.class.getName());
         aclKeyValuePair.put("purchase-history", PurchaseOrderApproveActivity.class.getName());
-        aclKeyValuePair.put("purchase-order-request",PurchaseOrderApproveActivity.class.getName());
+        aclKeyValuePair.put("purchase-order-request", PurchaseOrderApproveActivity.class.getName());
         //
         aclKeyValuePair.put("inventory-in-out-transfer", InventoryHomeActivity.class.getName());
         aclKeyValuePair.put("asset-reading", InventoryHomeActivity.class.getName());
@@ -95,8 +99,8 @@ public class SplashActivity extends BaseActivity {
         //
         aclKeyValuePair.put("manage-drawing", DrawingHomeActivity.class.getName());
         aclKeyValuePair.put("manage-dpr", DPRListActivity.class.getName());
-        aclKeyValuePair.put("manage-general-awareness",AwarenessHomeActivity.class.getName());
-        aclKeyValuePair.put("component-transfer",ActivityTransferRequest.class.getName());
+        aclKeyValuePair.put("manage-general-awareness", AwarenessHomeActivity.class.getName());
+        aclKeyValuePair.put("component-transfer", ActivityTransferRequest.class.getName());
         Gson gson = new Gson();
         String hashMapString = gson.toJson(aclKeyValuePair);
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
@@ -149,6 +153,26 @@ public class SplashActivity extends BaseActivity {
             AppUtils.getInstance().showOfflineMessage("SplashActivity");
             startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
             finish();
+        }
+    }
+
+    private void getServerVersion() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            AndroidNetworking.post(AppURL.API_GET_SERVER_VERSION + AppUtils.getInstance().getCurrentToken())
+                    .setTag("getServerVersion")
+                    .setPriority(Priority.MEDIUM)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(final JSONObject response) {
+
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "getServerVersion");
+                        }
+                    });
         }
     }
 }
