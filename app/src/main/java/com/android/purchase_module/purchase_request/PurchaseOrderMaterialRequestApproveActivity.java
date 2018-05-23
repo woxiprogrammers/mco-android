@@ -60,7 +60,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
     private JSONArray jsonArray = new JSONArray();
     private boolean isCheckboxChecked;
-    private boolean isMaterialSelected,isApproveClicked;
+    private boolean isMaterialSelected, isApproveClicked;
     private String subModulesItemList;
 
     @Override
@@ -74,13 +74,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.purchase_details_approve_menu, menu);
-        MenuItem menuItem=menu.findItem(R.id.action_approve);
-        if(subModulesItemList.contains("approve-purchase-order-request")){
+        MenuItem menuItem = menu.findItem(R.id.action_approve);
+        if (subModulesItemList.contains("approve-purchase-order-request")) {
             menuItem.setVisible(true);
-        }else {
+        } else {
             menuItem.setVisible(false);
         }
-        if(isApproveClicked){
+        if (isApproveClicked) {
             menuItem.setVisible(false);
         }
         return super.onCreateOptionsMenu(menu);
@@ -88,7 +88,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
     private void initializeViews() {
         mContext = PurchaseOrderMaterialRequestApproveActivity.this;
-        AppUtils.getInstance().initializeProgressBar(relativeMatRequest,mContext);
+        AppUtils.getInstance().initializeProgressBar(relativeMatRequest, mContext);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("");
@@ -96,7 +96,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             intPurchaseOrderRequestId = bundle.getInt("purchase_order_request_id");
-            subModulesItemList=bundle.getString("subModulesItemList");
+            subModulesItemList = bundle.getString("subModulesItemList");
         }
     }
 
@@ -118,8 +118,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -127,13 +125,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     }
 
     private void setUpPrAdapter() {
+        Log.i("@@", "adapter call");
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseRequestListItems = realm.where(RequestMaterialListItem.class).findAll();
         MaterialRequestListAdapter purchaseRequestRvAdapter = new MaterialRequestListAdapter(purchaseRequestListItems, true, true);
         rvList.setLayoutManager(new LinearLayoutManager(mContext));
         rvList.setHasFixedSize(true);
-        rvList.setAdapter(purchaseRequestRvAdapter);
         purchaseRequestRvAdapter.setOnItemClickListener(new OnComponentClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
@@ -148,6 +146,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         ll_vendors.setVisibility(View.VISIBLE);
                     }
                 } else if (itemViewIndex == R.id.checkboxFrame) {
+                    Log.i("@@3", "checkboxFrame");
                     if (!requestMaterialListItem.isIs_approved()) {
                         CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
                         if (requestMaterialListItem.isCheckboxCheckedState()) {
@@ -165,6 +164,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                     }
                 } else if (itemViewIndex == R.id.checkboxComponent) {
+                    Log.i("@@4", "checkboxComponent");
                     CheckBox checkBox = (CheckBox) itemView;
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
                         checkBox.setChecked(true);
@@ -237,6 +237,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }
             }
         });
+
+        rvList.setAdapter(purchaseRequestRvAdapter);
     }
 
     private void saveCheckboxCheckedStateToLocal(final boolean isCheckboxChecked, final RequestMaterialListItem requestMaterialListItem) {
@@ -256,6 +258,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         try {
             params.put("purchase_order_request_id", intPurchaseOrderRequestId);
             Timber.d(String.valueOf(params));
+            Log.i("@@",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -310,7 +313,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        isApproveClicked=true;
+                        isApproveClicked = true;
                         invalidateOptionsMenu();
                         requestToChangeStatus();
                     }
@@ -326,7 +329,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     }
 
     private void requestToChangeStatus() {
-        AppUtils.getInstance().showProgressBar(relativeMatRequest,true);
+        AppUtils.getInstance().showProgressBar(relativeMatRequest, true);
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_request_components", jsonArray);
@@ -344,7 +347,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         Timber.d(String.valueOf(response));
                         Toast.makeText(mContext, response.optString("message") + "", Toast.LENGTH_SHORT).show();
-                        AppUtils.getInstance().showProgressBar(relativeMatRequest,false);
+                        AppUtils.getInstance().showProgressBar(relativeMatRequest, false);
                         onBackPressed();
                     }
 
@@ -359,6 +362,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         private OrderedRealmCollection<RequestMaterialListItem> requestMaterialListItemOrderedRealmCollection;
         private OnComponentClickListener componentClickListener;
         private OnVendorClickListener vendorClickListener;
+        RequestMaterialListItem requestMaterialListItem;
 
         MaterialRequestListAdapter(@Nullable OrderedRealmCollection<RequestMaterialListItem> data,
                                    boolean autoUpdate, boolean updateOnModification) {
@@ -384,7 +388,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, int position) {
-            final RequestMaterialListItem requestMaterialListItem = requestMaterialListItemOrderedRealmCollection.get(position);
+            requestMaterialListItem = requestMaterialListItemOrderedRealmCollection.get(position);
             RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
             holder.textViewItemName.setText(requestMaterialListItem.getMaterialName());
             holder.textViewItemQuantity.setText("Qty: " + requestMaterialListItem.getQuantity() + " " + requestMaterialListItem.getUnitName());
@@ -409,44 +413,37 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }
             }
             for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
+                Log.i("@@1", String.valueOf(noOfSubModules));
                 LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
                 RadioButton vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
-                TextView textViewTotalBillAmt = currentChildView.findViewById(R.id.textViewTotalBillAmt);
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
                 TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
-                TextView textViewExpDeliveryDate=currentChildView.findViewById(R.id.textViewExpDeliveryDate);
-                TextView textViewTranAmount=currentChildView.findViewById(R.id.textViewTranAmount);
-                TextView textViewTotalTransAmount=currentChildView.findViewById(R.id.textViewTotalTransAmount);
-                TextView textViewTransGST=currentChildView.findViewById(R.id.textViewTransGST);
-                TextView textViewGST=currentChildView.findViewById(R.id.textViewGST);
-                TextView textViewQty=currentChildView.findViewById(R.id.textViewQty);
+                TextView textViewTranAmount = currentChildView.findViewById(R.id.textViewTranAmount);
+                TextView textViewTotalTransAmount = currentChildView.findViewById(R.id.textViewTotalTransAmount);
+                TextView textViewTransGST = currentChildView.findViewById(R.id.textViewTransGST);
+                TextView textViewGST = currentChildView.findViewById(R.id.textViewGST);
+                TextView textViewQty = currentChildView.findViewById(R.id.textViewQty);
                 textViewQty.setText(requestMaterialListItem.getQuantity());
-                /*float rateWithTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRatePerTax());
-                float rateWithoutTax=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getRate());
-                float resultMaterialGST=rateWithTax -rateWithoutTax;*/
                 textViewGST.setText(vendorsItemRealmList.get(viewIndex).getGst());
-
-                /*Float totalTransAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
-                Float transAmount=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTransportationAmount());
-                Float result=totalTransAmount - transAmount;*/
                 textViewTransGST.setText(vendorsItemRealmList.get(viewIndex).getTransportationGst());
-
-                float matVal=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
-                float transVal=Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
-                float resultBillAMount=matVal + transVal;
-                textViewTotalBillAmt.setText(textViewTotalBillAmt.getText().toString()+ resultBillAMount);
-
-
                 textViewRateWithoutTax.setText(vendorsItemRealmList.get(viewIndex).getRate());
-                textViewTotalWithTax.setText(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
-
-                textViewExpDeliveryDate.setText(textViewExpDeliveryDate.getText().toString() +
-                AppUtils.getInstance().getTime("yyyy-MM-dd","dd/MM/yyyy",vendorsItemRealmList.get(viewIndex).getExpectedDeliveryDate()));
-
                 textViewTranAmount.setText(vendorsItemRealmList.get(viewIndex).getTransportationAmount());
                 textViewTotalTransAmount.setText(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
+                textViewTotalWithTax.setText(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
+
                 vendorRadioButton.setText(vendorsItemRealmList.get(viewIndex).getVendorName());
+                TextView textViewTotalBillAmt = currentChildView.findViewById(R.id.textViewTotalBillAmt);
+                TextView textViewExpDeliveryDate = currentChildView.findViewById(R.id.textViewExpDeliveryDate);
+                textViewTotalBillAmt.setText("");
+                textViewExpDeliveryDate.setText("");
+                textViewExpDeliveryDate.setText("Expected Delivery Date: " +
+                        AppUtils.getInstance().getTime("yyyy-MM-dd", "dd/MM/yyyy", vendorsItemRealmList.get(viewIndex).getExpectedDeliveryDate()));
+                float matVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
+                float transVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
+                float resultBillAMount = matVal + transVal;
+                textViewTotalBillAmt.setText("textViewTotalBillAmt: "+ resultBillAMount);
                 vendorRadioButton.setClickable(false);
+
             }
         }
 
@@ -480,6 +477,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
                 }
                 for (int indexView = 0; indexView < intMaxSize; indexView++) {
+                    Log.i("@@2", String.valueOf(intMaxSize));
                     View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
                     LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);

@@ -270,6 +270,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 captureImage();
                 break;
             case R.id.buttonActionGenerateGrn:
+                buttonActionGenerateGrn.setVisibility(View.GONE);
+                progressToGenerateGRN.setVisibility(View.VISIBLE);
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
                 break;
             case R.id.textViewCaptureTransImg:
@@ -389,8 +391,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-        buttonActionGenerateGrn.setVisibility(View.GONE);
-        progressToGenerateGRN.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_id", orderId);
