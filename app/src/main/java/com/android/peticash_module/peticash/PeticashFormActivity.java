@@ -206,7 +206,6 @@ public class PeticashFormActivity extends BaseActivity {
     Spinner spinnerPaymentMode;
     @BindView(R.id.linerLayoutSelectPaymentMode)
     LinearLayout linerLayoutSelectPaymentMode;
-
     @BindView(R.id.linerLayoutBankName)
     LinearLayout linerLayoutBankName;
     @BindView(R.id.spinnerBankName)
@@ -280,7 +279,6 @@ public class PeticashFormActivity extends BaseActivity {
     private RealmResults<BanksItem> bankItemRealmResults;
     private int bankId;
     private boolean isBankSelected;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -460,16 +458,14 @@ public class PeticashFormActivity extends BaseActivity {
         spinnerPaid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedPosition, long l) {
-
-
                 switch (selectedPosition) {
                     case 0:
-                        isBankSelected=true;
+                        isBankSelected = true;
                         linerLayoutBankName.setVisibility(View.VISIBLE);
                         linerLayoutSelectPaymentMode.setVisibility(View.VISIBLE);
                         break;
                     case 1:
-                        isBankSelected=false;
+                        isBankSelected = false;
                         linerLayoutBankName.setVisibility(View.GONE);
                         linerLayoutSelectPaymentMode.setVisibility(View.GONE);
                         break;
@@ -504,8 +500,8 @@ public class PeticashFormActivity extends BaseActivity {
         spinnerBankName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                RealmResults<BanksItem> banksItemRealmResults=realm.where(BanksItem.class).findAll();
-                bankId=banksItemRealmResults.get(i).getBankId();
+                RealmResults<BanksItem> banksItemRealmResults = realm.where(BanksItem.class).findAll();
+                bankId = banksItemRealmResults.get(i).getBankId();
             }
 
             @Override
@@ -750,14 +746,13 @@ public class PeticashFormActivity extends BaseActivity {
             params.put("date", currentDate);
             params.put("amount", editTextSalaryAmount.getText().toString());
             params.put("project_site_id", project_site_id);
-
             //ToDo sharvari uncomment below code
-            if(isBankSelected){
-                params.put("paid_from","bank");
-                params.put("payment_mode_slug",spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
-                params.put("bank_id",bankId);
-            }else {
-                params.put("paid_from","cash");
+            if (isBankSelected) {
+                params.put("paid_from", "bank");
+                params.put("payment_mode_slug", spinnerPaymentMode.getSelectedItem().toString().toLowerCase());
+                params.put("bank_id", bankId);
+            } else {
+                params.put("paid_from", "cash");
             }
             if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("salary")) {
                 params.put("days", edittextDay.getText().toString());
@@ -797,7 +792,7 @@ public class PeticashFormActivity extends BaseActivity {
             else
                 params.put("remark", editTextAddtonoteforsalary.getText().toString());
             Timber.d(String.valueOf(params));
-            Log.i("@@",params.toString());
+            Log.i("@@", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -828,7 +823,6 @@ public class PeticashFormActivity extends BaseActivity {
 
     private void requestToGenerateGRN() {
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
-        buttonGenerateGrn.setEnabled(false);
         int intSelectedPos = spinnerMiscCategoryArray.getSelectedItemPosition();
         try {
             if (jsonArray != null) {
@@ -940,16 +934,15 @@ public class PeticashFormActivity extends BaseActivity {
                 });
     }
 
-    private void requestForViewPament()
-    {
+    private void requestForViewPament() {
         if (isSalary) {
             AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         }
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", project_site_id);
-            if(isBankSelected){
-                params.put("bank_id",bankId);
+            if (isBankSelected) {
+                params.put("bank_id", bankId);
             }
             if (isSalary) {
                 params.put("type", "salary");
@@ -958,7 +951,6 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("per_day_wages", getPerWeges);
                 params.put("working_days", edittextDay.getText().toString());
                 params.put("advance_after_last_salary", intAdvanceAmount);//ToDo Ask for amount
-
                 if (TextUtils.isEmpty(editTextPT.getText().toString())) {
                     params.put("pt", 0);
                 } else {
@@ -983,7 +975,7 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("type", "advance");
             }
             Timber.d(String.valueOf(params));
-            Log.i("@@",params.toString());
+            Log.i("@@", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1033,7 +1025,6 @@ public class PeticashFormActivity extends BaseActivity {
                     }
                 });
     }
-
 
     private void requestToGetSystemSites() {
         AndroidNetworking.get(AppURL.API_GET_SYSTEM_SITES)
@@ -1195,6 +1186,7 @@ public class PeticashFormActivity extends BaseActivity {
             if (strTag.equalsIgnoreCase("Salary"))
                 requestForSalaryOrAdvance();
             else if (strTag.equalsIgnoreCase("requestToGrnGeneration")) {
+                buttonGenerateGrn.setVisibility(View.GONE);
                 requestToGenerateGRN();
             } else if (strTag.equalsIgnoreCase("billPayment")) {
                 requestForPurchasePayment();
@@ -1316,7 +1308,6 @@ public class PeticashFormActivity extends BaseActivity {
                                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
                                     arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                     spinnerBankName.setAdapter(arrayAdapter);
-
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

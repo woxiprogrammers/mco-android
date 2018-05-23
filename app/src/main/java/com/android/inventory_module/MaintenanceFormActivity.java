@@ -50,17 +50,14 @@ import io.realm.Realm;
 import timber.log.Timber;
 
 public class MaintenanceFormActivity extends BaseActivity {
-
     @BindView(R.id.textViewCapturedSecond)
     TextView textViewCapturedSecond;
     @BindView(R.id.textViewCapture)
     TextView textViewCapture;
-
     @BindView(R.id.buttonMaintenanceSubmit)
     Button buttonMaintenanceSubmit;
     @BindView(R.id.buttonGenerateGrn)
     Button buttonGenerateGrn;
-
     @BindView(R.id.editTextVendor_Name)
     EditText editTextVendorName;
     @BindView(R.id.editTextBillNumber)
@@ -69,7 +66,6 @@ public class MaintenanceFormActivity extends BaseActivity {
     EditText editTextBillAmount;
     @BindView(R.id.editTextAddNote)
     EditText editTextAddNote;
-
     @BindView(R.id.linearLayoutAfterGrn)
     LinearLayout linearLayoutAfterGrn;
     @BindView(R.id.linearLayoutUploadImage)
@@ -88,7 +84,6 @@ public class MaintenanceFormActivity extends BaseActivity {
     RelativeLayout mainRelativeLayout;
     @BindView(R.id.linearLayoutOne)
     LinearLayout linearLayoutOne;
-
     private Context mContext;
     private String strCaptureTag = "";
     private ArrayList<File> arrayImageFileList;
@@ -117,7 +112,6 @@ public class MaintenanceFormActivity extends BaseActivity {
             maintenanceId = bundle.getInt("asset_maintenance_id");
             strvendorName = bundle.getString("vendorName");
             editTextVendorName.setText(strvendorName);
-
         }
         AppUtils.getInstance().initializeProgressBar(mainRelativeLayout, mContext);
         realm = Realm.getDefaultInstance();
@@ -147,7 +141,6 @@ public class MaintenanceFormActivity extends BaseActivity {
             linearLayoutOne.setVisibility(View.VISIBLE);
             linearLayoutAfterGrn.setVisibility(View.GONE);
         }
-
     }
 
     private void openImageZoomFragment(String url) {
@@ -170,7 +163,6 @@ public class MaintenanceFormActivity extends BaseActivity {
         buttonGenerateGrn.setVisibility(View.GONE);
         textViewCapture.setVisibility(View.GONE);*/
         uploadImages_addItemToLocal("GRN", "pre_grn_request_maintenance");
-
     }
 
     @OnClick({R.id.textViewCapturedSecond, R.id.textViewCapture, R.id.buttonMaintenanceSubmit})
@@ -280,20 +272,18 @@ public class MaintenanceFormActivity extends BaseActivity {
                             }
                         });
             } else {
-                if (strTag.equalsIgnoreCase("GRN"))
+                if (strTag.equalsIgnoreCase("GRN")) {
                     requestToGenerateGrn();
-                else if (strTag.equalsIgnoreCase("submit")) {
+                } else if (strTag.equalsIgnoreCase("submit")) {
                     requestToSubmit();
                 }
             }
-        }else {
+        } else {
             AppUtils.getInstance().showOfflineMessage("MaintenanceFormActivity");
-
         }
     }
 
     private void requestToSubmit() {
-
         if (TextUtils.isEmpty(editTextBillNumber.getText().toString())) {
             editTextBillNumber.setError("Please enter challan number");
             editTextBillNumber.requestFocus();
@@ -313,12 +303,10 @@ public class MaintenanceFormActivity extends BaseActivity {
         try {
             params.put("grn", editTextGrnNumber.getText().toString());
             params.put("bill_number", editTextBillNumber.getText().toString());
-            if(TextUtils.isEmpty(editTextBillAmount.getText().toString())){
+            if (TextUtils.isEmpty(editTextBillAmount.getText().toString())) {
                 params.put("bill_amount", "0");
-
-            }else {
+            } else {
                 params.put("bill_amount", editTextBillAmount.getText().toString());
-
             }
             params.put("remark", editTextAddNote.getText().toString());
             params.put("images", jsonImageNameArray);
@@ -356,6 +344,7 @@ public class MaintenanceFormActivity extends BaseActivity {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
+        buttonGenerateGrn.setVisibility(View.GONE);
         JSONObject params = new JSONObject();
         try {
             params.put("asset_maintenance_id", maintenanceId);
@@ -376,10 +365,8 @@ public class MaintenanceFormActivity extends BaseActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             strGrn = response.getString("grn_generated");
-
                             editTextGrnNumber.setText(strGrn);
                             AppUtils.getInstance().showProgressBar(mainRelativeLayout, false);
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -394,5 +381,4 @@ public class MaintenanceFormActivity extends BaseActivity {
                     }
                 });
     }
-
 }

@@ -299,8 +299,10 @@ public class ActivitySiteInNewChange extends BaseActivity {
                             }
                         });
             } else {
-                if (strTag.equalsIgnoreCase("requestToGenerateGrn"))
+                if (strTag.equalsIgnoreCase("requestToGenerateGrn")) {
+                    buttonSiteInGrn.setVisibility(View.GONE);
                     requestToGenerateGrn();
+                }
                 else if (strTag.equalsIgnoreCase("submit")) {
 
                     requestToSubmit();
@@ -423,7 +425,6 @@ public class ActivitySiteInNewChange extends BaseActivity {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
-        buttonSiteInGrn.setVisibility(View.GONE);
         AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {

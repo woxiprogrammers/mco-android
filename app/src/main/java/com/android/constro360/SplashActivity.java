@@ -156,7 +156,7 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    private void getServerVersion() {
+    /*private void getServerVersion() {
         //ToDo Sharvari do versioning stuff
         if (AppUtils.getInstance().checkNetworkState()) {
             AndroidNetworking.post(AppURL.API_GET_SERVER_VERSION + AppUtils.getInstance().getCurrentToken())
@@ -175,5 +175,5 @@ public class SplashActivity extends BaseActivity {
                         }
                     });
         }
-    }
+    }*/
 }
