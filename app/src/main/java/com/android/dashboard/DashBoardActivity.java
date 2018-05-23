@@ -9,6 +9,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -399,7 +400,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             textViewSitesCount.setText("" + siteCountListItem.getNotificationCount());
             textViewSites.setText(siteCountListItem.getProjectSiteName());
             if (AppUtils.getInstance().getCurrentSiteId() == siteCountListItem.getProjectSiteId()) {
-                textViewSites.setTextColor(getColor(R.color.colorPrimaryDark));
+                textViewSites.setTextColor(ContextCompat.getColor(mContext,R.color.colorPrimaryDark));
                 textViewSitesCount.setTextColor(getColor(R.color.colorPrimaryDark));
             }
             final int finalI = i;

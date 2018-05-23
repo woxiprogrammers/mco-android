@@ -13,6 +13,7 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -270,8 +271,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 captureImage();
                 break;
             case R.id.buttonActionGenerateGrn:
-                buttonActionGenerateGrn.setVisibility(View.GONE);
-                progressToGenerateGRN.setVisibility(View.VISIBLE);
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
                 break;
             case R.id.textViewCaptureTransImg:
@@ -327,7 +326,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextVehNum.setError(null);
             editTextVehNum.requestFocus();
         }
-        if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
+
+        if (arrayImageFileList == null || arrayImageFileList.size() < 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             return;
         }
@@ -387,10 +387,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToGenerateGrn() {
-        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
-            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
-            return;
-        }
+        progressToGenerateGRN.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_id", orderId);
@@ -455,11 +452,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         buttonActionSubmit.setEnabled(false);
         try {
             params.put("vehicle_number", strVehicleNumber);
-           /* if (!editTextBillAmount.getText().toString().isEmpty()) {
-                params.put("bill_amount", editTextBillAmount.getText().toString());
-            } else {
-                params.put("bill_amount", null);
-            }*/
             params.put("remark", editextTransRemark.getText().toString());
             params.put("bill_number", strChallanNumber);
             params.put("grn", editTextGrnNum.getText().toString());
@@ -670,6 +662,11 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                         });
             } else {
                 if (strTag.equalsIgnoreCase("requestToGenerateGrn")) {
+                    if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
+                        Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    buttonActionGenerateGrn.setVisibility(View.GONE);
                     requestToGenerateGrn();
                 } else if (strTag.equalsIgnoreCase("requestToPayment")) {
                     requestToPayment();
