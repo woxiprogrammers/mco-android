@@ -159,9 +159,7 @@ public class MaintenanceFormActivity extends BaseActivity {
 
     @OnClick(R.id.buttonGenerateGrn)
     public void onClicked() {
-        /*linearLayoutAfterGrn.setVisibility(View.VISIBLE);
-        buttonGenerateGrn.setVisibility(View.GONE);
-        textViewCapture.setVisibility(View.GONE);*/
+        buttonGenerateGrn.setEnabled(false);
         uploadImages_addItemToLocal("GRN", "pre_grn_request_maintenance");
     }
 
@@ -177,6 +175,7 @@ public class MaintenanceFormActivity extends BaseActivity {
                 captureImage();
                 break;
             case R.id.buttonMaintenanceSubmit:
+                buttonMaintenanceSubmit.setEnabled(false);
                 uploadImages_addItemToLocal("submit", "transaction_request_maintenance");
                 break;
         }
@@ -287,15 +286,12 @@ public class MaintenanceFormActivity extends BaseActivity {
         if (TextUtils.isEmpty(editTextBillNumber.getText().toString())) {
             editTextBillNumber.setError("Please enter challan number");
             editTextBillNumber.requestFocus();
+            buttonMaintenanceSubmit.setEnabled(true);
             return;
         }
-        /*if (TextUtils.isEmpty(editTextBillAmount.getText().toString())) {
-            editTextBillAmount.requestFocus();
-            editTextBillAmount.setError("Please enter bill amount");
-            return;
-        }*/
         if (arrayImageFileList == null || arrayImageFileList.size() > 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            buttonMaintenanceSubmit.setEnabled(true);
             return;
         }
         AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
@@ -342,6 +338,7 @@ public class MaintenanceFormActivity extends BaseActivity {
         //null
         if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            buttonGenerateGrn.setEnabled(true);
             return;
         }
         buttonGenerateGrn.setVisibility(View.GONE);

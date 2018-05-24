@@ -177,6 +177,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 break;
             case R.id.buttonSiteInGrn:
                 if (AppUtils.getInstance().checkNetworkState()) {
+                    buttonSiteInGrn.setEnabled(false);
                     uploadImages_addItemToLocal("requestToGenerateGrn", "inventory_transfer");//ToDo ask to harsha
                 } else {
                     AppUtils.getInstance().showOfflineMessage("SiteInActivity");
@@ -188,14 +189,18 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 break;
             case R.id.btnSubmit:
                 if (AppUtils.getInstance().checkNetworkState()) {
+
+                    btnSubmit.setEnabled(false);
                     if (arrayImageFileList == null || arrayImageFileList.size() == 0) {
                         Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+                        btnSubmit.setEnabled(true);
                         return;
                     }
 
                     if (TextUtils.isEmpty(edtSiteTransferRemark.getText().toString())) {
                         edtSiteTransferRemark.requestFocus();
                         edtSiteTransferRemark.setError("Please enter remark");
+                        btnSubmit.setEnabled(true);
                         return;
                     }
                     uploadImages_addItemToLocal("submit", "inventory_transfer");
@@ -300,6 +305,11 @@ public class ActivitySiteInNewChange extends BaseActivity {
                         });
             } else {
                 if (strTag.equalsIgnoreCase("requestToGenerateGrn")) {
+                    if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
+                        Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+                        buttonSiteInGrn.setEnabled(false);
+                        return;
+                    }
                     buttonSiteInGrn.setVisibility(View.GONE);
                     requestToGenerateGrn();
                 }
@@ -421,10 +431,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
 
     //API call to generate GRN
     private void requestToGenerateGrn() {
-        if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
-            Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
-            return;
-        }
+
         AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {
@@ -469,7 +476,6 @@ public class ActivitySiteInNewChange extends BaseActivity {
 
     //API call submit final Site In
     private void requestToSubmit() {
-        btnSubmit.setEnabled(false);
         AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {

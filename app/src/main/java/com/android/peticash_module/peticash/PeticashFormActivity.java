@@ -316,6 +316,7 @@ public class PeticashFormActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.button_generate_grn:
                 if (AppUtils.getInstance().checkNetworkState()) {
+                    buttonGenerateGrn.setEnabled(false);
                     validateEntries();
                 } else {
                     AppUtils.getInstance().showOfflineMessage("PeticashFormActivity");
@@ -342,7 +343,9 @@ public class PeticashFormActivity extends BaseActivity {
     //Salary
     @OnClick(R.id.button_salary_submit)
     public void onViewClicked() {
+
         if (AppUtils.getInstance().checkNetworkState()) {
+            buttonSalarySubmit.setEnabled(false);
             validationForSalaryAdvance();
         } else {
             AppUtils.getInstance().showOfflineMessage("PeticashFormActivity");
@@ -514,7 +517,7 @@ public class PeticashFormActivity extends BaseActivity {
                 String selectedString = (String) adapterView.getItemAtPosition(i);
                 setProjectNameFromIndex(selectedString);
                 if (spinnerCategoryArray.getSelectedItem().toString().equalsIgnoreCase("Advance")) {
-                    requestForViewPament();
+                    requestForViewPayment();
                 }
             }
         });
@@ -585,6 +588,7 @@ public class PeticashFormActivity extends BaseActivity {
             edittextQuantity.setFocusableInTouchMode(true);
             edittextQuantity.requestFocus();
             edittextQuantity.setError("Please " + getString(R.string.edittext_hint_quantity));
+            buttonGenerateGrn.setEnabled(true);
             return;
         } else {
             edittextQuantity.setError(null);
@@ -594,6 +598,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextBillNumber.setFocusableInTouchMode(true);
             editTextBillNumber.requestFocus();
             editTextBillNumber.setError(getString(R.string.please_enter) + getString(R.string.bill_number));
+            buttonGenerateGrn.setEnabled(true);
             return;
         } else {
             editTextBillNumber.setError(null);
@@ -603,6 +608,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextBillamount.setFocusableInTouchMode(true);
             editTextBillamount.requestFocus();
             editTextBillamount.setError("Please Enter Bill Amount");
+            buttonGenerateGrn.setEnabled(true);
             return;
         } else {
             editTextBillamount.setError(null);
@@ -612,6 +618,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextAddNote.setError("Please enter remark");
             editTextAddNote.requestFocus();
             editTextAddNote.setFocusableInTouchMode(true);
+            buttonGenerateGrn.setEnabled(true);
             return;
         } else {
             editTextAddNote.setError(null);
@@ -629,6 +636,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextEmpIdName.setFocusableInTouchMode(true);
             editTextEmpIdName.requestFocus();
             editTextEmpIdName.setError("Please Enter Employee ID or Name");
+            buttonSalarySubmit.setEnabled(true);
             return;
         } else {
             editTextEmpIdName.setError(null);
@@ -639,6 +647,7 @@ public class PeticashFormActivity extends BaseActivity {
                 edittextDay.setFocusableInTouchMode(true);
                 edittextDay.requestFocus();
                 edittextDay.setError(getString(R.string.please_enter) + " Days");
+                buttonSalarySubmit.setEnabled(true);
                 return;
             } else {
                 edittextDay.setError(null);
@@ -649,6 +658,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextSalaryAmount.setFocusableInTouchMode(true);
             editTextSalaryAmount.requestFocus();
             editTextSalaryAmount.setError(getString(R.string.please_enter) + " Amount");
+            buttonSalarySubmit.setEnabled(true);
             return;
         } else {
             editTextSalaryAmount.setError(null);
@@ -658,6 +668,7 @@ public class PeticashFormActivity extends BaseActivity {
             editTextAddtonoteforsalary.setFocusableInTouchMode(true);
             editTextAddtonoteforsalary.requestFocus();
             editTextAddtonoteforsalary.setError("Please enter remark");
+            buttonSalarySubmit.setEnabled(true);
             return;
         } else {
             editTextAddtonoteforsalary.setError(null);
@@ -933,7 +944,7 @@ public class PeticashFormActivity extends BaseActivity {
                 });
     }
 
-    private void requestForViewPament() {
+    private void requestForViewPayment() {
         if (isSalary) {
             AppUtils.getInstance().showProgressBar(mainRelativeLayout, true);
         }
@@ -1250,17 +1261,20 @@ public class PeticashFormActivity extends BaseActivity {
             editTextEmpIdName.setFocusable(true);
             editTextEmpIdName.setFocusableInTouchMode(true);
             editTextEmpIdName.setError("Please enter employee name");
+            buttonViewAmount.setEnabled(true);
             return;
         }
         if (TextUtils.isEmpty(editTextSiteName.getText().toString())) {
             editTextSiteName.setError("Please enter site name");
+            buttonViewAmount.setEnabled(true);
             return;
         }
         if (TextUtils.isEmpty(edittextDay.getText().toString())) {
             edittextDay.setError("Please enter days");
+            buttonViewAmount.setEnabled(true);
             return;
         }
-        requestForViewPament();
+        requestForViewPayment();
     }
 
     private void setProjectNameFromIndex(String selectedString) {
