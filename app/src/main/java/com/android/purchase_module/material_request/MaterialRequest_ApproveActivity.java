@@ -150,6 +150,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     private boolean isApproveAccess;
     private boolean isSearch;
     private Button buttonApproveDisapprove;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -905,6 +906,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             editText_quantity_material_asset.setText("" + arrPurchaseMaterialListItems.get(position).getItem_quantity());
             editText_quantity_material_asset.setEnabled(false);
             edittext_unit.setText(arrPurchaseMaterialListItems.get(position).getItem_unit_name());
+            name=arrPurchaseMaterialListItems.get(position).getItem_unit_name();
             frameLayoutSpinnerUnitDialog = dialogView.findViewById(R.id.frameLayoutSpinnerUnitDialog);
             final String strUserRole = AppUtils.getInstance().getUserRole();
             edittext_unit.setEnabled(false);
@@ -1561,6 +1563,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_select_units.setAdapter(arrayAdapter);
+        spinner_select_units.setSelection(arrayAdapter.getPosition(name));
     }
 }
 
