@@ -165,7 +165,7 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         Timber.d("Purchase Order: " + intCount);
                         currentTextView_Count.setVisibility(View.GONE);
                     }
-                } else if (strSumModuleName.equalsIgnoreCase("Purchase Bill")) {
+                } else if (strSumModuleName.equalsIgnoreCase("GRN")) {
                     int intCount = notificationCountData.getPurchaseOrderBillCreateCount();
                     if (intCount > 0) {
                         Timber.d("Purchase Bill: " + intCount);

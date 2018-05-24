@@ -792,7 +792,6 @@ public class PeticashFormActivity extends BaseActivity {
             else
                 params.put("remark", editTextAddtonoteforsalary.getText().toString());
             Timber.d(String.valueOf(params));
-            Log.i("@@", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -975,7 +974,6 @@ public class PeticashFormActivity extends BaseActivity {
                 params.put("type", "advance");
             }
             Timber.d(String.valueOf(params));
-            Log.i("@@", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

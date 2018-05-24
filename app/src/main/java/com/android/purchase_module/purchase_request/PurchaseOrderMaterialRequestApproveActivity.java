@@ -124,14 +124,16 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         requestToGetDetails();
     }
 
-    private void setUpPrAdapter() {
-        Log.i("@@", "adapter call");
+    private void setUpPrAdapter()
+    {
+
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseRequestListItems = realm.where(RequestMaterialListItem.class).findAll();
         MaterialRequestListAdapter purchaseRequestRvAdapter = new MaterialRequestListAdapter(purchaseRequestListItems, true, true);
         rvList.setLayoutManager(new LinearLayoutManager(mContext));
         rvList.setHasFixedSize(true);
+        rvList.setAdapter(purchaseRequestRvAdapter);
         purchaseRequestRvAdapter.setOnItemClickListener(new OnComponentClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
@@ -146,7 +148,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         ll_vendors.setVisibility(View.VISIBLE);
                     }
                 } else if (itemViewIndex == R.id.checkboxFrame) {
-                    Log.i("@@3", "checkboxFrame");
                     if (!requestMaterialListItem.isIs_approved()) {
                         CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
                         if (requestMaterialListItem.isCheckboxCheckedState()) {
@@ -164,7 +165,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                     }
                 } else if (itemViewIndex == R.id.checkboxComponent) {
-                    Log.i("@@4", "checkboxComponent");
                     CheckBox checkBox = (CheckBox) itemView;
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
                         checkBox.setChecked(true);
@@ -182,7 +182,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }
             }
         });
-        purchaseRequestRvAdapter.setChildClickListener(new OnVendorClickListener() {
+        purchaseRequestRvAdapter.setChildClickListener(new OnVendorClickListener()
+        {
             @Override
             public void onVendorItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors) {
                 JSONObject jsonObject;
@@ -238,7 +239,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             }
         });
 
-        rvList.setAdapter(purchaseRequestRvAdapter);
     }
 
     private void saveCheckboxCheckedStateToLocal(final boolean isCheckboxChecked, final RequestMaterialListItem requestMaterialListItem) {
@@ -258,7 +258,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         try {
             params.put("purchase_order_request_id", intPurchaseOrderRequestId);
             Timber.d(String.valueOf(params));
-            Log.i("@@",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -413,7 +412,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }
             }
             for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
-                Log.i("@@1", String.valueOf(noOfSubModules));
                 LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
                 RadioButton vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
@@ -477,7 +475,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     if (intMaxSizeTemp > intMaxSize) intMaxSize = intMaxSizeTemp;
                 }
                 for (int indexView = 0; indexView < intMaxSize; indexView++) {
-                    Log.i("@@2", String.valueOf(intMaxSize));
                     View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
                     LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);

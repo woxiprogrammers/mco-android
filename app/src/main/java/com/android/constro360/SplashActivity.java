@@ -47,7 +47,6 @@ public class SplashActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         boolean notFirstTime = AppUtils.getInstance().getBoolean(AppConstants.IS_APP_FIRST_TIME, false);
         if (!notFirstTime) {
-            Log.i("@@isnotIf", "if");
             storeAclKeyValueToLocal();
         }
         new Handler().postDelayed(new Runnable() {
@@ -56,11 +55,9 @@ public class SplashActivity extends BaseActivity {
                 boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
                 if (isLoggedIn && !TextUtils.isEmpty(AppUtils.getInstance().getCurrentToken())) {
                     requestLatestAcl();
-                    Log.i("@@requestLatestAcl", "requestLatestAcl");
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();
-                    Log.i("@@Intent", "Intent");
                 }
             }
         }, 500);

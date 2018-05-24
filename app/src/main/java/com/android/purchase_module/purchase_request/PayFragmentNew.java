@@ -279,6 +279,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 captureImage();
                 break;
             case R.id.buttonActionSubmit:
+                buttonActionSubmit.setEnabled(false);
                 validateEntries();
                 break;
         }
@@ -305,6 +306,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         strVehicleNumber = editTextVehNum.getText().toString();
         if (!isCheckedMaterial) {
             Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
+            buttonActionSubmit.setEnabled(true);
             return;
         }
         //For Bill Number
@@ -312,6 +314,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextBillumber.setFocusableInTouchMode(true);
             editTextBillumber.requestFocus();
             editTextBillumber.setError(getString(R.string.please_enter) + " " + getString(R.string.bill_number));
+            buttonActionSubmit.setEnabled(true);
             return;
         } else {
             editTextBillumber.setError(null);
@@ -322,14 +325,16 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextVehNum.setFocusableInTouchMode(true);
             editTextVehNum.requestFocus();
             editTextVehNum.setError(getString(R.string.please_enter) + " " + getString(R.string.vehicle_number));
+            buttonActionSubmit.setEnabled(true);
             return;
         } else {
             editTextVehNum.setError(null);
             editTextVehNum.requestFocus();
         }
 
-        if (arrayImageFileList == null || arrayImageFileList.size() < 0) {
+        if (arrayImageFileList == null || arrayImageFileList.size() <= 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
+            buttonActionSubmit.setEnabled(true);
             return;
         }
         uploadImages_addItemToLocal("requestToPayment", "bill_transaction");
@@ -450,7 +455,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             }
         }
         AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, true);
-        buttonActionSubmit.setEnabled(false);
         try {
             params.put("vehicle_number", strVehicleNumber);
             params.put("remark", editextTransRemark.getText().toString());
