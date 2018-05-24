@@ -153,24 +153,5 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    /*private void getServerVersion() {
-        //ToDo Sharvari do versioning stuff
-        if (AppUtils.getInstance().checkNetworkState()) {
-            AndroidNetworking.post(AppURL.API_GET_SERVER_VERSION + AppUtils.getInstance().getCurrentToken())
-                    .setTag("getServerVersion")
-                    .setPriority(Priority.MEDIUM)
-                    .build()
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(final JSONObject response) {
 
-                        }
-
-                        @Override
-                        public void onError(ANError anError) {
-                            AppUtils.getInstance().logApiError(anError, "getServerVersion");
-                        }
-                    });
-        }
-    }*/
 }

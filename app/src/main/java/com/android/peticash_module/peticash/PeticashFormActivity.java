@@ -1004,6 +1004,9 @@ public class PeticashFormActivity extends BaseActivity {
                             editTextSiteName.setEnabled(false);
                             editTextEmpIdName.setEnabled(false);
                             spinnerCategoryArray.setEnabled(false);
+                            spinnerPaid.setEnabled(false);
+                            spinnerBankName.setEnabled(false);
+                            spinnerPaymentMode.setEnabled(false);
                             if (isSalary) {
                                 edittextPayableAmountSalary.addTextChangedListener(textWatcherSalaryAmount);
                                 Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();

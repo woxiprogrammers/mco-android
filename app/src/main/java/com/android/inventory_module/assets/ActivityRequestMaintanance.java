@@ -246,8 +246,8 @@ public class ActivityRequestMaintanance extends BaseActivity {
                         .getAsJSONObject(new JSONObjectRequestListener() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                arrayImageFileList.remove(0);
                                 try {
+                                    arrayImageFileList.remove(0);
                                     String fileName = response.getString("filename");
                                     jsonImageNameArray.put(fileName);
                                 } catch (JSONException e) {

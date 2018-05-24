@@ -307,7 +307,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 if (strTag.equalsIgnoreCase("requestToGenerateGrn")) {
                     if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
                         Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
-                        buttonSiteInGrn.setEnabled(false);
+                        buttonSiteInGrn.setEnabled(true);
                         return;
                     }
                     buttonSiteInGrn.setVisibility(View.GONE);
@@ -439,6 +439,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
             params.put("related_inventory_component_transfer_id", relatedInventoryComponentId);
             params.put("quantity", edtQuantity.getText().toString());
             params.put("images", jsonImageNameArray);
+            Log.i("@@",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
