@@ -271,6 +271,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 captureImage();
                 break;
             case R.id.buttonActionGenerateGrn:
+                buttonActionGenerateGrn.setEnabled(false);
                 uploadImages_addItemToLocal("requestToGenerateGrn", "bill_transaction");
                 break;
             case R.id.textViewCaptureTransImg:
@@ -663,6 +664,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             } else {
                 if (strTag.equalsIgnoreCase("requestToGenerateGrn")) {
                     if (arrayImageFileList == null || arrayImageFileList.size() != 0) {
+                        buttonActionGenerateGrn.setEnabled(true);
                         Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
                         return;
                     }

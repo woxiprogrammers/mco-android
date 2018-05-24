@@ -199,6 +199,14 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         userName = headerLayout.findViewById(R.id.userName);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (AppUtils.getInstance().checkNetworkState()) {
+            getCount();
+        }
+    }
+
     private void setUpDashboardAdapterData() {
         realm = Realm.getDefaultInstance();
         LoginResponseData loginResponseData = realm.where(LoginResponseData.class).findFirst();

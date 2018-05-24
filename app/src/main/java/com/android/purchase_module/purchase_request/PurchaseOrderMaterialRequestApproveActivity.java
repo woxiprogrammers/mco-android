@@ -441,7 +441,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 float matVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
                 float transVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 float resultBillAMount = matVal + transVal;
-                textViewTotalBillAmt.setText("textViewTotalBillAmt: "+ resultBillAMount);
+                textViewTotalBillAmt.setText("Total Bill Amt: "+ resultBillAMount);
                 vendorRadioButton.setClickable(false);
 
             }
