@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.android.awareness_module.AwarenessHomeActivity;
 import com.android.checklist_module.ChecklistHomeActivity;
@@ -52,42 +54,29 @@ import timber.log.Timber;
 public class SplashActivity extends BaseActivity {
     private Realm realm;
     private String strCurrentVersionName, strServerVersion;
+    private boolean notFirstTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        boolean notFirstTime = AppUtils.getInstance().getBoolean(AppConstants.IS_APP_FIRST_TIME, false);
+        notFirstTime = AppUtils.getInstance().getBoolean(AppConstants.IS_APP_FIRST_TIME, false);
         requestToGetMinVersion();
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            strCurrentVersionName  = pInfo.versionName;
+            strCurrentVersionName = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        String[] strSplitCurrentVersion=strCurrentVersionName.split("-");
-        strCurrentVersionName=strSplitCurrentVersion[0];
-        if(Float.parseFloat(strCurrentVersionName) < Float.parseFloat(strServerVersion) ){
-            openUpdateDialog();
-        }else {
-            if (!notFirstTime) {
-                storeAclKeyValueToLocal();
-            }
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
-                    if (isLoggedIn && !TextUtils.isEmpty(AppUtils.getInstance().getCurrentToken())) {
-                        requestLatestAcl();
-                    } else {
-                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                        finish();
-                    }
-                }
-            }, 500);
+        /**
+         * Below spliting code is for Test Environment only
+         * Comment it for Production
+         */
+        if (strCurrentVersionName != null) {
+            String[] strSplitCurrentVersion = strCurrentVersionName.split("-");
+            strCurrentVersionName = strSplitCurrentVersion[0];
         }
-
     }
 
     @Override
@@ -180,11 +169,10 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
-    private void requestToGetMinVersion(){
+    private void requestToGetMinVersion() {
         if (AppUtils.getInstance().checkNetworkState()) {
             AndroidNetworking.get(AppURL.API_GET_VERSION_URL)
                     .setPriority(Priority.MEDIUM)
-                    .addHeaders(AppUtils.getInstance().getApiHeaders())
                     .setTag("requestToGetMinVersion")
                     .build()
                     .getAsJSONObject(new JSONObjectRequestListener() {
@@ -192,6 +180,27 @@ public class SplashActivity extends BaseActivity {
                         public void onResponse(JSONObject response) {
                             try {
                                 strServerVersion = response.getString("min_app_version");
+                                if (strServerVersion != null) {
+                                    if (Float.parseFloat(strCurrentVersionName) < Float.parseFloat(strServerVersion)) {
+                                        openUpdateDialog();
+                                    } else {
+                                        if (!notFirstTime) {
+                                            storeAclKeyValueToLocal();
+                                        }
+                                        new Handler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
+                                                if (isLoggedIn && !TextUtils.isEmpty(AppUtils.getInstance().getCurrentToken())) {
+                                                    requestLatestAcl();
+                                                } else {
+                                                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                                                    finish();
+                                                }
+                                            }
+                                        }, 500);
+                                    }
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -200,29 +209,29 @@ public class SplashActivity extends BaseActivity {
                         public void onError(ANError anError) {
                         }
                     });
-        }else {
+        } else {
             AppUtils.getInstance().showOfflineMessage("SplashActivity");
-            startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
-            finish();
         }
     }
 
-    private void openUpdateDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this, R.style.MyDialogTheme);
+    private void openUpdateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this/*, R.style.MyDialogTheme*/);
         builder.setMessage(getString(R.string.update_app_dialog))
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
+                        openPlayStoreLink();
                     }
                 });
         AlertDialog alert = builder.create();
         alert.setTitle("Update App");
         alert.show();
     }
-
+    private void openPlayStoreLink() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.mcon.android")));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AppURL.PLAYSTORE_APP_URL)));
+        }
+    }
 }
