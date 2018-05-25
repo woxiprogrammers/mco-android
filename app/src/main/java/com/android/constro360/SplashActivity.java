@@ -1,12 +1,17 @@
 package com.android.constro360;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 
 import com.android.awareness_module.AwarenessHomeActivity;
 import com.android.checklist_module.ChecklistHomeActivity;
@@ -18,6 +23,9 @@ import com.android.inventory_module.InventoryHomeActivity;
 import com.android.login_mvp.LoginActivity;
 import com.android.login_mvp.login_model.LoginResponse;
 import com.android.peticash_module.peticash.PetiCashHomeActivity;
+import com.android.peticash_module.peticash.peticash_models.BankInfoResponse;
+import com.android.peticash_module.peticash.peticash_models.BanksItem;
+import com.android.peticash_module.peticash.peticash_models.Banksdata;
 import com.android.purchase_module.material_request.MaterialRequest_ApproveActivity;
 import com.android.purchase_module.purchase_request.PurchaseOrderApproveActivity;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_request.PurchaseHomeActivity;
@@ -28,17 +36,22 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.realm.Realm;
 import timber.log.Timber;
 
 public class SplashActivity extends BaseActivity {
     private Realm realm;
+    private String strCurrentVersionName, strServerVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,21 +59,35 @@ public class SplashActivity extends BaseActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         boolean notFirstTime = AppUtils.getInstance().getBoolean(AppConstants.IS_APP_FIRST_TIME, false);
-        if (!notFirstTime) {
-            storeAclKeyValueToLocal();
+        requestToGetMinVersion();
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            strCurrentVersionName  = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
-                if (isLoggedIn && !TextUtils.isEmpty(AppUtils.getInstance().getCurrentToken())) {
-                    requestLatestAcl();
-                } else {
-                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                    finish();
-                }
+        String[] strSplitCurrentVersion=strCurrentVersionName.split("-");
+        strCurrentVersionName=strSplitCurrentVersion[0];
+        if(Float.parseFloat(strCurrentVersionName) < Float.parseFloat(strServerVersion) ){
+            openUpdateDialog();
+        }else {
+            if (!notFirstTime) {
+                storeAclKeyValueToLocal();
             }
-        }, 500);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    boolean isLoggedIn = AppUtils.getInstance().getBoolean(AppConstants.PREFS_IS_LOGGED_IN, false);
+                    if (isLoggedIn && !TextUtils.isEmpty(AppUtils.getInstance().getCurrentToken())) {
+                        requestLatestAcl();
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                        finish();
+                    }
+                }
+            }, 500);
+        }
+
     }
 
     @Override
@@ -153,5 +180,49 @@ public class SplashActivity extends BaseActivity {
         }
     }
 
+    private void requestToGetMinVersion(){
+        if (AppUtils.getInstance().checkNetworkState()) {
+            AndroidNetworking.get(AppURL.API_GET_VERSION_URL)
+                    .setPriority(Priority.MEDIUM)
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setTag("requestToGetMinVersion")
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                strServerVersion = response.getString("min_app_version");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        @Override
+                        public void onError(ANError anError) {
+                        }
+                    });
+        }else {
+            AppUtils.getInstance().showOfflineMessage("SplashActivity");
+            startActivity(new Intent(SplashActivity.this, DashBoardActivity.class));
+            finish();
+        }
+    }
+
+    private void openUpdateDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this, R.style.MyDialogTheme);
+        builder.setMessage(getString(R.string.update_app_dialog))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.setTitle("Update App");
+        alert.show();
+    }
 
 }

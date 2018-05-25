@@ -102,4 +102,5 @@ public class AppURL {
     public static final String API_REQUEST_GENRATE_GRN_SITE_IN = BASE_URL +"inventory/generate-grn?token=";
     public static final String API_SUBMIT_SITE_IN_NEW = BASE_URL + "inventory/post-grn-transfer?token=";
     public static final String API_BANK_INFO_URL=BASE_URL+ "system-banks?token=";
+    public static final String API_GET_VERSION_URL=BASE_URL + "app-version";
 }

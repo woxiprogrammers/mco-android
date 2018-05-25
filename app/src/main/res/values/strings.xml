@@ -115,4 +115,6 @@
     <string name="create_peticash_management">create-peticash-management</string>
     <string name="create_inventory_in_out_transfer">create-inventory-in-out-transfer</string>
     <string name="diesel_consume">Diesel \nConsume</string>
+    <string name="update_app_dialog">You are using an older version of Constro app which is not being supported anymore. Please update.</string>
+
 </resources>
