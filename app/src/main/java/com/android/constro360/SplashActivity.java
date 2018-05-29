@@ -70,7 +70,7 @@ public class SplashActivity extends BaseActivity {
             e.printStackTrace();
         }
         /**
-         * Below spliting code is for Test Environment only
+         * Below splitting code is for Test Environment only
          * Comment it for Production
          */
         if (strCurrentVersionName != null) {
@@ -86,7 +86,6 @@ public class SplashActivity extends BaseActivity {
             realm.close();
         }
     }
-
     private void storeAclKeyValueToLocal() {
         HashMap<String, String> aclKeyValuePair = new HashMap<String, String>();
         aclKeyValuePair.put("purchase-request", PurchaseHomeActivity.class.getName());
@@ -119,7 +118,6 @@ public class SplashActivity extends BaseActivity {
         AppUtils.getInstance().put("aclKeyValuePair", hashMapString);
         AppUtils.getInstance().put(AppConstants.IS_APP_FIRST_TIME, true);
     }
-
     private void requestLatestAcl() {
         if (AppUtils.getInstance().checkNetworkState()) {
             AndroidNetworking.post(AppURL.API_USER_DASHBOARD + AppUtils.getInstance().getCurrentToken())
@@ -168,7 +166,6 @@ public class SplashActivity extends BaseActivity {
             finish();
         }
     }
-
     private void requestToGetMinVersion() {
         if (AppUtils.getInstance().checkNetworkState()) {
             AndroidNetworking.get(AppURL.API_GET_VERSION_URL)
@@ -213,7 +210,6 @@ public class SplashActivity extends BaseActivity {
             AppUtils.getInstance().showOfflineMessage("SplashActivity");
         }
     }
-
     private void openUpdateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this/*, R.style.MyDialogTheme*/);
         builder.setMessage(getString(R.string.update_app_dialog))

@@ -107,7 +107,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         } else if (R.id.action_approve == item.getItemId()) {
             if (AppUtils.getInstance().checkNetworkState()) {
                 if (isMaterialSelected) {
-                    openApproveDialog(true);
+                    openApproveDialog(true, 0);
                 } else {
                     Toast.makeText(mContext, "Please select at lease one material and its vendor", Toast.LENGTH_LONG).show();
                 }
@@ -179,7 +179,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                 } else if (itemViewIndex == R.id.textViewDisApproveMaterial) {
                     if (AppUtils.getInstance().checkNetworkState())
-                        openApproveDialog(false);
+                        openApproveDialog(false, purchaseRequestListItems.get(position).getId());
                     else
                         AppUtils.getInstance().showOfflineMessage("Disapprove material");
                 }
@@ -307,12 +307,15 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 });
     }
 
-    private void openApproveDialog(final boolean isApprove) {
-        String strMessage;
-        if (isApprove)
+    private void openApproveDialog(final boolean isApprove, final int materialRequestId) {
+        String strMessage, strTitle;
+        if (isApprove) {
             strMessage = "Do you want to approve ?";
-        else
+            strTitle = "Approve PO";
+        } else {
             strMessage = "Do you want to disapprove ?";
+            strTitle = "Disapprove Material/Asset";
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
         builder.setMessage(strMessage)
                 .setCancelable(false)
@@ -321,9 +324,9 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         isApproveClicked = true;
                         invalidateOptionsMenu();
                         if (isApprove)
-                            requestToChangeStatus(true);
+                            requestToChangeStatus(true, materialRequestId);
                         else
-                            requestToChangeStatus(false);
+                            requestToChangeStatus(false, materialRequestId);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -332,11 +335,11 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     }
                 });
         AlertDialog alert = builder.create();
-        alert.setTitle("Approve PO");
+        alert.setTitle(strTitle);
         alert.show();
     }
 
-    private void requestToChangeStatus(boolean isApprove) {
+    private void requestToChangeStatus(boolean isApprove, int materialRequestId) {
         String strApproveDisappUrl = "";
         AppUtils.getInstance().showProgressBar(relativeMatRequest, true);
         JSONObject params = new JSONObject();
@@ -345,8 +348,10 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 params.put("purchase_order_request_components", jsonArray);
                 strApproveDisappUrl = AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS;
             } else {
-                params.put("material_request_component_id", "");
-                strApproveDisappUrl = AppURL.API_PURCHASE_ORDER_REQUEST_DISAPPROVE;
+                if (materialRequestId != 0) {
+                    params.put("material_request_component_id", materialRequestId);
+                    strApproveDisappUrl = AppURL.API_PURCHASE_ORDER_REQUEST_DISAPPROVE;
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -415,8 +420,10 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             }
             if (requestMaterialListItem.isIs_approved()) {
                 holder.checkboxComponent.setEnabled(false);
+                holder.textViewDisApproveMaterial.setVisibility(View.GONE);
             } else {
                 holder.checkboxComponent.setEnabled(true);
+                holder.textViewDisApproveMaterial.setVisibility(View.VISIBLE);
             }
             int noOfChildViews = holder.ll_vendors.getChildCount();
             final int noOfSubModules = vendorsItemRealmList.size();
@@ -506,6 +513,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }
                 checkboxFrame.setOnClickListener(this);
                 checkboxComponent.setOnClickListener(this);
+                textViewDisApproveMaterial.setOnClickListener(this);
 //                ll_vendors.setOnClickListener(this);
                 linearLayout_components.setOnClickListener(this);
             }

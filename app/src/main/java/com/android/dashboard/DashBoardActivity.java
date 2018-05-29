@@ -32,12 +32,14 @@ import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
+import com.android.constro360.SplashActivity;
 import com.android.dashboard.notification_model.NotificationCountSiteData;
 import com.android.dashboard.notification_model.NotificationCountSiteResponse;
 import com.android.dashboard.notification_model.ProjectsNotificationCountItem;
 import com.android.firebase.counts_model.NotificationCountData;
 import com.android.firebase.counts_model.NotificationCountResponse;
 import com.android.login_mvp.LoginActivity;
+import com.android.login_mvp.login_model.LoginResponse;
 import com.android.login_mvp.login_model.LoginResponseData;
 import com.android.login_mvp.login_model.ModulesItem;
 import com.android.login_mvp.login_model.PermissionsItem;
@@ -49,6 +51,7 @@ import com.android.utils.AppUtils;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -494,9 +497,55 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         if (AppUtils.getInstance().checkNetworkState()) {
             AppUtils.getInstance().showProgressBar(mainCoordinatorLayout,true);
             getCount();
+//            requestLatestAcl();
             setUpDrawerData();
         }else {
             AppUtils.getInstance().showOfflineMessage("DashBoardActivity");
+        }
+    }
+
+    private void requestLatestAcl() {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            AndroidNetworking.post(AppURL.API_USER_DASHBOARD + AppUtils.getInstance().getCurrentToken())
+                    .addBodyParameter("logged_in_at", AppUtils.getInstance().getLoggedInAt())
+                    .setTag("requestLatestAcl")
+                    .setPriority(Priority.MEDIUM)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(final JSONObject response) {
+                            Timber.i("LoginResponse: " + String.valueOf(response));
+                            Gson gson = new Gson();
+                            final LoginResponse loginResponse = gson.fromJson(String.valueOf(response), LoginResponse.class);
+                            if (loginResponse.getLoginResponseData() != null) {
+                                try {
+                                    realm = Realm.getDefaultInstance();
+                                    realm.executeTransaction(new Realm.Transaction() {
+                                        @Override
+                                        public void execute(Realm realm) {
+                                            realm.deleteAll();
+                                            realm.copyToRealm(loginResponse);
+                                            setUpDrawerData();
+                                        }
+                                    });
+                                } finally {
+                                    if (realm != null) {
+                                        realm.close();
+                                    }
+                                }
+                            } else {
+
+                            }
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "requestLatestAcl");
+                        }
+                    });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("SplashActivity");
+
         }
     }
 }
