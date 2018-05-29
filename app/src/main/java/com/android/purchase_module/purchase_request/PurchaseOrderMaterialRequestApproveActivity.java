@@ -107,7 +107,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         } else if (R.id.action_approve == item.getItemId()) {
             if (AppUtils.getInstance().checkNetworkState()) {
                 if (isMaterialSelected) {
-                    openApproveDialog();
+                    openApproveDialog(true);
                 } else {
                     Toast.makeText(mContext, "Please select at lease one material and its vendor", Toast.LENGTH_LONG).show();
                 }
@@ -124,9 +124,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         requestToGetDetails();
     }
 
-    private void setUpPrAdapter()
-    {
-
+    private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseRequestListItems = realm.where(RequestMaterialListItem.class).findAll();
@@ -179,11 +177,15 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         isCheckboxChecked = true;
                     }
                     saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
+                } else if (itemViewIndex == R.id.textViewDisApproveMaterial) {
+                    if (AppUtils.getInstance().checkNetworkState())
+                        openApproveDialog(false);
+                    else
+                        AppUtils.getInstance().showOfflineMessage("Disapprove material");
                 }
             }
         });
-        purchaseRequestRvAdapter.setChildClickListener(new OnVendorClickListener()
-        {
+        purchaseRequestRvAdapter.setChildClickListener(new OnVendorClickListener() {
             @Override
             public void onVendorItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors) {
                 JSONObject jsonObject;
@@ -238,7 +240,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }
             }
         });
-
     }
 
     private void saveCheckboxCheckedStateToLocal(final boolean isCheckboxChecked, final RequestMaterialListItem requestMaterialListItem) {
@@ -306,15 +307,23 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 });
     }
 
-    private void openApproveDialog() {
+    private void openApproveDialog(final boolean isApprove) {
+        String strMessage;
+        if (isApprove)
+            strMessage = "Do you want to approve ?";
+        else
+            strMessage = "Do you want to disapprove ?";
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
-        builder.setMessage("Do you want to approve ?")
+        builder.setMessage(strMessage)
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         isApproveClicked = true;
                         invalidateOptionsMenu();
-                        requestToChangeStatus();
+                        if (isApprove)
+                            requestToChangeStatus(true);
+                        else
+                            requestToChangeStatus(false);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -327,15 +336,22 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         alert.show();
     }
 
-    private void requestToChangeStatus() {
+    private void requestToChangeStatus(boolean isApprove) {
+        String strApproveDisappUrl = "";
         AppUtils.getInstance().showProgressBar(relativeMatRequest, true);
         JSONObject params = new JSONObject();
         try {
-            params.put("purchase_order_request_components", jsonArray);
+            if (isApprove) {
+                params.put("purchase_order_request_components", jsonArray);
+                strApproveDisappUrl = AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS;
+            } else {
+                params.put("material_request_component_id", "");
+                strApproveDisappUrl = AppURL.API_PURCHASE_ORDER_REQUEST_DISAPPROVE;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS + AppUtils.getInstance().getCurrentToken())
+        AndroidNetworking.post(strApproveDisappUrl + AppUtils.getInstance().getCurrentToken())
                 .setPriority(Priority.MEDIUM)
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -344,7 +360,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Timber.d(String.valueOf(response));
                         Toast.makeText(mContext, response.optString("message") + "", Toast.LENGTH_SHORT).show();
                         AppUtils.getInstance().showProgressBar(relativeMatRequest, false);
                         onBackPressed();
@@ -428,7 +443,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 textViewTranAmount.setText(vendorsItemRealmList.get(viewIndex).getTransportationAmount());
                 textViewTotalTransAmount.setText(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 textViewTotalWithTax.setText(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
-
                 vendorRadioButton.setText(vendorsItemRealmList.get(viewIndex).getVendorName());
                 TextView textViewTotalBillAmt = currentChildView.findViewById(R.id.textViewTotalBillAmt);
                 TextView textViewExpDeliveryDate = currentChildView.findViewById(R.id.textViewExpDeliveryDate);
@@ -439,9 +453,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 float matVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
                 float transVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 float resultBillAMount = matVal + transVal;
-                textViewTotalBillAmt.setText("Total Bill Amt: "+ resultBillAMount);
+                textViewTotalBillAmt.setText("Total Bill Amt: " + resultBillAMount);
                 vendorRadioButton.setClickable(false);
-
             }
         }
 
@@ -464,6 +477,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             CheckBox checkboxComponent;
             @BindView(R.id.checkboxFrame)
             FrameLayout checkboxFrame;
+            @BindView(R.id.textViewDisApproveMaterial)
+            LinearLayout textViewDisApproveMaterial;
 
             private MyViewHolder(View itemView) {
                 super(itemView);

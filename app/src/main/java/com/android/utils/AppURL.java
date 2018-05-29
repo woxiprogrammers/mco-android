@@ -104,4 +104,5 @@ public class AppURL {
     public static final String API_BANK_INFO_URL=BASE_URL+ "system-banks?token=";
     public static final String API_GET_VERSION_URL=BASE_URL + "app-version";
     public static final String PLAYSTORE_APP_URL="https://play.google.com/store/apps/details?id=com.mcon.android";
+    public static final String API_PURCHASE_ORDER_REQUEST_DISAPPROVE=BASE_URL + "";
 }

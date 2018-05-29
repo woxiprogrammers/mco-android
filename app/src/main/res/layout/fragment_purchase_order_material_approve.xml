@@ -20,7 +20,7 @@
 
             <FrameLayout
                 android:id="@+id/checkboxFrame"
-                android:layout_width="80dp"
+                android:layout_width="70dp"
                 android:layout_height="60dp"
                 android:layout_marginRight="@dimen/dimen_8dp">
 
@@ -32,7 +32,8 @@
             </FrameLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:orientation="vertical">
@@ -42,17 +43,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Cement PPC"
+                    android:singleLine="true"
                     style="@style/TextViewTitleStyle"
                     android:textColor="@color/colorText"/>
 
                 <TextView
                     android:id="@+id/textView_item_quantity"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="100 Kg"
                     style="@style/TextViewTitleStyle"
                     android:textColor="@color/colorTextLight"/>
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/textViewDisApproveMaterial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_button_pressed"
+                    android:padding="@dimen/dimen_5dp"
+                    android:text="Disapprove"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
