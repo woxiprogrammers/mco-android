@@ -9,6 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,6 +73,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private EditText editTextPassword;
     private Button button_cancel,button_ok;
     private AlertDialog alertDialog;
+    private TextView textViewInvalidPassword;
 
     public PurchaseOrderListFragment() {
         // Required empty public constructor
@@ -163,25 +167,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
                 } else if (view.getId() == R.id.textViewClose) {
                     if (AppUtils.getInstance().checkNetworkState()) {
-
                         openDialog();
-                        /*AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
-                        builder.setMessage("Do you want to close this PO ?")
-                                .setCancelable(false)
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        requestToClosePo(purchaseOrderListItems.get(position).getId());
-                                    }
-                                })
-                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        //  Action for 'NO' Button
-                                        dialog.cancel();
-                                    }
-                                });
-                        AlertDialog alert = builder.create();
-                        alert.setTitle("Close PO");
-                        alert.show();*/
                     } else {
                         AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
                     }
@@ -209,11 +195,35 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         editTextPassword=dialogView.findViewById(R.id.editTextPassword);
         button_cancel=dialogView.findViewById(R.id.button_cancel);
         button_ok=dialogView.findViewById(R.id.button_ok);
+        textViewInvalidPassword=dialogView.findViewById(R.id.textViewInvalidPassword);
+        editTextPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(i1 == 1)
+                    textViewInvalidPassword.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
         button_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestPassword();
+                if(TextUtils.isEmpty(editTextPassword.getText().toString())){
+                    editTextPassword.setFocusableInTouchMode(true);
+                    editTextPassword.requestFocus();
+                    editTextPassword.setError("Please enter password");
+                    return;
+                }else {
+                    editTextPassword.setError(null);
+                    editTextPassword.clearFocus();
+                    requestPassword(editTextPassword.getText().toString());
+                }
             }
         });
         button_cancel.setOnClickListener(new View.OnClickListener() {
@@ -418,10 +428,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 });
     }
 
-    private void requestPassword(){
+    private void requestPassword(String strPassword){
         JSONObject params=new JSONObject();
         try {
-            params.put("","");
+            params.put("password",strPassword);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -447,6 +457,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logRealmExecutionError(anError);
+                        textViewInvalidPassword.setVisibility(View.VISIBLE);
+                        editTextPassword.setText("");
+
                     }
                 });
 

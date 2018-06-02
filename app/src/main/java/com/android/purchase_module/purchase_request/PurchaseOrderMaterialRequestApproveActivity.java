@@ -124,6 +124,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         requestToGetDetails();
     }
 
+
+
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
@@ -500,6 +502,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
                     LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);
+                    TextView textViewViewPO=childLayout.findViewById(R.id.textViewViewPO);
+                    textViewViewPO.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                        }
+                    });
                     final int finalIndexView = indexView;
                     linearLayoutVendorItem.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -516,6 +524,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 textViewDisApproveMaterial.setOnClickListener(this);
 //                ll_vendors.setOnClickListener(this);
                 linearLayout_components.setOnClickListener(this);
+
             }
 
             @Override
