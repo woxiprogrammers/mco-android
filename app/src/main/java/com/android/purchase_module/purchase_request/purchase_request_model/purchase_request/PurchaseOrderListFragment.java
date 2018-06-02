@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +65,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private static boolean isFromPurchaseRequest;
 
     RecyclerView recyclerView_commonListingView;
+    private ProgressBar progressBarClose;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
@@ -112,9 +114,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        View mParentView = inflater.inflate(R.layout.layout_recycler_purchase_order, container, false);
 //        unbinder = ButterKnife.bind(this, mParentView);
-        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_material_list);
+        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_order);
+        progressBarClose=mParentView.findViewById(R.id.progressBarClose);
         mContext = getActivity();
         Bundle bundle=getArguments();
         if(bundle != null){
@@ -167,7 +170,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
                 } else if (view.getId() == R.id.textViewClose) {
                     if (AppUtils.getInstance().checkNetworkState()) {
-                        openDialog();
+                        openDialog(purchaseOrderListItems.get(position).getId());
                     } else {
                         AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
                     }
@@ -188,7 +191,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         recyclerView_commonListingView.setAdapter(purchaseOrderRvAdapter);
     }
 
-    private void openDialog() {
+    private void openDialog(final int id) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_layout_enter_password_po, null);
         alertDialogBuilder.setView(dialogView);
@@ -222,7 +225,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 }else {
                     editTextPassword.setError(null);
                     editTextPassword.clearFocus();
-                    requestPassword(editTextPassword.getText().toString());
+                    requestPassword(editTextPassword.getText().toString(),id);
                 }
             }
         });
@@ -397,6 +400,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     }
 
     private void requestToClosePo(int id) {
+        progressBarClose.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_id", id);
@@ -414,6 +418,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            if(progressBarClose != null){
+                                progressBarClose.setVisibility(View.GONE);
+                            }
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             requestPrListOnline();
                         } catch (JSONException e) {
@@ -428,7 +435,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 });
     }
 
-    private void requestPassword(String strPassword){
+    private void requestPassword(String strPassword, final int id){
         JSONObject params=new JSONObject();
         try {
             params.put("password",strPassword);
@@ -445,11 +452,12 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+//                           Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            requestToClosePo(id);
                             if(alertDialog.isShowing()){
                                 alertDialog.cancel();
                             }
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }

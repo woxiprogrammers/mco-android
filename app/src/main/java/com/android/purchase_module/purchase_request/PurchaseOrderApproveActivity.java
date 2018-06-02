@@ -285,6 +285,4 @@ public class PurchaseOrderApproveActivity extends BaseActivity
             }
         }
     }
-    //PurchaseOrderApproveListFragment purchaseOrderApproveListFragment = PurchaseOrderApproveListFragment.newInstance();
-    //PurchaseOrderMaterialApproveFragment purchaseOrderMaterialApproveFragment = PurchaseOrderMaterialApproveFragment.newInstance();
 }
