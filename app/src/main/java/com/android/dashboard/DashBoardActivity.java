@@ -497,8 +497,8 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         if (AppUtils.getInstance().checkNetworkState()) {
             AppUtils.getInstance().showProgressBar(mainCoordinatorLayout,true);
             getCount();
-//            requestLatestAcl();
-            setUpDrawerData();
+            requestLatestAcl();
+//            setUpDrawerData();
         }else {
             AppUtils.getInstance().showOfflineMessage("DashBoardActivity");
         }

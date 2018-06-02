@@ -15,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -65,6 +67,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
     private boolean isCreateAccess;
     private String subModulesItemList;
+    private EditText editTextPassword;
+    private Button button_cancel,button_ok;
+    private AlertDialog alertDialog;
 
     public PurchaseOrderListFragment() {
         // Required empty public constructor
@@ -158,7 +163,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     purchaseOrdermaterialDetailFragment.show(getActivity().getSupportFragmentManager(), "Transactions");
                 } else if (view.getId() == R.id.textViewClose) {
                     if (AppUtils.getInstance().checkNetworkState()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
+
+                        openDialog();
+                        /*AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.MyDialogTheme);
                         builder.setMessage("Do you want to close this PO ?")
                                 .setCancelable(false)
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -174,7 +181,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                                 });
                         AlertDialog alert = builder.create();
                         alert.setTitle("Close PO");
-                        alert.show();
+                        alert.show();*/
                     } else {
                         AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
                     }
@@ -193,6 +200,31 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
         recyclerView_commonListingView.setAdapter(purchaseOrderRvAdapter);
+    }
+
+    private void openDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_layout_enter_password_po, null);
+        alertDialogBuilder.setView(dialogView);
+        editTextPassword=dialogView.findViewById(R.id.editTextPassword);
+        button_cancel=dialogView.findViewById(R.id.button_cancel);
+        button_ok=dialogView.findViewById(R.id.button_ok);
+
+        button_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestPassword();
+            }
+        });
+        button_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.cancel();
+            }
+        });
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
     }
 
     private void requestPrListOnline() {
@@ -384,5 +416,39 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                         AppUtils.getInstance().logRealmExecutionError(anError);
                     }
                 });
+    }
+
+    private void requestPassword(){
+        JSONObject params=new JSONObject();
+        try {
+            params.put("","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        AndroidNetworking.post(AppURL.API_CHECK_PO_PASSWORD + AppUtils.getInstance().getCurrentToken())
+                .setTag("requestPassword")
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            if(alertDialog.isShowing()){
+                                alertDialog.cancel();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logRealmExecutionError(anError);
+                    }
+                });
+
     }
 }
