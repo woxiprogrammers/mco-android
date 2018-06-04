@@ -3,6 +3,7 @@ package com.android.purchase_module.purchase_request;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,10 +21,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +32,7 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,13 +42,10 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.peticash_module.peticash.ActivityEmpSalaryTransactionDetails;
-import com.android.peticash_module.peticashautosearchemployee.ListOfImagesItem;
-import com.android.purchase_module.purchase_request.purchase_request_model.ImagePurchaseOrderRequest;
 import com.android.purchase_module.purchase_request.purchase_request_model.RequestMaterialListItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.RequestedMaterialsResponse;
 import com.android.purchase_module.purchase_request.purchase_request_model.RequestmaterialsData;
 import com.android.purchase_module.purchase_request.purchase_request_model.VendorsItem;
-import com.android.purchase_module.purchase_request.purchase_request_model.new_transaction_list.PurchaseOrderTransactionListingItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.ImageZoomDialogFragment;
@@ -78,7 +73,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     @BindView(R.id.rvList)
     RecyclerView rvList;
     @BindView(R.id.relativeMatRequest)
-    RelativeLayout relativeMatRequest;
+    FrameLayout relativeMatRequest;
+    ProgressBar p;
     private Context mContext;
     private Realm realm;
     private int intPurchaseOrderRequestId;
@@ -88,10 +84,10 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private boolean isMaterialSelected, isApproveClicked;
     private String subModulesItemList;
     private AlertDialog alertDialog;
-    LinearLayout linearLayoutPurchaseImages,linearLayoutPdf;
-    private VendorsItem vendorsItem;
-    private int noOfVendors;
+    LinearLayout linearLayoutPurchaseImages, linearLayoutPdf;
     private String strPdfUrl;
+    private DownloadManager downloadManager;
+    private BroadcastReceiver downloadReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +127,10 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
         }
+        if (AppUtils.getInstance().checkNetworkState())
+            requestToGetDetails();
+        else
+            AppUtils.getInstance().showOfflineMessage("getDetails");
     }
 
     @Override
@@ -154,10 +154,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        requestToGetDetails();
     }
-
-
 
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
@@ -283,16 +280,15 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
                 RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
                 final VendorsItem vendorsItem = vendorsItemRealmList.get(itemIndex);
-
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
                 View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_pdf_and_images, null);
                 alertDialogBuilder.setView(dialogView);
-                linearLayoutPurchaseImages=dialogView.findViewById(R.id.linearLayoutPurchaseImages);
-                linearLayoutPdf=dialogView.findViewById(R.id.linearLayoutPdf);
-                if(vendorsItem.getImagePurchaseOrderRequests().size() > 0){
+                linearLayoutPurchaseImages = dialogView.findViewById(R.id.linearLayoutPurchaseImages);
+                linearLayoutPdf = dialogView.findViewById(R.id.linearLayoutPdf);
+                if (vendorsItem.getImagePurchaseOrderRequests().size() > 0) {
                     for (int index = 0; index < vendorsItem.getImagePurchaseOrderRequests().size(); index++) {
                         ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(300, 300);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(250, 250);
                         layoutParams.setMargins(10, 10, 10, 10);
                         imageView.setLayoutParams(layoutParams);
                         linearLayoutPurchaseImages.addView(imageView);
@@ -304,20 +300,23 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             }
                         });
                         AppUtils.getInstance().loadImageViaGlide(vendorsItem.getImagePurchaseOrderRequests().get(finalIndex).getImagePath(), imageView, mContext);
-//                        AppUtils.getInstance().loadImageViaGlide("https://test.mconstruction.co.in/uploads/admindata/purchase/purchase_order_requeste1822db470e60d090affd0956d743cb0e7cdf113/vendor_quotation_images/6052521b7625e31d4ee9cc706732484fcf850877/735179439285cf66dc3d5bdee4ba9d32aab930e313a3c84186.jpg",imageView,mContext);
                     }
                 }
-
-                if(vendorsItem.getPdfPurchaseOrderRequests().size()>0){
+                if (vendorsItem.getPdfPurchaseOrderRequests().size() > 0) {
                     for (int index = 0; index < vendorsItem.getPdfPurchaseOrderRequests().size(); index++) {
                         ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(300, 300);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(250, 250);
                         layoutParams.setMargins(10, 10, 10, 10);
                         imageView.setLayoutParams(layoutParams);
                         linearLayoutPdf.addView(imageView);
+                        final int finalIndex = index;
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                if (AppUtils.getInstance().checkNetworkState())
+                                    downloadFile(BuildConfig.BASE_URL_MEDIA + vendorsItem.getPdfPurchaseOrderRequests().get(finalIndex).getPdfPath());
+                                else
+                                    AppUtils.getInstance().showOfflineMessage("download fail url");
                             }
                         });
                         AppUtils.getInstance().loadImageViaGlide(strPdfUrl, imageView, mContext);
@@ -378,7 +377,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    strPdfUrl=response.getRequestmaterialsData().getPdfThumbnailUrl();
+                                    strPdfUrl = response.getRequestmaterialsData().getPdfThumbnailUrl();
                                     setUpPrAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -493,8 +492,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             this.vendorClickListener = vendorClickListener;
         }
 
-        void setOnViewPoCLickListner(onViewPoCLickListner listner){
-         this.onViewPoCLickListner=listner;
+        void setOnViewPoCLickListner(onViewPoCLickListner listner) {
+            this.onViewPoCLickListner = listner;
         }
 
         @Override
@@ -599,7 +598,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
                     LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);
-                    TextView textViewViewPO=childLayout.findViewById(R.id.textViewViewPO);
+                    TextView textViewViewPO = childLayout.findViewById(R.id.textViewViewPO);
                     final int finalIndexView = indexView;
                     linearLayoutVendorItem.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -612,16 +611,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     textViewViewPO.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(AppUtils.getInstance().checkNetworkState()){
-
-
-                                if(onViewPoCLickListner != null){
-                                    onViewPoCLickListner.onViewItemClick(view, getAdapterPosition(), finalIndexView);
-                                }
-                                Toast.makeText(mContext,"ViewCLick",Toast.LENGTH_SHORT).show();
-
-                            }else {
-                                AppUtils.getInstance().showOfflineMessage("View Purchase Order Request");
+                            if (onViewPoCLickListner != null) {
+                                onViewPoCLickListner.onViewItemClick(view, getAdapterPosition(), finalIndexView);
                             }
                         }
                     });
@@ -632,8 +623,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 textViewDisApproveMaterial.setOnClickListener(this);
 //                ll_vendors.setOnClickListener(this);
                 linearLayout_components.setOnClickListener(this);
-
-
             }
 
             @Override
@@ -653,10 +642,9 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private interface OnVendorClickListener {
         void onVendorItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors);
     }
-    private interface onViewPoCLickListner{
 
-        void onViewItemClick(View itemView, int position, int itemIndex );
-
+    private interface onViewPoCLickListner {
+        void onViewItemClick(View itemView, int position, int itemIndex);
     }
 
     private void downloadFile(String url) {
@@ -672,8 +660,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, nameOfFile);
         downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         final long downloadId = downloadManager.enqueue(request);
-        progressBarToLoadVoucher = findViewById(R.id.progressBarToLoadVoucher);
-        progressBarToLoadVoucher.setVisibility(View.VISIBLE);
+        p = findViewById(R.id.p);
+        p.setVisibility(View.VISIBLE);
         registerReceiver(downloadReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         new Thread(new Runnable() {
             @Override
@@ -694,7 +682,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            progressBarToLoadVoucher.setProgress(dl_progress);
+                            p.setProgress(dl_progress);
                         }
                     });
                     statusMessage(cursor);
@@ -740,7 +728,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         if (isComplete) {
                             Toast.makeText(mContext, strMessage, Toast.LENGTH_LONG).show();
                         }
-                        progressBarToLoadVoucher.setVisibility(View.GONE);
+                        p.setVisibility(View.GONE);
                     }
                 });
             }
@@ -764,7 +752,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             .setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    ActivityCompat.requestPermissions(ActivityEmpSalaryTransactionDetails.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
+                                    ActivityCompat.requestPermissions(PurchaseOrderMaterialRequestApproveActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2612);
                                 }
                             }).setActionTextColor(ContextCompat.getColor(mContext, R.color.colorAccent)).show();
                 } else {
@@ -791,5 +779,4 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 }

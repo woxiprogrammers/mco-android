@@ -250,7 +250,7 @@ public class PeticashFormActivity extends BaseActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (!TextUtils.isEmpty(charSequence.toString())) {
-                if (Long.parseLong(charSequence.toString()) > Long.parseLong(approved_amount)) {
+                if (Double.parseDouble(charSequence.toString()) > Double.parseDouble(approved_amount)) {
                     buttonSalarySubmit.setVisibility(View.GONE);
                     if (isSalary) {
                         textViewDenyTransaction.setVisibility(View.VISIBLE);
