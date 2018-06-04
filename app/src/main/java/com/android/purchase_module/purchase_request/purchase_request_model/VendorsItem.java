@@ -11,8 +11,12 @@ import io.realm.RealmObject;
 public class VendorsItem extends RealmObject{
 
 
-	@SerializedName("vendor_relations")
-	private RealmList<ImagePurchaseOrderRequest> vendors;
+	@SerializedName("images")
+	private RealmList<ImagePurchaseOrderRequest> imagePurchaseOrderRequests;
+
+	@SerializedName("images")
+	private RealmList<PdfPurchaseOrderRequest> pdfPurchaseOrderRequests;
+
 	@SerializedName("rate_without_tax")
 	private String rate;
 
@@ -65,15 +69,6 @@ public class VendorsItem extends RealmObject{
 	public void setTotalTransportationAmount(String totalTransportationAmount) {
 		this.totalTransportationAmount = totalTransportationAmount;
 	}
-/*"": "2018-03-09 00:00:00",
-			 "": "10",
-			 "transportation_cgst_percentage": "2",
-			 "transportation_cgst_amount": 0.2,
-			 "transportation_sgst_percentage": "2",
-			 "transportation_sgst_amount": 0.2,
-			 "transportation_igst_percentage": "0",
-			 "transportation_igst_amount": 0,
-			 "": 10.4*/
 
 	@SerializedName("expected_delivery_date")
 	private String expectedDeliveryDate;
@@ -145,4 +140,23 @@ public class VendorsItem extends RealmObject{
 	public String getTotalRatePerTax(){
 		return totalRatePerTax;
 	}
+
+	public void setImagePurchaseOrderRequests(RealmList<ImagePurchaseOrderRequest> vendors) {
+		this.imagePurchaseOrderRequests = vendors;
+	}
+
+	public RealmList<ImagePurchaseOrderRequest> getImagePurchaseOrderRequests() {
+		return imagePurchaseOrderRequests;
+	}
+
+	public void setPdfPurchaseOrderRequests(RealmList<PdfPurchaseOrderRequest> pdfPurchaseOrderRequests) {
+		this.pdfPurchaseOrderRequests = pdfPurchaseOrderRequests;
+	}
+
+	public RealmList<PdfPurchaseOrderRequest> getPdfPurchaseOrderRequests() {
+		return pdfPurchaseOrderRequests;
+	}
+
+
+
 }

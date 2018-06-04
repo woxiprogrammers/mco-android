@@ -83,4 +83,8 @@ public class RequestMaterialListItem extends RealmObject {
     public void setCheckboxCheckedState(boolean checkboxCheckedState) {
         this.checkboxCheckedState = checkboxCheckedState;
     }
+
+
+
+
 }
