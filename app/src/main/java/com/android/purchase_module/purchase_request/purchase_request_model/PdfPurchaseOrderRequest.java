@@ -9,7 +9,7 @@ import io.realm.RealmObject;
  * <p>This class is used to </p>
  * Created by Sharvari.
  */
-class PdfPurchaseOrderRequest extends RealmObject {
+public class PdfPurchaseOrderRequest extends RealmObject {
 
     @SerializedName("path")
     private String pdfPath;

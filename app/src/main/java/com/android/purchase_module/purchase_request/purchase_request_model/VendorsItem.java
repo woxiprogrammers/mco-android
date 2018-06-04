@@ -14,7 +14,7 @@ public class VendorsItem extends RealmObject{
 	@SerializedName("images")
 	private RealmList<ImagePurchaseOrderRequest> imagePurchaseOrderRequests;
 
-	@SerializedName("images")
+	@SerializedName("pdf")
 	private RealmList<PdfPurchaseOrderRequest> pdfPurchaseOrderRequests;
 
 	@SerializedName("rate_without_tax")
