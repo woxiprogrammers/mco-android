@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,6 +65,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private boolean isCheckboxChecked;
     private boolean isMaterialSelected, isApproveClicked;
     private String subModulesItemList;
+    private AlertDialog alertDialog;
+    LinearLayout linearLayoutPurchaseImages,linearLayoutPdf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -506,6 +511,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     textViewViewPO.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            if(AppUtils.getInstance().checkNetworkState()){
+                                openViewDialogImagePdf();
+
+                            }else {
+                                AppUtils.getInstance().showOfflineMessage("View Purchase Order Request");
+                            }
                         }
                     });
                     final int finalIndexView = indexView;
@@ -543,5 +554,16 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
     private interface OnVendorClickListener {
         void onVendorItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors);
+    }
+
+    private void openViewDialogImagePdf(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_pdf_and_images, null);
+        alertDialogBuilder.setView(dialogView);
+        linearLayoutPurchaseImages=dialogView.findViewById(R.id.linearLayoutPurchaseImages);
+        linearLayoutPdf=dialogView.findViewById(R.id.linearLayoutPdf);
+
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

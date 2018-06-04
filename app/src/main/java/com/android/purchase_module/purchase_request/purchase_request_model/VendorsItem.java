@@ -1,11 +1,18 @@
 package com.android.purchase_module.purchase_request.purchase_request_model;
 
+import android.media.Image;
+
+import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.ImagesItem;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class VendorsItem extends RealmObject{
 
+
+	@SerializedName("vendor_relations")
+	private RealmList<ImagePurchaseOrderRequest> vendors;
 	@SerializedName("rate_without_tax")
 	private String rate;
 
