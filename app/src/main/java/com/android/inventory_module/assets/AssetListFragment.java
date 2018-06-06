@@ -120,11 +120,11 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                     @Override
                     public void onItemClick(View view, final int position) {
                         if (isCrateInOutTransfer) {
-                            if (assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
-                                Intent startIntent = new Intent(mContext, MoveOutAssetNewActivity.class);
+                            if (!assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
+                                /*Intent startIntent = new Intent(mContext, MoveOutAssetNewActivity.class);
                                 startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
                                 startActivity(startIntent);
-                            } else {
+                            } else */
                                 Intent intent = new Intent(mContext, AssetDetailsActivity.class);
                                 intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
                                 intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());

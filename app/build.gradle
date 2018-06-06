@@ -17,7 +17,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         flavorDimensions "prod"
-//        multiDexEnabled true
+//      multiDexEnabled true
     }
     buildTypes {
         release {

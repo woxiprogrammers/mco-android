@@ -151,11 +151,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     private void setUpPrAdapter() {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
@@ -280,50 +275,15 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
                 RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
                 final VendorsItem vendorsItem = vendorsItemRealmList.get(itemIndex);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_pdf_and_images, null);
-                alertDialogBuilder.setView(dialogView);
-                linearLayoutPurchaseImages = dialogView.findViewById(R.id.linearLayoutPurchaseImages);
-                linearLayoutPdf = dialogView.findViewById(R.id.linearLayoutPdf);
-                if (vendorsItem.getImagePurchaseOrderRequests().size() > 0) {
-                    for (int index = 0; index < vendorsItem.getImagePurchaseOrderRequests().size(); index++) {
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(250, 250);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        linearLayoutPurchaseImages.addView(imageView);
-                        final int finalIndex = index;
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + vendorsItem.getImagePurchaseOrderRequests().get(finalIndex).getImagePath());
-                            }
-                        });
-                        AppUtils.getInstance().loadImageViaGlide(vendorsItem.getImagePurchaseOrderRequests().get(finalIndex).getImagePath(), imageView, mContext);
-                    }
-                }
-                if (vendorsItem.getPdfPurchaseOrderRequests().size() > 0) {
-                    for (int index = 0; index < vendorsItem.getPdfPurchaseOrderRequests().size(); index++) {
-                        ImageView imageView = new ImageView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(250, 250);
-                        layoutParams.setMargins(10, 10, 10, 10);
-                        imageView.setLayoutParams(layoutParams);
-                        linearLayoutPdf.addView(imageView);
-                        final int finalIndex = index;
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (AppUtils.getInstance().checkNetworkState())
-                                    downloadFile(BuildConfig.BASE_URL_MEDIA + vendorsItem.getPdfPurchaseOrderRequests().get(finalIndex).getPdfPath());
-                                else
-                                    AppUtils.getInstance().showOfflineMessage("download fail url");
-                            }
-                        });
-                        AppUtils.getInstance().loadImageViaGlide(strPdfUrl, imageView, mContext);
-                    }
-                }
-                alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                if(AppUtils.getInstance().checkNetworkState())
+                    if(vendorsItem.getImagePurchaseOrderRequests().size() > 0 || vendorsItem.getPdfPurchaseOrderRequests().size() > 0)
+                        openViewDialog(vendorsItem);
+                    else
+                        Toast.makeText(mContext,"No file uploaded",Toast.LENGTH_SHORT).show();
+                else
+                    AppUtils.getInstance().showOfflineMessage("openViewDialog");
+
+
             }
         });
     }
@@ -734,6 +694,53 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             }
         };
         timer.start();
+    }
+
+    private void openViewDialog(final VendorsItem vendorsItem){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+        View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_pdf_and_images, null);
+        alertDialogBuilder.setView(dialogView);
+        linearLayoutPurchaseImages = dialogView.findViewById(R.id.linearLayoutPurchaseImages);
+        linearLayoutPdf = dialogView.findViewById(R.id.linearLayoutPdf);
+        if (vendorsItem.getImagePurchaseOrderRequests().size() > 0) {
+            for (int index = 0; index < vendorsItem.getImagePurchaseOrderRequests().size(); index++) {
+                ImageView imageView = new ImageView(mContext);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(250, 250);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                linearLayoutPurchaseImages.addView(imageView);
+                final int finalIndex = index;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + vendorsItem.getImagePurchaseOrderRequests().get(finalIndex).getImagePath());
+                    }
+                });
+                AppUtils.getInstance().loadImageViaGlide(vendorsItem.getImagePurchaseOrderRequests().get(finalIndex).getImagePath(), imageView, mContext);
+            }
+        }
+        if (vendorsItem.getPdfPurchaseOrderRequests().size() > 0) {
+            for (int index = 0; index < vendorsItem.getPdfPurchaseOrderRequests().size(); index++) {
+                ImageView imageView = new ImageView(mContext);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(250, 250);
+                layoutParams.setMargins(10, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                linearLayoutPdf.addView(imageView);
+                final int finalIndex = index;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (AppUtils.getInstance().checkNetworkState())
+                            downloadFile(BuildConfig.BASE_URL_MEDIA + vendorsItem.getPdfPurchaseOrderRequests().get(finalIndex).getPdfPath());
+                        else
+                            AppUtils.getInstance().showOfflineMessage("download fail url");
+                    }
+                });
+                AppUtils.getInstance().loadImageViaGlide(strPdfUrl, imageView, mContext);
+            }
+        }
+        alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     @Override
