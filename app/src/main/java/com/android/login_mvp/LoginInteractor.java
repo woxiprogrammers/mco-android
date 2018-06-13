@@ -1,6 +1,7 @@
 package com.android.login_mvp;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.login_mvp.login_model.LoginResponse;
 import com.android.utils.AppConstants;
@@ -11,7 +12,10 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 
+import org.json.JSONObject;
+
 import io.realm.Realm;
+import okhttp3.Response;
 import timber.log.Timber;
 
 /**
@@ -81,7 +85,14 @@ class LoginInteractor implements LoginInteractorInterface {
                     @Override
                     public void onError(ANError error) {
                         AppUtils.getInstance().logApiError(error, "requestLoginAPI");
-                        listener.onFailure("Invalid credentials");
+                        int intErrorCode=error.getErrorCode();
+                        if(intErrorCode == 401){
+                            listener.onFailure("Invalid credentials");
+                        }else if(intErrorCode == 404){
+                            listener.onFailure("Project site not assigned");
+                        }else {
+                            listener.onFailure("Invalid data");
+                        }
                     }
                 });
     }

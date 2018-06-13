@@ -257,17 +257,6 @@ public class AutoSuggestActivity extends BaseActivity {
                     AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
                 }
             });
-            /*postRequestBuilder.getAsJSONObject(new JSONObjectRequestListener() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Timber.d(String.valueOf(response));
-                }
-
-                @Override
-                public void onError(ANError anError) {
-                    AppUtils.getInstance().logApiError(anError, "requestAutoSearchApi");
-                }
-            });*/
         }
     }
 

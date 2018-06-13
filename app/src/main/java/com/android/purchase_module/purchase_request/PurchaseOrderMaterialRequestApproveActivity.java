@@ -279,7 +279,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     if(vendorsItem.getImagePurchaseOrderRequests().size() > 0 || vendorsItem.getPdfPurchaseOrderRequests().size() > 0)
                         openViewDialog(vendorsItem);
                     else
-                        Toast.makeText(mContext,"No file uploaded",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext,"File not present .",Toast.LENGTH_SHORT).show();
                 else
                     AppUtils.getInstance().showOfflineMessage("openViewDialog");
 

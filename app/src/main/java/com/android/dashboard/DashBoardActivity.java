@@ -365,7 +365,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         List<ProjectsItem> projectsItemList = realm.copyFromRealm(projectsItems);
         ArrayList<String> arrayOfUsers = new ArrayList<String>();
         for (ProjectsItem currentUser : projectsItemList) {
-            String strProjectSiteName = currentUser.getProjectSiteName();
+            String strProjectSiteName = currentUser.getProject_name();
             arrayOfUsers.add(strProjectSiteName);
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, R.layout.simple_spinner_item, arrayOfUsers);
@@ -409,7 +409,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             textViewSitesCount = inflatedView.findViewById(R.id.textViewSitesCount);
             linearLayoutOfSite = inflatedView.findViewById(R.id.linearLayoutOfSite);
             textViewSitesCount.setText("" + siteCountListItem.getNotificationCount());
-            textViewSites.setText(siteCountListItem.getProjectSiteName());
+            textViewSites.setText(siteCountListItem.getProjectName());
             if (AppUtils.getInstance().getCurrentSiteId() == siteCountListItem.getProjectSiteId()) {
                 textViewSites.setTextColor(ContextCompat.getColor(mContext,R.color.colorPrimaryDark));
                 textViewSitesCount.setTextColor(getColor(R.color.colorPrimaryDark));

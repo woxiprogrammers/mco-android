@@ -130,6 +130,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void loginSuccess(final String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
         startActivity(new Intent(LoginActivity.this, DashBoardActivity.class));
         finish();
     }
