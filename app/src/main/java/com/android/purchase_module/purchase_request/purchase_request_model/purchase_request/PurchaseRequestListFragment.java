@@ -328,12 +328,12 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
             PurchaseRequestListItem purchaseRequestListItem = arrPurchaseRequestListItems.get(position);
+            holder.textView_purchase_request_new_status.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestId.setText(purchaseRequestListItem.getPurchaseRequestId());
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseRequestListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-            holder.textView_purchase_request_new_status.setText(purchaseRequestListItem.getPurchaseRequestStatus());
-            Log.i("@@",purchaseRequestListItem.getPurchaseRequestStatus());
+            holder.textView_purchase_request_new_status.setText("Purchase Status : " + purchaseRequestListItem.getPurchaseRequestStatus());
             holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " + AppUtils.getInstance().getTime("E, dd MMMM yyyy", getString(R.string.expected_time_format), purchaseRequestListItem.getDate()));
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
