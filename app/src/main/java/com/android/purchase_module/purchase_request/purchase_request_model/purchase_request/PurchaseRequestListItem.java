@@ -26,6 +26,17 @@ public class PurchaseRequestListItem extends RealmObject {
     @SerializedName("created_by")
     private String createdBy;
 
+    @SerializedName("purchase_request_status")
+    private String purchaseRequestStatus;
+
+    public String getPurchaseRequestStatus() {
+        return purchaseRequestStatus;
+    }
+
+    public void setPurchaseRequestStatus(String purchaseRequestStatus) {
+        this.purchaseRequestStatus = purchaseRequestStatus;
+    }
+
     public int getId() {
         return id;
     }

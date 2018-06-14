@@ -34,6 +34,13 @@
                 android:visibility="gone"/>
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/textView_purchase_request_new_status"
+            style="@style/TextViewChildStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Purchase Status :"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

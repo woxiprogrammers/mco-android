@@ -332,7 +332,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseRequestListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
-
+            holder.textView_purchase_request_new_status.setText(purchaseRequestListItem.getPurchaseRequestStatus());
+            Log.i("@@",purchaseRequestListItem.getPurchaseRequestStatus());
             holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " + AppUtils.getInstance().getTime("E, dd MMMM yyyy", getString(R.string.expected_time_format), purchaseRequestListItem.getDate()));
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
@@ -363,6 +364,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             TextView textViewPurchaseRequestMaterials;
             @BindView(R.id.linearLayoutToHideApproved)
             LinearLayout linearLayoutToHideApproved;
+            @BindView(R.id.textView_purchase_request_new_status)
+            TextView textView_purchase_request_new_status;
 
             MyViewHolder(View itemView) {
                 super(itemView);
