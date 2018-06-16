@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -107,7 +108,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private RealmResults<ProjectsItem> projectsItemRealmResults;
     private AlertDialog alert_Dialog;
     private TextView textViewSites, textViewSitesCount;
-    private View dialogView;
     private View inflatedView = null;
     private LinearLayout linearLayoutOfSite;
 
@@ -237,7 +237,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private void setUpDrawerData() {
         realm = Realm.getDefaultInstance();
         LoginResponseData loginResponseData = realm.where(LoginResponseData.class).findFirst();
-        userName.setText(loginResponseData.getFirstName() + " " + loginResponseData.getLastName());
+        if(!TextUtils.isEmpty(loginResponseData.getFirstName()))
+            userName.setText(loginResponseData.getFirstName() + " " + loginResponseData.getLastName());
+
         projectsItemRealmResults = realm.where(ProjectsItem.class).findAll();
         setUpProjectsSpinnerAdapter(projectsItemRealmResults);
         projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

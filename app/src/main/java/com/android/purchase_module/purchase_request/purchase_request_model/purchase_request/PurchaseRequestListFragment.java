@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -327,14 +328,19 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
+            holder.textView_purchase_request_new_status.setVisibility(View.VISIBLE);
             PurchaseRequestListItem purchaseRequestListItem = arrPurchaseRequestListItems.get(position);
             holder.textViewPurchaseRequestId.setText(purchaseRequestListItem.getPurchaseRequestId());
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseRequestListItem.getStatus()));
             holder.textViewPurchaseRequestDate.setText(purchaseRequestListItem.getDate());
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
             holder.textView_purchase_request_new_status.setText(purchaseRequestListItem.getPurchaseRequestStatus());
-            Log.i("@@",purchaseRequestListItem.getPurchaseRequestStatus());
             holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " + AppUtils.getInstance().getTime("E, dd MMMM yyyy", getString(R.string.expected_time_format), purchaseRequestListItem.getDate()));
+            if(purchaseRequestListItem.isDisproved()){
+                holder.imageViewIsDisAppRedBatch.setVisibility(View.VISIBLE);
+            }else {
+                holder.imageViewIsDisAppRedBatch.setVisibility(View.GONE);
+            }
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
                 holder.linearLayoutToHideApproved.setVisibility(View.VISIBLE);
                 holder.textViewApproved.setText("Approved By : " + purchaseRequestListItem.getApprovedBy());
@@ -366,6 +372,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             LinearLayout linearLayoutToHideApproved;
             @BindView(R.id.textView_purchase_request_new_status)
             TextView textView_purchase_request_new_status;
+            @BindView(R.id.imageViewIsDisAppRedBatch)
+            ImageView imageViewIsDisAppRedBatch;
 
             MyViewHolder(View itemView) {
                 super(itemView);

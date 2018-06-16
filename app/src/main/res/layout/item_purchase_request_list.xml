@@ -28,6 +28,11 @@
                 android:text="cement"/>
 
             <ImageView
+                android:id="@+id/imageViewIsDisAppRedBatch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+            <ImageView
                 android:id="@+id/imageViewIsEmailSent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +45,9 @@
             style="@style/TextViewChildStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Purchase Status :"/>
+            android:text="Purchase Status :"
+            android:textColor="@color/colorAccentDark"
+            android:visibility="gone"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
