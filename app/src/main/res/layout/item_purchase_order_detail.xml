@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/selector_is_material_selected"
         android:orientation="vertical"
-        android:padding="@dimen/dimen_12dp">
+        android:padding="@dimen/dimen_8dp">
 
 
 
@@ -46,13 +46,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Quantity : "/>
+                android:text="PO Quantity : "/>
             <TextView
                 android:id="@+id/textviewQuantity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Quantity"/>
+                android:text="PO Quantity"/>
         </LinearLayout>
 
 
@@ -65,13 +65,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Consumed Quantity: "/>
+                android:text="Received Quantity: "/>
             <TextView
                 android:id="@+id/textviewConsumedQuantity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Consumed Quantity:"/>
+                android:text="Received Quantity:"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
