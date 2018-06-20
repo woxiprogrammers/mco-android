@@ -8,7 +8,7 @@ import io.realm.RealmObject;
  * Created by sharvari on 20/6/18.
  */
 
-class DetailMessageItem extends RealmObject {
+public class DetailMessageItem extends RealmObject {
 
     @SerializedName("message")
     private String message;

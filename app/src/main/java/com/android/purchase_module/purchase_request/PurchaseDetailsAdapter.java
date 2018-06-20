@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_details.ItemListItem;
+import com.android.utils.RecyclerItemClickListener;
+import com.android.utils.RecyclerViewClickListener;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -27,11 +29,13 @@ import io.realm.RealmRecyclerViewAdapter;
 public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListItem, PurchaseDetailsAdapter.MyViewHolder> {
     private OrderedRealmCollection<ItemListItem> arrItemList;
     private RequestManager glideRequestManager;
+    private RecyclerViewClickListener recyclerItemClickListener;
 
-    public PurchaseDetailsAdapter(@Nullable OrderedRealmCollection<ItemListItem> data, boolean autoUpdate, boolean updateOnModification, RequestManager glideRequestManager) {
+    public PurchaseDetailsAdapter(@Nullable OrderedRealmCollection<ItemListItem> data, boolean autoUpdate, boolean updateOnModification, RequestManager glideRequestManager,RecyclerViewClickListener recyclerViewClickListener) {
         super(data, autoUpdate, updateOnModification);
         arrItemList = data;
         this.glideRequestManager = glideRequestManager;
+        this.recyclerItemClickListener=recyclerViewClickListener;
     }
 
     @Override
@@ -93,6 +97,7 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
 
         @Override
         public void onClick(View view) {
+            recyclerItemClickListener.onItemClick(view,getAdapterPosition());
 
         }
     }
