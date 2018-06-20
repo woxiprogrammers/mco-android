@@ -85,11 +85,12 @@ public class DPRHomeActivity extends BaseActivity {
     @OnClick(R.id.button_submit)
     public void onViewClicked() {
         if (AppUtils.getInstance().checkNetworkState()) {
-            requestToSaveDetails();
+            uploadImages_addItemToLocal();
         } else {
             AppUtils.getInstance().showOfflineMessage("DPRHomeActivity");
         }
     }
+
     @OnClick(R.id.textViewCaptureDpr)
     public void onViewClickedDprImage() {
         Intent intent = new Intent(mContext, MultiCameraActivity.class);
@@ -363,7 +364,7 @@ public class DPRHomeActivity extends BaseActivity {
         }
     }
 
-    private void uploadImages_addItemToLocal( final String imageFor) {
+    private void uploadImages_addItemToLocal() {
         if (AppUtils.getInstance().checkNetworkState()) {
             if (arrayImageFileList != null && arrayImageFileList.size() > 0) {
                 File sendImageFile = arrayImageFileList.get(0);
@@ -377,7 +378,7 @@ public class DPRHomeActivity extends BaseActivity {
                 AndroidNetworking.upload(AppURL.API_IMAGE_UPLOAD_INDEPENDENT + strToken)
                         .setPriority(Priority.MEDIUM)
                         .addMultipartFile("image", compressedImageFile)
-                        .addMultipartParameter("image_for", imageFor)
+                        .addMultipartParameter("image_for", "dpr")
                         .addHeaders(AppUtils.getInstance().getApiHeaders())
                         .setTag("uploadImages_addItemToLocal")
                         .setPercentageThresholdForCancelling(50)
@@ -405,7 +406,7 @@ public class DPRHomeActivity extends BaseActivity {
                             }
                         });
             } else {
-
+                requestToSaveDetails();
             }
         } else {
             AppUtils.getInstance().showOfflineMessage("PayFragmentNew");

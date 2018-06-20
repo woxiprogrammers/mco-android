@@ -358,11 +358,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             return arrPurchaseOrderListItems == null ? 0 : arrPurchaseOrderListItems.size();
         }
 
-        @OnClick(R.id.textViewdetails)
-        public void onViewClicked()
-
-        {
-        }
 
         class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             @BindView(R.id.textView_purchase_request_id)

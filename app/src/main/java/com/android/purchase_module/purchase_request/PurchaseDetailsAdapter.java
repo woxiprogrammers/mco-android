@@ -45,7 +45,7 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
         ItemListItem itemListItem = arrItemList.get(position);
         holder.textviewItemName.setText(itemListItem.getItemName());
         holder.textviewItemQuantity.setText("Qty: " + itemListItem.getItemQuantity() + " " + itemListItem.getItemUnit());
-        holder.llImage.removeAllViews();
+       /* holder.llImage.removeAllViews();
         if (itemListItem.getListOfImages().size() > 0) {
             for (int index = 0; index < itemListItem.getListOfImages().size(); index++) {
                 ImageView imageView = new ImageView(holder.context);
@@ -60,7 +60,7 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageView);
             }
-        }
+        }*/
     }
 
     @Override
@@ -73,19 +73,27 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
         return arrItemList == null ? 0 : arrItemList.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.textview_item_name)
         TextView textviewItemName;
         @BindView(R.id.textview_item_quantity)
         TextView textviewItemQuantity;
         @BindView(R.id.ll_image)
         LinearLayout llImage;
+        @BindView(R.id.textViewHistory)
+        TextView textViewHistory;
         private Context context;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             context = itemView.getContext();
+            textViewHistory.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
     }
 }

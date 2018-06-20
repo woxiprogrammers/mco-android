@@ -35,6 +35,8 @@ public class ItemListItem extends RealmObject {
     private String itemUnit;
     @SerializedName("list_of_images")
     private RealmList<ImageItem> listOfImages;
+    @SerializedName("history_messages")
+    private RealmList<DetailMessageItem> historyMessage;
     @SerializedName("name")
     private String itemName;
     @PrimaryKey
@@ -45,12 +47,21 @@ public class ItemListItem extends RealmObject {
     @SerializedName("purchase_request_id")
     private int purchaseRequestId;
 
+
     public int getPurchaseRequestId() {
         return purchaseRequestId;
     }
 
     public void setPurchaseRequestId(int purchaseRequestId) {
         this.purchaseRequestId = purchaseRequestId;
+    }
+
+    public RealmList<DetailMessageItem> getHistoryMessage() {
+        return historyMessage;
+    }
+
+    public void setHistoryMessage(RealmList<DetailMessageItem> historyMessage) {
+        this.historyMessage = historyMessage;
     }
 
     public String getItemUnit() {
