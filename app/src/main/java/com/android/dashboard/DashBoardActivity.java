@@ -3,6 +3,7 @@ package com.android.dashboard;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -413,8 +414,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             textViewSitesCount.setText("" + siteCountListItem.getNotificationCount());
             textViewSites.setText(siteCountListItem.getProjectName());
             if (AppUtils.getInstance().getCurrentSiteId() == siteCountListItem.getProjectSiteId()) {
+
                 textViewSites.setTextColor(ContextCompat.getColor(mContext,R.color.colorPrimaryDark));
-                textViewSitesCount.setTextColor(getColor(R.color.colorPrimaryDark));
+                textViewSitesCount.setTextColor(ContextCompat.getColor(mContext,R.color.colorPrimaryDark));
             }
             final int finalI = i;
             linearLayoutOfSite.setOnClickListener(new View.OnClickListener() {
