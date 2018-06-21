@@ -132,6 +132,7 @@ public class DPRHomeActivity extends BaseActivity {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("subcontractor_id", intSubContId);
             params.put("number_of_users", jsonArray);
+            params.put("images",jsonImageNameArray);
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();

@@ -127,7 +127,7 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                         for (int i = 0; i < itemListItems1.get(position).getHistoryMessage().size(); i++) {
                             ItemListItem itemListItem=itemListItems1.get(i);
                             inflatedView = LayoutInflater.from(mContext).inflate(R.layout.inflate_layout_detail_history, null);
-                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                             layoutParams.setMargins(0, 20, 0, 20);
                             inflatedView.setLayoutParams(layoutParams);
                             textViewHistory = inflatedView.findViewById(R.id.textViewHistoryDet);
