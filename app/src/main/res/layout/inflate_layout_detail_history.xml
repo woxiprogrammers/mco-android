@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<TextView android:id="@+id/textViewHistoryDet"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:textSize="@dimen/text_size_18"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    android:background="@drawable/background_button_pressed"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/dimen_8dp"
+    android:paddingTop="@dimen/dimen_8dp">
+
+    <TextView
+        android:id="@+id/textViewHistoryDet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_18"/>
+</LinearLayout>

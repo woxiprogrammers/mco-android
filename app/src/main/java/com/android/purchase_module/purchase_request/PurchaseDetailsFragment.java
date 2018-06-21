@@ -137,7 +137,7 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                         alert_Dialog = alertDialogBuilder.create();
                         alert_Dialog.show();
                     }else {
-                        Toast.makeText(mContext, "No History Found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "No Remark Found", Toast.LENGTH_SHORT).show();
                     }
 
 
