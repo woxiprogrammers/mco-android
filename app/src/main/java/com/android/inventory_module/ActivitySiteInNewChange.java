@@ -431,7 +431,6 @@ public class ActivitySiteInNewChange extends BaseActivity {
 
     //API call to generate GRN
     private void requestToGenerateGrn() {
-
         AppUtils.getInstance().showProgressBar(mainRelative,true);
         JSONObject params = new JSONObject();
         try {
@@ -439,7 +438,6 @@ public class ActivitySiteInNewChange extends BaseActivity {
             params.put("related_inventory_component_transfer_id", relatedInventoryComponentId);
             params.put("quantity", edtQuantity.getText().toString());
             params.put("images", jsonImageNameArray);
-            Log.i("@@",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

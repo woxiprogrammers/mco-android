@@ -398,7 +398,7 @@ public class DPRHomeActivity extends BaseActivity {
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-//                                uploadImages_addItemToLocal(strTag, imageFor);
+                                uploadImages_addItemToLocal();
                             }
 
                             @Override
