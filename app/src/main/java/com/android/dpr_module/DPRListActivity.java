@@ -120,6 +120,8 @@ public class DPRListActivity extends BaseActivity {
         initializeViews();
     }
 
+
+
     private void initializeViews() {
         mContext = DPRListActivity.this;
         toolbarPurchaseHome.setTitle("");
@@ -133,10 +135,18 @@ public class DPRListActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         setUpDPRListAdapter(strCurrentDate);
-        requestToGetDprListing(strCurrentDate);
         setDateInAppBar(0, 0, "", false);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(AppUtils.getInstance().checkNetworkState()){
+            requestToGetDprListing(strCurrentDate);
+        }else {
+            AppUtils.getInstance().showOfflineMessage("dprListing");
+        }
 
+    }
     public void setDateInAppBar(int passMonth, int passYear, String passDay, boolean isDateSelected) {
         String format = "dd-MMMM-yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
