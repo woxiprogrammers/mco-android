@@ -174,7 +174,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                                         oldPageNumber = pageNumber;
                                         requestInventoryResponse(pageNumber);
                                     }
-
                                     AppUtils.getInstance().showProgressBar(mainRelativeList, false);
                                 }
                             }, new Realm.Transaction.OnError() {

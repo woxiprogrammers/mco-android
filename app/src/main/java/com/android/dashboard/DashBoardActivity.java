@@ -414,7 +414,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             textViewSitesCount.setText("" + siteCountListItem.getNotificationCount());
             textViewSites.setText(siteCountListItem.getProjectName());
             if (AppUtils.getInstance().getCurrentSiteId() == siteCountListItem.getProjectSiteId()) {
-
                 textViewSites.setTextColor(ContextCompat.getColor(mContext,R.color.colorPrimaryDark));
                 textViewSitesCount.setTextColor(ContextCompat.getColor(mContext,R.color.colorPrimaryDark));
             }
