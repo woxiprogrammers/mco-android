@@ -31,6 +31,8 @@
                 android:id="@+id/imageViewIsDisAppRedBatch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:background="@drawable/ic_disapproved_po_batch"
                 android:visibility="gone"/>
             <ImageView
                 android:id="@+id/imageViewIsEmailSent"
