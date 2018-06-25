@@ -230,7 +230,7 @@ public class ActivityEmpSalaryTransactionDetails extends BaseActivity {
                             openImageZoomFragment(BuildConfig.BASE_URL_MEDIA + empSalaryTransactionDetailData.getListOfImages().get(finalIndex).getImageUrl());
                         }
                     });
-                    AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView, mContext);
+                    AppUtils.getInstance().loadImageViaGlide(empSalaryTransactionDetailData.getListOfImages().get(index).getImageUrl(), imageView, getApplicationContext());
                 }
             }
         }

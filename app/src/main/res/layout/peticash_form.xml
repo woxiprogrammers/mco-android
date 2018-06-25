@@ -377,6 +377,7 @@
                     android:id="@+id/editText_PayableAmount"
                     style="@style/MyEditTextHeightSTyle"
                     android:layout_width="match_parent"
+                    android:enabled="false"
                     android:background="@android:drawable/editbox_background_normal"
                     android:inputType="number"/>
             </LinearLayout>
