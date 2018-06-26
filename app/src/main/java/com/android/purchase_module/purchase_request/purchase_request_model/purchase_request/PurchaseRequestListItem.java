@@ -29,7 +29,7 @@ public class PurchaseRequestListItem extends RealmObject {
     @SerializedName("purchase_request_status")
     private String purchaseRequestStatus;
 
-    @SerializedName("isDisproved")
+    @SerializedName("is_disapproved")
     private boolean isDisproved;
 
     public String getPurchaseRequestStatus() {

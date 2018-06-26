@@ -21,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -155,7 +156,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseRequestListItems = realm.where(RequestMaterialListItem.class).findAll();
-        MaterialRequestListAdapter purchaseRequestRvAdapter = new MaterialRequestListAdapter(purchaseRequestListItems, true, true);
+        MaterialRequestListAdapter purchaseRequestRvAdapter = new MaterialRequestListAdapter(purchaseRequestListItems, true, true,subModulesItemList);
         rvList.setLayoutManager(new LinearLayoutManager(mContext));
         rvList.setHasFixedSize(true);
         rvList.setAdapter(purchaseRequestRvAdapter);
@@ -436,11 +437,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         private OnVendorClickListener vendorClickListener;
         private onViewPoCLickListner onViewPoCLickListner;
         RequestMaterialListItem requestMaterialListItem;
+        private String subModuleList;
 
         MaterialRequestListAdapter(@Nullable OrderedRealmCollection<RequestMaterialListItem> data,
-                                   boolean autoUpdate, boolean updateOnModification) {
+                                   boolean autoUpdate, boolean updateOnModification,String subModuleItemList) {
             super(data, autoUpdate, updateOnModification);
             requestMaterialListItemOrderedRealmCollection = data;
+            this.subModuleList=subModuleItemList;
             setHasStableIds(true);
         }
 
@@ -470,19 +473,27 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             holder.textViewItemName.setText(requestMaterialListItem.getMaterialName());
             holder.textViewItemQuantity.setText("Qty: " + requestMaterialListItem.getQuantity() + " " + requestMaterialListItem.getUnitName());
             holder.ll_vendors.setVisibility(View.GONE);
+            Log.i("@@",subModuleList);
+            if(subModuleList.contains("approve-purchase-order-request")){
+                if (requestMaterialListItem.isIs_approved()) {
+                    holder.checkboxComponent.setEnabled(false);
+                    holder.textViewDisApproveMaterial.setVisibility(View.GONE);
+                } else {
+                    holder.checkboxComponent.setEnabled(true);
+                    holder.textViewDisApproveMaterial.setVisibility(View.VISIBLE);
+                }
+            }else {
+                holder.textViewDisApproveMaterial.setVisibility(View.GONE);
+
+            }
+
 //            holder.checkboxComponent.setChecked(false);
             if (requestMaterialListItem.isCheckboxCheckedState()) {
                 holder.checkboxComponent.setChecked(true);
             } else {
                 holder.checkboxComponent.setChecked(false);
             }
-            if (requestMaterialListItem.isIs_approved()) {
-                holder.checkboxComponent.setEnabled(false);
-                holder.textViewDisApproveMaterial.setVisibility(View.GONE);
-            } else {
-                holder.checkboxComponent.setEnabled(true);
-                holder.textViewDisApproveMaterial.setVisibility(View.VISIBLE);
-            }
+
             int noOfChildViews = holder.ll_vendors.getChildCount();
             final int noOfSubModules = vendorsItemRealmList.size();
             if (noOfSubModules < noOfChildViews) {

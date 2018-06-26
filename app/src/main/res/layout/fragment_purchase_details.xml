@@ -54,7 +54,13 @@
                     android:text="Remark"
                     android:textColor="@color/colorAccent"/>
             </LinearLayout>
-
+            <TextView
+                android:id="@+id/textViewDisapproved"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:text="Disapproved By : -"/>
             <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

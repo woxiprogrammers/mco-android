@@ -3,6 +3,7 @@ package com.android.purchase_module.purchase_request;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,13 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
         ItemListItem itemListItem = arrItemList.get(position);
         holder.textviewItemName.setText(itemListItem.getItemName());
         holder.textviewItemQuantity.setText("Qty: " + itemListItem.getItemQuantity() + " " + itemListItem.getItemUnit());
+        if(!TextUtils.isEmpty(itemListItem.getDisapprovedByUserName())){
+            holder.textViewDisapproved.setVisibility(View.VISIBLE);
+            holder.textViewDisapproved.setText("Disapproved By :- " + itemListItem.getDisapprovedByUserName());
+        }else {
+            holder.textViewDisapproved.setVisibility(View.GONE);
+
+        }
        /* holder.llImage.removeAllViews();
         if (itemListItem.getListOfImages().size() > 0) {
             for (int index = 0; index < itemListItem.getListOfImages().size(); index++) {
@@ -86,6 +94,8 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
         LinearLayout llImage;
         @BindView(R.id.textViewHistory)
         TextView textViewHistory;
+        @BindView(R.id.textViewDisapproved)
+        TextView textViewDisapproved;
         private Context context;
 
         public MyViewHolder(View itemView) {

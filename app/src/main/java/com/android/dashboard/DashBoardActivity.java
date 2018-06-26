@@ -184,7 +184,9 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         if (realm != null) {
+            Log.i("@@","realm");
             realm.close();
         }
         projectsItemRealmResults.removeAllChangeListeners();
@@ -421,12 +423,14 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             linearLayoutOfSite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mTextViewClientName.setText(siteCountListItem.getClientCompanyName());
-                    int projectId = siteCountListItem.getProjectSiteId();
-                    AppUtils.getInstance().put(getString(R.string.key_project_id), projectId);
-                    Timber.i("Current Site ID: " + AppUtils.getInstance().getInt(getString(R.string.key_project_id), -1));
-                    mProjectName.setText(siteCountListItem.getProjectName());
-                    projectSpinner.setSelection(finalI);
+                    if(siteCountListItem != null){
+                        mTextViewClientName.setText(siteCountListItem.getClientCompanyName());
+                        int projectId = siteCountListItem.getProjectSiteId();
+                        AppUtils.getInstance().put(getString(R.string.key_project_id), projectId);
+                        Timber.i("Current Site ID: " + AppUtils.getInstance().getInt(getString(R.string.key_project_id), -1));
+                        mProjectName.setText(siteCountListItem.getProjectName());
+                        projectSpinner.setSelection(finalI);
+                    }
                     alert_Dialog.dismiss();
                 }
             });

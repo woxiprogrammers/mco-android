@@ -46,7 +46,16 @@ public class ItemListItem extends RealmObject {
     private float itemQuantity;
     @SerializedName("purchase_request_id")
     private int purchaseRequestId;
+    @SerializedName("disapproved_by_user_name")
+    private String disapprovedByUserName;
 
+    public String getDisapprovedByUserName() {
+        return disapprovedByUserName;
+    }
+
+    public void setDisapprovedByUserName(String disapprovedByUserName) {
+        this.disapprovedByUserName = disapprovedByUserName;
+    }
 
     public int getPurchaseRequestId() {
         return purchaseRequestId;

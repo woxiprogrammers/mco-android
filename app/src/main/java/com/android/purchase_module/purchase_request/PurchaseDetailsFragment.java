@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -110,6 +111,7 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
     }
 
     private void setAdapterForPurchaseList() {
+        
         realm = Realm.getDefaultInstance();
         final RealmResults<ItemListItem> itemListItems = realm.where(ItemListItem.class).equalTo("purchaseRequestId", purchaseRequestId).findAllAsync();
          recyclerItemClickListener = new RecyclerViewClickListener() {
@@ -122,7 +124,9 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                     LinearLayout linearLayout = dialogView.findViewById(R.id.linearLayoutHistory);
                     alert_Dialog = alertDialogBuilder.create();
                     realm = Realm.getDefaultInstance();
-                    RealmResults<ItemListItem> itemListItems1 = realm.where(ItemListItem.class).equalTo("id",itemListItems.get(position).getId()).findAll();
+                    RealmResults<ItemListItem> itemListItems1 = realm.where(ItemListItem.class)/*.equalTo("id",itemListItems.get(position).getId())*/.findAll();
+                    Log.i("@@", String.valueOf(itemListItems.get(position).getId()));
+                    Log.i("@@po", String.valueOf(position));
                     if(itemListItems1.get(position).getHistoryMessage().size() > 0){
                         for (int i = 0; i < itemListItems1.get(position).getHistoryMessage().size(); i++) {
                             ItemListItem itemListItem=itemListItems1.get(i);
