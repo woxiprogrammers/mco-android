@@ -473,7 +473,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             holder.textViewItemName.setText(requestMaterialListItem.getMaterialName());
             holder.textViewItemQuantity.setText("Qty: " + requestMaterialListItem.getQuantity() + " " + requestMaterialListItem.getUnitName());
             holder.ll_vendors.setVisibility(View.GONE);
-            Log.i("@@",subModuleList);
             if(subModuleList.contains("approve-purchase-order-request")){
                 if (requestMaterialListItem.isIs_approved()) {
                     holder.checkboxComponent.setEnabled(false);

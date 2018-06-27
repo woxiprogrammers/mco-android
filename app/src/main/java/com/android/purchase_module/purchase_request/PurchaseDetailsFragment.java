@@ -125,8 +125,6 @@ public class PurchaseDetailsFragment extends Fragment implements FragmentInterfa
                     alert_Dialog = alertDialogBuilder.create();
                     realm = Realm.getDefaultInstance();
                     RealmResults<ItemListItem> itemListItems1 = realm.where(ItemListItem.class)/*.equalTo("id",itemListItems.get(position).getId())*/.findAll();
-                    Log.i("@@", String.valueOf(itemListItems.get(position).getId()));
-                    Log.i("@@po", String.valueOf(position));
                     if(itemListItems1.get(position).getHistoryMessage().size() > 0){
                         for (int i = 0; i < itemListItems1.get(position).getHistoryMessage().size(); i++) {
                             ItemListItem itemListItem=itemListItems1.get(i);

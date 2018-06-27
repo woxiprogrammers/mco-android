@@ -111,6 +111,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     private TextView textViewSites, textViewSitesCount;
     private View inflatedView = null;
     private LinearLayout linearLayoutOfSite;
+    private ProjectsNotificationCountItem siteCountListItem;
 
     @Override
     public void onBackPressed() {
@@ -186,7 +187,6 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         super.onDestroy();
 
         if (realm != null) {
-            Log.i("@@","realm");
             realm.close();
         }
         projectsItemRealmResults.removeAllChangeListeners();
@@ -397,15 +397,15 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
     }
 
     private void inflateLayoutForSites() {
+        realm = Realm.getDefaultInstance();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.layout_linear, null);
         alertDialogBuilder.setView(dialogView);
         LinearLayout linearLayout = dialogView.findViewById(R.id.linearLayout);
         alert_Dialog = alertDialogBuilder.create();
-        realm = Realm.getDefaultInstance();
         RealmResults<ProjectsNotificationCountItem> siteCountListItemRealmResults = realm.where(ProjectsNotificationCountItem.class).findAll();
         for (int i = 0; i < siteCountListItemRealmResults.size(); i++) {
-            final ProjectsNotificationCountItem siteCountListItem = siteCountListItemRealmResults.get(i);
+            siteCountListItem = siteCountListItemRealmResults.get(i);
             inflatedView = LayoutInflater.from(mContext).inflate(R.layout.inflate_layout_assigned_sites, null);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(0, 20, 0, 20);
@@ -423,7 +423,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             linearLayoutOfSite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(siteCountListItem != null){
+                    if(siteCountListItem.isValid()){
                         mTextViewClientName.setText(siteCountListItem.getClientCompanyName());
                         int projectId = siteCountListItem.getProjectSiteId();
                         AppUtils.getInstance().put(getString(R.string.key_project_id), projectId);

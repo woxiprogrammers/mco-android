@@ -2,6 +2,7 @@ package com.android.purchase_module.purchase_request;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -32,11 +33,11 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
     private RequestManager glideRequestManager;
     private RecyclerViewClickListener recyclerItemClickListener;
 
-    public PurchaseDetailsAdapter(@Nullable OrderedRealmCollection<ItemListItem> data, boolean autoUpdate, boolean updateOnModification, RequestManager glideRequestManager,RecyclerViewClickListener recyclerViewClickListener) {
+    public PurchaseDetailsAdapter(@Nullable OrderedRealmCollection<ItemListItem> data, boolean autoUpdate, boolean updateOnModification, RequestManager glideRequestManager, RecyclerViewClickListener recyclerViewClickListener) {
         super(data, autoUpdate, updateOnModification);
         arrItemList = data;
         this.glideRequestManager = glideRequestManager;
-        this.recyclerItemClickListener=recyclerViewClickListener;
+        this.recyclerItemClickListener = recyclerViewClickListener;
     }
 
     @Override
@@ -50,12 +51,13 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
         ItemListItem itemListItem = arrItemList.get(position);
         holder.textviewItemName.setText(itemListItem.getItemName());
         holder.textviewItemQuantity.setText("Qty: " + itemListItem.getItemQuantity() + " " + itemListItem.getItemUnit());
-        if(!TextUtils.isEmpty(itemListItem.getDisapprovedByUserName())){
+        if (!TextUtils.isEmpty(itemListItem.getDisapprovedByUserName())) {
             holder.textViewDisapproved.setVisibility(View.VISIBLE);
+            holder.textviewItemName.setTextColor(ContextCompat.getColor(holder.context, R.color.colorAccentDark));
             holder.textViewDisapproved.setText("Disapproved By :- " + itemListItem.getDisapprovedByUserName());
-        }else {
+        } else {
+            holder.textviewItemName.setTextColor(ContextCompat.getColor(holder.context, R.color.black));
             holder.textViewDisapproved.setVisibility(View.GONE);
-
         }
        /* holder.llImage.removeAllViews();
         if (itemListItem.getListOfImages().size() > 0) {
@@ -107,8 +109,7 @@ public class PurchaseDetailsAdapter extends RealmRecyclerViewAdapter<ItemListIte
 
         @Override
         public void onClick(View view) {
-            recyclerItemClickListener.onItemClick(view,getAdapterPosition());
-
+            recyclerItemClickListener.onItemClick(view, getAdapterPosition());
         }
     }
 }
