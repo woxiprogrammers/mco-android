@@ -234,11 +234,23 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_8dp"
             android:layout_marginTop="@dimen/dimen_8dp"/>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_peticash_list"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_peticash_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+            <ProgressBar
+                android:id="@+id/progressBarToLoadData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+        </FrameLayout>
+
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton

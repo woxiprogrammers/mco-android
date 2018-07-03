@@ -9,9 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -71,6 +73,8 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     TextView mTextViewPurchaseAmount;
     @BindView(R.id.textView_remainingAmount)
     TextView mTextViewRemainingAmount;
+    @BindView(R.id.progressBarToLoadData)
+    ProgressBar progressBarToLoadData;
     private Context mContext;
     private int pageNumber = 0;
     private Realm realm;
@@ -94,6 +98,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     }
 
     private void requestPeticashTransactionsOnline(int currentPageNumber) {
+        progressBarToLoadData.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try {
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -105,6 +110,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         AndroidNetworking.post(AppURL.API_PETICASH_LIST + AppUtils.getInstance().getCurrentToken())
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
@@ -137,12 +143,15 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                     }, new Realm.Transaction.OnSuccess() {
                                         @Override
                                         public void onSuccess() {
+                                            progressBarToLoadData.setVisibility(View.GONE);
                                             purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
+                                            setUpPeticashTransactionsListAdapter();
                                         }
                                     }, new Realm.Transaction.OnError() {
                                         @Override
                                         public void onError(Throwable error) {
                                             AppUtils.getInstance().logRealmExecutionError(error);
+                                            progressBarToLoadData.setVisibility(View.GONE);
                                         }
                                     });
                                 } finally {
@@ -157,6 +166,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
 
                             @Override
                             public void onError(ANError anError) {
+                                progressBarToLoadData.setVisibility(View.GONE);
                                 AppUtils.getInstance().logApiError(anError, "requestPeticashTransactionsOnline");
                             }
                         });
