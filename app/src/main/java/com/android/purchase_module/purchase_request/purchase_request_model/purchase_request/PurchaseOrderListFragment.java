@@ -176,14 +176,15 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                         AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
                     }
                 } else {
-//                    if (isFromPurchaseRequest) {
+                    if (subModulesItemList.contains("create-purchase-bill")) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
                         intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
                         intent.putExtra("isCreateAccess",isCreateAccess);
                         intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
                         startActivity(intent);
-
-//                    }
+                    }else {
+                        Toast.makeText(mContext,"You do not have permission to create GRN",Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         };
