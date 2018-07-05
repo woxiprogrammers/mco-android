@@ -146,10 +146,10 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                         @Override
                                         public void onSuccess() {
                                             progressBarToLoadData.setVisibility(View.GONE);
-                                            if (oldPageNumber != pageNumber) {
+                                            /*if (oldPageNumber != pageNumber) {
                                                 oldPageNumber = pageNumber;
                                                 requestPeticashTransactionsOnline(pageNumber);
-                                            }
+                                            }*/
                                             purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
                                             setUpPeticashTransactionsListAdapter();
                                         }

@@ -262,7 +262,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
                 .contains("date", strMonth).findAllSortedAsync("id", Sort.DESCENDING);
-        ;
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);

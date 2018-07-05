@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -175,13 +176,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                         AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment");
                     }
                 } else {
-                    if (isFromPurchaseRequest) {
+//                    if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
                         intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
                         intent.putExtra("isCreateAccess",isCreateAccess);
                         intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
                         startActivity(intent);
-                    }
+
+//                    }
                 }
             }
         };
