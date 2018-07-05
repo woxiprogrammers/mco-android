@@ -444,17 +444,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setTag("getRequestedItemList")
                 .build()
-                /*.getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Timber.i(String.valueOf(response));
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "getRequestedItemList");
-                    }
-                });*/
                 .getAsObject(RequestedItemResponse.class, new ParsedRequestListener<RequestedItemResponse>() {
                     @Override
                     public void onResponse(final RequestedItemResponse response) {
@@ -502,35 +491,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         mRvExistingMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvExistingMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvExistingMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
-        /*if (materialListRealmResults_Pending != null) {
-            Timber.d("materialListRealmResults_New change listener added.");
-            materialListRealmResults_Pending.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems, OrderedCollectionChangeSet changeSet) {
-                    // `null`  means the async query returns the first time.
-                    if (changeSet == null) {
-                        mRvExistingMaterialListMaterialRequestApprove.getAdapter().notifyDataSetChanged();
-                        return;
-                    }
-                    // For deletions, the adapter has to be notified in reverse order.
-                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
-                    for (int i = deletions.length - 1; i >= 0; i--) {
-                        OrderedCollectionChangeSet.Range range = deletions[i];
-                        mRvExistingMaterialListMaterialRequestApprove.getAdapter().notifyItemRangeRemoved(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
-                    for (OrderedCollectionChangeSet.Range range : insertions) {
-                        mRvExistingMaterialListMaterialRequestApprove.getAdapter().notifyItemRangeInserted(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
-                    for (OrderedCollectionChangeSet.Range range : modifications) {
-                        mRvExistingMaterialListMaterialRequestApprove.getAdapter().notifyItemRangeChanged(range.startIndex, range.length);
-                    }
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
-        }*/
+
     }
 
     private void createAlertDialog() {
@@ -1125,23 +1086,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                 });
     }
 
-    /*private void setUpUsersSpinnerValueChangeListener() {
-        realm = Realm.getDefaultInstance();
-        RealmResults<AvailableUsersItem> availableUsersRealmResults = realm.where(AvailableUsersItem.class).findAll();
-        setUpSpinnerAdapter(availableUsersRealmResults);
-        *//*if (availableUsersRealmResults != null) {
-            Timber.d("availableUsersRealmResults change listener added.");
-            availableUsersRealmResults.addChangeListener(new RealmChangeListener<RealmResults<AvailableUsersItem>>() {
-                @Override
-                public void onChange(RealmResults<AvailableUsersItem> availableUsersItems) {
-                    Timber.d("Size of availableUsersItems: " + String.valueOf(availableUsersItems.size()));
-                    setUpSpinnerAdapter(availableUsersItems);
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
-        }*//*
-    }*/
 
     private void setUpCurrentMaterialListAdapter() {
         realm = Realm.getDefaultInstance();
@@ -1194,50 +1138,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }*/
     }
 
-    /*private void requestUsersWithApproveAcl(String canAccess) {
-        AndroidNetworking.post(AppURL.API_REQUEST_USERS_WITH_APPROVE_ACL + AppUtils.getInstance().getCurrentToken())
-                .setPriority(Priority.MEDIUM)
-                .addBodyParameter("can_access", canAccess)
-//                .addBodyParameter("component_status_slug", statusSlug)
-//                .addBodyParameter("can_access", getString(R.string.approve_material_request))
-//                .addBodyParameter("component_status_slug", "in-indent")
-                .addBodyParameter("project_site_id", String.valueOf(AppUtils.getInstance().getCurrentSiteId()))
-                .setTag("requestUsersWithApproveAcl")
-                .build()
-                .getAsObject(UsersWithAclResponse.class, new ParsedRequestListener<UsersWithAclResponse>() {
-                    @Override
-                    public void onResponse(final UsersWithAclResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    Timber.d("Realm Execution Successful");
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestUsersWithApproveAcl");
-                    }
-                });
-    }*/
 
     private void deleteSelectedItemFromList(int position, final ImageView mImageViewDeleteAddedItem) {
         mImageViewDeleteAddedItem.setEnabled(false);
@@ -1272,17 +1173,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         }
     }
 
-    /*private void setUpSpinnerAdapter(RealmResults<AvailableUsersItem> availableUsersItems) {
-        List<AvailableUsersItem> availableUserArray = realm.copyFromRealm(availableUsersItems);
-        ArrayList<String> arrayOfUsers = new ArrayList<String>();
-        for (AvailableUsersItem currentUser : availableUserArray) {
-            String strUserName = currentUser.getUserName();
-            arrayOfUsers.add(strUserName);
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, arrayOfUsers);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinnerSelectAssignTo.setAdapter(arrayAdapter);
-    }*/
+
 
     private void checkAvailability(int materialRequestComponentId) {
         JSONObject params = new JSONObject();

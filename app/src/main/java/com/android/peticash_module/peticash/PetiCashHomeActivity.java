@@ -77,6 +77,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     ProgressBar progressBarToLoadData;
     private Context mContext;
     private int pageNumber = 0;
+    private int oldPageNumber;
     private Realm realm;
     private RealmResults<DatewiseTransactionsListItem> peticashTransactionsRealmResult;
     private String permissionList;
@@ -92,7 +93,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
             pageNumber = 0;
             requestPeticashTransactionsOnline(pageNumber);
         } else {
-            setUpPeticashTransactionsListAdapter();
+//            setUpPeticashTransactionsListAdapter();
             AppUtils.getInstance().showOfflineMessage("ActivityEmpSalaryTransactionDetails");
         }
     }
@@ -127,11 +128,12 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                     realm.executeTransactionAsync(new Realm.Transaction() {
                                         @Override
                                         public void execute(Realm realm) {
-                                            if (pageNumber == 0) {
-                                                realm.delete(PeticashTransactionsResponse.class);
-                                                realm.delete(PeticashTransactionData.class);
-                                                realm.delete(DatewiseTransactionsListItem.class);
-                                                realm.delete(TransactionListItem.class);
+//                                            realm.delete(PeticashTransactionsResponse.class);
+//                                            realm.delete(PeticashTransactionData.class);
+                                            realm.delete(DatewiseTransactionsListItem.class);
+//                                            realm.delete(TransactionListItem.class);
+                                            if (!response.getPageId().equalsIgnoreCase("")) {
+                                                pageNumber = Integer.parseInt(response.getPageId());
                                             }
                                             for (DatewiseTransactionsListItem transactionsListItem
                                                     : response.getPeticashTransactionData().getTransactionsList()) {
@@ -144,6 +146,10 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                         @Override
                                         public void onSuccess() {
                                             progressBarToLoadData.setVisibility(View.GONE);
+                                            if (oldPageNumber != pageNumber) {
+                                                oldPageNumber = pageNumber;
+                                                requestPeticashTransactionsOnline(pageNumber);
+                                            }
                                             purchaseAmountLimit = response.getPeticashTransactionData().getPeticashPurchaseAmountLimit();
                                             setUpPeticashTransactionsListAdapter();
                                         }
@@ -159,9 +165,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                                         realm.close();
                                     }
                                 }
-                                if (!TextUtils.isEmpty(response.getPageId())) {
-                                    pageNumber = Integer.parseInt(response.getPageId());
-                                }
+
                             }
 
                             @Override

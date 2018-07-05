@@ -105,7 +105,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     @Override
     public void onResume() {
-        if(AppUtils.getInstance().checkNetworkState()) {
+        if (AppUtils.getInstance().checkNetworkState()) {
             requestInventoryResponse(pageNumber);
         }
         super.onResume();
