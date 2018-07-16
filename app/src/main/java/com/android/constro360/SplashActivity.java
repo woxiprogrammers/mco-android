@@ -78,7 +78,6 @@ public class SplashActivity extends BaseActivity {
             strCurrentVersionName = strSplitCurrentVersion[0];
         }
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

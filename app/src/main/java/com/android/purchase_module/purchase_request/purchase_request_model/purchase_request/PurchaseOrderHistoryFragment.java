@@ -35,6 +35,7 @@ import com.androidnetworking.interfaces.ParsedRequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +50,7 @@ import timber.log.Timber;
 /**
  * <b></b>
  * <p>This class is used to </p>
- * Created by Rohit.
+ * Created by Sharvari.
  */
 public class PurchaseOrderHistoryFragment extends Fragment implements FragmentInterface {
     private static int purchaseRequestId;
@@ -132,7 +133,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
-     * Created by - Rohit
+     * Created by - Sharvari
      */
     private void initializeViews() {
         mContext = getActivity();
@@ -308,6 +309,8 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
             if (!purchaseOrderListItem.getPurchaseOrderStatusSlug().equalsIgnoreCase("close")) {
                 holder.linearLayoutClosePO.setVisibility(View.VISIBLE);
+                holder.textViewPurchaseRequestNewStatus.setVisibility(View.VISIBLE);
+                holder.textViewPurchaseRequestNewStatus.setText("Purchase Order Closed");
             }
         }
 
@@ -342,6 +345,8 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
             TextView textViewClose;
             @BindView(R.id.linearLayoutClosePO)
             LinearLayout linearLayoutClosePO;
+            @BindView(R.id.textView_purchase_request_new_status)
+            TextView textViewPurchaseRequestNewStatus;
 
             MyViewHolder(View itemView) {
                 super(itemView);
