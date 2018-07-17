@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -22,7 +21,6 @@ import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
 import com.android.login_mvp.login_model.PermissionsItem;
 import com.android.peticash_module.peticash.peticash_models.DatewiseTransactionsListItem;
-import com.android.peticash_module.peticash.peticash_models.PeticashTransactionData;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionStatsData;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionStatsResponse;
 import com.android.peticash_module.peticash.peticash_models.PeticashTransactionsResponse;
@@ -210,8 +208,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                         intent.putExtra("transactionDetailType", transactionListItem.getPeticashTransactionType());
                         startActivity(intent);
                     } else if (transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Cash")) {
-                        Toast.makeText(mContext,"Cash Transaction",Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(mContext, "Cash Transaction", Toast.LENGTH_SHORT).show();
                     } else {
                         Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
                         formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
@@ -281,7 +278,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     /**
      * <b>private void initializeViews()</b>
      * <p>This function is used to initialize required views.</p>
-     * Created by - Rohit
+     * Created by - Sharvari
      */
     private void initializeViews() {
         mContext = PetiCashHomeActivity.this;

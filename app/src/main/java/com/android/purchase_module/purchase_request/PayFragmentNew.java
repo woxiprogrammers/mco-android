@@ -743,47 +743,51 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         materialNamesItems = realm.where(MaterialNamesItem.class).notEqualTo("materialComponentRemainingQuantity", "0").or().notEqualTo("materialComponentRemainingQuantity", "0.0").findAll();
         for (int i = 0; i < materialNamesItems.size(); i++) {
             final MaterialNamesItem materialNamesItem = materialNamesItems.get(i);
-            inflatedView = getActivity().getLayoutInflater().inflate(R.layout.inflate_multiple_material_names, null, false);
-            inflatedView.setId(i);
-            checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (b) {
-                        isCheckedMaterial = true;
-                        arrayList.add(materialNamesItem.getId());
-                    } else {
-                        isCheckedMaterial = false;
-                        try {
-                            arrayList.remove(materialNamesItem.getId());
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (layoutInflater != null)
+                inflatedView = layoutInflater.inflate(R.layout.inflate_multiple_material_names, null, false);
+            if (inflatedView != null) {
+                inflatedView.setId(i);
+                checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if (b) {
+                            isCheckedMaterial = true;
+                            arrayList.add(materialNamesItem.getId());
+                        } else {
+                            isCheckedMaterial = false;
+                            try {
+                                arrayList.remove(materialNamesItem.getId());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
-                }
-            });
-            checkBox.setChecked(false);
-            frameLayoutEdit = inflatedView.findViewById(R.id.frameLayoutEdit);
-            textViewIdDummy = inflatedView.findViewById(R.id.textViewIdDummy);
-            textViewIdDummy.setText(materialNamesItem.getId() + "");
-            checkBox.setText(materialNamesItem.getMaterialName());
-            frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    TextView textViewId = view.findViewById(R.id.textViewIdDummy);
-                    int intTemp = Integer.parseInt(textViewId.getText().toString());
-                    MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", intTemp).findFirst();
-                    int index = materialNamesItems.indexOf(materialNamesItem);
-                    View currentView = linearLayoutInflateNames.findViewById(index);
-                    CheckBox currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
-                    if (currentCheckbox.isChecked()) {
-                        openDialog(intTemp, true);
-                    } else {
-                        Toast.makeText(getActivity(), "Please Select Material", Toast.LENGTH_SHORT).show();
+                });
+                checkBox.setChecked(false);
+                frameLayoutEdit = inflatedView.findViewById(R.id.frameLayoutEdit);
+                textViewIdDummy = inflatedView.findViewById(R.id.textViewIdDummy);
+                textViewIdDummy.setText(materialNamesItem.getId() + "");
+                checkBox.setText(materialNamesItem.getMaterialName());
+                frameLayoutEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TextView textViewId = view.findViewById(R.id.textViewIdDummy);
+                        int intTemp = Integer.parseInt(textViewId.getText().toString());
+                        MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", intTemp).findFirst();
+                        int index = materialNamesItems.indexOf(materialNamesItem);
+                        View currentView = linearLayoutInflateNames.findViewById(index);
+                        CheckBox currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
+                        if (currentCheckbox.isChecked()) {
+                            openDialog(intTemp, true);
+                        } else {
+                            Toast.makeText(getActivity(), "Please Select Material", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
-            linearLayoutInflateNames.addView(inflatedView);
+                });
+                linearLayoutInflateNames.addView(inflatedView);
+            }
         }
     }
 
