@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.R;
@@ -208,6 +209,9 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                         intent.putExtra("idForTransactionDetails", transactionListItem.getPeticashTransactionId());
                         intent.putExtra("transactionDetailType", transactionListItem.getPeticashTransactionType());
                         startActivity(intent);
+                    } else if (transactionListItem.getPeticashTransactionType().equalsIgnoreCase("Cash")) {
+                        Toast.makeText(mContext,"Cash Transaction",Toast.LENGTH_SHORT).show();
+
                     } else {
                         Intent formIntent = new Intent(mContext, ViewPeticashTransactions.class);
                         formIntent.putExtra("transactionId", transactionListItem.getPeticashTransactionId());
