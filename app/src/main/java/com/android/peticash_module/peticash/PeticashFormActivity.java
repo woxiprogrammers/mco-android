@@ -857,11 +857,15 @@ public class PeticashFormActivity extends BaseActivity {
             if (spinnerMaterialOrAsset.getSelectedItemPosition() == 0) {
                 int unitId;
                 if (isNewItem) {
-                    unitId = searchMaterialListItem_fromResult_staticNew.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
-                    params.put("unit_id", unitId);
+                    if (searchMaterialListItem_fromResult_staticNew.isValid()) {
+                        unitId = searchMaterialListItem_fromResult_staticNew.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
+                        params.put("unit_id", unitId);
+                    }
                 } else {
-                    unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
-                    params.put("unit_id", unitId);
+                    if (searchMaterialListItem_fromResult.isValid()) {
+                        unitId = searchMaterialListItem_fromResult.getUnitQuantity().get(spinnerSelectUnits.getSelectedItemPosition()).getUnitId();
+                        params.put("unit_id", unitId);
+                    }
                 }
             }
             if (spinnerMaterialOrAsset.getSelectedItemPosition() == 0) {
@@ -983,6 +987,7 @@ public class PeticashFormActivity extends BaseActivity {
                 }
             } else {
                 params.put("type", "advance");
+                params.put("employee_id", primaryKey);
             }
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {

@@ -309,6 +309,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
             if (!purchaseOrderListItem.getPurchaseOrderStatusSlug().equalsIgnoreCase("close")) {
                 holder.linearLayoutClosePO.setVisibility(View.VISIBLE);
+            }else{
                 holder.textViewPurchaseRequestNewStatus.setVisibility(View.VISIBLE);
                 holder.textViewPurchaseRequestNewStatus.setText("Purchase Order Closed");
             }
