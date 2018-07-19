@@ -281,7 +281,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 break;
             case R.id.buttonActionSubmit:
                 buttonActionSubmit.setEnabled(false);
+                Log.i("@@1","1");
                 validateEntries();
+
                 break;
         }
     }
@@ -305,6 +307,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private void validateEntries() {
         strChallanNumber = editTextBillumber.getText().toString();
         strVehicleNumber = editTextVehNum.getText().toString();
+        Log.i("@@2","2");
         if (!isCheckedMaterial) {
             Toast.makeText(mContext, "Please Select At least One material", Toast.LENGTH_LONG).show();
             buttonActionSubmit.setEnabled(true);
@@ -434,17 +437,23 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     }
 
     private void requestToPayment() {
+        Log.i("@@3","3");
         JSONObject params = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         for (int intKey : arrayList) {
+            Log.i("@@intkey", String.valueOf(intKey));
+            Log.i("@@arr", String.valueOf(arrayList));
+            Log.i("@@size", String.valueOf(arrayList.size()));
             for (MaterialNamesItem mItem : materialNamesItems) {
+                Log.i("@@mat", String.valueOf(mItem));
                 if (mItem.getId() == intKey) {
                     try {
                         JSONObject jsonObject = new JSONObject();
-                        if (mItem.getQuantity() == 0) {
+                        /*if (mItem.getQuantity() == 0) {
                             Toast.makeText(mContext, "Please add Quantity for selected material", Toast.LENGTH_LONG).show();
+                            buttonActionSubmit.setEnabled(true);
                             return;
-                        }
+                        }*/
                         jsonObject.put("purchase_order_component_id", mItem.getId());
                         jsonObject.put("quantity", mItem.getQuantity());
                         jsonObject.put("unit_id", mItem.getMaterialUnits().get(0).getUnitId());
@@ -463,6 +472,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             params.put("grn", editTextGrnNum.getText().toString());
             params.put("images", jsonImageNameArray);
             params.put("item_list", jsonArray);
+            Log.i("@@4",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -480,6 +490,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             ((PayAndBillsActivity) mContext).moveFragments(true);
                             clearData();
                             nestedScrollView.setVisibility(View.GONE);
+                            Log.i("@@5","5");
                             AppUtils.getInstance().showProgressBar(mainRelativePurchaseOrderTrans, false);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -489,6 +500,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logRealmExecutionError(anError);
+                        Log.i("@@6","6");
                     }
                 });
     }
@@ -530,6 +542,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
 
     private void openDialog(int id, final boolean isForEdit) {
         getId = id;
+        Log.i("@@m", String.valueOf(getId));
         realm = Realm.getDefaultInstance();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_purchase_order_for_material, null);
@@ -596,19 +609,23 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             public void execute(Realm realm) {
                                 MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
                                 materialNamesItem.setQuantity(Float.parseFloat(editTextMatQuantity.getText().toString()));
+                                Log.i("@@execute","execute");
                                 realm.copyToRealmOrUpdate(materialNamesItem);
 
-                                currentCheckbox.setText(editTextMatQuantity.getText().toString());
                             }
                         }, new Realm.Transaction.OnSuccess() {
                             @Override
                             public void onSuccess() {
                                 Timber.d("Realm Execution Successful");
+
+                                    currentCheckbox.setText(materialNamesItem.getMaterialName() + " :- (Qty " +editTextMatQuantity.getText().toString() + " )");
+
                                 alertDialog.dismiss();
                             }
                         }, new Realm.Transaction.OnError() {
                             @Override
                             public void onError(Throwable error) {
+                                Log.i("@@error", String.valueOf(error));
                                 AppUtils.getInstance().logRealmExecutionError(error);
                             }
                         });
@@ -779,9 +796,10 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                         TextView textViewId = view.findViewById(R.id.textViewIdDummy);
                         int intTemp = Integer.parseInt(textViewId.getText().toString());
                         MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", intTemp).findFirst();
+                        Log.i("@@", String.valueOf(intTemp));
                         int index = materialNamesItems.indexOf(materialNamesItem);
                         View currentView = linearLayoutInflateNames.findViewById(index);
-                         currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
+                        currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
                         if (currentCheckbox.isChecked()) {
                             openDialog(intTemp, true);
                         } else {
