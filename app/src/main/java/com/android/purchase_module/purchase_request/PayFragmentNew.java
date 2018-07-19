@@ -81,7 +81,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     LinearLayout linearLayoutMatImg;
     @BindView(R.id.llAddMatImg)
     LinearLayout llAddMatImg;
-    @BindView(R.id.buttonActionGenerateGrn)
     Button buttonActionGenerateGrn;
     @BindView(R.id.editTextVehNum)
     EditText editTextVehNum;
@@ -174,6 +173,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private View layout;
     private PurchaseOrderListItem purchaseOrderListItem;
     private static boolean isHaveCreateAccess;
+    CheckBox currentCheckbox;
 
     public PayFragmentNew() {
         // Required empty public constructor
@@ -197,6 +197,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         layout = view.findViewById(R.id.layoutView);
         mContext = getActivity();
         AppUtils.getInstance().initializeProgressBar(mainRelativePurchaseOrderTrans, mContext);
+        buttonActionGenerateGrn=view.findViewById(R.id.buttonActionGenerateGrn);
         initializeViews();
         return view;
     }
@@ -596,6 +597,8 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                                 MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
                                 materialNamesItem.setQuantity(Float.parseFloat(editTextMatQuantity.getText().toString()));
                                 realm.copyToRealmOrUpdate(materialNamesItem);
+
+                                currentCheckbox.setText(editTextMatQuantity.getText().toString());
                             }
                         }, new Realm.Transaction.OnSuccess() {
                             @Override
@@ -778,7 +781,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                         MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", intTemp).findFirst();
                         int index = materialNamesItems.indexOf(materialNamesItem);
                         View currentView = linearLayoutInflateNames.findViewById(index);
-                        CheckBox currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
+                         currentCheckbox = currentView.findViewById(R.id.checkboxMaterials);
                         if (currentCheckbox.isChecked()) {
                             openDialog(intTemp, true);
                         } else {
