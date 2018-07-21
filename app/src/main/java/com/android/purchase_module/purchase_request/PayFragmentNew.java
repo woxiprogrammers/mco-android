@@ -144,7 +144,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     TextView textViewShowMessage;
     @BindView(R.id.mainRelativePurchaseOrderTrans)
     RelativeLayout mainRelativePurchaseOrderTrans;
-    @BindView(R.id.progressToGenerateGRN)
     ProgressBar progressToGenerateGRN;
     private ArrayList<Integer> arrayList;
     Unbinder unbinder;
@@ -198,6 +197,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         mContext = getActivity();
         AppUtils.getInstance().initializeProgressBar(mainRelativePurchaseOrderTrans, mContext);
         buttonActionGenerateGrn = view.findViewById(R.id.buttonActionGenerateGrn);
+        progressToGenerateGRN=view.findViewById(R.id.progressToGenerateGRN);
         initializeViews();
         return view;
     }
@@ -442,7 +442,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 if (mItem.getId() == intKey) {
                     try {
                         JSONObject jsonObject = new JSONObject();
-                        if (String.valueOf(mItem.getQuantity()) == null) {
+                        Log.i("@@",String.valueOf(mItem.getQuantity()));
+
+                        if (mItem.getQuantity() == 0) {
                             Toast.makeText(mContext, "Please add Quantity for selected material", Toast.LENGTH_LONG).show();
                             buttonActionSubmit.setEnabled(true);
                             return;
@@ -586,7 +588,13 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(editTextMatQuantity.getText().toString())) {
+                if (!TextUtils.isEmpty(editTextMatQuantity.getText().toString()) ) {
+                    if (Float.parseFloat(editTextMatQuantity.getText().toString()) == 0) {
+                        editTextMatQuantity.setError("Please Do Not Enter 0 Quantity");
+                        return;
+                    }
+                }
+                if (TextUtils.isEmpty(editTextMatQuantity.getText().toString()) ) {
                     editTextMatQuantity.setError("Please Enter Quantity");
                     return;
                 }
@@ -599,15 +607,12 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                                 MaterialNamesItem materialNamesItem = realm.where(MaterialNamesItem.class).equalTo("id", getId).findFirst();
                                 materialNamesItem.setQuantity(Float.parseFloat(editTextMatQuantity.getText().toString()));
                                 realm.copyToRealmOrUpdate(materialNamesItem);
-
                             }
                         }, new Realm.Transaction.OnSuccess() {
                             @Override
                             public void onSuccess() {
                                 Timber.d("Realm Execution Successful");
-
-                                currentCheckbox.setText(materialNamesItem.getMaterialName() + " :- (Qty " + editTextMatQuantity.getText().toString() + " )");
-
+                                currentCheckbox.setText(materialNamesItem.getMaterialName() + " :- ( Qty " + editTextMatQuantity.getText().toString() + " )");
                                 alertDialog.dismiss();
                             }
                         }, new Realm.Transaction.OnError() {
@@ -764,7 +769,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             isCheckedMaterial = true;
                             arrayList.add(materialNamesItem.getId());
                         } else {
-                            isCheckedMaterial = false;
+                                isCheckedMaterial = false;
                             try{
                                 int index = materialNamesItems.indexOf(materialNamesItem);
                                 View currentView = linearLayoutInflateNames.findViewById(index);

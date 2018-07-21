@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
+import com.android.inventory_module.inventory_model.MaterialListItem;
 import com.android.purchase_module.material_request.material_request_model.UnitQuantityItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponse;
 import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.UnitsResponseData;
@@ -92,6 +93,7 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
     private JSONArray jsonArrayForName;
     private ArrayList<String> userNameArray;
     private ArrayAdapter<String> adapter;
+    private float intAvaialableQuantity;
 
     @Override
     public void fragmentBecameVisible() {
@@ -172,6 +174,10 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
             inventoryComponentId = bundle.getInt("inventoryCompid");
         }
         checkAvailability(inventoryComponentId);
+        realm=Realm.getDefaultInstance();
+        MaterialListItem materialListItem=realm.where(MaterialListItem.class).equalTo("id",inventoryComponentId).findFirst();
+        if(materialListItem!=null)
+            intAvaialableQuantity=Float.parseFloat(materialListItem.getQuantityAvailable());
         edtUserName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -185,6 +191,33 @@ public class InventoryDetailsNewMoveFragment extends Fragment implements Fragmen
                         requestToGetUserName(charSequence.toString());
                     else
                         AppUtils.getInstance().showOfflineMessage("GetUserName");
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        edtQuantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!TextUtils.isEmpty(charSequence.toString())) {
+                    if(Float.parseFloat(charSequence.toString()) > intAvaialableQuantity ){
+                        Toast.makeText(mContext,"Quantity should be less than " + intAvaialableQuantity, Toast.LENGTH_SHORT).show();
+                        btnMoveOut.setVisibility(View.GONE);
+                    }else {
+                        btnMoveOut.setVisibility(View.VISIBLE);
+                    }
+                }else {
+                    btnMoveOut.setVisibility(View.VISIBLE);
                 }
 
             }

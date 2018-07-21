@@ -35,14 +35,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.BaseActivity;
 import com.android.constro360.BuildConfig;
 import com.android.constro360.R;
-import com.android.peticash_module.peticash.ActivityEmpSalaryTransactionDetails;
 import com.android.purchase_module.purchase_request.purchase_request_model.RequestMaterialListItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.RequestedMaterialsResponse;
 import com.android.purchase_module.purchase_request.purchase_request_model.RequestmaterialsData;
@@ -283,8 +281,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         Toast.makeText(mContext,"File not present .",Toast.LENGTH_SHORT).show();
                 else
                     AppUtils.getInstance().showOfflineMessage("openViewDialog");
-
-
             }
         });
     }
