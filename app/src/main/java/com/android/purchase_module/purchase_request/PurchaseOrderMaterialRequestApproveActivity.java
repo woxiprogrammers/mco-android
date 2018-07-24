@@ -158,6 +158,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         rvList.setLayoutManager(new LinearLayoutManager(mContext));
         rvList.setHasFixedSize(true);
         rvList.setAdapter(purchaseRequestRvAdapter);
+
         purchaseRequestRvAdapter.setOnItemClickListener(new OnComponentClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
@@ -174,33 +175,43 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 } else if (itemViewIndex == R.id.checkboxFrame) {
                     if (!requestMaterialListItem.isIs_approved()) {
                         CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
+
                         if (requestMaterialListItem.isCheckboxCheckedState()) {
+                            Log.i("@@1checkboxFrameTrue","true");
                             checkBox.setChecked(true);
                         } else {
+                            Log.i("@@1checkboxFrameFalse","False");
                             checkBox.setChecked(false);
                         }
                         if (checkBox.isChecked()) {
                             checkBox.setChecked(false);
                             isCheckboxChecked = false;
+                            Log.i("@@2checkboxFrameTrue","true");
+
                         } else {
                             checkBox.setChecked(true);
                             isCheckboxChecked = true;
+                            Log.i("@@2checkboxFrameFalse","False");
                         }
-                        saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
+//                        saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                     }
                 } else if (itemViewIndex == R.id.checkboxComponent) {
                     CheckBox checkBox = (CheckBox) itemView;
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
                         checkBox.setChecked(true);
+                        Log.i("@@3checkboxComp","true");
                     } else {
                         checkBox.setChecked(false);
+                        Log.i("@@3checkboxComp","false");
                     }
                     if (checkBox.isChecked()) {
                         checkBox.setChecked(false);
                         isCheckboxChecked = false;
+                        Log.i("@@4checkboxCompTrue","true");
                     } else {
                         checkBox.setChecked(true);
                         isCheckboxChecked = true;
+                        Log.i("@@4checkboxCompFalse","False");
                     }
                     saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                 } else if (itemViewIndex == R.id.textViewDisApproveMaterial) {
@@ -223,6 +234,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 if (itemViewIndex == R.id.linearLayoutVendorItem) {
                     RadioButton vendorRadioButton = itemView.findViewById(R.id.vendorRadioButton);
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
+//                         vendorRadioButton = itemView.findViewById(R.id.vendorRadioButton);
                         VendorsItem tempVendorsItem = vendorsItemRealmList.get(viewIndex);
                         jsonObject = new JSONObject();
                         if (vendorsItem.getOrderRequestComponentId() != tempVendorsItem.getOrderRequestComponentId()) {
@@ -266,6 +278,9 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }
             }
         });
+        /**
+         * View Button Click
+         */
         purchaseRequestRvAdapter.setOnViewPoCLickListner(new onViewPoCLickListner() {
             @Override
             public void onViewItemClick(View itemView, int position, int itemIndex) {
@@ -298,6 +313,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             public void execute(Realm realm) {
                 RequestMaterialListItem requestMaterialListItemObject = realm.copyFromRealm(requestMaterialListItem);
                 requestMaterialListItemObject.setCheckboxCheckedState(isCheckboxChecked);
+                Log.i("@@isChkBoxState", String.valueOf(isCheckboxChecked));
                 realm.copyToRealmOrUpdate(requestMaterialListItemObject);
             }
         });
@@ -479,14 +495,15 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 }
             }else {
                 holder.textViewDisApproveMaterial.setVisibility(View.GONE);
-
             }
 
 //            holder.checkboxComponent.setChecked(false);
             if (requestMaterialListItem.isCheckboxCheckedState()) {
+                Log.i("@@@","true");
                 holder.checkboxComponent.setChecked(true);
             } else {
                 holder.checkboxComponent.setChecked(false);
+                Log.i("@@@","false");
             }
 
             int noOfChildViews = holder.ll_vendors.getChildCount();
@@ -587,7 +604,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 checkboxFrame.setOnClickListener(this);
                 checkboxComponent.setOnClickListener(this);
                 textViewDisApproveMaterial.setOnClickListener(this);
-//                ll_vendors.setOnClickListener(this);
+//              ll_vendors.setOnClickListener(this);
                 linearLayout_components.setOnClickListener(this);
             }
 
