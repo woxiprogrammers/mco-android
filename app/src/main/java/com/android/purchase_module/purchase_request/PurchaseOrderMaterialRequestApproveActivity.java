@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -175,43 +176,33 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 } else if (itemViewIndex == R.id.checkboxFrame) {
                     if (!requestMaterialListItem.isIs_approved()) {
                         CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
-
                         if (requestMaterialListItem.isCheckboxCheckedState()) {
-                            Log.i("@@1checkboxFrameTrue","true");
                             checkBox.setChecked(true);
                         } else {
-                            Log.i("@@1checkboxFrameFalse","False");
                             checkBox.setChecked(false);
                         }
                         if (checkBox.isChecked()) {
                             checkBox.setChecked(false);
                             isCheckboxChecked = false;
-                            Log.i("@@2checkboxFrameTrue","true");
-
                         } else {
                             checkBox.setChecked(true);
                             isCheckboxChecked = true;
-                            Log.i("@@2checkboxFrameFalse","False");
                         }
-//                        saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
+                        saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                     }
                 } else if (itemViewIndex == R.id.checkboxComponent) {
                     CheckBox checkBox = (CheckBox) itemView;
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
                         checkBox.setChecked(true);
-                        Log.i("@@3checkboxComp","true");
                     } else {
                         checkBox.setChecked(false);
-                        Log.i("@@3checkboxComp","false");
                     }
                     if (checkBox.isChecked()) {
                         checkBox.setChecked(false);
                         isCheckboxChecked = false;
-                        Log.i("@@4checkboxCompTrue","true");
                     } else {
                         checkBox.setChecked(true);
                         isCheckboxChecked = true;
-                        Log.i("@@4checkboxCompFalse","False");
                     }
                     saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                 } else if (itemViewIndex == R.id.textViewDisApproveMaterial) {
@@ -231,10 +222,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
                 VendorsItem vendorsItem = vendorsItemRealmList.get(itemIndex);
                 int noOfSubModules = vendorsItemRealmList.size();
-                if (itemViewIndex == R.id.linearLayoutVendorItem) {
-                    RadioButton vendorRadioButton = itemView.findViewById(R.id.vendorRadioButton);
+                ImageView imageView=itemView.findViewById(R.id.btnSelectVendor);
+                ImageView imageOk=ll_vendors.findViewById(R.id.imageOk);
+                if (itemViewIndex == R.id.btnSelectVendor) {
+                    imageOk.setVisibility(View.VISIBLE);
+                    imageView.setVisibility(View.GONE);
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
-//                         vendorRadioButton = itemView.findViewById(R.id.vendorRadioButton);
                         VendorsItem tempVendorsItem = vendorsItemRealmList.get(viewIndex);
                         jsonObject = new JSONObject();
                         if (vendorsItem.getOrderRequestComponentId() != tempVendorsItem.getOrderRequestComponentId()) {
@@ -246,16 +239,15 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                                 e.printStackTrace();
                             }
                         }
-                        LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
+                        /*LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
                         RadioButton tempVendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
-                        tempVendorRadioButton.setChecked(false);
+                        tempVendorRadioButton.setChecked(false);*/
                     }
                     jsonObject = new JSONObject();
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
                         try {
                             jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
                             jsonObject.put("is_approved", true);
-//                            jsonArray.put(jsonObject);
                             isMaterialSelected = true;
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -270,11 +262,16 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         }
                     }
                     jsonArray.put(jsonObject);
-                    if (vendorRadioButton.isChecked()) {
+                    Toast.makeText(mContext, "" + jsonObject,Toast.LENGTH_SHORT).show();
+                    /*if (vendorRadioButton.isChecked()) {
                         vendorRadioButton.setChecked(false);
                     } else {
                         vendorRadioButton.setChecked(true);
-                    }
+                    }*/
+                }else if(itemIndex == R.id.imageOk){
+                    imageOk.setVisibility(View.GONE);
+                    imageView.setVisibility(View.VISIBLE);
+
                 }
             }
         });
@@ -499,11 +496,9 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
 //            holder.checkboxComponent.setChecked(false);
             if (requestMaterialListItem.isCheckboxCheckedState()) {
-                Log.i("@@@","true");
                 holder.checkboxComponent.setChecked(true);
             } else {
                 holder.checkboxComponent.setChecked(false);
-                Log.i("@@@","false");
             }
 
             int noOfChildViews = holder.ll_vendors.getChildCount();
@@ -516,14 +511,17 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             }
             for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                 LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
-                RadioButton vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
+                TextView vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
                 TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
                 TextView textViewTranAmount = currentChildView.findViewById(R.id.textViewTranAmount);
                 TextView textViewTotalTransAmount = currentChildView.findViewById(R.id.textViewTotalTransAmount);
                 TextView textViewTransGST = currentChildView.findViewById(R.id.textViewTransGST);
                 TextView textViewGST = currentChildView.findViewById(R.id.textViewGST);
-                TextView textViewQty = currentChildView.findViewById(R.id.textViewQty);
+                 TextView textViewQty = currentChildView.findViewById(R.id.textViewQty);
+                ImageView imageView=currentChildView.findViewById(R.id.btnSelectVendor);
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_red_ok));
+
                 textViewQty.setText(requestMaterialListItem.getQuantity());
                 textViewGST.setText(vendorsItemRealmList.get(viewIndex).getGst());
                 textViewTransGST.setText(vendorsItemRealmList.get(viewIndex).getTransportationGst());
@@ -542,7 +540,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 float transVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 float resultBillAMount = matVal + transVal;
                 textViewTotalBillAmt.setText("Total Bill Amt: " + resultBillAMount);
-                vendorRadioButton.setClickable(false);
+//                vendorRadioButton.setClickable(false);
             }
         }
 
@@ -581,9 +579,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
                     LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);
+                    ImageView btnSelectVendor=childLayout.findViewById(R.id.btnSelectVendor);
+                    ImageView imageOk=childLayout.findViewById(R.id.imageOk);
+
                     TextView textViewViewPO = childLayout.findViewById(R.id.textViewViewPO);
                     final int finalIndexView = indexView;
-                    linearLayoutVendorItem.setOnClickListener(new View.OnClickListener() {
+                    imageOk.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (vendorClickListener != null) {
@@ -591,6 +592,22 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             }
                         }
                     });
+                    btnSelectVendor.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (vendorClickListener != null) {
+                                vendorClickListener.onVendorItemClick(view, getAdapterPosition(), finalIndexView, ll_vendors);
+                            }
+                        }
+                    });
+                    /*linearLayoutVendorItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (vendorClickListener != null) {
+                                vendorClickListener.onVendorItemClick(view, getAdapterPosition(), finalIndexView, ll_vendors);
+                            }
+                        }
+                    });*/
                     textViewViewPO.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
