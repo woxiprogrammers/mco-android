@@ -54,6 +54,7 @@ public class AssetDetailsActivity extends BaseActivity {
     private int inventoryComponentId, asset_id;
     private InventoryViewPagerAdapter inventoryViewPagerAdapter;
     private String component_type_slug;
+    private float floatAvaialableQuantity;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -102,10 +103,14 @@ public class AssetDetailsActivity extends BaseActivity {
             inventoryComponentId = extras.getIntExtra("inventory_component_id", -1);
             asset_id = extras.getIntExtra("asset_id", -1);
             component_type_slug = extras.getStringExtra("component_type_slug");
+            floatAvaialableQuantity = extras.getFloatExtra("availableQuantity", 1);
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("");
+        }
+        if (floatAvaialableQuantity == 0.0 || floatAvaialableQuantity == 0) {
+            floatingAddButton.setVisibility(View.GONE);
         }
     }
 
@@ -174,6 +179,12 @@ public class AssetDetailsActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
+        MenuItem item;
+        if (floatAvaialableQuantity == 0.0 || floatAvaialableQuantity == 0) {
+            menu.findItem(R.id.action_request_maintaianance).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_request_maintaianance).setVisible(true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -223,7 +234,7 @@ public class AssetDetailsActivity extends BaseActivity {
                 case 0:
                     return AssetsReadingsFragment.newInstance(inventoryComponentId, component_type_slug);
                 case 1:
-                    return AssetMaintenanceListFragment.newInstance();
+                    return AssetMaintenanceListFragment.newInstance(asset_id);
                 default:
                     return null;
             }

@@ -34,18 +34,14 @@
                     android:text="Wood Cutter"/>
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" : "/>
 
-                <TextView
-                    android:id="@+id/asset_model_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Model 1234"/>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/asset_model_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Model 1234"/>
             <LinearLayout
                 android:id="@+id/linearLayoutForThreeTypes"
                 android:layout_width="match_parent"

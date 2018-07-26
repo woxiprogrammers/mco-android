@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,7 +69,9 @@ public class AutoSuggestActivity extends BaseActivity {
     private SearchMaterialListItem searchMaterialListItem;
     private SearchAssetListItem searchAssetListItem;
     private boolean isFromPeticash;
+    private String blockCharacterSet = "$!@#";
 
+    private InputFilter filter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,11 +98,20 @@ public class AutoSuggestActivity extends BaseActivity {
             }
         }
         deletePreviousLocalData();
+        filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (source != null && blockCharacterSet.contains(("" + source))) {
+                    return "";
+                }
+                return null;
+            }
+        };
+        mEditTextAutoSuggest.setFilters(new InputFilter[] { filter });
         mEditTextAutoSuggest.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mStrSearch = s.toString();

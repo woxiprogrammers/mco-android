@@ -40,7 +40,7 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
     public void onBindViewHolder(MyViewHolder holder, int position) {
         assetsListItem = assetsListItemCollection.get(position);
         holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
-        holder.assetModelNumber.setText(assetsListItem.getModelNumber());
+        holder.assetModelNumber.setText("Model No : " +assetsListItem.getModelNumber());
         holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
         if (assetsListItem.getSlug().equalsIgnoreCase("fuel_and_electricity_dependent")) {
             holder.linearLayoutForOtherAssets.setVisibility(View.GONE);

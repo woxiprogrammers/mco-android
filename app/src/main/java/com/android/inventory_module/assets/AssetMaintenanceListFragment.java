@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.android.constro360.R;
 import com.android.inventory_module.MaintenanceFormActivity;
+import com.android.inventory_module.assets.asset_model.AssetMaintenanceListData;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListItem;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListResponse;
 import com.android.purchase_module.purchase_request.MonthYearPickerDialog;
@@ -48,20 +50,22 @@ import io.realm.RealmResults;
  * A simple {@link Fragment} subclass.
  */
 public class AssetMaintenanceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
-
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     private Context mContext;
     private Realm realm;
     private int passYear, passMonth;
+    private int intAssetId;
+    private RealmResults<AssetMaintenanceListItem> assetMaintenanceListItems;
 
     public AssetMaintenanceListFragment() {
         // Required empty public constructor
     }
 
-    public static AssetMaintenanceListFragment newInstance() {
+    public static AssetMaintenanceListFragment newInstance(int assetId) {
         Bundle args = new Bundle();
         AssetMaintenanceListFragment fragment = new AssetMaintenanceListFragment();
+        args.putInt("assetId", assetId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,12 +76,14 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
         mContext = getActivity();
+        Bundle bundleArgs = getArguments();
+        if (bundleArgs != null) {
+            intAssetId = bundleArgs.getInt("assetId");
+        }
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
-        setAdapterForMaterialList(passMonth, passYear);
         return mParentView;
-
     }
 
     @Override
@@ -88,11 +94,11 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
 
     private void setAdapterForMaterialList(int passMonth, int passYear) {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetMaintenanceListItem> assetMaintenanceListItems = realm.where(AssetMaintenanceListItem.class)
+        assetMaintenanceListItems = realm.where(AssetMaintenanceListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .equalTo("passMonth", passMonth)
                 .equalTo("passYear", passYear)
-                .findAllAsync();
+                .findAll();
         AssetMaintenanceListAdapter materialListAdapter = new AssetMaintenanceListAdapter(assetMaintenanceListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -102,26 +108,29 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             @Override
             public void onItemClick(View view, final int position) {
                 AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItems.get(position);
-                if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")) {
-                    if (TextUtils.isEmpty(assetMaintenanceListItem.getGrn()) && !assetMaintenanceListItem.isIs_transaction_created()) {
-                        Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
-                        intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
-                        intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
-                        startActivity(intent);
-
-                    } else {
-                        if (!TextUtils.isEmpty(assetMaintenanceListItem.getGrn())) {
+                if (assetMaintenanceListItem != null) {
+                    if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")) {
+                        if (TextUtils.isEmpty(assetMaintenanceListItem.getGrn()) && !assetMaintenanceListItem.isIs_transaction_created()) {
                             Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
                             intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
                             intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
                             startActivity(intent);
                         } else {
-                            Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
+                            if (!TextUtils.isEmpty(assetMaintenanceListItem.getGrn())) {
+                                Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
+                                intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
+                                intent.putExtra("vendorName", assetMaintenanceListItem.getApprovedVendorName());
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
+                            }
                         }
-
+                    } else if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Bill Pending")
+                            && assetMaintenanceListItem.getStatus().equalsIgnoreCase("Bill Generated")) {
+                        Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "You can not proceed unless vendor approved", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(mContext, "You can not proceed unless vendor approved", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -136,7 +145,9 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
         try {
             params.put("month", passMonth);
             params.put("year", passYear);
+            params.put("asset_id", intAssetId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            Log.i("@@", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -150,15 +161,13 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
                 .getAsObject(AssetMaintenanceListResponse.class, new ParsedRequestListener<AssetMaintenanceListResponse>() {
                     @Override
                     public void onResponse(final AssetMaintenanceListResponse response) {
-
                         try {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    /*realm.delete(AssetMaintenanceListResponse.class);
+                                    realm.delete(AssetMaintenanceListResponse.class);
                                     realm.delete(AssetMaintenanceListData.class);
-                                    realm.delete(AssetMaintenanceListItem.class);*/
-
+                                    realm.delete(AssetMaintenanceListItem.class);
                                     for (AssetMaintenanceListItem maintenanceListItem
                                             : response.getAssetMaintenanceListData().getAssetMaintenanceList()) {
                                         maintenanceListItem.setPassMonth(passMonth);
@@ -169,6 +178,7 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    setAdapterForMaterialList(passMonth, passYear);
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -245,7 +255,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             holder.textViewReqName.setText("Requested by " + assetMaintenanceListItem.getUserName());
             holder.textViewStatus.setText(assetMaintenanceListItem.getStatus());
             holder.textViewReqDate.setText(AppUtils.getInstance().getTime("EEE, dd MMM yyyy", getString(R.string.expected_time_format), assetMaintenanceListItem.getDate()));
-
         }
 
         @Override
@@ -254,19 +263,14 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-
             @BindView(R.id.textViewMaintNumber)
             TextView textViewMaintNumber;
-
             @BindView(R.id.textViewReqName)
             TextView textViewReqName;
-
             @BindView(R.id.textViewStatus)
             TextView textViewStatus;
-
             @BindView(R.id.textViewReqDate)
             TextView textViewReqDate;
-
             private Context context;
 
             private MyViewHolder(View itemView) {
@@ -275,6 +279,5 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
                 ButterKnife.bind(this, itemView);
             }
         }
-
     }
 }

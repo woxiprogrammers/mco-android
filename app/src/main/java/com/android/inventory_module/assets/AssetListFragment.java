@@ -125,12 +125,14 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                                 startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
                                 startActivity(startIntent);
                             } else */
+                                AssetsListItem assetsListItem=assetsListItems.get(position);
                                 Intent intent = new Intent(mContext, AssetDetailsActivity.class);
-                                intent.putExtra("assetName", assetsListItems.get(position).getAssetsName());
-                                intent.putExtra("modelNumber", assetsListItems.get(position).getModelNumber());
-                                intent.putExtra("inventory_component_id", assetsListItems.get(position).getId());
-                                intent.putExtra("asset_id", assetsListItems.get(position).getAsset_id());
-                                intent.putExtra("component_type_slug", assetsListItems.get(position).getSlug());
+                                intent.putExtra("assetName", assetsListItem.getAssetsName());
+                                intent.putExtra("modelNumber", assetsListItem.getModelNumber());
+                                intent.putExtra("inventory_component_id", assetsListItem.getId());
+                                intent.putExtra("asset_id", assetsListItem.getAsset_id());
+                                intent.putExtra("component_type_slug", assetsListItem.getSlug());
+                                intent.putExtra("availableQuantity",assetsListItem.getAvailable());
                                 startActivity(intent);
                             }
                         }

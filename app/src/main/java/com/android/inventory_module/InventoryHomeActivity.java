@@ -20,7 +20,8 @@ import com.android.utils.FragmentInterface;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class InventoryHomeActivity extends BaseActivity {
+public class
+InventoryHomeActivity extends BaseActivity {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottom_navigation;
     @BindView(R.id.view_pager)
