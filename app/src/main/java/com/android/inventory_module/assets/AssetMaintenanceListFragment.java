@@ -109,7 +109,8 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             public void onItemClick(View view, final int position) {
                 AssetMaintenanceListItem assetMaintenanceListItem = assetMaintenanceListItems.get(position);
                 if (assetMaintenanceListItem != null) {
-                    if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")) {
+                    if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Vendor Approved")
+                            || assetMaintenanceListItem.getStatus().equalsIgnoreCase("GRN Generated")) {
                         if (TextUtils.isEmpty(assetMaintenanceListItem.getGrn()) && !assetMaintenanceListItem.isIs_transaction_created()) {
                             Intent intent = new Intent(getActivity(), MaintenanceFormActivity.class);
                             intent.putExtra("asset_maintenance_id", assetMaintenanceListItem.getAssetMaintenanceId());
@@ -126,7 +127,7 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
                             }
                         }
                     } else if (assetMaintenanceListItem.getStatus().equalsIgnoreCase("Bill Pending")
-                            && assetMaintenanceListItem.getStatus().equalsIgnoreCase("Bill Generated")) {
+                            || assetMaintenanceListItem.getStatus().equalsIgnoreCase("Bill Generated")) {
                         Toast.makeText(mContext, "Transaction Completed Successfully", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(mContext, "You can not proceed unless vendor approved", Toast.LENGTH_SHORT).show();

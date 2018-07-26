@@ -28,12 +28,12 @@
                 android:paddingTop="@dimen/dimen_12dp">
 
                 <ImageView
-                    android:id="@+id/btnSelectVendor"
+                    android:id="@+id/btnSelectVendorRed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />
                 <ImageView
-                    android:id="@+id/imageOk"
+                    android:id="@+id/imageOkGreen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_approve"
