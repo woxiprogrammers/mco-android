@@ -173,6 +173,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
     private PurchaseOrderListItem purchaseOrderListItem;
     private static boolean isHaveCreateAccess;
     CheckBox currentCheckbox;
+    private float quantity;
 
     public PayFragmentNew() {
         // Required empty public constructor
@@ -197,7 +198,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         mContext = getActivity();
         AppUtils.getInstance().initializeProgressBar(mainRelativePurchaseOrderTrans, mContext);
         buttonActionGenerateGrn = view.findViewById(R.id.buttonActionGenerateGrn);
-        progressToGenerateGRN=view.findViewById(R.id.progressToGenerateGRN);
+        progressToGenerateGRN = view.findViewById(R.id.progressToGenerateGRN);
         initializeViews();
         return view;
     }
@@ -208,7 +209,9 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         }
         realm = Realm.getDefaultInstance();
         purchaseOrderListItem = realm.where(PurchaseOrderListItem.class).equalTo("id", orderId).findFirst();
-        float quantity = Float.parseFloat(purchaseOrderListItem.getRemainingQuantity());
+        if (!TextUtils.isEmpty(purchaseOrderListItem.getRemainingQuantity())) {
+            quantity = Float.parseFloat(purchaseOrderListItem.getRemainingQuantity());
+        }
         if (isHaveCreateAccess) {
             linearLayoutFirstLayout.setVisibility(View.VISIBLE);
             if (quantity == 0 || quantity < 0 || quantity == 0.0) {
@@ -282,7 +285,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             case R.id.buttonActionSubmit:
                 buttonActionSubmit.setEnabled(false);
                 validateEntries();
-
                 break;
         }
     }
@@ -333,7 +335,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             editTextVehNum.setError(null);
             editTextVehNum.requestFocus();
         }
-
         if (arrayImageFileList == null || arrayImageFileList.size() <= 0) {
             Toast.makeText(mContext, "Please add at least one image", Toast.LENGTH_LONG).show();
             buttonActionSubmit.setEnabled(true);
@@ -442,8 +443,7 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 if (mItem.getId() == intKey) {
                     try {
                         JSONObject jsonObject = new JSONObject();
-                        Log.i("@@",String.valueOf(mItem.getQuantity()));
-
+                        Log.i("@@", String.valueOf(mItem.getQuantity()));
                         if (mItem.getQuantity() == 0) {
                             Toast.makeText(mContext, "Please add Quantity for selected material", Toast.LENGTH_LONG).show();
                             buttonActionSubmit.setEnabled(true);
@@ -588,13 +588,13 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
         buttonToOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(editTextMatQuantity.getText().toString()) ) {
+                if (!TextUtils.isEmpty(editTextMatQuantity.getText().toString())) {
                     if (Float.parseFloat(editTextMatQuantity.getText().toString()) == 0) {
                         editTextMatQuantity.setError("Please Do Not Enter 0 Quantity");
                         return;
                     }
                 }
-                if (TextUtils.isEmpty(editTextMatQuantity.getText().toString()) ) {
+                if (TextUtils.isEmpty(editTextMatQuantity.getText().toString())) {
                     editTextMatQuantity.setError("Please Enter Quantity");
                     return;
                 }
@@ -761,7 +761,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
             if (inflatedView != null) {
                 inflatedView.setId(i);
                 checkBox = inflatedView.findViewById(R.id.checkboxMaterials);
-
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -769,14 +768,14 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                             isCheckedMaterial = true;
                             arrayList.add(materialNamesItem.getId());
                         } else {
-                                isCheckedMaterial = false;
-                            try{
+                            isCheckedMaterial = false;
+                            try {
                                 int index = materialNamesItems.indexOf(materialNamesItem);
                                 View currentView = linearLayoutInflateNames.findViewById(index);
                                 final CheckBox currentCheckboxOne = currentView.findViewById(R.id.checkboxMaterials);
                                 currentCheckboxOne.setText(materialNamesItem.getMaterialName());
                                 arrayList.remove(index);
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }

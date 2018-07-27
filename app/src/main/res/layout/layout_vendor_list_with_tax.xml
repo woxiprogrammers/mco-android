@@ -21,30 +21,16 @@
                 android:id="@+id/linearLayoutVendorItem"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:orientation="horizontal"
-                    android:paddingBottom="@dimen/dimen_12dp"
-                    android:paddingLeft="@dimen/dimen_4dp"
-                android:paddingTop="@dimen/dimen_12dp">
+                android:layout_weight="0.8">
 
-                <ImageView
-                    android:id="@+id/btnSelectVendorRed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_disapprove"
-                    />
-                <ImageView
-                    android:id="@+id/imageOkGreen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_approve"
-                    android:visibility="gone"/>
-
-                <TextView
+                <RadioButton
                     android:id="@+id/vendorRadioButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_8dp"
+                    android:paddingBottom="@dimen/dimen_12dp"
+                    android:paddingLeft="@dimen/dimen_4dp"
+                    android:paddingTop="@dimen/dimen_12dp"
+                    android:checked="false"
                     android:text="First Vendor Name"/>
             </LinearLayout>
 

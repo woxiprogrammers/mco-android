@@ -79,7 +79,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private int intPurchaseOrderRequestId;
     private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
     private JSONArray jsonArray = new JSONArray();
-    private boolean isCheckboxChecked, isVendorChecked;
+    private boolean isCheckboxChecked;
     private boolean isMaterialSelected, isApproveClicked;
     private String subModulesItemList;
     private AlertDialog alertDialog;
@@ -154,7 +154,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         purchaseRequestListItems = realm.where(RequestMaterialListItem.class).findAll();
-        MaterialRequestListAdapter purchaseRequestRvAdapter = new MaterialRequestListAdapter(purchaseRequestListItems, true, true, subModulesItemList);
+        MaterialRequestListAdapter purchaseRequestRvAdapter = new MaterialRequestListAdapter(purchaseRequestListItems, true, true,subModulesItemList);
         rvList.setLayoutManager(new LinearLayoutManager(mContext));
         rvList.setHasFixedSize(true);
         rvList.setAdapter(purchaseRequestRvAdapter);
@@ -164,7 +164,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 int itemViewIndex = itemView.getId();
                 RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
                 if (itemViewIndex == R.id.linearLayout_components) {
-                    Log.i("@@compLin", "linearLayout_components");
                     LinearLayout ll_vendors = itemView.findViewById(R.id.ll_vendors);
                     if (ll_vendors.getVisibility() == View.VISIBLE) {
                         ll_vendors.setVisibility(View.GONE);
@@ -173,7 +172,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         ll_vendors.setVisibility(View.VISIBLE);
                     }
                 } else if (itemViewIndex == R.id.checkboxFrame) {
-                    Log.i("@@checkboxFrame", "checkboxFrame");
                     if (!requestMaterialListItem.isIs_approved()) {
                         CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
                         if (requestMaterialListItem.isCheckboxCheckedState()) {
@@ -191,7 +189,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                     }
                 } else if (itemViewIndex == R.id.checkboxComponent) {
-                    Log.i("@@checkboxComponent", "checkboxComponent");
                     CheckBox checkBox = (CheckBox) itemView;
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
                         checkBox.setChecked(true);
@@ -219,28 +216,16 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             public void onVendorItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors) {
                 JSONObject jsonObject;
                 int itemViewIndex = itemView.getId();
-                Log.i("@@itemViewIndex", String.valueOf(itemViewIndex));
                 RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
                 RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
                 VendorsItem vendorsItem = vendorsItemRealmList.get(itemIndex);
                 int noOfSubModules = vendorsItemRealmList.size();
-                if (itemViewIndex == R.id.btnSelectVendorRed) {
-
-
-                    /*if(vendorsItem.isVendorChecked()){
-                        isVendorChecked=true;
-                    }else {
-                        isVendorChecked=false;
-                    }*/
-                    ImageView imageView= (ImageView) itemView;
-                    if(imageView.getVisibility() == View.VISIBLE){
-                        isVendorChecked=false;
-                    }else {
-                        isVendorChecked=true;
-                    }
-                    jsonObject = new JSONObject();
+                if (itemViewIndex == R.id.linearLayoutVendorItem) {
+                    jsonArray=new JSONArray();
+                    RadioButton vendorRadioButton = itemView.findViewById(R.id.vendorRadioButton);
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                         VendorsItem tempVendorsItem = vendorsItemRealmList.get(viewIndex);
+                        jsonObject = new JSONObject();
                         if (vendorsItem.getOrderRequestComponentId() != tempVendorsItem.getOrderRequestComponentId()) {
                             try {
                                 jsonObject.put("id", tempVendorsItem.getOrderRequestComponentId());
@@ -249,74 +234,39 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
-                            ImageView imageOkGreenChild = currentChildView.findViewById(R.id.imageOkGreen);
-                            ImageView currentDisapproveRed = currentChildView.findViewById(R.id.btnSelectVendorRed);
-                            currentDisapproveRed.setVisibility(View.VISIBLE);
-                            imageOkGreenChild.setVisibility(View.GONE);
-                        } else {
-                            try {
-                                jsonObject.put("id", tempVendorsItem.getOrderRequestComponentId());
-                                jsonObject.put("is_approved", true);
-                                jsonArray.put(jsonObject);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
-                            ImageView imageOkGreenChild = currentChildView.findViewById(R.id.imageOkGreen);
-                            ImageView currentDisapproveRed = currentChildView.findViewById(R.id.btnSelectVendorRed);
-                            currentDisapproveRed.setVisibility(View.GONE);
-                            imageOkGreenChild.setVisibility(View.VISIBLE);
+                        }
+                        LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
+                        RadioButton tempVendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
+                        tempVendorRadioButton.setChecked(false);
+                    }
+                    jsonObject = new JSONObject();
+                    if (requestMaterialListItem.isCheckboxCheckedState()) {
+                        try {
+                            jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
+                            jsonObject.put("is_approved", true);
+//                            jsonArray.put(jsonObject);
+                            isMaterialSelected = true;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
+                            jsonObject.put("is_approved", false);
+                            isMaterialSelected = false;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                    saveVendorCheckedState(isVendorChecked, vendorsItem);
-                    if (requestMaterialListItem.isCheckboxCheckedState()) {
-                        isMaterialSelected = true;
-                    } else {
-                        isMaterialSelected = false;
-                    }
                     jsonArray.put(jsonObject);
+                    if (vendorRadioButton.isChecked()) {
+                        vendorRadioButton.setChecked(false);
+                    } else {
+                        vendorRadioButton.setChecked(true);
+                    }
                 }
             }
         });
-        purchaseRequestRvAdapter.setDisapproveListener(new OnDisapproveListener() {
-            @Override
-            public void onDisapproveItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors) {
-                int itemViewIndex = itemView.getId();
-                RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
-                RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
-                VendorsItem vendorsItem = vendorsItemRealmList.get(itemIndex);
-                int noOfSubModules = vendorsItemRealmList.size();
-                ImageView imageView = itemView.findViewById(R.id.imageOkGreen);
-                ImageView imageSelectVendor = ll_vendors.findViewById(R.id.btnSelectVendorRed);
-                if (itemViewIndex == R.id.imageOkGreen) {
-                    imageView.setVisibility(View.GONE);
-                    ImageView currentImageView= (ImageView) itemView;
-                    if(currentImageView.getVisibility() == View.VISIBLE){
-                        isVendorChecked=true;
-                    }else {
-                        isVendorChecked=false;
-                    }
-                    imageSelectVendor.setVisibility(View.VISIBLE);
-                    for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
-                        LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
-                        ImageView imageOkGreenChild = currentChildView.findViewById(R.id.imageOkGreen);
-                        ImageView currentDisapprove = currentChildView.findViewById(R.id.btnSelectVendorRed);
-                        currentDisapprove.setVisibility(View.VISIBLE);
-                        imageOkGreenChild.setVisibility(View.GONE);
-                    }
-                    try {
-                        jsonArray.remove(position);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    saveVendorCheckedState(isVendorChecked, vendorsItem);
-                }
-            }
-        });
-        /**
-         * View Button Click
-         */
         purchaseRequestRvAdapter.setOnViewPoCLickListner(new onViewPoCLickListner() {
             @Override
             public void onViewItemClick(View itemView, int position, int itemIndex) {
@@ -325,11 +275,11 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
                 RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
                 final VendorsItem vendorsItem = vendorsItemRealmList.get(itemIndex);
-                if (AppUtils.getInstance().checkNetworkState())
-                    if (vendorsItem.getImagePurchaseOrderRequests().size() > 0 || vendorsItem.getPdfPurchaseOrderRequests().size() > 0)
+                if(AppUtils.getInstance().checkNetworkState())
+                    if(vendorsItem.getImagePurchaseOrderRequests().size() > 0 || vendorsItem.getPdfPurchaseOrderRequests().size() > 0)
                         openViewDialog(vendorsItem);
                     else
-                        Toast.makeText(mContext, "File not present .", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext,"File not present .",Toast.LENGTH_SHORT).show();
                 else
                     AppUtils.getInstance().showOfflineMessage("openViewDialog");
             }
@@ -349,18 +299,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             public void execute(Realm realm) {
                 RequestMaterialListItem requestMaterialListItemObject = realm.copyFromRealm(requestMaterialListItem);
                 requestMaterialListItemObject.setCheckboxCheckedState(isCheckboxChecked);
-                realm.copyToRealmOrUpdate(requestMaterialListItemObject);
-            }
-        });
-    }
-
-    private void saveVendorCheckedState(final boolean isVendorChecked, final VendorsItem vendorsItem) {
-        realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                VendorsItem requestMaterialListItemObject = realm.copyFromRealm(vendorsItem);
-                requestMaterialListItemObject.setVendorChecked(isVendorChecked);
                 realm.copyToRealmOrUpdate(requestMaterialListItemObject);
             }
         });
@@ -466,6 +404,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     strApproveDisappUrl = AppURL.API_PURCHASE_ORDER_REQUEST_DISAPPROVE;
                 }
             }
+
+            Log.i("@@Params",params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -495,15 +435,14 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         private OnComponentClickListener componentClickListener;
         private OnVendorClickListener vendorClickListener;
         private onViewPoCLickListner onViewPoCLickListner;
-        private OnDisapproveListener onDisapproveListener;
         RequestMaterialListItem requestMaterialListItem;
         private String subModuleList;
 
         MaterialRequestListAdapter(@Nullable OrderedRealmCollection<RequestMaterialListItem> data,
-                                   boolean autoUpdate, boolean updateOnModification, String subModuleItemList) {
+                                   boolean autoUpdate, boolean updateOnModification,String subModuleItemList) {
             super(data, autoUpdate, updateOnModification);
             requestMaterialListItemOrderedRealmCollection = data;
-            this.subModuleList = subModuleItemList;
+            this.subModuleList=subModuleItemList;
             setHasStableIds(true);
         }
 
@@ -513,10 +452,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
         void setChildClickListener(OnVendorClickListener vendorClickListener) {
             this.vendorClickListener = vendorClickListener;
-        }
-
-        void setDisapproveListener(OnDisapproveListener disapproveListener) {
-            this.onDisapproveListener = disapproveListener;
         }
 
         void setOnViewPoCLickListner(onViewPoCLickListner listner) {
@@ -532,13 +467,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, int position) {
-            Log.i("@@Bind", "Holder");
             requestMaterialListItem = requestMaterialListItemOrderedRealmCollection.get(position);
             RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
             holder.textViewItemName.setText(requestMaterialListItem.getMaterialName());
             holder.textViewItemQuantity.setText("Qty: " + requestMaterialListItem.getQuantity() + " " + requestMaterialListItem.getUnitName());
-//            holder.ll_vendors.setVisibility(View.GONE);
-            if (subModuleList.contains("approve-purchase-order-request")) {
+            holder.ll_vendors.setVisibility(View.GONE);
+            if(subModuleList.contains("approve-purchase-order-request")){
                 if (requestMaterialListItem.isIs_approved()) {
                     holder.checkboxComponent.setEnabled(false);
                     holder.textViewDisApproveMaterial.setVisibility(View.GONE);
@@ -546,26 +480,29 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     holder.checkboxComponent.setEnabled(true);
                     holder.textViewDisApproveMaterial.setVisibility(View.VISIBLE);
                 }
-            } else {
+            }else {
                 holder.textViewDisApproveMaterial.setVisibility(View.GONE);
+
             }
+
 //            holder.checkboxComponent.setChecked(false);
             if (requestMaterialListItem.isCheckboxCheckedState()) {
                 holder.checkboxComponent.setChecked(true);
             } else {
                 holder.checkboxComponent.setChecked(false);
             }
+
             int noOfChildViews = holder.ll_vendors.getChildCount();
             final int noOfSubModules = vendorsItemRealmList.size();
             if (noOfSubModules < noOfChildViews) {
                 for (int index = noOfSubModules; index < noOfChildViews; index++) {
                     LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(index);
-//                    currentChildView.setVisibility(View.GONE);
+                    currentChildView.setVisibility(View.GONE);
                 }
             }
             for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                 LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
-                TextView vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
+                RadioButton vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
                 TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
                 TextView textViewTranAmount = currentChildView.findViewById(R.id.textViewTranAmount);
@@ -573,9 +510,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewTransGST = currentChildView.findViewById(R.id.textViewTransGST);
                 TextView textViewGST = currentChildView.findViewById(R.id.textViewGST);
                 TextView textViewQty = currentChildView.findViewById(R.id.textViewQty);
-                ImageView imageView = currentChildView.findViewById(R.id.btnSelectVendorRed);
-                ImageView imageOkGreen=currentChildView.findViewById(R.id.imageOkGreen);
-//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_disapprove));
                 textViewQty.setText(requestMaterialListItem.getQuantity());
                 textViewGST.setText(vendorsItemRealmList.get(viewIndex).getGst());
                 textViewTransGST.setText(vendorsItemRealmList.get(viewIndex).getTransportationGst());
@@ -594,13 +528,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 float transVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 float resultBillAMount = matVal + transVal;
                 textViewTotalBillAmt.setText("Total Bill Amt: " + resultBillAMount);
-                if (vendorsItemRealmList.get(viewIndex).isVendorChecked()) {
-                    imageView.setVisibility(View.GONE);
-                    imageOkGreen.setVisibility(View.VISIBLE);
-                } else {
-                    imageView.setVisibility(View.VISIBLE);
-                    imageOkGreen.setVisibility(View.GONE);
-                }
+                vendorRadioButton.setClickable(false);
             }
         }
 
@@ -639,19 +567,9 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     View childLayout = LayoutInflater.from(context).inflate(R.layout.layout_vendor_list_with_tax, null);
                     childLayout.setId(indexView);
                     LinearLayout linearLayoutVendorItem = childLayout.findViewById(R.id.linearLayoutVendorItem);
-                    ImageView btnSelectVendorRed = childLayout.findViewById(R.id.btnSelectVendorRed);
-                    ImageView imageOkGreen = linearLayoutVendorItem.findViewById(R.id.imageOkGreen);
                     TextView textViewViewPO = childLayout.findViewById(R.id.textViewViewPO);
                     final int finalIndexView = indexView;
-                    imageOkGreen.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (onDisapproveListener != null) {
-                                onDisapproveListener.onDisapproveItemClick(view, getAdapterPosition(), finalIndexView, ll_vendors);
-                            }
-                        }
-                    });
-                    btnSelectVendorRed.setOnClickListener(new View.OnClickListener() {
+                    linearLayoutVendorItem.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (vendorClickListener != null) {
@@ -659,14 +577,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             }
                         }
                     });
-                    /*linearLayoutVendorItem.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (vendorClickListener != null) {
-                                vendorClickListener.onVendorItemClick(view, getAdapterPosition(), finalIndexView, ll_vendors);
-                            }
-                        }
-                    });*/
                     textViewViewPO.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -700,10 +610,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
     private interface OnVendorClickListener {
         void onVendorItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors);
-    }
-
-    private interface OnDisapproveListener {
-        void onDisapproveItemClick(View itemView, int position, int itemIndex, LinearLayout ll_vendors);
     }
 
     private interface onViewPoCLickListner {
@@ -799,7 +705,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         timer.start();
     }
 
-    private void openViewDialog(final VendorsItem vendorsItem) {
+    private void openViewDialog(final VendorsItem vendorsItem){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_pdf_and_images, null);
         alertDialogBuilder.setView(dialogView);

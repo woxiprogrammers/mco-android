@@ -12,7 +12,6 @@ import io.realm.annotations.PrimaryKey;
 public class VendorsItem extends RealmObject{
 
 
-	private boolean isVendorChecked;
 	@SerializedName("images")
 	private RealmList<ImagePurchaseOrderRequest> imagePurchaseOrderRequests;
 
@@ -22,7 +21,6 @@ public class VendorsItem extends RealmObject{
 	@SerializedName("rate_without_tax")
 	private String rate;
 
-	@PrimaryKey
 	@SerializedName("vendor_id")
 	private int vendorId;
 
@@ -55,14 +53,6 @@ public class VendorsItem extends RealmObject{
 
 	public void setExpectedDeliveryDate(String expectedDeliveryDate) {
 		this.expectedDeliveryDate = expectedDeliveryDate;
-	}
-
-	public boolean isVendorChecked() {
-		return isVendorChecked;
-	}
-
-	public void setVendorChecked(boolean vendorChecked) {
-		isVendorChecked = vendorChecked;
 	}
 
 	public String getTransportationAmount() {
