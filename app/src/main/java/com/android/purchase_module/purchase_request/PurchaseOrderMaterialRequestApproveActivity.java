@@ -221,17 +221,11 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
                 VendorsItem vendorsItem = vendorsItemRealmList.get(itemIndex);
                 int noOfSubModules = vendorsItemRealmList.size();
-                ImageView btnSelectVendorRed = itemView.findViewById(R.id.btnSelectVendorRed);
-                ImageView imageOkGreen = ll_vendors.findViewById(R.id.imageOkGreen);
                 if (itemViewIndex == R.id.btnSelectVendorRed) {
-                    //btnSelectVendorRed.setVisibility(View.GONE);
-                    //imageOkGreen.setVisibility(View.VISIBLE);
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                         VendorsItem tempVendorsItem = vendorsItemRealmList.get(viewIndex);
                         jsonObject = new JSONObject();
                         if (vendorsItem.getOrderRequestComponentId() != tempVendorsItem.getOrderRequestComponentId()) {
-                            Log.i("@@Vendor", String.valueOf(vendorsItem.getOrderRequestComponentId()));
-                            Log.i("@@VendorTemp", String.valueOf(tempVendorsItem.getOrderRequestComponentId()));
                             try {
                                 jsonObject.put("id", tempVendorsItem.getOrderRequestComponentId());
                                 jsonObject.put("is_approved", false);
@@ -248,8 +242,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
                             ImageView imageOkGreenChild = currentChildView.findViewById(R.id.imageOkGreen);
                             ImageView currentDisapproveRed = currentChildView.findViewById(R.id.btnSelectVendorRed);
-                            //currentDisapproveRed.setVisibility(View.VISIBLE);
-                            //imageOkGreenChild.setVisibility(View.GONE);
                             currentDisapproveRed.setVisibility(View.GONE);
                             imageOkGreenChild.setVisibility(View.VISIBLE);
                         }
@@ -261,8 +253,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
                             jsonObject.put("is_approved", true);
                             isMaterialSelected = true;
-                            Log.i("@@", "@@2");
-                            Toast.makeText(mContext, "" + jsonObject, Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -271,7 +261,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
                             jsonObject.put("is_approved", false);
                             isMaterialSelected = false;
-                            Log.i("@@", "@@3");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -300,6 +289,14 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         currentDisapprove.setVisibility(View.VISIBLE);
                         imageOkGreenChild.setVisibility(View.GONE);
                     }
+
+                    try {
+                        jsonArray.remove(position);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+
                 }
             }
         });
@@ -338,7 +335,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             public void execute(Realm realm) {
                 RequestMaterialListItem requestMaterialListItemObject = realm.copyFromRealm(requestMaterialListItem);
                 requestMaterialListItemObject.setCheckboxCheckedState(isCheckboxChecked);
-                Log.i("@@isChkBoxState", String.valueOf(isCheckboxChecked));
                 realm.copyToRealmOrUpdate(requestMaterialListItemObject);
             }
         });
