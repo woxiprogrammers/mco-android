@@ -79,7 +79,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private int intPurchaseOrderRequestId;
     private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
     private JSONArray jsonArray = new JSONArray();
-    private boolean isCheckboxChecked;
+    private boolean isCheckboxChecked, isVendorChecked;
     private boolean isMaterialSelected, isApproveClicked;
     private String subModulesItemList;
     private AlertDialog alertDialog;
@@ -164,6 +164,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 int itemViewIndex = itemView.getId();
                 RequestMaterialListItem requestMaterialListItem = purchaseRequestListItems.get(position);
                 if (itemViewIndex == R.id.linearLayout_components) {
+                    Log.i("@@compLin", "linearLayout_components");
                     LinearLayout ll_vendors = itemView.findViewById(R.id.ll_vendors);
                     if (ll_vendors.getVisibility() == View.VISIBLE) {
                         ll_vendors.setVisibility(View.GONE);
@@ -172,6 +173,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         ll_vendors.setVisibility(View.VISIBLE);
                     }
                 } else if (itemViewIndex == R.id.checkboxFrame) {
+                    Log.i("@@checkboxFrame", "checkboxFrame");
                     if (!requestMaterialListItem.isIs_approved()) {
                         CheckBox checkBox = itemView.findViewById(R.id.checkboxComponent);
                         if (requestMaterialListItem.isCheckboxCheckedState()) {
@@ -189,6 +191,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         saveCheckboxCheckedStateToLocal(isCheckboxChecked, requestMaterialListItem);
                     }
                 } else if (itemViewIndex == R.id.checkboxComponent) {
+                    Log.i("@@checkboxComponent", "checkboxComponent");
                     CheckBox checkBox = (CheckBox) itemView;
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
                         checkBox.setChecked(true);
@@ -222,9 +225,22 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 VendorsItem vendorsItem = vendorsItemRealmList.get(itemIndex);
                 int noOfSubModules = vendorsItemRealmList.size();
                 if (itemViewIndex == R.id.btnSelectVendorRed) {
+
+
+                    /*if(vendorsItem.isVendorChecked()){
+                        isVendorChecked=true;
+                    }else {
+                        isVendorChecked=false;
+                    }*/
+                    ImageView imageView= (ImageView) itemView;
+                    if(imageView.getVisibility() == View.VISIBLE){
+                        isVendorChecked=false;
+                    }else {
+                        isVendorChecked=true;
+                    }
+                    jsonObject = new JSONObject();
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                         VendorsItem tempVendorsItem = vendorsItemRealmList.get(viewIndex);
-                        jsonObject = new JSONObject();
                         if (vendorsItem.getOrderRequestComponentId() != tempVendorsItem.getOrderRequestComponentId()) {
                             try {
                                 jsonObject.put("id", tempVendorsItem.getOrderRequestComponentId());
@@ -239,31 +255,25 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                             currentDisapproveRed.setVisibility(View.VISIBLE);
                             imageOkGreenChild.setVisibility(View.GONE);
                         } else {
+                            try {
+                                jsonObject.put("id", tempVendorsItem.getOrderRequestComponentId());
+                                jsonObject.put("is_approved", true);
+                                jsonArray.put(jsonObject);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                             LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
                             ImageView imageOkGreenChild = currentChildView.findViewById(R.id.imageOkGreen);
                             ImageView currentDisapproveRed = currentChildView.findViewById(R.id.btnSelectVendorRed);
                             currentDisapproveRed.setVisibility(View.GONE);
                             imageOkGreenChild.setVisibility(View.VISIBLE);
                         }
-
                     }
-                    jsonObject = new JSONObject();
+                    saveVendorCheckedState(isVendorChecked, vendorsItem);
                     if (requestMaterialListItem.isCheckboxCheckedState()) {
-                        try {
-                            jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
-                            jsonObject.put("is_approved", true);
-                            isMaterialSelected = true;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        isMaterialSelected = true;
                     } else {
-                        try {
-                            jsonObject.put("id", vendorsItem.getOrderRequestComponentId());
-                            jsonObject.put("is_approved", false);
-                            isMaterialSelected = false;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        isMaterialSelected = false;
                     }
                     jsonArray.put(jsonObject);
                 }
@@ -281,6 +291,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 ImageView imageSelectVendor = ll_vendors.findViewById(R.id.btnSelectVendorRed);
                 if (itemViewIndex == R.id.imageOkGreen) {
                     imageView.setVisibility(View.GONE);
+                    ImageView currentImageView= (ImageView) itemView;
+                    if(currentImageView.getVisibility() == View.VISIBLE){
+                        isVendorChecked=true;
+                    }else {
+                        isVendorChecked=false;
+                    }
                     imageSelectVendor.setVisibility(View.VISIBLE);
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                         LinearLayout currentChildView = (LinearLayout) ll_vendors.getChildAt(viewIndex);
@@ -289,14 +305,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         currentDisapprove.setVisibility(View.VISIBLE);
                         imageOkGreenChild.setVisibility(View.GONE);
                     }
-
                     try {
                         jsonArray.remove(position);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
+                    saveVendorCheckedState(isVendorChecked, vendorsItem);
                 }
             }
         });
@@ -335,6 +349,18 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             public void execute(Realm realm) {
                 RequestMaterialListItem requestMaterialListItemObject = realm.copyFromRealm(requestMaterialListItem);
                 requestMaterialListItemObject.setCheckboxCheckedState(isCheckboxChecked);
+                realm.copyToRealmOrUpdate(requestMaterialListItemObject);
+            }
+        });
+    }
+
+    private void saveVendorCheckedState(final boolean isVendorChecked, final VendorsItem vendorsItem) {
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                VendorsItem requestMaterialListItemObject = realm.copyFromRealm(vendorsItem);
+                requestMaterialListItemObject.setVendorChecked(isVendorChecked);
                 realm.copyToRealmOrUpdate(requestMaterialListItemObject);
             }
         });
@@ -506,11 +532,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, int position) {
+            Log.i("@@Bind", "Holder");
             requestMaterialListItem = requestMaterialListItemOrderedRealmCollection.get(position);
             RealmList<VendorsItem> vendorsItemRealmList = requestMaterialListItem.getVendors();
             holder.textViewItemName.setText(requestMaterialListItem.getMaterialName());
             holder.textViewItemQuantity.setText("Qty: " + requestMaterialListItem.getQuantity() + " " + requestMaterialListItem.getUnitName());
-            holder.ll_vendors.setVisibility(View.GONE);
+//            holder.ll_vendors.setVisibility(View.GONE);
             if (subModuleList.contains("approve-purchase-order-request")) {
                 if (requestMaterialListItem.isIs_approved()) {
                     holder.checkboxComponent.setEnabled(false);
@@ -533,7 +560,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             if (noOfSubModules < noOfChildViews) {
                 for (int index = noOfSubModules; index < noOfChildViews; index++) {
                     LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(index);
-                    currentChildView.setVisibility(View.GONE);
+//                    currentChildView.setVisibility(View.GONE);
                 }
             }
             for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
@@ -547,7 +574,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 TextView textViewGST = currentChildView.findViewById(R.id.textViewGST);
                 TextView textViewQty = currentChildView.findViewById(R.id.textViewQty);
                 ImageView imageView = currentChildView.findViewById(R.id.btnSelectVendorRed);
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_disapprove));
+                ImageView imageOkGreen=currentChildView.findViewById(R.id.imageOkGreen);
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_disapprove));
                 textViewQty.setText(requestMaterialListItem.getQuantity());
                 textViewGST.setText(vendorsItemRealmList.get(viewIndex).getGst());
                 textViewTransGST.setText(vendorsItemRealmList.get(viewIndex).getTransportationGst());
@@ -566,7 +594,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 float transVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 float resultBillAMount = matVal + transVal;
                 textViewTotalBillAmt.setText("Total Bill Amt: " + resultBillAMount);
-//                vendorRadioButton.setClickable(false);
+                if (vendorsItemRealmList.get(viewIndex).isVendorChecked()) {
+                    imageView.setVisibility(View.GONE);
+                    imageOkGreen.setVisibility(View.VISIBLE);
+                } else {
+                    imageView.setVisibility(View.VISIBLE);
+                    imageOkGreen.setVisibility(View.GONE);
+                }
             }
         }
 
