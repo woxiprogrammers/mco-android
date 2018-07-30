@@ -87,6 +87,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private String strPdfUrl;
     private DownloadManager downloadManager;
     private BroadcastReceiver downloadReceiver;
+    private boolean isVendorChecked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,6 +223,8 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 int noOfSubModules = vendorsItemRealmList.size();
                 if (itemViewIndex == R.id.linearLayoutVendorItem) {
                     RadioButton vendorRadioButton = itemView.findViewById(R.id.vendorRadioButton);
+                    Log.i("@@", String.valueOf(vendorRadioButton.getTag()));
+                    VendorsItem newVendorItem= (VendorsItem) vendorRadioButton.getTag();
                     for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                         VendorsItem tempVendorsItem = vendorsItemRealmList.get(viewIndex);
                         jsonObject = new JSONObject();
@@ -260,8 +263,14 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     jsonArray.put(jsonObject);
                     if (vendorRadioButton.isChecked()) {
                         vendorRadioButton.setChecked(false);
+                        isVendorChecked=false;
+                        saveCheckboxVendorStateToLocal(isVendorChecked,newVendorItem);
+
+
                     } else {
                         vendorRadioButton.setChecked(true);
+                        isVendorChecked=true;
+                        saveCheckboxVendorStateToLocal(isVendorChecked,newVendorItem);
                     }
                 }
             }
@@ -298,6 +307,18 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             public void execute(Realm realm) {
                 RequestMaterialListItem requestMaterialListItemObject = realm.copyFromRealm(requestMaterialListItem);
                 requestMaterialListItemObject.setCheckboxCheckedState(isCheckboxChecked);
+                realm.copyToRealmOrUpdate(requestMaterialListItemObject);
+            }
+        });
+    }
+
+    private void saveCheckboxVendorStateToLocal(final boolean isVendorChecked, final VendorsItem vendorsItem) {
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                VendorsItem requestMaterialListItemObject = realm.copyFromRealm(vendorsItem);
+                requestMaterialListItemObject.setVendorChecked(isVendorChecked);
                 realm.copyToRealmOrUpdate(requestMaterialListItemObject);
             }
         });
@@ -500,6 +521,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                 LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
                 RadioButton vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
+                vendorRadioButton.setTag(vendorsItemRealmList.get(viewIndex));
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
                 TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
                 TextView textViewTranAmount = currentChildView.findViewById(R.id.textViewTranAmount);
@@ -526,6 +548,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 float resultBillAMount = matVal + transVal;
                 textViewTotalBillAmt.setText("Total Bill Amt: " + resultBillAMount);
                 vendorRadioButton.setClickable(false);
+                Log.i("@@", String.valueOf(vendorsItemRealmList));
+                if(vendorsItemRealmList.get(viewIndex).isVendorChecked()){
+                    vendorRadioButton.setChecked(true);
+                }else {
+                    vendorRadioButton.setChecked(false);
+                }
             }
         }
 

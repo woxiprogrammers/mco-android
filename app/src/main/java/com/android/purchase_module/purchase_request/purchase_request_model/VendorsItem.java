@@ -7,19 +7,30 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class VendorsItem extends RealmObject{
 
 
+	private boolean isVendorChecked;
 	@SerializedName("images")
 	private RealmList<ImagePurchaseOrderRequest> imagePurchaseOrderRequests;
 
 	@SerializedName("pdf")
 	private RealmList<PdfPurchaseOrderRequest> pdfPurchaseOrderRequests;
 
+	public boolean isVendorChecked() {
+		return isVendorChecked;
+	}
+
+	public void setVendorChecked(boolean vendorChecked) {
+		isVendorChecked = vendorChecked;
+	}
+
 	@SerializedName("rate_without_tax")
 	private String rate;
 
+	@PrimaryKey
 	@SerializedName("vendor_id")
 	private int vendorId;
 
