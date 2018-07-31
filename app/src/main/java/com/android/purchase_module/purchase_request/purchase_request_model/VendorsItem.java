@@ -30,7 +30,7 @@ public class VendorsItem extends RealmObject{
 	@SerializedName("rate_without_tax")
 	private String rate;
 
-	@PrimaryKey
+
 	@SerializedName("vendor_id")
 	private int vendorId;
 

@@ -264,13 +264,11 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                     if (vendorRadioButton.isChecked()) {
                         vendorRadioButton.setChecked(false);
                         isVendorChecked=false;
-                        saveCheckboxVendorStateToLocal(isVendorChecked,newVendorItem);
-
-
+                        saveVendorStateToLocal(isVendorChecked,vendorsItem,vendorsItemRealmList);
                     } else {
                         vendorRadioButton.setChecked(true);
                         isVendorChecked=true;
-                        saveCheckboxVendorStateToLocal(isVendorChecked,newVendorItem);
+                        saveVendorStateToLocal(isVendorChecked,vendorsItem,vendorsItemRealmList);
                     }
                 }
             }
@@ -312,11 +310,16 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         });
     }
 
-    private void saveCheckboxVendorStateToLocal(final boolean isVendorChecked, final VendorsItem vendorsItem) {
+    private void saveVendorStateToLocal(final boolean isVendorChecked, final VendorsItem vendorsItem, final RealmList<VendorsItem> vendorsItemRealmList) {
         realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                for (VendorsItem vendorsItemNew:
+                        vendorsItemRealmList ) {
+                    vendorsItemNew.setVendorChecked(false);
+                    realm.copyToRealmOrUpdate(vendorsItemNew);
+                }
                 VendorsItem requestMaterialListItemObject = realm.copyFromRealm(vendorsItem);
                 requestMaterialListItemObject.setVendorChecked(isVendorChecked);
                 realm.copyToRealmOrUpdate(requestMaterialListItemObject);
@@ -502,26 +505,26 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 holder.textViewDisApproveMaterial.setVisibility(View.GONE);
 
             }
-
 //            holder.checkboxComponent.setChecked(false);
             if (requestMaterialListItem.isCheckboxCheckedState()) {
                 holder.checkboxComponent.setChecked(true);
             } else {
                 holder.checkboxComponent.setChecked(false);
             }
-
             int noOfChildViews = holder.ll_vendors.getChildCount();
             final int noOfSubModules = vendorsItemRealmList.size();
             if (noOfSubModules < noOfChildViews) {
                 for (int index = noOfSubModules; index < noOfChildViews; index++) {
                     LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(index);
                     currentChildView.setVisibility(View.GONE);
+
                 }
             }
             for (int viewIndex = 0; viewIndex < noOfSubModules; viewIndex++) {
                 LinearLayout currentChildView = (LinearLayout) holder.ll_vendors.getChildAt(viewIndex);
                 RadioButton vendorRadioButton = currentChildView.findViewById(R.id.vendorRadioButton);
                 vendorRadioButton.setTag(vendorsItemRealmList.get(viewIndex));
+                Log.i("@@bind", String.valueOf(vendorsItemRealmList.get(viewIndex)));
                 TextView textViewRateWithoutTax = currentChildView.findViewById(R.id.textViewRateWithoutTax);
                 TextView textViewTotalWithTax = currentChildView.findViewById(R.id.textViewTotalWithTax);
                 TextView textViewTranAmount = currentChildView.findViewById(R.id.textViewTranAmount);
@@ -542,13 +545,13 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                 textViewTotalBillAmt.setText("");
                 textViewExpDeliveryDate.setText("");
                 textViewExpDeliveryDate.setText("Expected Delivery Date: " +
-                        AppUtils.getInstance().getTime("yyyy-MM-dd", "dd/MM/yyyy", vendorsItemRealmList.get(viewIndex).getExpectedDeliveryDate()));
+                        AppUtils.getInstance().getTime("yyyy-MM-dd",
+                                "dd/MM/yyyy", vendorsItemRealmList.get(viewIndex).getExpectedDeliveryDate()));
                 float matVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalRatePerTax());
                 float transVal = Float.parseFloat(vendorsItemRealmList.get(viewIndex).getTotalTransportationAmount());
                 float resultBillAMount = matVal + transVal;
                 textViewTotalBillAmt.setText("Total Bill Amt: " + resultBillAMount);
                 vendorRadioButton.setClickable(false);
-                Log.i("@@", String.valueOf(vendorsItemRealmList));
                 if(vendorsItemRealmList.get(viewIndex).isVendorChecked()){
                     vendorRadioButton.setChecked(true);
                 }else {
