@@ -5,6 +5,8 @@ import android.media.Image;
 import com.android.purchase_module.purchase_request.purchase_request_model.bill_model.ImagesItem;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Random;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -12,14 +14,35 @@ import io.realm.annotations.PrimaryKey;
 public class VendorsItem extends RealmObject{
 
 
+	@PrimaryKey
+	private int primaryId= new Random().nextInt((999999) + 11) + new Random().nextInt((999999) + 11);
+
+	public int getPrimaryId() {
+		return primaryId;
+	}
+
+	public void setPrimaryId(int primaryId) {
+		this.primaryId = primaryId;
+	}
+
+	private boolean isVendorChecked;
 	@SerializedName("images")
 	private RealmList<ImagePurchaseOrderRequest> imagePurchaseOrderRequests;
 
 	@SerializedName("pdf")
 	private RealmList<PdfPurchaseOrderRequest> pdfPurchaseOrderRequests;
 
+	public boolean isVendorChecked() {
+		return isVendorChecked;
+	}
+
+	public void setVendorChecked(boolean vendorChecked) {
+		isVendorChecked = vendorChecked;
+	}
+
 	@SerializedName("rate_without_tax")
 	private String rate;
+
 
 	@SerializedName("vendor_id")
 	private int vendorId;
