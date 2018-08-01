@@ -83,7 +83,7 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
     private int intPurchaseOrderRequestId;
     private RealmResults<RequestMaterialListItem> purchaseRequestListItems;
     //    private JSONArray jsonArray = new JSONArray();
-    private ArrayList<JSONObject> jsonArray = new ArrayList();
+    private ArrayList<JSONObject> jsonArrayList = new ArrayList();
     private boolean isCheckboxChecked;
     private boolean isMaterialSelected, isApproveClicked;
     private String subModulesItemList;
@@ -245,17 +245,17 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                         if (vendorsItem.getOrderRequestComponentId() == tempVendorsItem.getOrderRequestComponentId()) {
                             //ToDo Remove this item from jsonArray
                             try {
-                                for (int i = 0; i < jsonArray.size(); i++) {
-                                    if(jsonArray.get(i).getInt("material_component_id") == requestMaterialListItem.getId()) {
-                                        jsonArray.remove(i);
-                                        Log.i("@@Remove", jsonArray.toString());
+                                for (int i = 0; i < jsonArrayList.size(); i++) {
+                                    if(jsonArrayList.get(i).getInt("material_component_id") == requestMaterialListItem.getId()) {
+                                        jsonArrayList.remove(i);
+                                        Log.i("@@Remove", jsonArrayList.toString());
                                     }
                                 }
                                 jsonObject.put("id", tempVendorsItem.getOrderRequestComponentId());
                                 jsonObject.put("is_approved", true);
                                 jsonObject.put("material_component_id", requestMaterialListItem.getId());
-                                jsonArray.add(jsonObject);
-                                Log.i("@@Add", jsonArray.toString());
+                                jsonArrayList.add(jsonObject);
+                                Log.i("@@Add", jsonArrayList.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -445,13 +445,16 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
         String strApproveDisappUrl = "";
         AppUtils.getInstance().showProgressBar(relativeMatRequest, true);
         JSONObject params = new JSONObject();
-        JSONArray jsonArrayA=new JSONArray(Arrays.asList(jsonArray));
+        JSONArray jsonArrayA=new JSONArray();
+        for(int i=0;i<jsonArrayList.size();i++){
+            jsonArrayA.put(jsonArrayList.get(i));
+        }
+
         try {
             if (isApprove) {
                 params.put("purchase_order_request_components", jsonArrayA);
                 strApproveDisappUrl = AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS;
-                Log.i("@@JS", String.valueOf(jsonArrayA));
-                return;
+                Log.i("@@JS",jsonArrayA.toString());
             } else {
                 if (materialRequestId != 0) {
                     params.put("material_request_component_id", materialRequestId);
