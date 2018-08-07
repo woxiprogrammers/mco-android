@@ -234,7 +234,7 @@ public class AssetDetailsActivity extends BaseActivity {
                 case 0:
                     return AssetsReadingsFragment.newInstance(inventoryComponentId, component_type_slug);
                 case 1:
-                    return AssetMaintenanceListFragment.newInstance(asset_id);
+                    return AssetMaintenanceListFragment.newInstance(asset_id,strAssetName);
                 default:
                     return null;
             }

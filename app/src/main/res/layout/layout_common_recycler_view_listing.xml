@@ -5,13 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<TextView
+    android:id="@+id/textViewAssetName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible"
+    android:textSize="@dimen/text_16sp"
+    android:layout_marginLeft="@dimen/dimen_20dp"
+    android:layout_marginTop="@dimen/dimen_4dp"
+    android:layout_marginBottom="@dimen/dimen_4dp"/>
+
 <android.support.v7.widget.RecyclerView
     android:id="@+id/rv_material_list"
+    android:layout_below="@+id/textViewAssetName"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/dimen_4dp"/>
-
-
 
 </RelativeLayout>

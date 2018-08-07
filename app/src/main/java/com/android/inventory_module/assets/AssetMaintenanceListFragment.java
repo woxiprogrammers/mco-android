@@ -23,7 +23,6 @@ import com.android.inventory_module.assets.asset_model.AssetMaintenanceListData;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListItem;
 import com.android.inventory_module.assets.asset_model.AssetMaintenanceListResponse;
 import com.android.purchase_module.purchase_request.MonthYearPickerDialog;
-import com.android.purchase_module.purchase_request.purchase_request_model.PurchaseOrderRequestListItem;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
 import com.android.utils.FragmentInterface;
@@ -52,20 +51,25 @@ import io.realm.RealmResults;
 public class AssetMaintenanceListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
     @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
+    @BindView(R.id.textViewAssetName)
+    TextView textViewAssetName;
     private Context mContext;
     private Realm realm;
     private int passYear, passMonth;
     private int intAssetId;
+    private String strAssetName;
+
     private RealmResults<AssetMaintenanceListItem> assetMaintenanceListItems;
 
     public AssetMaintenanceListFragment() {
         // Required empty public constructor
     }
 
-    public static AssetMaintenanceListFragment newInstance(int assetId) {
+    public static AssetMaintenanceListFragment newInstance(int assetId, String strAssetName) {
         Bundle args = new Bundle();
         AssetMaintenanceListFragment fragment = new AssetMaintenanceListFragment();
         args.putInt("assetId", assetId);
+        args.putString("strAssetName", strAssetName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,7 +83,10 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
         Bundle bundleArgs = getArguments();
         if (bundleArgs != null) {
             intAssetId = bundleArgs.getInt("assetId");
+            strAssetName = bundleArgs.getString("strAssetName");
         }
+        textViewAssetName.setVisibility(View.VISIBLE);
+        textViewAssetName.setText("Asset Name: "+strAssetName);
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
