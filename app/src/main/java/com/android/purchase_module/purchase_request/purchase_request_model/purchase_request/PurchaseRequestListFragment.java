@@ -110,7 +110,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         unbinder = ButterKnife.bind(this, mParentView);
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_material_purchase_request_list);
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-        passMonth = calendar.get(Calendar.MONTH) + 1;
+        passMonth = calendar.get(Calendar.MONTH) +1;
         passYear = calendar.get(Calendar.YEAR);
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -128,7 +128,11 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     @Override
     public void onResume() {
         super.onResume();
+        ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+        ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
+        Log.i("@@@", "onResume: "+getUserVisibleHint());
         if (getUserVisibleHint()) {
+            Log.i("@@", "onResume: PRL"+ !getUserVisibleHint());
             ((PurchaseHomeActivity) mContext).hideDateLayout(false);
             ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
         }

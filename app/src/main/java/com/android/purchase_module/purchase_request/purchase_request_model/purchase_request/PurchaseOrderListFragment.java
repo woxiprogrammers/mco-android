@@ -303,6 +303,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     @Override
     public void onResume() {
         super.onResume();
+        Log.i("@@", "onResume POL: "+getUserVisibleHint());
         if (getUserVisibleHint()) {
             if (subModulesItemList.contains("view-purchase-order")) {
                 requestPrListOnline();

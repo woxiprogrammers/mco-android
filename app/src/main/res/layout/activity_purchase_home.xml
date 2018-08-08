@@ -37,7 +37,8 @@
                         android:layout_alignParentLeft="true"
                         android:gravity="center_vertical"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20dp"/>
+                        android:textSize="20dp"
+                        android:text="date"/>
 
                     <ImageView
                         android:layout_width="wrap_content"
