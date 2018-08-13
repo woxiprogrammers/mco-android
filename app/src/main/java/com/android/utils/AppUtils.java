@@ -430,9 +430,7 @@ public class AppUtils {
 
     public void showProgressBar(ViewGroup viewGroup, boolean isToShowProgress) {
         try {
-
             if (isToShowProgress) {
-
                 if (viewGroup != null) {
                     viewGroup.addView(view);
                 }
@@ -443,7 +441,6 @@ public class AppUtils {
                 if (viewGroup != null) {
                     viewGroup.removeView(view);
                 }
-
                 if(progressBar != null){
                     progressBar.setVisibility(View.GONE);
                 }

@@ -1,7 +1,6 @@
 package com.android.purchase_module.purchase_request.purchase_request_model.purchase_request;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,28 +25,24 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.constro360.R;
-import com.android.utils.FragmentInterface;
+import com.android.purchase_module.purchase_request.PayAndBillsActivity;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderListItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderRespData;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderResponse;
-import com.android.purchase_module.purchase_request.PayAndBillsActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
@@ -77,6 +72,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private Button button_cancel,button_ok;
     private AlertDialog alertDialog;
     private TextView textViewInvalidPassword;
+    private int pageNumber = 0;
+    private int oldPageNumber;
 
     public PurchaseOrderListFragment() {
         // Required empty public constructor
@@ -95,15 +92,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public void fragmentBecameVisible() {
-        Log.i("@@Order","fragmentBecameVisible");
         if (subModulesItemList.contains("view-purchase-order")) {
-            requestPrListOnline();
+            requestOrderListOnline(pageNumber);
         }else {
             recyclerView_commonListingView.setAdapter(null);
         }
         if (!isFromPurchaseRequest) {
             if (getUserVisibleHint()) {
-                Log.i("@@Orderif","fragmentBecameVisible");
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
             }else {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
@@ -248,14 +243,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     }
 
-    private void requestPrListOnline() {
+    private void requestOrderListOnline(int pageId) {
         JSONObject params = new JSONObject();
         try {
             if (isFromPurchaseRequest) {
                 params.put("purchase_request_id", purchaseRequestId);
             }
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("page", 0);
+            params.put("page", pageId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -263,7 +258,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("requestPrListOnline")
+                .setTag("requestOrderListOnline")
                 .build()
                 .getAsObject(PurchaseOrderResponse.class, new ParsedRequestListener<PurchaseOrderResponse>() {
                     @Override
@@ -282,7 +277,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                                 @Override
                                 public void onSuccess() {
                                     isCreateAccess=response.isCreateAccess();
-                                    setUpPOAdapter();
+                                    setUpPOAdapter();if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestOrderListOnline(pageNumber);
+                                    }
                                     Timber.d("Realm execution successful");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -300,7 +298,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                        AppUtils.getInstance().logApiError(anError, "requestOrderListOnline");
                     }
                 });
     }
@@ -311,7 +309,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         Log.i("@@Order","onResume");
         if (getUserVisibleHint()) {
             if (subModulesItemList.contains("view-purchase-order")) {
-                requestPrListOnline();
+                requestOrderListOnline(pageNumber);
             }else {
                 recyclerView_commonListingView.setAdapter(null);
             }
@@ -434,7 +432,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                                 progressBarClose.setVisibility(View.GONE);
                             }
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            requestPrListOnline();
+                            requestOrderListOnline(pageNumber);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
