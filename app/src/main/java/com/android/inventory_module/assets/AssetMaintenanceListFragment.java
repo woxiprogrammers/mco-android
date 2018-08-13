@@ -86,7 +86,7 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             strAssetName = bundleArgs.getString("strAssetName");
         }
         textViewAssetName.setVisibility(View.VISIBLE);
-        textViewAssetName.setText("Asset Name: "+strAssetName);
+        textViewAssetName.setText("Asset Name: "+ strAssetName);
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
@@ -155,7 +155,6 @@ public class AssetMaintenanceListFragment extends Fragment implements FragmentIn
             params.put("year", passYear);
             params.put("asset_id", intAssetId);
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            Log.i("@@", params.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

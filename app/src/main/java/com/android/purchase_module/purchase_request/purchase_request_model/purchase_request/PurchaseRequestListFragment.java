@@ -81,13 +81,14 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private int oldPageNumber;
     private int passYear, passMonth;
     private String subModulesItemList;
+    private static PurchaseRequestListFragment fragment;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
     }
 
     public static PurchaseRequestListFragment newInstance(String subModule_Tag, String permissionsItemList, String subModuleItemList) {
-        PurchaseRequestListFragment fragment = new PurchaseRequestListFragment();
+         fragment = new PurchaseRequestListFragment();
         Bundle args = new Bundle();
         args.putString("subModule_Tag", subModule_Tag);
         args.putString("permissionsItemList", permissionsItemList);
@@ -98,7 +99,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     @Override
     public void fragmentBecameVisible() {
-        if (getUserVisibleHint()) {
+        if (fragment.isVisible()) {
+            Log.i("@@Req","fragmentBecameVisible");
             ((PurchaseHomeActivity) mContext).hideDateLayout(false);
             ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
         }
@@ -128,11 +130,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     @Override
     public void onResume() {
         super.onResume();
-        ((PurchaseHomeActivity) mContext).hideDateLayout(false);
-        ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
-        Log.i("@@@", "onResume: "+getUserVisibleHint());
-        if (getUserVisibleHint()) {
-            Log.i("@@", "onResume: PRL"+ !getUserVisibleHint());
+        if (fragment.isVisible()) {
+            Log.i("@@Req","onResume");
             ((PurchaseHomeActivity) mContext).hideDateLayout(false);
             ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
         }

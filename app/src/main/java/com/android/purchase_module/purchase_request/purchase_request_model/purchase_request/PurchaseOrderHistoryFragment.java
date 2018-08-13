@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,12 +62,12 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
 
-    public static PurchaseOrderHistoryFragment newInstance(int mPurchaseRequestId, boolean isFrom) {
+    public static PurchaseOrderHistoryFragment newInstance(int mPurchaseRequestId/*, boolean isFrom*/) {
         Bundle args = new Bundle();
         PurchaseOrderHistoryFragment fragment = new PurchaseOrderHistoryFragment();
         fragment.setArguments(args);
         purchaseRequestId = mPurchaseRequestId;
-        isFromPurchaseRequest = isFrom;
+//        isFromPurchaseRequest = isFrom;
         return fragment;
     }
 
@@ -76,11 +77,8 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
 
     @Override
     public void fragmentBecameVisible() {
-        if (!isFromPurchaseRequest) {
-            if (getUserVisibleHint()) {
-                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-            }
-        }
+        Log.i("@@History", "fragmentBecameVisible");
+        ((PurchaseHomeActivity) mContext).hideDateLayout(true);
     }
 
     @Override
@@ -93,7 +91,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.purchase_order_list_recylcer_view, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
-        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_order_list);
+        recyclerView_commonListingView = mParentView.findViewById(R.id.rv_order_list);
         //Initialize Views
         initializeViews();
         requestPrListOnline();
@@ -126,7 +124,9 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     public void onResume() {
         super.onResume();
         if (getUserVisibleHint()) {
+            Log.i("@@History", "onResume");
             requestPrListOnline();
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
         }
     }
 
@@ -144,8 +144,8 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
         realm = Realm.getDefaultInstance();
         purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).
                 equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .equalTo("purchaseOrderStatusSlug","close").or()
-                .equalTo("purchaseOrderStatusSlug","completed").
+                .equalTo("purchaseOrderStatusSlug", "close").or()
+                .equalTo("purchaseOrderStatusSlug", "completed").
                         findAllAsync();
 
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
@@ -304,12 +304,12 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
             holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseOrderListItem.getStatus()));
 
-            holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss","dd/MM/yyyy",purchaseOrderListItem.getDate()));
+            holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy", purchaseOrderListItem.getDate()));
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
             if (!purchaseOrderListItem.getPurchaseOrderStatusSlug().equalsIgnoreCase("close")) {
                 holder.linearLayoutClosePO.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.textViewPurchaseRequestNewStatus.setVisibility(View.VISIBLE);
                 holder.textViewPurchaseRequestNewStatus.setText("Purchase Order Closed");
             }

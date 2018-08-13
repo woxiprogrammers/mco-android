@@ -64,7 +64,6 @@ public class PurchaseHomeActivity extends BaseActivity {
      * Created by - Rohit
      */
     private void initializeViews() {
-
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             strSubModuleTag = bundle.getString("subModuleTag");
@@ -112,7 +111,6 @@ public class PurchaseHomeActivity extends BaseActivity {
 
     public void hideDateLayout(boolean isHideDateLayout) {
         if (isHideDateLayout) {
-            Log.i("@@", "hideDateLayout: "+isHideDateLayout);
             relativeLayoutDatePickerPurchaseRequest.setVisibility(View.GONE);
             toolbarPurchaseHome.setTitle("Purchase");
         } else {
@@ -155,7 +153,7 @@ public class PurchaseHomeActivity extends BaseActivity {
                 case 2:
                     return PurchaseTranListFragment.newInstance(true, 1);
                 case 3:
-                    return PurchaseOrderHistoryFragment.newInstance(0, false);
+                    return PurchaseOrderHistoryFragment.newInstance(0/*false*/);
                 default:
                     return null;
             }

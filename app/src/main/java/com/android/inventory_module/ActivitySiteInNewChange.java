@@ -233,7 +233,7 @@ public class ActivitySiteInNewChange extends BaseActivity {
                 if (isFirstImage)
                     addImages(imagesList, linearLayoutFirstSiteIn);
                 else
-                    addImages(imagesList, linearLayoutSecondSiteIn);
+                        addImages(imagesList, linearLayoutSecondSiteIn);
                 break;
         }
     }

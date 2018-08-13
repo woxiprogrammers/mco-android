@@ -443,7 +443,6 @@ public class PayFragmentNew extends Fragment implements FragmentInterface {
                 if (mItem.getId() == intKey) {
                     try {
                         JSONObject jsonObject = new JSONObject();
-                        Log.i("@@", String.valueOf(mItem.getQuantity()));
                         if (mItem.getQuantity() == 0) {
                             Toast.makeText(mContext, "Please add Quantity for selected material", Toast.LENGTH_LONG).show();
                             buttonActionSubmit.setEnabled(true);

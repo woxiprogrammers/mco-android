@@ -95,6 +95,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public void fragmentBecameVisible() {
+        Log.i("@@Order","fragmentBecameVisible");
         if (subModulesItemList.contains("view-purchase-order")) {
             requestPrListOnline();
         }else {
@@ -102,7 +103,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         }
         if (!isFromPurchaseRequest) {
             if (getUserVisibleHint()) {
+                Log.i("@@Orderif","fragmentBecameVisible");
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+            }else {
+                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+
             }
         }
     }
@@ -303,13 +308,21 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     @Override
     public void onResume() {
         super.onResume();
-        Log.i("@@", "onResume POL: "+getUserVisibleHint());
+        Log.i("@@Order","onResume");
         if (getUserVisibleHint()) {
             if (subModulesItemList.contains("view-purchase-order")) {
                 requestPrListOnline();
             }else {
                 recyclerView_commonListingView.setAdapter(null);
             }
+        }
+        if (!isFromPurchaseRequest) {
+                Log.i("@@Orderif","fragmentBecameVisible");
+                if(getUserVisibleHint())
+                    ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+                else {
+
+                }
         }
     }
 

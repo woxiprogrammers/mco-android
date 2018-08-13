@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,8 +81,19 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     @Override
     public void fragmentBecameVisible() {
         requestPrListOnline(pageNumber);
+        Log.i("@@GRN","fragmentBecameVisible");
+        if (isFromPurchaseRequestHome) {
+                Log.i("@@GRN IF","fragmentBecameVisible");
+                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (isFromPurchaseRequestHome) {
             if (getUserVisibleHint() /*&& ((PurchaseHomeActivity) mContext) != null*/) {
+                Log.i("@@GRN","onResume");
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
             }
         }

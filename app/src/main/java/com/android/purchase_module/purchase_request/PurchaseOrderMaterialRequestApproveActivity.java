@@ -248,14 +248,12 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
                                 for (int i = 0; i < jsonArrayList.size(); i++) {
                                     if(jsonArrayList.get(i).getInt("material_component_id") == requestMaterialListItem.getId()) {
                                         jsonArrayList.remove(i);
-                                        Log.i("@@Remove", jsonArrayList.toString());
-                                    }
+                                   }
                                 }
                                 jsonObject.put("id", tempVendorsItem.getOrderRequestComponentId());
                                 jsonObject.put("is_approved", true);
                                 jsonObject.put("material_component_id", requestMaterialListItem.getId());
                                 jsonArrayList.add(jsonObject);
-                                Log.i("@@Add", jsonArrayList.toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -454,7 +452,6 @@ public class PurchaseOrderMaterialRequestApproveActivity extends BaseActivity {
             if (isApprove) {
                 params.put("purchase_order_request_components", jsonArrayA);
                 strApproveDisappUrl = AppURL.API_PURCHASE_ORDER_REQUEST_CHANGE_STATUS;
-                Log.i("@@JS",jsonArrayA.toString());
             } else {
                 if (materialRequestId != 0) {
                     params.put("material_request_component_id", materialRequestId);

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
 
-    <android.support.v7.widget.CardView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -25,14 +24,14 @@
                 style="@style/TextViewTitleStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Maintenance Number:"/>
+                android:text="Maintenance Number:" />
 
             <TextView
                 android:id="@+id/textViewReqName"
                 style="@style/TextViewChildStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Requested by User1"/>
+                android:text="Requested by User1" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -45,14 +44,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
-                    android:text="21-Jan-2018"/>
+                    android:text="21-Jan-2018" />
 
                 <TextView
                     android:id="@+id/textViewStatus"
                     style="@style/MyTextViewLabelStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Status"/>
+                    android:text="Status" />
 
             </LinearLayout>
 
