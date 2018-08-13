@@ -61,6 +61,8 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
+    private int pageNumber = 0, oldPageNumber;
+
 
     public static PurchaseOrderHistoryFragment newInstance(int mPurchaseRequestId/*, boolean isFrom*/) {
         Bundle args = new Bundle();
@@ -77,10 +79,17 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
 
     @Override
     public void fragmentBecameVisible() {
-        Log.i("@@History", "fragmentBecameVisible");
         ((PurchaseHomeActivity) mContext).hideDateLayout(true);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            requestPrListOnline(pageNumber);
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+        }
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +103,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_order_list);
         //Initialize Views
         initializeViews();
-        requestPrListOnline();
+        requestPrListOnline(pageNumber);
         setUpPrAdapter();
 
         return mParentView;
@@ -120,15 +129,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint()) {
-            Log.i("@@History", "onResume");
-            requestPrListOnline();
-            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-        }
-    }
 
     /**
      * <b>private void initializeViews()</b>
@@ -192,7 +192,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
         recyclerView_commonListingView.setAdapter(purchaseOrderRvAdapter);
     }
 
-    private void requestPrListOnline() {
+    private void requestPrListOnline(int pageId) {
         JSONObject params = new JSONObject();
         try {
             if (isFromPurchaseRequest) {
@@ -201,7 +201,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
             } else {
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             }
-            params.put("page", 0);
+            params.put("page", pageId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -267,7 +267,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            requestPrListOnline();
+                            requestPrListOnline(pageNumber);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

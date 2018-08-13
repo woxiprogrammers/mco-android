@@ -92,6 +92,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public void fragmentBecameVisible() {
+        PurchaseHomeActivity.isForPurchaseOrder=true;
+        Log.i("@@OrderBecameVisible","fragmentBecameVisible");
         if (subModulesItemList.contains("view-purchase-order")) {
             requestOrderListOnline(pageNumber);
         }else {
@@ -99,14 +101,33 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         }
         if (!isFromPurchaseRequest) {
             if (getUserVisibleHint()) {
+                Log.i("@@OrderBecameVisible","getUserVisibleHint");
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
             }else {
+                Log.i("@@OrderBecameVisible","getUserVisibleHintElse");
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-
             }
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            if (subModulesItemList.contains("view-purchase-order")) {
+                requestOrderListOnline(pageNumber);
+            }else {
+                recyclerView_commonListingView.setAdapter(null);
+            }
+        }
+        if (!isFromPurchaseRequest) {
+            if(getUserVisibleHint())
+                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+            else {
+
+            }
+        }
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -295,7 +316,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             }
                         }
                     }
-
                     @Override
                     public void onError(ANError anError) {
                         AppUtils.getInstance().logApiError(anError, "requestOrderListOnline");
@@ -303,26 +323,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i("@@Order","onResume");
-        if (getUserVisibleHint()) {
-            if (subModulesItemList.contains("view-purchase-order")) {
-                requestOrderListOnline(pageNumber);
-            }else {
-                recyclerView_commonListingView.setAdapter(null);
-            }
-        }
-        if (!isFromPurchaseRequest) {
-                Log.i("@@Orderif","fragmentBecameVisible");
-                if(getUserVisibleHint())
-                    ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-                else {
-
-                }
-        }
-    }
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {

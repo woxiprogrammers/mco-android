@@ -483,16 +483,19 @@ public class PeticashFormActivity extends BaseActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
-                    floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
-                    editTextSalaryAmount.setText(String.valueOf(floatAmount));
-                    payableAmountForSalary = floatAmount - intAdvanceAmount;//intadvanceampunt
-                } else {
-                    editTextSalaryAmount.setText("");
-                    edittextPayableAmountSalary.setText("");
+                try{
+                    if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
+                        floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
+                        editTextSalaryAmount.setText(String.valueOf(floatAmount));
+                        payableAmountForSalary = floatAmount - intAdvanceAmount;//intadvanceampunt
+                    } else {
+                        editTextSalaryAmount.setText("");
+                        edittextPayableAmountSalary.setText("");
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
 
@@ -525,7 +528,6 @@ public class PeticashFormActivity extends BaseActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && !TextUtils.isEmpty(amountLimit)) {

@@ -80,21 +80,31 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
 
     @Override
     public void fragmentBecameVisible() {
+        Log.i("@@TransBecameVisible","fragmentBecameVisible");
+        PurchaseHomeActivity.isForPurchaseOrder=false;
         requestPrListOnline(pageNumber);
-        Log.i("@@GRN","fragmentBecameVisible");
         if (isFromPurchaseRequestHome) {
-                Log.i("@@GRN IF","fragmentBecameVisible");
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+        }
+        if(getUserVisibleHint()){
+            Log.i("@@TransBecameVisible","getUserVisibleHint");
+        }else {
+            Log.i("@@TransBecameVisible","getUserVisibleHintElse");
+
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.i("@@TransOnResume","onResume");
         if (isFromPurchaseRequestHome) {
-            if (getUserVisibleHint() /*&& ((PurchaseHomeActivity) mContext) != null*/) {
-                Log.i("@@GRN","onResume");
+            if (getUserVisibleHint() ) {
+                Log.i("@@TransOnResume","getUserVisibleHint");
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+            }else {
+                Log.i("@@TransOnResume","getUserVisibleHintElse");
+
             }
         }
     }

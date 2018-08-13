@@ -38,6 +38,7 @@ public class PurchaseHomeActivity extends BaseActivity {
     TextView textViewPurchaseHomeAppBarTitle;
     private String strSubModuleTag, permissionsItemList,subModulesItemList;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
+    public static boolean isForPurchaseOrder;
 
     public void setDateInAppBar(int passMonth, int passYear) {
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
