@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,15 +60,15 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseOrderListItem> purchaseOrderListItems;
-    private int pageNumber = 0, oldPageNumber;
+    private int pageNumber = 0;
+    private int oldPageNumber;
 
-
-    public static PurchaseOrderHistoryFragment newInstance(int mPurchaseRequestId/*, boolean isFrom*/) {
+    public static PurchaseOrderHistoryFragment newInstance(int mPurchaseRequestId, boolean isFrom) {
         Bundle args = new Bundle();
         PurchaseOrderHistoryFragment fragment = new PurchaseOrderHistoryFragment();
         fragment.setArguments(args);
         purchaseRequestId = mPurchaseRequestId;
-//        isFromPurchaseRequest = isFrom;
+        isFromPurchaseRequest = isFrom;
         return fragment;
     }
 
@@ -79,17 +78,13 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
 
     @Override
     public void fragmentBecameVisible() {
-        ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint()) {
-            requestPrListOnline(pageNumber);
-            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+        if (!isFromPurchaseRequest) {
+            if (getUserVisibleHint()) {
+                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+            }
         }
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +100,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
         initializeViews();
         requestPrListOnline(pageNumber);
         setUpPrAdapter();
-
         return mParentView;
     }
 
@@ -129,6 +123,13 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            requestPrListOnline(pageNumber);
+        }
+    }
 
     /**
      * <b>private void initializeViews()</b>
@@ -147,7 +148,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
                 .equalTo("purchaseOrderStatusSlug", "close").or()
                 .equalTo("purchaseOrderStatusSlug", "completed").
                         findAllAsync();
-
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, final int position) {
@@ -175,7 +175,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
                     AlertDialog alert = builder.create();
                     alert.setTitle("Close PO");
                     alert.show();
-
                 } else {
                     if (isFromPurchaseRequest) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
@@ -224,6 +223,14 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
+                                    if (!response.getPageId().equalsIgnoreCase("")) {
+                                        pageNumber = Integer.parseInt(response.getPageId());
+                                    }
+                                    if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestPrListOnline(pageNumber);
+                                    }
+                                    setUpPrAdapter();
                                     Timber.d("Realm execution successful");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -247,8 +254,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     }
 
     private void requestToClosePo(int id) {
-
-        JSONObject params = new JSONObject();
+        final JSONObject params = new JSONObject();
         /**/
         try {
             params.put("purchase_order_id", id);
@@ -303,7 +309,6 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
             holder.textViewPurchaseRequestId.setText(purchaseOrderListItem.getPurchaseOrderFormatId());
             holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
             holder.textViewPurchaseRequestStatus.setText(AppUtils.getInstance().getVisibleStatus(purchaseOrderListItem.getStatus()));
-
             holder.textViewPurchaseRequestDate.setText(AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy", purchaseOrderListItem.getDate()));
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());

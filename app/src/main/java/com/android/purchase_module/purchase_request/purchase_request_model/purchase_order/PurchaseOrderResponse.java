@@ -14,6 +14,8 @@ public class PurchaseOrderResponse extends RealmObject {
     private String message;
     @SerializedName("has_create_access")
     private boolean isCreateAccess;
+    @SerializedName("page_id")
+    private String pageId;
 
     public PurchaseOrderRespData getPurchaseOrderRespData() {
         return purchaseOrderRespData;
@@ -37,5 +39,13 @@ public class PurchaseOrderResponse extends RealmObject {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getPageId() {
+        return pageId;
+    }
+
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
     }
 }

@@ -38,7 +38,6 @@ public class PurchaseHomeActivity extends BaseActivity {
     TextView textViewPurchaseHomeAppBarTitle;
     private String strSubModuleTag, permissionsItemList,subModulesItemList;
     private PurchaseHomeViewPagerAdapter viewPagerAdapter;
-    public static boolean isForPurchaseOrder;
 
     public void setDateInAppBar(int passMonth, int passYear) {
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
@@ -154,7 +153,7 @@ public class PurchaseHomeActivity extends BaseActivity {
                 case 2:
                     return PurchaseTranListFragment.newInstance(true, 1);
                 case 3:
-                    return PurchaseOrderHistoryFragment.newInstance(0/*false*/);
+                    return PurchaseOrderHistoryFragment.newInstance(0, false);
                 default:
                     return null;
             }

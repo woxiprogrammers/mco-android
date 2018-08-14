@@ -1,6 +1,7 @@
 package com.android.purchase_module.purchase_request.purchase_request_model.purchase_request;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,24 +26,28 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.constro360.R;
-import com.android.purchase_module.purchase_request.PayAndBillsActivity;
+import com.android.utils.FragmentInterface;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderListItem;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderRespData;
 import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderResponse;
+import com.android.purchase_module.purchase_request.PayAndBillsActivity;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
-import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
@@ -56,10 +61,8 @@ import timber.log.Timber;
  * Created by Rohit.
  */
 public class PurchaseOrderListFragment extends Fragment implements FragmentInterface {
-
     private static int purchaseRequestId;
     private static boolean isFromPurchaseRequest;
-
     RecyclerView recyclerView_commonListingView;
     private ProgressBar progressBarClose;
     private Unbinder unbinder;
@@ -69,7 +72,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private boolean isCreateAccess;
     private String subModulesItemList;
     private EditText editTextPassword;
-    private Button button_cancel,button_ok;
+    private Button button_cancel, button_ok;
     private AlertDialog alertDialog;
     private TextView textViewInvalidPassword;
     private int pageNumber = 0;
@@ -86,48 +89,23 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         fragment.setArguments(args);
         purchaseRequestId = mPurchaseRequestId;
         isFromPurchaseRequest = isFrom;
-
         return fragment;
     }
 
     @Override
     public void fragmentBecameVisible() {
-        PurchaseHomeActivity.isForPurchaseOrder=true;
-        Log.i("@@OrderBecameVisible","fragmentBecameVisible");
         if (subModulesItemList.contains("view-purchase-order")) {
-            requestOrderListOnline(pageNumber);
-        }else {
+            requestPrListOnline(pageNumber);
+        } else {
             recyclerView_commonListingView.setAdapter(null);
         }
         if (!isFromPurchaseRequest) {
             if (getUserVisibleHint()) {
-                Log.i("@@OrderBecameVisible","getUserVisibleHint");
-                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-            }else {
-                Log.i("@@OrderBecameVisible","getUserVisibleHintElse");
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
             }
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (getUserVisibleHint()) {
-            if (subModulesItemList.contains("view-purchase-order")) {
-                requestOrderListOnline(pageNumber);
-            }else {
-                recyclerView_commonListingView.setAdapter(null);
-            }
-        }
-        if (!isFromPurchaseRequest) {
-            if(getUserVisibleHint())
-                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-            else {
-
-            }
-        }
-    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,13 +116,12 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.layout_recycler_purchase_order, container, false);
 //        unbinder = ButterKnife.bind(this, mParentView);
-        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_order);
-        progressBarClose=mParentView.findViewById(R.id.progressBarClose);
+        recyclerView_commonListingView = mParentView.findViewById(R.id.rv_order);
+        progressBarClose = mParentView.findViewById(R.id.progressBarClose);
         mContext = getActivity();
-        Bundle bundle=getArguments();
-        if(bundle != null){
+        Bundle bundle = getArguments();
+        if (bundle != null) {
             subModulesItemList = bundle.getString("subModulesItemList");
-
         }
         return mParentView;
     }
@@ -200,11 +177,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     if (subModulesItemList.contains("create-purchase-bill")) {
                         Intent intent = new Intent(mContext, PayAndBillsActivity.class);
                         intent.putExtra("PONumber", purchaseOrderListItems.get(position).getId());
-                        intent.putExtra("isCreateAccess",isCreateAccess);
+                        intent.putExtra("isCreateAccess", isCreateAccess);
                         intent.putExtra("VendorName", purchaseOrderListItems.get(position).getVendorName());
                         startActivity(intent);
-                    }else {
-                        Toast.makeText(mContext,"You do not have permission to create GRN",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "You do not have permission to create GRN", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -219,10 +196,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
         View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_layout_enter_password_po, null);
         alertDialogBuilder.setView(dialogView);
-        editTextPassword=dialogView.findViewById(R.id.editTextPassword);
-        button_cancel=dialogView.findViewById(R.id.button_cancel);
-        button_ok=dialogView.findViewById(R.id.button_ok);
-        textViewInvalidPassword=dialogView.findViewById(R.id.textViewInvalidPassword);
+        editTextPassword = dialogView.findViewById(R.id.editTextPassword);
+        button_cancel = dialogView.findViewById(R.id.button_cancel);
+        button_ok = dialogView.findViewById(R.id.button_ok);
+        textViewInvalidPassword = dialogView.findViewById(R.id.textViewInvalidPassword);
         editTextPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -230,7 +207,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(i1 == 1)
+                if (i1 == 1)
                     textViewInvalidPassword.setVisibility(View.GONE);
             }
 
@@ -241,15 +218,15 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         button_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(editTextPassword.getText().toString())){
+                if (TextUtils.isEmpty(editTextPassword.getText().toString())) {
                     editTextPassword.setFocusableInTouchMode(true);
                     editTextPassword.requestFocus();
                     editTextPassword.setError("Please enter password");
                     return;
-                }else {
+                } else {
                     editTextPassword.setError(null);
                     editTextPassword.clearFocus();
-                    requestPassword(editTextPassword.getText().toString(),id);
+                    requestPassword(editTextPassword.getText().toString(), id);
                 }
             }
         });
@@ -261,10 +238,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         });
         alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-
     }
 
-    private void requestOrderListOnline(int pageId) {
+    private void requestPrListOnline(int pageId) {
         JSONObject params = new JSONObject();
         try {
             if (isFromPurchaseRequest) {
@@ -279,7 +255,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 .addJSONObjectBody(params)
                 .addHeaders(AppUtils.getInstance().getApiHeaders())
                 .setPriority(Priority.MEDIUM)
-                .setTag("requestOrderListOnline")
+                .setTag("requestPrListOnline")
                 .build()
                 .getAsObject(PurchaseOrderResponse.class, new ParsedRequestListener<PurchaseOrderResponse>() {
                     @Override
@@ -289,19 +265,23 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    realm.delete(PurchaseOrderResponse.class);
+                                    /*realm.delete(PurchaseOrderResponse.class);
                                     realm.delete(PurchaseOrderRespData.class);
-                                    realm.delete(PurchaseOrderListItem.class);
+                                    realm.delete(PurchaseOrderListItem.class);*/
                                     realm.insertOrUpdate(response);
                                 }
                             }, new Realm.Transaction.OnSuccess() {
                                 @Override
                                 public void onSuccess() {
-                                    isCreateAccess=response.isCreateAccess();
-                                    setUpPOAdapter();if (oldPageNumber != pageNumber) {
-                                        oldPageNumber = pageNumber;
-                                        requestOrderListOnline(pageNumber);
+                                    if (!response.getPageId().equalsIgnoreCase("")) {
+                                        pageNumber = Integer.parseInt(response.getPageId());
                                     }
+                                    isCreateAccess = response.isCreateAccess();
+                                    if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestPrListOnline(pageNumber);
+                                    }
+                                    setUpPOAdapter();
                                     Timber.d("Realm execution successful");
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -316,13 +296,25 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                             }
                         }
                     }
+
                     @Override
                     public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestOrderListOnline");
+                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
                     }
                 });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            if (subModulesItemList.contains("view-purchase-order")) {
+                requestPrListOnline(pageNumber);
+            } else {
+                recyclerView_commonListingView.setAdapter(null);
+            }
+        }
+    }
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseOrderRvAdapter extends RealmRecyclerViewAdapter<PurchaseOrderListItem, PurchaseOrderRvAdapter.MyViewHolder> {
@@ -348,14 +340,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             holder.textviewClientName.setVisibility(View.VISIBLE);
             holder.textviewClientName.setText(purchaseOrderListItem.getVendorName());
             holder.textViewPurchaseRequestStatus.setText(purchaseOrderListItem.getStatus());
-            holder.textViewPurchaseRequestDate.setText("Created at "+ AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss","dd/MM/yyyy HH:MM",purchaseOrderListItem.getDate())
+            holder.textViewPurchaseRequestDate.setText("Created at " + AppUtils.getInstance().getTime("yyyy-MM-dd HH:mm:ss", "dd/MM/yyyy HH:MM", purchaseOrderListItem.getDate())
             );
             holder.textViewdetails.setVisibility(View.VISIBLE);
             holder.textViewPurchaseRequestMaterials.setText(purchaseOrderListItem.getMaterials());
             holder.imageViewIsEmailSent.setVisibility(View.VISIBLE);
-            if(purchaseOrderListItem.isEmailSent()){
+            if (purchaseOrderListItem.isEmailSent()) {
                 holder.imageViewIsEmailSent.setBackgroundResource(R.drawable.ic_order_completed);
-            }else {
+            } else {
                 holder.imageViewIsEmailSent.setBackgroundResource(R.drawable.ic_purchase_order_processing);
             }
             if (!purchaseOrderListItem.getPurchaseOrderStatusSlug().equalsIgnoreCase("close")) {
@@ -372,7 +364,6 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         public int getItemCount() {
             return arrPurchaseOrderListItems == null ? 0 : arrPurchaseOrderListItems.size();
         }
-
 
         class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             @BindView(R.id.textView_purchase_request_id)
@@ -411,7 +402,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     private void requestToClosePo(int id) {
         progressBarClose.setVisibility(View.VISIBLE);
-        JSONObject params = new JSONObject();
+        final JSONObject params = new JSONObject();
         try {
             params.put("purchase_order_id", id);
             params.put("change_status_to_slug", "close");
@@ -428,11 +419,11 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            if(progressBarClose != null){
+                            if (progressBarClose != null) {
                                 progressBarClose.setVisibility(View.GONE);
                             }
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            requestOrderListOnline(pageNumber);
+                            requestPrListOnline(pageNumber);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -445,10 +436,10 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 });
     }
 
-    private void requestPassword(String strPassword, final int id){
-        JSONObject params=new JSONObject();
+    private void requestPassword(String strPassword, final int id) {
+        JSONObject params = new JSONObject();
         try {
-            params.put("password",strPassword);
+            params.put("password", strPassword);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -464,7 +455,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                         try {
 //                           Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             requestToClosePo(id);
-                            if(alertDialog.isShowing()){
+                            if (alertDialog.isShowing()) {
                                 alertDialog.cancel();
                             }
                         } catch (Exception e) {
@@ -477,9 +468,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                         AppUtils.getInstance().logRealmExecutionError(anError);
                         textViewInvalidPassword.setVisibility(View.VISIBLE);
                         editTextPassword.setText("");
-
                     }
                 });
-
     }
 }
