@@ -49,6 +49,8 @@ public class ChecklistHomeActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

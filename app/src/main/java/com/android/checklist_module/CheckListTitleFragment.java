@@ -521,15 +521,20 @@ public class CheckListTitleFragment extends Fragment {
                                             for (ParentCheckPointsItem parentsCheckPointsItem :
                                                     response.getCheckPointsdata().getCheckPoints()) {
                                                 parentsCheckPointsItem.setIsFromState(isFromState);
+                                                parentsCheckPointsItem.setParentProjectSiteUserChecklistAssignmentId(parentProjectSiteUserChecklistAssignmentId);
                                             }
                                             realm.insertOrUpdate(response);
                                         }
                                     }, new Realm.Transaction.OnSuccess() {
                                         @Override
                                         public void onSuccess() {
+                                            Log.i("@@Success","Success");
                                             parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class)
                                                     .equalTo("parentProjectSiteUserChecklistAssignmentId", parentProjectSiteUserChecklistAssignmentId)
                                                     .equalTo("isFromState", isFromState).findAll();
+                                            Log.i("@@Size", String.valueOf(parentCheckPointsItemRealmResults.size()));
+                                            Log.i("@@Id", String.valueOf(parentProjectSiteUserChecklistAssignmentId));
+                                            Log.i("@@isFromState",isFromState);
                                             ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
                                             rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
                                             rvChecklistTitle.setHasFixedSize(true);
@@ -619,6 +624,8 @@ public class CheckListTitleFragment extends Fragment {
                             } else {
                                 AndroidNetworking.cancel("requestToGetCheckpoints");
                                 requestToGetCheckpoints();
+                                getActivity().onBackPressed();
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
