@@ -145,6 +145,7 @@ public class CheckListTitleFragment extends Fragment {
             SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
             for (SubModulesItem subModulesItem : subModulesItems) {
                 subModuleTag = subModulesItem.getSubModuleTag();
+                Log.i("@@",subModuleTag);
                 if (subModuleTag.contains("recheck")) {
                     mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
                     mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
@@ -481,6 +482,12 @@ public class CheckListTitleFragment extends Fragment {
                         AppUtils.getInstance().logApiError(anError, "requestToGetCheckpoints");
                     }
                 });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i("@@OnResume","OnResume");
     }
 
     private void getParentsCheckpointsList(final int parentProjectSiteUserChecklistAssignmentId) {

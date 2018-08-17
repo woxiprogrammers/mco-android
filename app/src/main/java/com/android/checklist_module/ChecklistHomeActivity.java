@@ -14,6 +14,7 @@ import com.android.constro360.R;
 
 public class ChecklistHomeActivity extends BaseActivity {
     private String strSubModuleTag, permissionsItemList, subModulesItemList;
+    public static boolean isFromAssigned=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

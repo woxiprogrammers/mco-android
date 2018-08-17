@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -459,6 +460,7 @@ public class CheckListVerificationFragment extends Fragment {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             CheckListTitleFragment checkListTitleFragment = (CheckListTitleFragment) getActivity().getSupportFragmentManager().findFragmentByTag("checkListTitleFragment");
                             if (isFromState.equalsIgnoreCase("assigned")) {
+                                Log.i("@@Assigned","assigned");
                                 checkListTitleFragment.requestToChangeChecklistStatus(false);
                             }
                             getActivity().onBackPressed();

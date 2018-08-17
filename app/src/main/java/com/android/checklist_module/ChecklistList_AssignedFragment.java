@@ -70,9 +70,7 @@ public class ChecklistList_AssignedFragment extends Fragment {
         mContext = getActivity();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            String permissionList = bundle.getString("permissionsItemList");
             subModulesItemList = bundle.getString("subModulesItemList");
-            String subModuleTag = bundle.getString("subModule_Tag");
         }
         mBtnCheckListAssignNew = viewAssigned.findViewById(R.id.btn_checkList_assignNew);
         mBtnCheckListAssignNew.setOnClickListener(new View.OnClickListener() {
