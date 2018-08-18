@@ -145,7 +145,6 @@ public class CheckListTitleFragment extends Fragment {
             SubModulesItem[] subModulesItems = new Gson().fromJson(subModulesItemList, SubModulesItem[].class);
             for (SubModulesItem subModulesItem : subModulesItems) {
                 subModuleTag = subModulesItem.getSubModuleTag();
-                Log.i("@@",subModuleTag);
                 if (subModuleTag.contains("recheck")) {
                     mLinearLayoutReassignTo.setVisibility(View.VISIBLE);
                     mBtnCheckListCheckpointSubmit.setVisibility(View.VISIBLE);
@@ -484,12 +483,6 @@ public class CheckListTitleFragment extends Fragment {
                 });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i("@@OnResume","OnResume");
-    }
-
     private void getParentsCheckpointsList(final int parentProjectSiteUserChecklistAssignmentId) {
         JSONObject params = new JSONObject();
         try {
@@ -528,13 +521,9 @@ public class CheckListTitleFragment extends Fragment {
                                     }, new Realm.Transaction.OnSuccess() {
                                         @Override
                                         public void onSuccess() {
-                                            Log.i("@@Success","Success");
                                             parentCheckPointsItemRealmResults = realm.where(ParentCheckPointsItem.class)
                                                     .equalTo("parentProjectSiteUserChecklistAssignmentId", parentProjectSiteUserChecklistAssignmentId)
                                                     .equalTo("isFromState", isFromState).findAll();
-                                            Log.i("@@Size", String.valueOf(parentCheckPointsItemRealmResults.size()));
-                                            Log.i("@@Id", String.valueOf(parentProjectSiteUserChecklistAssignmentId));
-                                            Log.i("@@isFromState",isFromState);
                                             ParentCheckListTitleAdapter parentCheckListTitleAdapter = new ParentCheckListTitleAdapter(parentCheckPointsItemRealmResults, true, true);
                                             rvChecklistTitle.setLayoutManager(new LinearLayoutManager(mContext));
                                             rvChecklistTitle.setHasFixedSize(true);

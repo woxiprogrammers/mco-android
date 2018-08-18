@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -86,6 +87,7 @@ public class CheckListVerificationFragment extends Fragment {
     private boolean isUploadingImages;
     private CheckPointsItem checkPointsItem;
     private String isFromState;
+    private ProgressBar progressBar;
     private boolean isUserViewOnly;//Only used for current checklist i.e. not parent checklist
 
     public CheckListVerificationFragment() {
@@ -110,6 +112,7 @@ public class CheckListVerificationFragment extends Fragment {
         }
         switch (requestCode) {
             case Constants.TYPE_MULTI_CAPTURE:
+                progressBar.setVisibility(View.VISIBLE);
                 ArrayList<Image> imagesList2 = intent.getParcelableArrayListExtra(Constants.KEY_BUNDLE_LIST);
                 for (Image currentImage : imagesList2) {
                     if (currentImage.imagePath != null) {
@@ -132,6 +135,12 @@ public class CheckListVerificationFragment extends Fragment {
                         }
                     }
                 }
+                for (int index = 0; index < checkPointsItem.getProjectSiteUserCheckpointImages().size(); index++) {
+                    ProjectSiteUserCheckpointImagesItem checkpointImagesItem = checkPointsItem.getProjectSiteUserCheckpointImages().get(index);
+                    if (checkpointImagesItem.isThisImageCaptured()) {
+                        btnSubmitChecklist.setVisibility(View.VISIBLE);
+                    }
+                }
                 break;
         }
     }
@@ -141,6 +150,7 @@ public class CheckListVerificationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_checkpoint_verification, container, false);
         unbinder = ButterKnife.bind(this, view);
         mContext = getActivity();
+        progressBar=view.findViewById(R.id.progressUploading);
         Bundle bundleArgs = getArguments();
         if (bundleArgs != null) {
             projectSiteUserCheckpointId = bundleArgs.getInt("projectSiteUserCheckpointId");
@@ -386,6 +396,7 @@ public class CheckListVerificationFragment extends Fragment {
                             e.printStackTrace();
                         }
                         Toast.makeText(mContext, "Image Uploaded", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -460,7 +471,6 @@ public class CheckListVerificationFragment extends Fragment {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                             CheckListTitleFragment checkListTitleFragment = (CheckListTitleFragment) getActivity().getSupportFragmentManager().findFragmentByTag("checkListTitleFragment");
                             if (isFromState.equalsIgnoreCase("assigned")) {
-                                Log.i("@@Assigned","assigned");
                                 checkListTitleFragment.requestToChangeChecklistStatus(false);
                             }
                             getActivity().onBackPressed();
