@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_16dp">
+
+        <TextView
+            android:id="@+id/textView_title_material_asset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_horizontal"
+            android:text="Approve Item"
+            android:textSize="@dimen/text_20sp"/>
+
+        <Button
+            android:id="@+id/button_for_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="8dp"
+            android:text="Edit"
+            android:textSize="@dimen/text_16sp"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_label_material_asset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Material Name:"
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/text_14sp"/>
+
+            <EditText
+                android:id="@+id/editText_name_material_asset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:inputType="none"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_8dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quantity:"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/text_14sp"/>
+
+                <EditText
+                    android:id="@+id/editText_quantity_material_asset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:digits="0123456789."
+                    android:inputType="number"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linearLayoutUnit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Unit:"
+                    android:textColor="@color/colorTextLight"
+                    android:textSize="@dimen/text_14sp"/>
+
+                <EditText
+                    android:id="@+id/edittext_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:visibility="visible"/>
+
+                <FrameLayout
+                    android:id="@+id/frameLayoutSpinnerUnitDialog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:inputType="text"
+                    android:visibility="gone">
+
+                    <Spinner
+                        android:id="@+id/spinner_select_units"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/TextViewExceedQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_8dp"
+            android:text="Quantity is greater than allowed max quantity"
+            android:textColor="@color/colorAccent"
+            android:visibility="gone"/>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <EditText
+                android:id="@+id/editext_remark_for_disapproval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFD740"
+                android:hint="@string/tap_too_add_remark"
+                android:padding="@dimen/dimen_16dp"
+                android:textColor="@color/colorText"
+                android:textSize="@dimen/dimen_16dp"/>
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_dismiss"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@drawable/selectable_button_background_gray"
+                android:text="Dismiss"
+                android:textColor="@color/colorWhite"/>
+
+            <View
+                android:layout_width="@dimen/dimen_20dp"
+                android:layout_height="match_parent"/>
+
+            <Button
+                android:id="@+id/button_approve"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="Approve"/>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

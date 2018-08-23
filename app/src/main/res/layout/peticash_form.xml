@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/mainRelativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:text="Category:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <FrameLayout
+                    style="@style/MySpinnerStyle"
+                    android:layout_width="match_parent"
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/spinner_category_array"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:entries="@array/category_array"
+                        />
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutForCategoryPurchase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Select Type:"
+                        android:textColor="@color/colorTextLight"/>
+
+
+                    <FrameLayout
+                        style="@style/MySpinnerStyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background">
+
+                        <Spinner
+                            android:id="@+id/spinner_material_or_asset"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:entries="@array/selectType"
+                            />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/linerLayoutSelectedNames_PC"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Shop Name:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edit_text_selected_source_name"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textViewItemName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:text="Material Name:"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edit_text_item_name"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:focusable="false"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutMiscCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        style="@style/MySpinnerStyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background">
+
+                        <Spinner
+                            android:id="@+id/spinner_misc_category_array"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Quantity:"
+                            android:layout_marginLeft="@dimen/dimen_4dp"
+                            android:textColor="@color/colorTextLight"/>
+
+                        <EditText
+                            android:id="@+id/edittextQuantity"
+                            style="@style/MyEditTextHeightSTyle"
+                            android:layout_width="match_parent"
+                            android:background="@android:drawable/editbox_background_normal"
+                            android:digits="0123456789."
+                            android:inputType="number"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutUnits"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_4dp"
+                            android:text="Unit:"
+                            android:textColor="@color/colorTextLight"/>
+
+                        <FrameLayout
+                            android:id="@+id/frameLayout_UnitSpinner"
+                            style="@style/MySpinnerStyle"
+                            android:layout_width="match_parent"
+                            android:background="@android:drawable/editbox_background">
+
+                            <Spinner
+                                android:id="@+id/spinner_select_units"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+                        </FrameLayout>
+
+                        <EditText
+                            android:id="@+id/editTextSetUnit"
+                            style="@style/MyEditTextHeightSTyle"
+                            android:layout_width="match_parent"
+                            android:background="@android:drawable/editbox_background_normal"
+                            android:digits="0123456789"
+                            android:inputType="number"
+                            android:textColor="@color/black"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lineraLayoutBillNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bill_number"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edit_text_BillNumber"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearBillAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bill_amount"
+                        android:layout_marginLeft="@dimen/dimen_4dp"
+                        android:textColor="@color/colorTextLight"/>
+
+                    <EditText
+                        android:id="@+id/edit_text_billamount"
+                        style="@style/MyEditTextHeightSTyle"
+                        android:layout_width="match_parent"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:digits="0123456789"
+                        android:inputType="number"
+                        android:maxLength="11"
+                        android:textColor="@color/black"/>
+
+                    <TextView
+                        android:id="@+id/exceedAmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorAccent"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_16dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewCapturFirst"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:drawableTop="@android:drawable/ic_menu_camera"
+                        android:gravity="center_horizontal"
+                        android:text="Capture Images"/>
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_4dp"
+                    android:fadeScrollbars="false">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutUploadImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    >
+
+                    <EditText
+                        android:id="@+id/editText_addNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFD740"
+                        android:hint="@string/tap_too_add_note"
+                        android:padding="@dimen/dimen_16dp"
+                        android:textColor="@color/colorText"
+                        android:textSize="@dimen/dimen_16dp"/>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+            <include
+                android:id="@+id/layoutEmployeeInformation"
+                layout="@layout/employee_information"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/button_generate_grn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="@dimen/dimen_8dp"
+                android:background="@drawable/background_button_pressed"
+                android:backgroundTint="@color/colorAccent"
+                android:padding="@dimen/dimen_8dp"
+                android:text="@string/generate_grn"
+                android:textColor="@color/colorWhite"/>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutGRN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/grn_number"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_grnNumber"
+                    style="@style/MyEditTextHeightSTyle"
+                    android:layout_width="match_parent"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:enabled="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutPayableAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/payableAmount"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_PayableAmount"
+                    style="@style/MyEditTextHeightSTyle"
+                    android:layout_width="match_parent"
+                    android:enabled="false"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:inputType="number"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutRefNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reference Number:"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editTextRefNumber"
+                    style="@style/MyEditTextHeightSTyle"
+                    android:layout_width="match_parent"
+                    android:background="@android:drawable/editbox_background_normal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_capture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_16dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/textViewCapturSecond"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:drawableTop="@android:drawable/ic_menu_camera"
+                    android:gravity="center_horizontal"
+                    android:text="Capture Images"/>
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_4dp"
+                android:fadeScrollbars="false">
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutUploadBillImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <Button
+                android:id="@+id/button_pay_with_peticash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="@dimen/dimen_8dp"
+                android:background="@drawable/background_button_pressed"
+                android:backgroundTint="@color/colorAccent"
+                android:padding="@dimen/dimen_8dp"
+                android:text="@string/paywithpeticash"
+                android:textColor="@color/colorWhite"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

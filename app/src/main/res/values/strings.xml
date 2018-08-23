@@ -1,8 +1,120 @@
 <resources>
-    <string name="app_name">Constro360</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- Strings related to login -->
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="prompt_mobile_number">Mobile Number</string>
+    <string name="realm_database_name">RealmLocalDatabase.realm</string>
+    <string name="edittext_hint_quantity">Enter Quantity</string>
+    <string name="edittext_hint_units">Enter Units</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="inventory">Inventory</string>
+    <string name="text_material">Material</string>
+    <string name="text_assets">Assets</string>
+    <string name="text_move">Move</string>
+    <string name="move_in">Move In</string>
+    <string name="move_out">Move Out</string>
+    <string name="tap_too_add_note">TAP TO ADD NOTE</string>
+    <string name="client_name">Client Name</string>
+    <string name="site_name">Site Name</string>
+    <string name="labour_name">Labour Name</string>
+    <string name="sub_contracter_name">Sub Contracter Name</string>
+    <string name="supplier_name">Supplier Name</string>
+    <string name="please_enter">Please Enter</string>
+    <string name="out_time">Out Time</string>
+    <string name="in_time">In Time</string>
+    <string name="vehicle_number">Vehicle Number:</string>
+    <string name="bill_number">Challan Number:</string>
+    <string name="date">Date:</string>
+    <string name="asset_name">Asset Name:</string>
+    <string name="model_number">Model Number:</string>
+    <string name="remark">Remark:</string>
+    <string name="button_request">REQUEST</string>
+    <string name="asset_maintainance">Asset Maintainance</string>
+    <string name="please_enter_remark">Please Enter Remark</string>
+    <string name="dialog_title_add_material">Add Material</string>
+    <string name="super_admin">Super Admin</string>
+    <string name="admin">Admin</string>
+    <string name="expected_time_format">dd/MM/yyyy</string>
+    <string-array name="destination_array">
+        <item>Site</item>
+        <item>Client</item>
+        <item>Labour</item>
+        <item>Sub-contractor</item>
+        <item>Supplier</item>
+    </string-array>
+    <string-array name="destination_array_move_in">
+        <item>Client</item>
+        <item>By Hand</item>
+        <item>Office</item>
+        <item>Supplier</item>
+    </string-array>
+    <string-array name="selectType">
+        <item>Material</item>
+        <item>Asset</item>
+    </string-array>
+    <string-array name="selectTypeForAsset">
+        <item>Fuel</item>
+        <item>Electric</item>
+    </string-array>
+    <string-array name="payment_mode_array">
+        <item>Cash</item>
+        <!--<item>Individual-Cash</item>
+        <item>Peticash</item>-->
+        <item>Cheque</item>
+        <item>NEFT</item>
+        <item>RTGS</item>
+        <item>Internet-Banking</item>
+    </string-array>
+    <string-array name="array_payment_mode">
+        <item>Internet-Banking</item>
+        <item>Cheque</item>
+        <item>NEFT</item>
+        <item>RTGS</item>
+    </string-array>
+    <string-array name="category_array">
+        <item>Purchase</item>
+        <item>Salary</item>
+        <item>Advance</item>
+    </string-array>
+    <string-array name="paid_by_array">
+        <item>Bank</item>
+        <item>Peticash</item>
+    </string-array>
+    <string name="title_activity_asset_details">AssetDetailsActivity</string>
+    <string name="assets_readings">Readings</string>
+    <string name="dialog_title_add_asset">Add Asset</string>
+    <string name="dialog_label_add_material">Material Name</string>
+    <string name="dialog_label_add_asset">Asset Name</string>
+    <string name="tag_material">material</string>
+    <string name="tag_asset">asset</string>
+    <string name="tag_p_r_assigned">p-r-assigned</string>
+    <string name="title_activity_pay_and_bills">PayAndBillsActivity</string>
+    <string name="text_pay">Received</string>
+    <string name="text_bills">Transaction</string>
+    <string name="title_activity_material_request">Material Request</string>
+    <string name="tag_in_indent">in-indent</string>
+    <string name="add_as_new_item">add %s as new item</string>
+    <string name="tag_new">new</string>
+    <string name="create_material_request">create-material-request</string>
+    <string name="shop_name">Shop Name</string>
+    <string name="bill_amount">Bill Amount:</string>
+    <string name="approve_purchase_request">approve-purchase-request</string>
+    <string name="aprove_purchase_request">approve-purchase-request</string>
+    <string name="create_purchase_request">create-purchase-request</string>
+    <string name="key_project_id">projectId</string>
+    <string name="generate_grn">Generate GRN</string>
+    <string name="grn_number">GRN Number:</string>
+    <string name="payableAmount">Payable Amount:</string>
+    <string name="paywithpeticash">Pay With Peticash</string>
+    <string name="amount">Amount:</string>
+    <string name="tap_too_add_remark">Tap To Add Remark</string>
+    <string name="title_activity_checklist">Checklist Management</string>
+    <string name="create_peticash_management">create-peticash-management</string>
+    <string name="create_inventory_in_out_transfer">create-inventory-in-out-transfer</string>
+    <string name="diesel_consume">Diesel \nConsume</string>
+    <string name="update_app_dialog">You are using an older version of MCon app which is not being supported anymore. Please update.</string>
 
-    <string name="action_settings">Settings</string>
 </resources>

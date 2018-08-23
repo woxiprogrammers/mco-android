@@ -1,0 +1,202 @@
+package com.android.inventory_module.assets;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.android.constro360.R;
+import com.android.inventory_module.assets.asset_model.AssetListResponse;
+import com.android.inventory_module.assets.asset_model.AssetsListItem;
+import com.android.utils.AppURL;
+import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
+import com.android.utils.RecyclerItemClickListener;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.ParsedRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import timber.log.Timber;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class AssetListFragment extends Fragment implements FragmentInterface {
+    @BindView(R.id.rv_material_list)
+    RecyclerView rvMaterialList;
+    private Unbinder unbinder;
+    private Context mContext;
+    private Realm realm;
+    private int pageNumber = 0;
+    private int oldPageNumber;
+    private boolean isCrateInOutTransfer;
+    private RealmResults<AssetsListItem> assetsListItems;
+
+    public AssetListFragment() {
+        // Required empty public constructor
+    }
+
+    public static AssetListFragment newInstance(String subModulesItemList) {
+        Bundle args = new Bundle();
+        AssetListFragment fragment = new AssetListFragment();
+        args.putString("subModulesItemList", subModulesItemList);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void fragmentBecameVisible() {
+        if (getUserVisibleHint()) {
+            requestAssetListOnline(pageNumber);
+        }
+    }
+
+    /*@Override
+    public void onResume() {
+        super.onResume();
+        requestAssetListOnline(pageNumber);
+    }*/
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);//Make sure you have this line of code.
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
+        unbinder = ButterKnife.bind(this, mParentView);
+        mContext = getActivity();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String subModulesItemList = bundle.getString("subModulesItemList");
+            if (subModulesItemList != null) {
+                if (subModulesItemList.contains("create-inventory-in-out-transfer")) {
+                    isCrateInOutTransfer = true;
+                }
+            }
+        }
+        setUpAssetListAdapter();
+        return mParentView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+        if (realm != null) {
+            realm.close();
+        }
+    }
+
+    private void setUpAssetListAdapter() {
+        realm = Realm.getDefaultInstance();
+        assetsListItems = realm.where(AssetsListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
+        Timber.d(String.valueOf(assetsListItems));
+        AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetsListItems, true, true);
+        rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
+        rvMaterialList.setHasFixedSize(true);
+        rvMaterialList.setAdapter(assetsListAdapter);
+        rvMaterialList.addOnItemTouchListener(new RecyclerItemClickListener(mContext,
+                rvMaterialList,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, final int position) {
+                        if (isCrateInOutTransfer) {
+                            if (!assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
+                                /*Intent startIntent = new Intent(mContext, MoveOutAssetNewActivity.class);
+                                startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
+                                startActivity(startIntent);
+                            } else */
+                                AssetsListItem assetsListItem=assetsListItems.get(position);
+                                Intent intent = new Intent(mContext, AssetDetailsActivity.class);
+                                intent.putExtra("assetName", assetsListItem.getAssetsName());
+                                intent.putExtra("modelNumber", assetsListItem.getModelNumber());
+                                intent.putExtra("inventory_component_id", assetsListItem.getId());
+                                intent.putExtra("asset_id", assetsListItem.getAsset_id());
+                                intent.putExtra("component_type_slug", assetsListItem.getSlug());
+                                intent.putExtra("availableQuantity",assetsListItem.getAvailable());
+                                startActivity(intent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                    }
+                }));
+    }
+
+    private void requestAssetListOnline(int pageId) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("page", pageId);
+            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Timber.d(AppURL.API_ASSETS_DATA_URL + AppUtils.getInstance().getCurrentToken());
+        AndroidNetworking.post(AppURL.API_ASSETS_DATA_URL + AppUtils.getInstance().getCurrentToken())
+                .addJSONObjectBody(params)
+                .addHeaders(AppUtils.getInstance().getApiHeaders())
+                .setPriority(Priority.MEDIUM)
+                .setTag("requestAssetListOnline")
+                .build()
+                .getAsObject(AssetListResponse.class, new ParsedRequestListener<AssetListResponse>() {
+                    @Override
+                    public void onResponse(final AssetListResponse response) {
+                        if (!TextUtils.isEmpty(response.getPageid())) {
+                            pageNumber = Integer.parseInt(response.getPageid());
+                        }
+                        realm = Realm.getDefaultInstance();
+                        try {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.insertOrUpdate(response);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    if (oldPageNumber != pageNumber) {
+                                        oldPageNumber = pageNumber;
+                                        requestAssetListOnline(pageNumber);
+                                    }
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    AppUtils.getInstance().logRealmExecutionError(error);
+                                }
+                            });
+                        } finally {
+                            if (realm != null) {
+                                realm.close();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
+                    }
+                });
+    }
+}
