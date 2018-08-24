@@ -1,5 +1,6 @@
 package com.android.purchase_module.material_request;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -110,6 +112,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
     LinearLayout mainLinearLayoutMatRequest;
     @BindView(R.id.progressBarToAddMatRequest)
     ProgressBar progressBarToAddMatRequest;
+    @BindView(R.id.linearLayout_searchMaterialRequest)
+    LinearLayout linearLayout_searchMaterialRequest;
     private Context mContext;
     private Realm realm;
     private RealmResults<PurchaseMaterialListItem> materialListRealmResults_New;
@@ -177,28 +181,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                     textViewPurchaseMaterialListAddNew.setVisibility(View.VISIBLE);
                 }
             }
-            /*for (PermissionsItem permissionsItem : permissionsItems) {
-                String accessPermission = permissionsItem.getCanAccess();
-                if (accessPermission.equalsIgnoreCase(getString(R.string.create_material_request))) {
-                    mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
-                    linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
-                    isForApproval = false;
-                    createAlertDialog();
-                    setUpCurrentMaterialListAdapter();
-                    setUpApprovedStatusAdapter();
-                    requestUsersWithApproveAcl(getString(R.string.approve_material_request), getString(R.string.tag_pending));
-                    setUpUsersSpinnerValueChangeListener();
-                    getRequestedItemList();
-                } else if (accessPermission.equalsIgnoreCase(getString(R.string.approve_material_request))) {
-                    textViewPurchaseMaterialListAddNew.setVisibility(View.GONE);
-                    isForApproval = true;
-                    mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
-                    linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
-                    setUpApprovedStatusAdapter();
-                    requestUsersWithApproveAcl(
-                    getString(R.string.approve_material_request), getString(R.string.tag_pending));
-                }
-            }*/
+            linearLayout_searchMaterialRequest.clearFocus();
         }
         imageViewSearchMaterial.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,6 +213,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
+
     }
 
     @Override
@@ -344,7 +328,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
                             linerLayoutItemForMaterialRequest.setVisibility(View.GONE);
                             mRvExistingMaterialListMaterialRequestApprove.setVisibility(View.VISIBLE);
                             getRequestedItemList();
-                            if(progressBarToAddMatRequest != null){
+                            if (progressBarToAddMatRequest != null) {
                                 progressBarToAddMatRequest.setVisibility(View.GONE);
                             }
                             buttonSubmitPurchaseRequest.setEnabled(true);
@@ -866,7 +850,7 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             editText_quantity_material_asset.setText("" + arrPurchaseMaterialListItems.get(position).getItem_quantity());
             editText_quantity_material_asset.setEnabled(false);
             edittext_unit.setText(arrPurchaseMaterialListItems.get(position).getItem_unit_name());
-            name=arrPurchaseMaterialListItems.get(position).getItem_unit_name();
+            name = arrPurchaseMaterialListItems.get(position).getItem_unit_name();
             frameLayoutSpinnerUnitDialog = dialogView.findViewById(R.id.frameLayoutSpinnerUnitDialog);
             final String strUserRole = AppUtils.getInstance().getUserRole();
             edittext_unit.setEnabled(false);
@@ -1107,37 +1091,8 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
         mRvMaterialListMaterialRequestApprove.setLayoutManager(new LinearLayoutManager(mContext));
         mRvMaterialListMaterialRequestApprove.setHasFixedSize(true);
         mRvMaterialListMaterialRequestApprove.setAdapter(purchaseMaterialRvAdapter);
-        /*if (materialListRealmResults_New != null) {
-            Timber.d("materialListRealmResults_New change listener added.");
-            materialListRealmResults_New.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<PurchaseMaterialListItem>>() {
-                @Override
-                public void onChange(RealmResults<PurchaseMaterialListItem> purchaseMaterialListItems, OrderedCollectionChangeSet changeSet) {
-                    // `null`  means the async query returns the first time.
-                    if (changeSet == null) {
-                        purchaseMaterialRvAdapter.notifyDataSetChanged();
-                        return;
-                    }
-                    // For deletions, the adapter has to be notified in reverse order.
-                    OrderedCollectionChangeSet.Range[] deletions = changeSet.getDeletionRanges();
-                    for (int i = deletions.length - 1; i >= 0; i--) {
-                        OrderedCollectionChangeSet.Range range = deletions[i];
-                        purchaseMaterialRvAdapter.notifyItemRangeRemoved(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] insertions = changeSet.getInsertionRanges();
-                    for (OrderedCollectionChangeSet.Range range : insertions) {
-                        purchaseMaterialRvAdapter.notifyItemRangeInserted(range.startIndex, range.length);
-                    }
-                    OrderedCollectionChangeSet.Range[] modifications = changeSet.getChangeRanges();
-                    for (OrderedCollectionChangeSet.Range range : modifications) {
-                        purchaseMaterialRvAdapter.notifyItemRangeChanged(range.startIndex, range.length);
-                    }
-                }
-            });
-        } else {
-            AppUtils.getInstance().showOfflineMessage("MaterialRequest_ApproveActivity");
-        }*/
-    }
 
+    }
 
 
     private void deleteSelectedItemFromList(int position, final ImageView mImageViewDeleteAddedItem) {
@@ -1172,7 +1127,6 @@ public class MaterialRequest_ApproveActivity extends BaseActivity {
             }
         }
     }
-
 
 
     private void checkAvailability(int materialRequestComponentId) {
