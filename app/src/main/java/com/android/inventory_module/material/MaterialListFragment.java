@@ -1,5 +1,6 @@
 package com.android.inventory_module.material;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -44,6 +51,11 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     RecyclerView rv_material_list;
     @BindView(R.id.mainRelativeList)
     RelativeLayout mainRelativeList;
+    @BindView(R.id.inventory_search)
+    LinearLayout inventory_search;
+    @BindView(R.id.editTextSearchInventory)
+    EditText editTextSearchInventory;
+
     private MaterialListAdapter materialListAdapter;
     private View mParentView;
     private Context mContext;
@@ -53,6 +65,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     private int oldPageNumber;
     private String subModulesItemList;
     private boolean isCrateInOutTransfer;
+    private boolean isSearch;
 
     public MaterialListFragment() {
         // Required empty public constructor
@@ -78,6 +91,26 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
+
+        editTextSearchInventory.setHint("Search Material");
+        editTextSearchInventory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (TextUtils.isEmpty(charSequence.toString())) {
+                    isSearch = false;
+//                    getRequestedItemList();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
         Bundle bundle = getArguments();
         AppUtils.getInstance().initializeProgressBar(mainRelativeList, mContext);
         if (bundle != null) {
@@ -87,6 +120,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             isCrateInOutTransfer = true;
         }
         setAdapterForMaterialList();
+        inventory_search.clearFocus(); //To close the keyboard when the framgemt is opened.
         return mParentView;
     }
 
@@ -197,4 +231,8 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                 });
     }
 
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 }

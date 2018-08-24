@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.android.constro360.R;
 import com.android.inventory_module.assets.asset_model.AssetListResponse;
@@ -37,8 +39,12 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class AssetListFragment extends Fragment implements FragmentInterface {
-    @BindView(R.id.rv_material_list)
+        @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
+    @BindView(R.id.editTextSearchInventory)
+    EditText editTextSearchInventory;
+//    @BindView(R.id.imageViewSearchMaterial)
+//    ImageView imageViewSearchMaterial;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
@@ -83,6 +89,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
+        editTextSearchInventory.setHint("Search Asset");
         Bundle bundle = getArguments();
         if (bundle != null) {
             String subModulesItemList = bundle.getString("subModulesItemList");
@@ -125,14 +132,14 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                                 startIntent.putExtra("inventoryCompId", assetsListItems.get(position).getId());
                                 startActivity(startIntent);
                             } else */
-                                AssetsListItem assetsListItem=assetsListItems.get(position);
+                                AssetsListItem assetsListItem = assetsListItems.get(position);
                                 Intent intent = new Intent(mContext, AssetDetailsActivity.class);
                                 intent.putExtra("assetName", assetsListItem.getAssetsName());
                                 intent.putExtra("modelNumber", assetsListItem.getModelNumber());
                                 intent.putExtra("inventory_component_id", assetsListItem.getId());
                                 intent.putExtra("asset_id", assetsListItem.getAsset_id());
                                 intent.putExtra("component_type_slug", assetsListItem.getSlug());
-                                intent.putExtra("availableQuantity",assetsListItem.getAvailable());
+                                intent.putExtra("availableQuantity", assetsListItem.getAvailable());
                                 startActivity(intent);
                             }
                         }
