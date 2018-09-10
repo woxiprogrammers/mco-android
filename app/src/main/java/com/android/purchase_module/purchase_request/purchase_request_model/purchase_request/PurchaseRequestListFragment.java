@@ -10,11 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -40,10 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -67,6 +64,10 @@ import static android.app.Activity.RESULT_OK;
 public class PurchaseRequestListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
     @BindView(R.id.purchaseRelative)
     RelativeLayout purchaseRelative;
+    @BindView(R.id.editTextSearch_po_pr)
+    EditText editTextSearchPoPr;
+    @BindView(R.id.search_po_pr)
+    LinearLayout llsearchPoPr;
 
     private String subModuleTag, permissionList;
     RecyclerView recyclerView_commonListingView;
@@ -109,6 +110,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         View mParentView = inflater.inflate(R.layout.fragment_purchase_request_list, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_material_purchase_request_list);
+        llsearchPoPr.setVisibility(View.VISIBLE);
+        editTextSearchPoPr.setHint("Search Purchase Request");
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
@@ -335,9 +338,9 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
             holder.textView_purchase_request_new_status.setText(purchaseRequestListItem.getPurchaseRequestStatus());
             holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " + AppUtils.getInstance().getTime("E, dd MMMM yyyy", getString(R.string.expected_time_format), purchaseRequestListItem.getDate()));
-            if(purchaseRequestListItem.isDisproved()){
+            if (purchaseRequestListItem.isDisproved()) {
                 holder.imageViewIsDisAppRedBatch.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.imageViewIsDisAppRedBatch.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {
