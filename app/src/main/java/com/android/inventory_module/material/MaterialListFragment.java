@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -151,8 +152,9 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         Log.i("@@", "setAdapterForMaterialList: " + realm.where(MaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync());
         final RealmResults<MaterialListItem> materialListItems = realm.where(MaterialListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .contains("materialName", searchKeyWord)
+                .contains("materialName", searchKeyWord, Case.INSENSITIVE)
                 .findAll();
+
         Log.i("mli", "setAdapterForMaterialList: " + materialListItems);
         materialListAdapter = new MaterialListAdapter(materialListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -305,6 +307,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     @OnClick(R.id.clear_search)
     public void onViewClicked() {
         editTextSearchInventory.setText("");
-        requestInventorySearchResponse(0,false);
+        searchKeyWord="";
+        requestInventoryResponse(0);
     }
 }
