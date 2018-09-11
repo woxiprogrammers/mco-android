@@ -47,6 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Case;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -64,10 +65,15 @@ import static android.app.Activity.RESULT_OK;
 public class PurchaseRequestListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
     @BindView(R.id.purchaseRelative)
     RelativeLayout purchaseRelative;
-    @BindView(R.id.editTextSearch_po_pr)
-    EditText editTextSearchPoPr;
+    @BindView(R.id.editTextSearch)
+    EditText editTextSearch;
+    @BindView(R.id.clear_search)
+    ImageView clearSearch;
+    @BindView(R.id.imageViewSearch)
+    ImageView imageViewSearch;
     @BindView(R.id.search_po_pr)
-    LinearLayout llsearchPoPr;
+    LinearLayout searchPoPr;
+
 
     private String subModuleTag, permissionList;
     RecyclerView recyclerView_commonListingView;
@@ -82,6 +88,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private int oldPageNumber;
     private int passYear, passMonth;
     private String subModulesItemList;
+    private String searchKey;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
@@ -110,8 +117,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         View mParentView = inflater.inflate(R.layout.fragment_purchase_request_list, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_material_purchase_request_list);
-        llsearchPoPr.setVisibility(View.VISIBLE);
-        editTextSearchPoPr.setHint("Search Purchase Request");
+        searchPoPr.setVisibility(View.VISIBLE);
+        editTextSearch.setHint("Search Purchase Request Number");
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
@@ -164,7 +171,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         passYear = year;
         passMonth = month;
         ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
-        requestPrListOnline(pageNumber);
+        requestPrListOnline(pageNumber,false);
     }
 
     /**
@@ -188,17 +195,29 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private void functionForGettingData() {
         if (AppUtils.getInstance().checkNetworkState()) {
             //Get data from Server
-            requestPrListOnline(pageNumber);
+            requestPrListOnline(pageNumber,false);
         } else {
             //Get data from local DB
             setUpPrAdapter();
         }
     }
 
-    private void requestPrListOnline(int pageId) {
+    private void requestPrListOnline(int pageId, final boolean isFromSearch) {
         AppUtils.getInstance().showProgressBar(purchaseRelative, true);
         JSONObject params = new JSONObject();
         try {
+            if(isFromSearch){
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("month", passMonth);
+                params.put("year", passYear);
+                params.put("page", pageId);
+                params.put("search_format_id",searchKey);
+            } else {
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("month", passMonth);
+                params.put("year", passYear);
+                params.put("page", pageId);
+            }
             params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             params.put("month", passMonth);
             params.put("year", passYear);
@@ -232,7 +251,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                                     setUpPrAdapter();
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
-                                        requestPrListOnline(pageNumber);
+                                        requestPrListOnline(pageNumber,isFromSearch);
                                     }
                                     AppUtils.getInstance().showProgressBar(purchaseRelative, false);
 
@@ -261,10 +280,14 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
+        final RealmResults<PurchaseRequestListItem> purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .contains("purchaseRequestId", searchKey, Case.INSENSITIVE)
+                .findAll();
+        /*purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
-                .contains("date", strMonth).findAllSortedAsync("id", Sort.DESCENDING);
+                .contains("date", strMonth).findAllSortedAsync("id", Sort.DESCENDING);*/
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
@@ -299,7 +322,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         if (requestCode == AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 pageNumber = 0;
-                requestPrListOnline(pageNumber);
+                requestPrListOnline(pageNumber, false);
             }
         }
     }
@@ -310,6 +333,21 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             startActivityForResult(new Intent(mContext, PurchaseMaterialListActivity.class), AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST);
         } else {
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
+        }
+    }
+
+    @OnClick({R.id.clear_search, R.id.imageViewSearch})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.clear_search:
+                searchKey="";
+                editTextSearch.setText("");
+                requestPrListOnline(0,false);
+                break;
+            case R.id.imageViewSearch:
+                searchKey=editTextSearch.getText().toString();
+                requestPrListOnline(0,true);
+                break;
         }
     }
 
