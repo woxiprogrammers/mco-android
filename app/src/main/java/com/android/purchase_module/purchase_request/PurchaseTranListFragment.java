@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -29,7 +32,9 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Case;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -43,6 +48,15 @@ import timber.log.Timber;
 public class PurchaseTranListFragment extends Fragment implements FragmentInterface {
     /*@BindView(R.id.rv_trans_list)*/
     RecyclerView recyclerView_commonListingView;
+    @BindView(R.id.editTextSearch)
+    EditText editTextSearch;
+    @BindView(R.id.clear_search)
+    ImageView clearSearch;
+    @BindView(R.id.imageViewSearch)
+    ImageView imageViewSearch;
+    @BindView(R.id.search_grn)
+    LinearLayout searchGrn;
+    Unbinder unbinder1;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
@@ -51,6 +65,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     private int intPrimaryKey;
     private View mParentView;
     private int pageNumber = 0, oldPageNumber;
+    private String searchKey;
 
     public PurchaseTranListFragment() {
         // Required empty public constructor
@@ -69,17 +84,21 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.layout_recycler_view_listing_for_bills, container, false);
-        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_trans_list);
+        recyclerView_commonListingView = mParentView.findViewById(R.id.rv_trans_list);
+        unbinder1 = ButterKnife.bind(this, mParentView);
+        searchGrn.setVisibility(View.VISIBLE);
+        editTextSearch.setHint("Search GRN");
         initializeViews();
-        requestPrListOnline(pageNumber);
+        requestPrListOnline(pageNumber,false);
         setUpTransactionAdapter();
         setHasOptionsMenu(true);
+
         return mParentView;
     }
 
     @Override
     public void fragmentBecameVisible() {
-        requestPrListOnline(pageNumber);
+        requestPrListOnline(pageNumber,false);
         if (isFromPurchaseRequestHome) {
             if (getUserVisibleHint() /*&& ((PurchaseHomeActivity) mContext) != null*/) {
                 ((PurchaseHomeActivity) mContext).hideDateLayout(true);
@@ -101,9 +120,15 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         if (isFromPurchaseRequestHome) {
-            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
+            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class)
+                    .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                    .contains("grn",searchKey, Case.INSENSITIVE)
+                    .findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
         } else {
-            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("purchaseOrderId", intPrimaryKey).findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
+            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class)
+                    .equalTo("purchaseOrderId", intPrimaryKey)
+                    .contains("grn",searchKey, Case.INSENSITIVE)
+                    .findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
         }
         PurchaseTransAdapter purchaseBillRvAdapter = new PurchaseTransAdapter(purchaseBillListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -128,9 +153,24 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                 }));
     }
 
-    private void requestPrListOnline(int pageId) {
+    private void requestPrListOnline(int pageId, final boolean isFromSearch) {
         JSONObject params = new JSONObject();
         try {
+            if(isFromSearch){
+                if (isFromPurchaseRequestHome) {
+                    params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                    params.put("search_grn",searchKey);
+                } else {
+                    params.put("purchase_order_id", intPrimaryKey);
+                    params.put("search_grn",searchKey);
+                }
+            } else {
+                if (isFromPurchaseRequestHome) {
+                    params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                } else {
+                    params.put("purchase_order_id", intPrimaryKey);
+                }
+            }
             if (isFromPurchaseRequestHome) {
                 params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
             } else {
@@ -167,7 +207,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                                     Timber.d("Success");
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
-                                        requestPrListOnline(pageNumber);
+                                        requestPrListOnline(pageNumber,isFromSearch);
                                     }
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -198,6 +238,22 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             realm.close();
         }
 //        unbinder.unbind();
+        unbinder1.unbind();
+    }
+
+    @OnClick({R.id.clear_search, R.id.imageViewSearch})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.clear_search:
+                editTextSearch.setText("");
+                searchKey="";
+                requestPrListOnline(0,false);
+                break;
+            case R.id.imageViewSearch:
+                searchKey=editTextSearch.getText().toString();
+                requestPrListOnline(0,true);
+                break;
+        }
     }
 
     @SuppressWarnings("WeakerAccess")
