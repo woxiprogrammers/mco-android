@@ -30,7 +30,8 @@
                 android:layout_weight="0.6"
                 android:hint="Search Material/Asset"
                 android:padding="@dimen/dimen_4dp"
-                android:background="@null"/>
+                android:background="@null"
+                android:singleLine="true"/>
 
             <ImageView
                 android:id="@+id/clear_search"

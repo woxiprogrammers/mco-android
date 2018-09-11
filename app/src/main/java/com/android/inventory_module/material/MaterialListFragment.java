@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +63,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     @BindView(R.id.clear_search)
     ImageView clearSearch;
 
-
     private MaterialListAdapter materialListAdapter;
     private View mParentView;
     private Context mContext;
@@ -71,7 +72,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     private int oldPageNumber;
     private String subModulesItemList;
     private boolean isCrateInOutTransfer;
-    private boolean isSearch;
     private String searchKeyWord;
 
     public MaterialListFragment() {
@@ -113,14 +113,13 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 //        setAdapterForMaterialList();
         inventory_search.clearFocus(); //To close the keyboard when the framgemt is opened.
         return mParentView;
-
     }
 
 
     @OnClick(R.id.imageViewSearchInventory)
     public void getSearchKeyWord(View v) {
         searchKeyWord = editTextSearchInventory.getText().toString();
-        requestInventorySearchResponse(0, true);
+        requestInventoryResponse(0, true);
     }
 
 
@@ -142,7 +141,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     @Override
     public void onResume() {
         if (AppUtils.getInstance().checkNetworkState()) {
-            requestInventoryResponse(pageNumber);
+            requestInventoryResponse(pageNumber, false);
         }
         super.onResume();
     }
@@ -154,8 +153,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("materialName", searchKeyWord, Case.INSENSITIVE)
                 .findAll();
-
-        Log.i("mli", "setAdapterForMaterialList: " + materialListItems);
         materialListAdapter = new MaterialListAdapter(materialListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -178,73 +175,21 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             public void onLongItemClick(View view, int position) {
             }
         }));
+
     }
 
-    private void requestInventorySearchResponse(final int pageId, final boolean isFromSearch) {
+    private void requestInventoryResponse(final int pageId, final boolean isFromSearch) {
         AppUtils.getInstance().showProgressBar(mainRelativeList, true);
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("page_id", 0);
-            params.put("material_name", searchKeyWord);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        realm = Realm.getDefaultInstance();
-        Timber.d(AppURL.API_MATERIAL_LISTING_URL + AppUtils.getInstance().getCurrentToken());
-        AndroidNetworking.post(AppURL.API_MATERIAL_LISTING_URL + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setTag("requestInventorySearchData")
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsObject(InventoryResponse.class, new ParsedRequestListener<InventoryResponse>() {
-                    @Override
-                    public void onResponse(final InventoryResponse response) {
-//                        if (!response.getPageid().equalsIgnoreCase("")) {
-//                            pageNumber = Integer.parseInt(response.getPageid());
-//                        }
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    setAdapterForMaterialList();
-                                    AppUtils.getInstance().showProgressBar(mainRelativeList, false);
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logRealmExecutionError(anError);
-                        AppUtils.getInstance().showProgressBar(mainRelativeList, false);
-                    }
-                });
-    }
-
-    private void requestInventoryResponse(final int pageId) {
-        AppUtils.getInstance().showProgressBar(mainRelativeList, true);
-        JSONObject params = new JSONObject();
-        try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("page_id", pageId);
-
+            if(isFromSearch){
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("page_id", 0);
+                params.put("material_name",searchKeyWord);
+            } else {
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("page_id", pageId);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -273,7 +218,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                                 public void onSuccess() {
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
-                                        requestInventoryResponse(pageNumber);
+                                        requestInventoryResponse(pageNumber, isFromSearch);
                                     }
                                     setAdapterForMaterialList();
                                     AppUtils.getInstance().showProgressBar(mainRelativeList, false);
@@ -304,10 +249,11 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+
     @OnClick(R.id.clear_search)
     public void onViewClicked() {
         editTextSearchInventory.setText("");
         searchKeyWord="";
-        requestInventoryResponse(0);
+        requestInventoryResponse(0, false);
     }
 }
