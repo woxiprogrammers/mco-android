@@ -1,7 +1,6 @@
 package com.android.purchase_module.purchase_request.purchase_request_model.purchase_request;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,13 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.constro360.R;
-import com.android.utils.FragmentInterface;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderListItem;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderRespData;
-import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderResponse;
 import com.android.purchase_module.purchase_request.PayAndBillsActivity;
+import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderListItem;
+import com.android.purchase_module.purchase_request.purchase_request_model.purchase_order.PurchaseOrderResponse;
 import com.android.utils.AppURL;
 import com.android.utils.AppUtils;
+import com.android.utils.FragmentInterface;
 import com.android.utils.RecyclerViewClickListener;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -49,6 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Case;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -64,6 +62,15 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private static int purchaseRequestId;
     private static boolean isFromPurchaseRequest;
     RecyclerView recyclerView_commonListingView;
+    @BindView(R.id.editTextSearch)
+    EditText editTextSearch;
+    @BindView(R.id.clear_search)
+    ImageView clearSearch;
+    @BindView(R.id.imageViewSearch)
+    ImageView imageViewSearch;
+    @BindView(R.id.search_po_pr)
+    LinearLayout searchPoPr;
+    Unbinder unbinder1;
     private ProgressBar progressBarClose;
     private Unbinder unbinder;
     private Context mContext;
@@ -77,7 +84,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private TextView textViewInvalidPassword;
     private int pageNumber = 0;
     private int oldPageNumber;
-
+    private String searchKey;
     public PurchaseOrderListFragment() {
         // Required empty public constructor
     }
@@ -95,7 +102,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     @Override
     public void fragmentBecameVisible() {
         if (subModulesItemList.contains("view-purchase-order")) {
-            requestPrListOnline(pageNumber);
+            requestPrListOnline(pageNumber,false);
         } else {
             recyclerView_commonListingView.setAdapter(null);
         }
@@ -116,6 +123,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mParentView = inflater.inflate(R.layout.layout_recycler_purchase_order, container, false);
 //        unbinder = ButterKnife.bind(this, mParentView);
+        ButterKnife.bind(this, mParentView);
+        searchPoPr.setVisibility(View.VISIBLE);
+        editTextSearch.setHint("Search Purchase Order Number");
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_order);
         progressBarClose = mParentView.findViewById(R.id.progressBarClose);
         mContext = getActivity();
@@ -123,6 +133,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         if (bundle != null) {
             subModulesItemList = bundle.getString("subModulesItemList");
         }
+        unbinder1 = ButterKnife.bind(this, mParentView);
         return mParentView;
     }
 
@@ -134,6 +145,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             realm.close();
         }
 //        unbinder.unbind();
+        unbinder1.unbind();
     }
 
     @Override
@@ -152,11 +164,15 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class)
                     .equalTo("purchaseRequestId", purchaseRequestId)
                     .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                    .notEqualTo("purchaseOrderStatusSlug", "close").findAllAsync();
+                    .notEqualTo("purchaseOrderStatusSlug", "close")
+                    .contains("purchaseOrderFormatId", searchKey, Case.INSENSITIVE)
+                    .findAllAsync();
         } else {
             purchaseOrderListItems = realm.where(PurchaseOrderListItem.class)
                     .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                    .notEqualTo("purchaseOrderStatusSlug", "close").findAllAsync();
+                    .notEqualTo("purchaseOrderStatusSlug", "close")
+                    .contains("purchaseOrderFormatId", searchKey, Case.INSENSITIVE)
+                    .findAllAsync();
         }
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
@@ -240,14 +256,23 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         alertDialog.show();
     }
 
-    private void requestPrListOnline(int pageId) {
+    private void requestPrListOnline(int pageId, final boolean isFromSearch) {
         JSONObject params = new JSONObject();
         try {
-            if (isFromPurchaseRequest) {
-                params.put("purchase_request_id", purchaseRequestId);
+            if(isFromSearch){
+                if (isFromPurchaseRequest) {
+                    params.put("purchase_request_id", purchaseRequestId);
+                }
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("page", pageId);
+                params.put("search_format_id",searchKey);
+            } else {
+                if (isFromPurchaseRequest) {
+                    params.put("purchase_request_id", purchaseRequestId);
+                }
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("page", pageId);
             }
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("page", pageId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -279,7 +304,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                                     isCreateAccess = response.isCreateAccess();
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
-                                        requestPrListOnline(pageNumber);
+                                        requestPrListOnline(pageNumber,isFromSearch);
                                     }
                                     setUpPOAdapter();
                                     Timber.d("Realm execution successful");
@@ -309,10 +334,25 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         super.onResume();
         if (getUserVisibleHint()) {
             if (subModulesItemList.contains("view-purchase-order")) {
-                requestPrListOnline(pageNumber);
+                requestPrListOnline(pageNumber,false);
             } else {
                 recyclerView_commonListingView.setAdapter(null);
             }
+        }
+    }
+
+    @OnClick({R.id.clear_search, R.id.imageViewSearch})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.clear_search:
+                searchKey="";
+                editTextSearch.setText("");
+                requestPrListOnline(0,false);
+                break;
+            case R.id.imageViewSearch:
+                searchKey=editTextSearch.getText().toString();
+                requestPrListOnline(0,true);
+                break;
         }
     }
 
@@ -423,7 +463,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                                 progressBarClose.setVisibility(View.GONE);
                             }
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            requestPrListOnline(pageNumber);
+                            requestPrListOnline(pageNumber,false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
