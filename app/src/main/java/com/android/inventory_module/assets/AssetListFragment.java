@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.android.constro360.R;
 import com.android.inventory_module.assets.asset_model.AssetListResponse;
@@ -30,7 +31,9 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -39,18 +42,24 @@ import timber.log.Timber;
  * A simple {@link Fragment} subclass.
  */
 public class AssetListFragment extends Fragment implements FragmentInterface {
-        @BindView(R.id.rv_material_list)
+    @BindView(R.id.rv_material_list)
     RecyclerView rvMaterialList;
     @BindView(R.id.editTextSearchInventory)
     EditText editTextSearchInventory;
-//    @BindView(R.id.imageViewSearchMaterial)
-//    ImageView imageViewSearchMaterial;
+    @BindView(R.id.clear_search)
+    ImageView clearSearch;
+    @BindView(R.id.imageViewSearchInventory)
+    ImageView imageViewSearchInventory;
+    @BindView(R.id.inventory_search)
+    LinearLayout inventorySearch;
+
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
     private int pageNumber = 0;
     private int oldPageNumber;
     private boolean isCrateInOutTransfer;
+    private String searchKeyWord;
     private RealmResults<AssetsListItem> assetsListItems;
 
     public AssetListFragment() {
@@ -68,7 +77,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     @Override
     public void fragmentBecameVisible() {
         if (getUserVisibleHint()) {
-            requestAssetListOnline(pageNumber);
+            requestAssetListOnline(pageNumber, false);
         }
     }
 
@@ -89,6 +98,8 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         View mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         mContext = getActivity();
+        inventorySearch.setVisibility(View.VISIBLE);
+        editTextSearchInventory.setVisibility(View.VISIBLE);
         editTextSearchInventory.setHint("Search Asset");
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -114,10 +125,14 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        assetsListItems = realm.where(AssetsListItem.class)
+        final RealmResults<AssetsListItem> assetListItems = realm.where(AssetsListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .contains("assetsName", searchKeyWord, Case.INSENSITIVE)
+                .findAll();
+        /*assetsListItems = realm.where(AssetsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
-        Timber.d(String.valueOf(assetsListItems));
-        AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetsListItems, true, true);
+        Timber.d(String.valueOf(assetsListItems));*/
+        AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
         rvMaterialList.setAdapter(assetsListAdapter);
@@ -151,11 +166,18 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 }));
     }
 
-    private void requestAssetListOnline(int pageId) {
+    private void requestAssetListOnline(int pageId, final boolean isFromSearch) {
         JSONObject params = new JSONObject();
         try {
-            params.put("page", pageId);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            if (isFromSearch) {
+                params.put("page", pageId);
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("asset_name", searchKeyWord);
+            } else {
+                params.put("page", pageId);
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -184,8 +206,9 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                                 public void onSuccess() {
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
-                                        requestAssetListOnline(pageNumber);
+                                        requestAssetListOnline(pageNumber, isFromSearch);
                                     }
+                                   setUpAssetListAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -205,5 +228,20 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                         AppUtils.getInstance().logApiError(anError, "requestAssetsListOnline");
                     }
                 });
+    }
+
+    @OnClick({R.id.clear_search, R.id.imageViewSearchInventory})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.clear_search:
+                editTextSearchInventory.setText("");
+                searchKeyWord = "";
+                requestAssetListOnline(0, false);
+                break;
+            case R.id.imageViewSearchInventory:
+                searchKeyWord = editTextSearchInventory.getText().toString();
+                requestAssetListOnline(0,true);
+                break;
+        }
     }
 }
