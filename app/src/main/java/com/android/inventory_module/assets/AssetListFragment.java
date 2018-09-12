@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,11 +83,18 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         }
     }
 
-    /*@Override
+    @Override
     public void onResume() {
         super.onResume();
-        requestAssetListOnline(pageNumber);
-    }*/
+        if(AppUtils.getInstance().checkNetworkState()){
+            editTextSearchInventory.setText("");
+            requestAssetListOnline(pageNumber,false);
+        } else {
+            editTextSearchInventory.setText("");
+            setUpAssetListAdapter();
+        }
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +119,25 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 }
             }
         }
+        editTextSearchInventory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()==0){
+                    searchKeyWord="";
+                    requestAssetListOnline(0,false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         setUpAssetListAdapter();
         return mParentView;
     }
@@ -208,7 +236,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                                         oldPageNumber = pageNumber;
                                         requestAssetListOnline(pageNumber, isFromSearch);
                                     }
-                                   setUpAssetListAdapter();
+                                    setUpAssetListAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override

@@ -9,7 +9,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,7 +120,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         unbinder = ButterKnife.bind(this, mParentView);
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_material_purchase_request_list);
         searchPoPr.setVisibility(View.VISIBLE);
-        editTextSearch.setHint("Search Purchase Request Number");
+        editTextSearch.setHint("Search By Purchase Request Number");
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
@@ -131,12 +133,42 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         }
         //Initialize Views
         initializeViews();
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (s.length()==0){
+                    searchKey="";
+                    if(AppUtils.getInstance().checkNetworkState()){
+                        requestPrListOnline(0,false);
+                    }
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         setUpPrAdapter();
         return mParentView;
     }
 
     @Override
     public void onResume() {
+        if(AppUtils.getInstance().checkNetworkState()){
+            editTextSearch.setText("");
+            requestPrListOnline(pageNumber,false);
+        } else {
+            editTextSearch.setText("");
+            setUpPrAdapter();
+        }
         super.onResume();
         if (getUserVisibleHint()) {
             ((PurchaseHomeActivity) mContext).hideDateLayout(false);
@@ -218,10 +250,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 params.put("year", passYear);
                 params.put("page", pageId);
             }
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("month", passMonth);
-            params.put("year", passYear);
-            params.put("page", pageId);
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -280,14 +308,12 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         String strMonth = new DateFormatSymbols().getMonths()[passMonth - 1];
-        final RealmResults<PurchaseRequestListItem> purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
-                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .contains("purchaseRequestId", searchKey, Case.INSENSITIVE)
-                .findAll();
-        /*purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
+        purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
-                .contains("date", strMonth).findAllSortedAsync("id", Sort.DESCENDING);*/
+                .contains("purchaseRequestId", searchKey, Case.INSENSITIVE)
+                .contains("date", strMonth)
+                .findAllSortedAsync("id", Sort.DESCENDING);
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
@@ -345,8 +371,12 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 requestPrListOnline(0,false);
                 break;
             case R.id.imageViewSearch:
-                searchKey=editTextSearch.getText().toString();
-                requestPrListOnline(0,true);
+                if(AppUtils.getInstance().checkNetworkState()){
+                    searchKey=editTextSearch.getText().toString();
+                    requestPrListOnline(0,true);
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment.class");
+                }
                 break;
         }
     }

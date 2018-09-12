@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,12 +89,30 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_trans_list);
         unbinder1 = ButterKnife.bind(this, mParentView);
         searchGrn.setVisibility(View.VISIBLE);
-        editTextSearch.setHint("Search GRN");
+        editTextSearch.setHint("Search By GRN");
         initializeViews();
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length()==0){
+                    searchKey="";
+                    requestPrListOnline(0,false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         requestPrListOnline(pageNumber,false);
         setUpTransactionAdapter();
         setHasOptionsMenu(true);
-
         return mParentView;
     }
 
@@ -250,8 +270,13 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                 requestPrListOnline(0,false);
                 break;
             case R.id.imageViewSearch:
-                searchKey=editTextSearch.getText().toString();
-                requestPrListOnline(0,true);
+                if(AppUtils.getInstance().checkNetworkState()){
+                    searchKey=editTextSearch.getText().toString();
+                    requestPrListOnline(0,true);
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PurchaseTranListFragment.class");
+                }
+
                 break;
         }
     }

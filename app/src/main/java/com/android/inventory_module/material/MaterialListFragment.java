@@ -110,18 +110,29 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         if (subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))) {
             isCrateInOutTransfer = true;
         }
-//        setAdapterForMaterialList();
+        editTextSearchInventory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()==0){
+                    searchKeyWord="";
+                    requestInventoryResponse(0,false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        setAdapterForMaterialList();
         inventory_search.clearFocus(); //To close the keyboard when the framgemt is opened.
         return mParentView;
     }
-
-
-    @OnClick(R.id.imageViewSearchInventory)
-    public void getSearchKeyWord(View v) {
-        searchKeyWord = editTextSearchInventory.getText().toString();
-        requestInventoryResponse(0, true);
-    }
-
 
     @Override
     public void onDestroyView() {
@@ -129,7 +140,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         if (realm != null) {
             realm.close();
         }
-//        null.unbind();
 
     }
 
@@ -141,14 +151,19 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     @Override
     public void onResume() {
         if (AppUtils.getInstance().checkNetworkState()) {
+            editTextSearchInventory.setText("");
             requestInventoryResponse(pageNumber, false);
+        } else {
+            editTextSearchInventory.setText("");
+
+            setAdapterForMaterialList();
         }
+
         super.onResume();
     }
 
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
-        Log.i("@@", "setAdapterForMaterialList: " + realm.where(MaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync());
         final RealmResults<MaterialListItem> materialListItems = realm.where(MaterialListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("materialName", searchKeyWord, Case.INSENSITIVE)
@@ -249,6 +264,16 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    @OnClick(R.id.imageViewSearchInventory)
+    public void getSearchKeyWord(View v) {
+        if(AppUtils.getInstance().checkNetworkState()){
+            searchKeyWord = editTextSearchInventory.getText().toString();
+            requestInventoryResponse(0, true);
+        } else {
+            AppUtils.getInstance().showOfflineMessage("MaterialListFragment.class");
+        }
+
+    }
 
     @OnClick(R.id.clear_search)
     public void onViewClicked() {

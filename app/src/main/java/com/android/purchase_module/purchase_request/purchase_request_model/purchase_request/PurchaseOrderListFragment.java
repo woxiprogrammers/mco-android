@@ -70,6 +70,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     ImageView imageViewSearch;
     @BindView(R.id.search_po_pr)
     LinearLayout searchPoPr;
+
     Unbinder unbinder1;
     private ProgressBar progressBarClose;
     private Unbinder unbinder;
@@ -125,7 +126,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 //        unbinder = ButterKnife.bind(this, mParentView);
         ButterKnife.bind(this, mParentView);
         searchPoPr.setVisibility(View.VISIBLE);
-        editTextSearch.setHint("Search Purchase Order Number");
+        editTextSearch.setHint("Search By Purchase Order Number");
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_order);
         progressBarClose = mParentView.findViewById(R.id.progressBarClose);
         mContext = getActivity();
@@ -134,6 +135,25 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             subModulesItemList = bundle.getString("subModulesItemList");
         }
         unbinder1 = ButterKnife.bind(this, mParentView);
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()==0){
+                    searchKey="";
+                    requestPrListOnline(0,false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         return mParentView;
     }
 
@@ -331,6 +351,12 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
 
     @Override
     public void onResume() {
+        if(AppUtils.getInstance().checkNetworkState()){
+            editTextSearch.setText("");
+            requestPrListOnline(pageNumber,false);
+        } else {
+            setUpPOAdapter();
+        }
         super.onResume();
         if (getUserVisibleHint()) {
             if (subModulesItemList.contains("view-purchase-order")) {
@@ -350,8 +376,13 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 requestPrListOnline(0,false);
                 break;
             case R.id.imageViewSearch:
-                searchKey=editTextSearch.getText().toString();
-                requestPrListOnline(0,true);
+                if(AppUtils.getInstance().checkNetworkState()){
+                    searchKey=editTextSearch.getText().toString();
+                    requestPrListOnline(0,true);
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PurchaseOrderListFragment.class");
+                }
+
                 break;
         }
     }
