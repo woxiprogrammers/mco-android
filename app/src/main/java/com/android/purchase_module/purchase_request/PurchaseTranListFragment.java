@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -58,6 +59,9 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     ImageView imageViewSearch;
     @BindView(R.id.search_grn)
     LinearLayout searchGrn;
+    @BindView(R.id.grnListing)
+    RelativeLayout grnlisting;
+
     Unbinder unbinder1;
     private Unbinder unbinder;
     private Context mContext;
@@ -88,9 +92,13 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         mParentView = inflater.inflate(R.layout.layout_recycler_view_listing_for_bills, container, false);
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_trans_list);
         unbinder1 = ButterKnife.bind(this, mParentView);
-        searchGrn.setVisibility(View.VISIBLE);
-        editTextSearch.setHint("Search By GRN");
+
+
         initializeViews();
+        if (isFromPurchaseRequestHome){
+            searchGrn.setVisibility(View.VISIBLE);
+        }
+        editTextSearch.setHint("Search By GRN");
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -147,7 +155,6 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         } else {
             purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class)
                     .equalTo("purchaseOrderId", intPrimaryKey)
-                    .contains("grn",searchKey, Case.INSENSITIVE)
                     .findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
         }
         PurchaseTransAdapter purchaseBillRvAdapter = new PurchaseTransAdapter(purchaseBillListItems, true, true);
@@ -174,80 +181,78 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     }
 
     private void requestPrListOnline(int pageId, final boolean isFromSearch) {
-        JSONObject params = new JSONObject();
-        try {
-            if(isFromSearch){
-                if (isFromPurchaseRequestHome) {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            JSONObject params = new JSONObject();
+            AppUtils.getInstance().showProgressBar(grnlisting,true);
+            try {
+                if(isFromSearch){
                     params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
                     params.put("search_grn",searchKey);
+
                 } else {
-                    params.put("purchase_order_id", intPrimaryKey);
-                    params.put("search_grn",searchKey);
+                    if (isFromPurchaseRequestHome) {
+                        params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                    } else {
+                        params.put("purchase_order_id", intPrimaryKey);
+                    }
                 }
-            } else {
-                if (isFromPurchaseRequestHome) {
-                    params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-                } else {
-                    params.put("purchase_order_id", intPrimaryKey);
-                }
+                params.put("page", pageId);
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            if (isFromPurchaseRequestHome) {
-                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            } else {
-                params.put("purchase_order_id", intPrimaryKey);
-            }
-            params.put("page", pageId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_PURCHASE_BILL_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestPrListOnline")
-                .build()
-                .getAsObject(DSPurchaseOrderTransactionResponse.class, new ParsedRequestListener<DSPurchaseOrderTransactionResponse>() {
-                    @Override
-                    public void onResponse(final DSPurchaseOrderTransactionResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        if (!response.getPageId().equalsIgnoreCase("")) {
-                            pageNumber = Integer.parseInt(response.getPageId());
-                        }
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(DSPurchaseOrderTransactionResponse.class);
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    setUpTransactionAdapter();
-                                    Timber.d("Success");
-                                    if (oldPageNumber != pageNumber) {
-                                        oldPageNumber = pageNumber;
-                                        requestPrListOnline(pageNumber,isFromSearch);
+            AndroidNetworking.post(AppURL.API_PURCHASE_BILL_LIST + AppUtils.getInstance().getCurrentToken())
+                    .addJSONObjectBody(params)
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setPriority(Priority.MEDIUM)
+                    .setTag("requestPrListOnline")
+                    .build()
+                    .getAsObject(DSPurchaseOrderTransactionResponse.class, new ParsedRequestListener<DSPurchaseOrderTransactionResponse>() {
+                        @Override
+                        public void onResponse(final DSPurchaseOrderTransactionResponse response) {
+                            realm = Realm.getDefaultInstance();
+                            if (!response.getPageId().equalsIgnoreCase("")) {
+                                pageNumber = Integer.parseInt(response.getPageId());
+                            }
+                            try {
+                                realm.executeTransactionAsync(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        realm.delete(DSPurchaseOrderTransactionResponse.class);
+                                        realm.insertOrUpdate(response);
                                     }
+                                }, new Realm.Transaction.OnSuccess() {
+                                    @Override
+                                    public void onSuccess() {
+                                        setUpTransactionAdapter();
+                                        Timber.d("Success");
+                                        if (oldPageNumber != pageNumber) {
+                                            oldPageNumber = pageNumber;
+                                            requestPrListOnline(pageNumber,isFromSearch);
+                                        }
+                                        AppUtils.getInstance().showProgressBar(grnlisting,false);
+                                    }
+                                }, new Realm.Transaction.OnError() {
+                                    @Override
+                                    public void onError(Throwable error) {
+                                        AppUtils.getInstance().logRealmExecutionError(error);
+                                    }
+                                });
+                            } finally {
+                                if (realm != null) {
+                                    realm.close();
                                 }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
                         }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
-                    }
-                });
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                        }
+                    });
+        }
     }
 
     @Override

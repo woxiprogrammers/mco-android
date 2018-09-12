@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,6 +71,9 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     ImageView imageViewSearch;
     @BindView(R.id.search_po_pr)
     LinearLayout searchPoPr;
+    @BindView(R.id.mainRelativeList)
+    RelativeLayout mainRelativeList;
+
 
     Unbinder unbinder1;
     private ProgressBar progressBarClose;
@@ -125,7 +129,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         View mParentView = inflater.inflate(R.layout.layout_recycler_purchase_order, container, false);
 //        unbinder = ButterKnife.bind(this, mParentView);
         ButterKnife.bind(this, mParentView);
-        searchPoPr.setVisibility(View.VISIBLE);
+        if(!isFromPurchaseRequest)
+            searchPoPr.setVisibility(View.VISIBLE);
         editTextSearch.setHint("Search By Purchase Order Number");
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_order);
         progressBarClose = mParentView.findViewById(R.id.progressBarClose);
@@ -146,6 +151,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                 if(s.length()==0){
                     searchKey="";
                     requestPrListOnline(0,false);
+                    setUpPOAdapter();
                 }
             }
 
@@ -277,76 +283,78 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     }
 
     private void requestPrListOnline(int pageId, final boolean isFromSearch) {
-        JSONObject params = new JSONObject();
-        try {
-            if(isFromSearch){
-                if (isFromPurchaseRequest) {
-                    params.put("purchase_request_id", purchaseRequestId);
+        if(AppUtils.getInstance().checkNetworkState()){
+            JSONObject params = new JSONObject();
+            AppUtils.getInstance().showProgressBar(mainRelativeList,true);
+            try {
+                if(isFromSearch){
+                    params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                    params.put("page", pageId);
+                    params.put("search_format_id",searchKey);
+                } else {
+                    if (isFromPurchaseRequest) {
+                        params.put("purchase_request_id", purchaseRequestId);
+                    }
+                    params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                    params.put("page", pageId);
                 }
-                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-                params.put("page", pageId);
-                params.put("search_format_id",searchKey);
-            } else {
-                if (isFromPurchaseRequest) {
-                    params.put("purchase_request_id", purchaseRequestId);
-                }
-                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-                params.put("page", pageId);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestPrListOnline")
-                .build()
-                .getAsObject(PurchaseOrderResponse.class, new ParsedRequestListener<PurchaseOrderResponse>() {
-                    @Override
-                    public void onResponse(final PurchaseOrderResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
+            AndroidNetworking.post(AppURL.API_PURCHASE_ORDER_LIST + AppUtils.getInstance().getCurrentToken())
+                    .addJSONObjectBody(params)
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setPriority(Priority.MEDIUM)
+                    .setTag("requestPrListOnline")
+                    .build()
+                    .getAsObject(PurchaseOrderResponse.class, new ParsedRequestListener<PurchaseOrderResponse>() {
+                        @Override
+                        public void onResponse(final PurchaseOrderResponse response) {
+                            realm = Realm.getDefaultInstance();
+                            try {
+                                realm.executeTransactionAsync(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
                                     /*realm.delete(PurchaseOrderResponse.class);
                                     realm.delete(PurchaseOrderRespData.class);
                                     realm.delete(PurchaseOrderListItem.class);*/
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    if (!response.getPageId().equalsIgnoreCase("")) {
-                                        pageNumber = Integer.parseInt(response.getPageId());
+                                        realm.insertOrUpdate(response);
                                     }
-                                    isCreateAccess = response.isCreateAccess();
-                                    if (oldPageNumber != pageNumber) {
-                                        oldPageNumber = pageNumber;
-                                        requestPrListOnline(pageNumber,isFromSearch);
+                                }, new Realm.Transaction.OnSuccess() {
+                                    @Override
+                                    public void onSuccess() {
+                                        if (!response.getPageId().equalsIgnoreCase("")) {
+                                            pageNumber = Integer.parseInt(response.getPageId());
+                                        }
+                                        isCreateAccess = response.isCreateAccess();
+                                        if (oldPageNumber != pageNumber) {
+                                            oldPageNumber = pageNumber;
+                                            requestPrListOnline(pageNumber,isFromSearch);
+                                        }
+                                        setUpPOAdapter();
+                                        AppUtils.getInstance().showProgressBar(mainRelativeList,false);
+                                        Timber.d("Realm execution successful");
                                     }
-                                    setUpPOAdapter();
-                                    Timber.d("Realm execution successful");
+                                }, new Realm.Transaction.OnError() {
+                                    @Override
+                                    public void onError(Throwable error) {
+                                        AppUtils.getInstance().logRealmExecutionError(error);
+                                    }
+                                });
+                            } finally {
+                                if (realm != null) {
+                                    realm.close();
                                 }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
                         }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
-                    }
-                });
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                        }
+                    });
+        }
+
     }
 
     @Override

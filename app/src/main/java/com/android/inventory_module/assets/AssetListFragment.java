@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,11 +87,10 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
     @Override
     public void onResume() {
         super.onResume();
+        editTextSearchInventory.setText("");
         if(AppUtils.getInstance().checkNetworkState()){
-            editTextSearchInventory.setText("");
             requestAssetListOnline(pageNumber,false);
         } else {
-            editTextSearchInventory.setText("");
             setUpAssetListAdapter();
         }
 
@@ -130,6 +130,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 if(s.length()==0){
                     searchKeyWord="";
                     requestAssetListOnline(0,false);
+                    setUpAssetListAdapter();
                 }
             }
 
@@ -153,14 +154,14 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
 
     private void setUpAssetListAdapter() {
         realm = Realm.getDefaultInstance();
-        final RealmResults<AssetsListItem> assetListItems = realm.where(AssetsListItem.class)
+        assetsListItems = realm.where(AssetsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("assetsName", searchKeyWord, Case.INSENSITIVE)
                 .findAll();
         /*assetsListItems = realm.where(AssetsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
         Timber.d(String.valueOf(assetsListItems));*/
-        AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetListItems, true, true);
+        AssetsListAdapter assetsListAdapter = new AssetsListAdapter(assetsListItems, true, true);
         rvMaterialList.setLayoutManager(new LinearLayoutManager(mContext));
         rvMaterialList.setHasFixedSize(true);
         rvMaterialList.setAdapter(assetsListAdapter);
@@ -169,6 +170,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
+                        Log.i("@@", "onItemClick: "+position);
                         if (isCrateInOutTransfer) {
                             if (!assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
                                 /*Intent startIntent = new Intent(mContext, MoveOutAssetNewActivity.class);
@@ -236,7 +238,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                                         oldPageNumber = pageNumber;
                                         requestAssetListOnline(pageNumber, isFromSearch);
                                     }
-                                    setUpAssetListAdapter();
+                                    //setUpAssetListAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
@@ -265,10 +267,17 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 editTextSearchInventory.setText("");
                 searchKeyWord = "";
                 requestAssetListOnline(0, false);
+                setUpAssetListAdapter();
                 break;
             case R.id.imageViewSearchInventory:
-                searchKeyWord = editTextSearchInventory.getText().toString();
-                requestAssetListOnline(0,true);
+                if(AppUtils.getInstance().checkNetworkState()){
+                    searchKeyWord = editTextSearchInventory.getText().toString();
+                    requestAssetListOnline(0,true);
+                    setUpAssetListAdapter();
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("AssetListFragment.class");
+                }
+
                 break;
         }
     }

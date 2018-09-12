@@ -141,7 +141,6 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 if (s.length()==0){
                     searchKey="";
                     if(AppUtils.getInstance().checkNetworkState()){
@@ -379,7 +378,9 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                 }
                 break;
         }
+
     }
+
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseRequestRvAdapter extends RealmRecyclerViewAdapter<PurchaseRequestListItem, PurchaseRequestRvAdapter.MyViewHolder> {

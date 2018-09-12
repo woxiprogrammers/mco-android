@@ -99,7 +99,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
         inventory_search.setVisibility(View.VISIBLE);
-        editTextSearchInventory.setVisibility(View.VISIBLE);
         editTextSearchInventory.setHint("Search Material");
         //searchKeyWord=editTextSearchInventory.getText().toString();
         Bundle bundle = getArguments();
@@ -120,7 +119,9 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length()==0){
                     searchKeyWord="";
-                    requestInventoryResponse(0,false);
+                    if(AppUtils.getInstance().checkNetworkState())
+                        requestInventoryResponse(0,false);
+                    setAdapterForMaterialList();
                 }
             }
 
@@ -150,16 +151,13 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     @Override
     public void onResume() {
+        super.onResume();
+        editTextSearchInventory.setText("");
         if (AppUtils.getInstance().checkNetworkState()) {
-            editTextSearchInventory.setText("");
             requestInventoryResponse(pageNumber, false);
         } else {
-            editTextSearchInventory.setText("");
-
             setAdapterForMaterialList();
         }
-
-        super.onResume();
     }
 
     private void setAdapterForMaterialList() {
@@ -235,7 +233,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                                         oldPageNumber = pageNumber;
                                         requestInventoryResponse(pageNumber, isFromSearch);
                                     }
-                                    setAdapterForMaterialList();
                                     AppUtils.getInstance().showProgressBar(mainRelativeList, false);
                                 }
                             }, new Realm.Transaction.OnError() {
@@ -269,6 +266,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         if(AppUtils.getInstance().checkNetworkState()){
             searchKeyWord = editTextSearchInventory.getText().toString();
             requestInventoryResponse(0, true);
+            setAdapterForMaterialList();
         } else {
             AppUtils.getInstance().showOfflineMessage("MaterialListFragment.class");
         }
@@ -280,5 +278,6 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         editTextSearchInventory.setText("");
         searchKeyWord="";
         requestInventoryResponse(0, false);
+        setAdapterForMaterialList();
     }
 }
