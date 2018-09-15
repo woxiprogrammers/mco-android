@@ -217,7 +217,7 @@ public class PeticashFormActivity extends BaseActivity {
     private String str;
     private Context mContext;
     private Realm realm;
-    private int getPerWeges;
+    private String getPerWeges;
     private ArrayList<File> arrayImageFileList;
     private String flagForLayout = "";
     private float floatAmount, payableAmountForSalary;
@@ -487,7 +487,7 @@ public class PeticashFormActivity extends BaseActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 try{
                     if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
-                        floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
+                        floatAmount = Float.parseFloat(getPerWeges) * Float.parseFloat(charSequence.toString());
                         editTextSalaryAmount.setText(String.valueOf(floatAmount));
                         payableAmountForSalary = floatAmount - intAdvanceAmount;//intadvanceampunt
                     } else {

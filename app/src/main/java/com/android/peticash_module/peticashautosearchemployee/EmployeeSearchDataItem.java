@@ -25,7 +25,7 @@ public class EmployeeSearchDataItem extends RealmObject{
 	private String formatEmployeeId;
 
 	@SerializedName("per_day_wages")
-	private int perDayWages;
+	private String perDayWages;
 
 	@SerializedName("employee_profile_picture")
 	private String employeeProfilePicture;
@@ -95,11 +95,11 @@ public class EmployeeSearchDataItem extends RealmObject{
 		return formatEmployeeId;
 	}
 
-	public void setPerDayWages(int perDayWages){
+	public void setPerDayWages(String perDayWages){
 		this.perDayWages = perDayWages;
 	}
 
-	public int getPerDayWages(){
+	public String getPerDayWages(){
 		return perDayWages;
 	}
 }
