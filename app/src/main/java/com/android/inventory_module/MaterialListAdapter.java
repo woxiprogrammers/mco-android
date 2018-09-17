@@ -3,6 +3,7 @@ package com.android.inventory_module;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import timber.log.Timber;
  * Created by Sharvari on 18/8/17.
  */
 public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListItem, MaterialListAdapter.MyViewHolder> {
+
     private OrderedRealmCollection<MaterialListItem> materialListItemCollection;
     private DecimalFormat df;
 
@@ -44,6 +46,10 @@ public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListIt
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final MaterialListItem materialListItem = materialListItemCollection.get(position);
+        if (!TextUtils.isEmpty(materialListItem.getErrorMessage())){
+            holder.tvErrorMessage.setVisibility(View.VISIBLE);
+            holder.tvErrorMessage.setText(materialListItem.getErrorMessage());
+        }
         holder.textview_material_name.setText(materialListItem.getMaterialName());
         holder.textview_quantity_in.setText(df.format(Float.parseFloat(materialListItem.getQuantityIn())) + "");
         holder.textview_quantity_out.setText(df.format(Float.parseFloat(materialListItem.getQuantityOut())) + "");
@@ -64,6 +70,8 @@ public class MaterialListAdapter extends RealmRecyclerViewAdapter<MaterialListIt
         TextView textview_quantity_out;
         @BindView(R.id.textview_quantity_current)
         TextView textview_quantity_current;
+        @BindView(R.id.tv_errorMessage)
+        TextView tvErrorMessage;
         private Context context;
 
         private MyViewHolder(View itemView) {

@@ -2,6 +2,7 @@ package com.android.inventory_module.assets;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,12 +43,17 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
         holder.assetModelNumber.setText("Model No : " +assetsListItem.getModelNumber());
         holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
+        Log.i("@@1",assetsListItem.getAssetsName());
+        Log.i("@@2",assetsListItem.getSlug());
         if (assetsListItem.getSlug().equalsIgnoreCase("fuel_and_electricity_dependent")) {
-            holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
+            holder.linearLayoutForOtherAssets.setVisibility(View.VISIBLE);
             holder.linearLayoutBothType.setVisibility(View.VISIBLE);
             holder.textviewBothElectrcityUsed.setText(String.valueOf(assetsListItem.getTotalElectricityConsumed()));
             holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
             holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume()));
+            holder.textviewInQuantityAsset.setText(String.valueOf(assetsListItem.getIn()));
+            holder.textviewOutQuantityAsset.setText(String.valueOf(assetsListItem.getOut()));
+            holder.textviewAvailableAsset.setText(String.valueOf(assetsListItem.getAvailable()));
         } else if (assetsListItem.getSlug().equalsIgnoreCase("electricity_dependent")) {
             holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
             holder.linearLayoutBothType.setVisibility(View.GONE);
