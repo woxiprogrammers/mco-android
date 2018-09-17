@@ -170,7 +170,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, final int position) {
-                        Log.i("@@", "onItemClick: "+position);
                         if (isCrateInOutTransfer) {
                             if (!assetsListItems.get(position).getSlug().equalsIgnoreCase("other")) {
                                 /*Intent startIntent = new Intent(mContext, MoveOutAssetNewActivity.class);
