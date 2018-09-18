@@ -531,7 +531,7 @@ public class PeticashFormActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!TextUtils.isEmpty(charSequence.toString()) && !TextUtils.isEmpty(amountLimit)) {
-                    if (Long.parseLong(charSequence.toString()) > Long.parseLong(amountLimit)) {
+                    if (Double.parseDouble(charSequence.toString()) > Double.parseDouble(amountLimit)) {
                         exceedAmount.setVisibility(View.VISIBLE);
                         exceedAmount.setText("Amount should be below " + amountLimit);
                         buttonGenerateGrn.setVisibility(View.GONE);
