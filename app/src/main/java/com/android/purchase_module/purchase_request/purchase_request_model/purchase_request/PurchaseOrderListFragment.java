@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -112,9 +113,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             recyclerView_commonListingView.setAdapter(null);
         }
         if (!isFromPurchaseRequest) {
-            if (getUserVisibleHint()) {
-                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-            }
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
         }
     }
 
@@ -150,8 +150,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length()==0){
                     searchKey="";
-                    requestPrListOnline(0,false);
-                    setUpPOAdapter();
+                    if(AppUtils.getInstance().checkNetworkState())
+                        requestPrListOnline(0,false);
                 }
             }
 
@@ -232,6 +232,7 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
         recyclerView_commonListingView.setAdapter(purchaseOrderRvAdapter);
+        AppUtils.getInstance().showProgressBar(mainRelativeList,false);
     }
 
     private void openDialog(final int id) {
@@ -285,7 +286,8 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
     private void requestPrListOnline(int pageId, final boolean isFromSearch) {
         if(AppUtils.getInstance().checkNetworkState()){
             JSONObject params = new JSONObject();
-            AppUtils.getInstance().showProgressBar(mainRelativeList,true);
+            //AppUtils.getInstance().showProgressBar(mainRelativeList,true);
+            progressBarClose.setVisibility(View.VISIBLE);
             try {
                 if(isFromSearch){
                     params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
@@ -332,13 +334,14 @@ public class PurchaseOrderListFragment extends Fragment implements FragmentInter
                                             requestPrListOnline(pageNumber,isFromSearch);
                                         }
                                         setUpPOAdapter();
-                                        AppUtils.getInstance().showProgressBar(mainRelativeList,false);
-                                        Timber.d("Realm execution successful");
+                                        //AppUtils.getInstance().showProgressBar(mainRelativeList,false);
+                                        progressBarClose.setVisibility(View.GONE);
                                     }
                                 }, new Realm.Transaction.OnError() {
                                     @Override
                                     public void onError(Throwable error) {
                                         AppUtils.getInstance().logRealmExecutionError(error);
+                                        Log.i("@@", "onError: "+error);
                                     }
                                 });
                             } finally {

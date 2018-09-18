@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,10 +109,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     @Override
     public void fragmentBecameVisible() {
-        if (getUserVisibleHint()) {
-            ((PurchaseHomeActivity) mContext).hideDateLayout(false);
-            ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
-        }
+        ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+        ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
     }
 
     @Override

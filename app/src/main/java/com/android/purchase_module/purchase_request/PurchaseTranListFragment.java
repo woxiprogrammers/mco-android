@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -109,7 +110,8 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length()==0){
                     searchKey="";
-                    requestPrListOnline(0,false);
+                    if(AppUtils.getInstance().checkNetworkState())
+                        requestPrListOnline(0,false);
                 }
             }
 
@@ -128,9 +130,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     public void fragmentBecameVisible() {
         requestPrListOnline(pageNumber,false);
         if (isFromPurchaseRequestHome) {
-            if (getUserVisibleHint() /*&& ((PurchaseHomeActivity) mContext) != null*/) {
-                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-            }
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
         }
     }
 
