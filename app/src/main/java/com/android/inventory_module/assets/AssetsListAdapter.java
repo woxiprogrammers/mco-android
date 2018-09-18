@@ -43,11 +43,10 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
         holder.assetModelNumber.setText("Model No : " +assetsListItem.getModelNumber());
         holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
-        Log.i("@@1",assetsListItem.getAssetsName());
-        Log.i("@@2",assetsListItem.getSlug());
         if (assetsListItem.getSlug().equalsIgnoreCase("fuel_and_electricity_dependent")) {
             holder.linearLayoutForOtherAssets.setVisibility(View.VISIBLE);
             holder.linearLayoutBothType.setVisibility(View.VISIBLE);
+            holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
             holder.textviewBothElectrcityUsed.setText(String.valueOf(assetsListItem.getTotalElectricityConsumed()));
             holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
             holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume()));
