@@ -156,7 +156,7 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
         realm = Realm.getDefaultInstance();
         assetsListItems = realm.where(AssetsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                //.contains("assetsName", searchKeyWord, Case.INSENSITIVE)
+                .contains("assetsName", searchKeyWord, Case.INSENSITIVE)
                 .findAll();
         /*assetsListItems = realm.where(AssetsListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAll();
@@ -237,7 +237,6 @@ public class AssetListFragment extends Fragment implements FragmentInterface {
                                         oldPageNumber = pageNumber;
                                         requestAssetListOnline(pageNumber, isFromSearch);
                                     }
-                                    //setUpAssetListAdapter();
                                 }
                             }, new Realm.Transaction.OnError() {
                                 @Override
