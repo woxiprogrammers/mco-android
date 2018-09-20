@@ -530,15 +530,23 @@ public class PeticashFormActivity extends BaseActivity {
             }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!TextUtils.isEmpty(charSequence.toString()) && !TextUtils.isEmpty(amountLimit)) {
-                    if (Double.parseDouble(charSequence.toString()) > Double.parseDouble(amountLimit)) {
-                        exceedAmount.setVisibility(View.VISIBLE);
-                        exceedAmount.setText("Amount should be below " + amountLimit);
-                        buttonGenerateGrn.setVisibility(View.GONE);
-                    } else {
-                        exceedAmount.setVisibility(View.GONE);
-                        buttonGenerateGrn.setVisibility(View.VISIBLE);
+                try{
+                    if (!TextUtils.isEmpty(charSequence.toString()) && !TextUtils.isEmpty(amountLimit)) {
+                        if (Double.parseDouble(charSequence.toString()) > Double.parseDouble(amountLimit)) {
+                            exceedAmount.setVisibility(View.VISIBLE);
+                            exceedAmount.setText("Amount should be below " + amountLimit);
+                            buttonGenerateGrn.setVisibility(View.GONE);
+                        } else {
+                            exceedAmount.setVisibility(View.GONE);
+                            buttonGenerateGrn.setVisibility(View.VISIBLE);
+                        }
                     }
+                } catch (NumberFormatException e){
+                    exceedAmount.setVisibility(View.VISIBLE);
+                    exceedAmount.setText("Please enter a valid bill amount.");
+                    buttonGenerateGrn.setVisibility(View.GONE);
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
 
