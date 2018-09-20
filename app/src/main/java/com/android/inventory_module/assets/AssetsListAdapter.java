@@ -2,10 +2,10 @@ package com.android.inventory_module.assets;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +22,7 @@ import timber.log.Timber;
  * Created by Sharvari on 31/8/17.
  */
 public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, AssetsListAdapter.MyViewHolder> {
+
     private OrderedRealmCollection<AssetsListItem> assetsListItemCollection;
     private AssetsListItem assetsListItem;
 
@@ -41,33 +42,65 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
     public void onBindViewHolder(MyViewHolder holder, int position) {
         assetsListItem = assetsListItemCollection.get(position);
         holder.textViewAssetListName.setText(assetsListItem.getAssetsName());
-        holder.assetModelNumber.setText("Model No : " +assetsListItem.getModelNumber());
+        holder.assetModelNumber.setText("Model No : " + assetsListItem.getModelNumber());
         holder.textviewWorkHour.setText(String.valueOf(assetsListItem.getTotalWorkHour()));
         if (assetsListItem.getSlug().equalsIgnoreCase("fuel_and_electricity_dependent")) {
+            //Show Icons
+            holder.ivFuelDependent.setVisibility(View.VISIBLE);
+            holder.ivElectricityDependent.setVisibility(View.VISIBLE);
+            holder.ivOther.setVisibility(View.GONE);
+            // LL for IN,OUT,AVAILABLE fields
             holder.linearLayoutForOtherAssets.setVisibility(View.VISIBLE);
-            holder.linearLayoutBothType.setVisibility(View.VISIBLE);
-            holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
-            holder.textviewBothElectrcityUsed.setText(String.valueOf(assetsListItem.getTotalElectricityConsumed()));
-            holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
-            holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume()));
             holder.textviewInQuantityAsset.setText(String.valueOf(assetsListItem.getIn()));
             holder.textviewOutQuantityAsset.setText(String.valueOf(assetsListItem.getOut()));
             holder.textviewAvailableAsset.setText(String.valueOf(assetsListItem.getAvailable()));
-        } else if (assetsListItem.getSlug().equalsIgnoreCase("electricity_dependent")) {
+            //LL for ELECTRICITY USED field
+            holder.linearLayoutBothType.setVisibility(View.VISIBLE);
+            holder.textviewBothElectrcityUsed.setText(String.valueOf(assetsListItem.getTotalElectricityConsumed()));
+            //LL for  UNITS,WORK HOURS, DIESEL CONSUMED
             holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
+            holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
+            holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume()));
+        } else if (assetsListItem.getSlug().equalsIgnoreCase("electricity_dependent")) {
+            //Show Icons
+            holder.ivElectricityDependent.setVisibility(View.VISIBLE);
+            holder.ivFuelDependent.setVisibility(View.GONE);
+            holder.ivOther.setVisibility(View.GONE);
+            //LL for  UNITS,WORK HOURS, DIESEL CONSUMED
+            holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
+            //LL for ELECTRICITY USED field
             holder.linearLayoutBothType.setVisibility(View.GONE);
-            holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
+            // LL for IN,OUT,AVAILABLE fields
+            holder.linearLayoutForOtherAssets.setVisibility(View.VISIBLE);
+            holder.textviewInQuantityAsset.setText(String.valueOf(assetsListItem.getIn()));
+            holder.textviewOutQuantityAsset.setText(String.valueOf(assetsListItem.getOut()));
+            holder.textviewAvailableAsset.setText(String.valueOf(assetsListItem.getAvailable()));
+            //TV for Electricity used
             holder.textviewConsumed.setText("Electricity\nUsed");
             holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
             holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalElectricityConsumed()));
         } else if (assetsListItem.getSlug().equalsIgnoreCase("fuel_dependent")) {
+            //Show Icons
+            holder.ivFuelDependent.setVisibility(View.VISIBLE);
+            holder.ivElectricityDependent.setVisibility(View.GONE);
+            holder.ivOther.setVisibility(View.GONE);
+            //ll for units, work house, diesel consumed
             holder.linearLayoutForThreeTypes.setVisibility(View.VISIBLE);
+            //ll foR electricity used
             holder.linearLayoutBothType.setVisibility(View.GONE);
-            holder.linearLayoutForOtherAssets.setVisibility(View.GONE);
+            // ll for in, out, available
+            holder.linearLayoutForOtherAssets.setVisibility(View.VISIBLE);
+            holder.textviewInQuantityAsset.setText(String.valueOf(assetsListItem.getIn()));
+            holder.textviewOutQuantityAsset.setText(String.valueOf(assetsListItem.getOut()));
+            holder.textviewAvailableAsset.setText(String.valueOf(assetsListItem.getAvailable()));
             holder.textviewConsumed.setText("Diesel\nConsumed");
             holder.textViewAssetUnits.setText(String.valueOf(assetsListItem.getAssetsUnits()));
             holder.textviewDieselConsume.setText(String.valueOf(assetsListItem.getTotalDieselConsume()));
         } else if (assetsListItem.getSlug().equalsIgnoreCase("other")) {
+            //show icons
+            holder.ivOther.setVisibility(View.VISIBLE);
+            holder.ivElectricityDependent.setVisibility(View.GONE);
+            holder.ivFuelDependent.setVisibility(View.GONE);
             holder.linearLayoutForThreeTypes.setVisibility(View.GONE);
             holder.linearLayoutForOtherAssets.setVisibility(View.VISIBLE);
             holder.linearLayoutBothType.setVisibility(View.GONE);
@@ -114,6 +147,12 @@ public class AssetsListAdapter extends RealmRecyclerViewAdapter<AssetsListItem, 
         LinearLayout linearLayoutForThreeTypes;
         @BindView(R.id.textviewConsumed)
         TextView textviewConsumed;
+        @BindView(R.id.iv_fuel_dependent)
+        ImageView ivFuelDependent;
+        @BindView(R.id.iv_electricity_dependent)
+        ImageView ivElectricityDependent;
+        @BindView(R.id.iv_other)
+        ImageView ivOther;
 
         private MyViewHolder(View itemView) {
             super(itemView);
