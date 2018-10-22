@@ -34,7 +34,7 @@ public class EmployeeSearchDataItem extends RealmObject{
 	private boolean isTransactionPending;
 
 	@SerializedName("balance")
-	private int balance;
+		private float balance;
 
 	@SerializedName("advance_after_last_salary")
 	private int advanceAmount;
@@ -47,11 +47,11 @@ public class EmployeeSearchDataItem extends RealmObject{
 		isTransactionPending = transactionPending;
 	}
 
-	public int getBalance() {
+	public float getBalance() {
 		return balance;
 	}
 
-	public void setBalance(int balance) {
+	public void setBalance(float balance) {
 		this.balance = balance;
 	}
 

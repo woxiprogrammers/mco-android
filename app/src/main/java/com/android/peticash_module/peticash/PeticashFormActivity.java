@@ -243,7 +243,7 @@ public class PeticashFormActivity extends BaseActivity {
     private ProgressDialog progressDialog;
     private String approved_amount;
     private boolean isSalary;
-    private int intBalance;
+    private float floatBalance;
     private TextWatcher textWatcherSalaryAmount = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -612,7 +612,7 @@ public class PeticashFormActivity extends BaseActivity {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
             employeesearchdataItem = realm.where(EmployeeSearchDataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            intBalance = employeesearchdataItem.getBalance();
+            floatBalance = employeesearchdataItem.getBalance();
             textViewEmployeeName.setText("( " + employeesearchdataItem.getFormatEmployeeId() + " ) " + employeesearchdataItem.getEmployeeName());
             textViewBalance.setText("Balance : " + employeesearchdataItem.getBalance());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
@@ -1005,7 +1005,7 @@ public class PeticashFormActivity extends BaseActivity {
             }
             if (isSalary) {
                 params.put("type", "salary");
-                params.put("balance", intBalance);
+                params.put("balance", floatBalance);
                 params.put("employee_id", primaryKey);
                 params.put("per_day_wages", getPerWeges);
                 params.put("working_days", edittextDay.getText().toString());
