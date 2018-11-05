@@ -170,6 +170,12 @@
                             android:digits="0123456789."
                             android:inputType="number"
                             android:textColor="@color/black"/>
+                        <TextView
+                            android:id="@+id/invalidQuantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorAccent"
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -253,7 +259,7 @@
                         style="@style/MyEditTextHeightSTyle"
                         android:layout_width="match_parent"
                         android:background="@android:drawable/editbox_background_normal"
-                        android:digits="0123456789"
+                        android:digits="0123456789."
                         android:inputType="number"
                         android:maxLength="11"
                         android:textColor="@color/black"/>

@@ -9,12 +9,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -40,16 +43,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Case;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -67,6 +68,15 @@ import static android.app.Activity.RESULT_OK;
 public class PurchaseRequestListFragment extends Fragment implements FragmentInterface, DatePickerDialog.OnDateSetListener {
     @BindView(R.id.purchaseRelative)
     RelativeLayout purchaseRelative;
+    @BindView(R.id.editTextSearch)
+    EditText editTextSearch;
+    @BindView(R.id.clear_search)
+    ImageView clearSearch;
+    @BindView(R.id.imageViewSearch)
+    ImageView imageViewSearch;
+    @BindView(R.id.search_po_pr)
+    LinearLayout searchPoPr;
+
 
     private String subModuleTag, permissionList;
     RecyclerView recyclerView_commonListingView;
@@ -81,6 +91,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private int oldPageNumber;
     private int passYear, passMonth;
     private String subModulesItemList;
+    private String searchKey;
 
     public PurchaseRequestListFragment() {
         // Required empty public constructor
@@ -98,10 +109,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
 
     @Override
     public void fragmentBecameVisible() {
-        if (getUserVisibleHint()) {
-            ((PurchaseHomeActivity) mContext).hideDateLayout(false);
-            ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
-        }
+        ((PurchaseHomeActivity) mContext).hideDateLayout(false);
+        ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
     }
 
     @Override
@@ -109,6 +118,8 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         View mParentView = inflater.inflate(R.layout.fragment_purchase_request_list, container, false);
         unbinder = ButterKnife.bind(this, mParentView);
         recyclerView_commonListingView = mParentView.findViewById(R.id.rv_material_purchase_request_list);
+        searchPoPr.setVisibility(View.VISIBLE);
+        editTextSearch.setHint("Search By Purchase Request Number");
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         passMonth = calendar.get(Calendar.MONTH) + 1;
         passYear = calendar.get(Calendar.YEAR);
@@ -121,12 +132,41 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         }
         //Initialize Views
         initializeViews();
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length()==0){
+                    searchKey="";
+                    if(AppUtils.getInstance().checkNetworkState()){
+                        requestPrListOnline(0,false);
+                    }
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         setUpPrAdapter();
         return mParentView;
     }
 
     @Override
     public void onResume() {
+        if(AppUtils.getInstance().checkNetworkState()){
+            editTextSearch.setText("");
+            requestPrListOnline(pageNumber,false);
+        } else {
+            editTextSearch.setText("");
+            setUpPrAdapter();
+        }
         super.onResume();
         if (getUserVisibleHint()) {
             ((PurchaseHomeActivity) mContext).hideDateLayout(false);
@@ -161,7 +201,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         passYear = year;
         passMonth = month;
         ((PurchaseHomeActivity) mContext).setDateInAppBar(passMonth, passYear);
-        requestPrListOnline(pageNumber);
+        requestPrListOnline(pageNumber,false);
     }
 
     /**
@@ -185,21 +225,29 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
     private void functionForGettingData() {
         if (AppUtils.getInstance().checkNetworkState()) {
             //Get data from Server
-            requestPrListOnline(pageNumber);
+            requestPrListOnline(pageNumber,false);
         } else {
             //Get data from local DB
             setUpPrAdapter();
         }
     }
 
-    private void requestPrListOnline(int pageId) {
+    private void requestPrListOnline(int pageId, final boolean isFromSearch) {
         AppUtils.getInstance().showProgressBar(purchaseRelative, true);
         JSONObject params = new JSONObject();
         try {
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            params.put("month", passMonth);
-            params.put("year", passYear);
-            params.put("page", pageId);
+            if(isFromSearch){
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("month", passMonth);
+                params.put("year", passYear);
+                params.put("page", pageId);
+                params.put("search_format_id",searchKey);
+            } else {
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("month", passMonth);
+                params.put("year", passYear);
+                params.put("page", pageId);
+            }
             Timber.d(String.valueOf(params));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -229,7 +277,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
                                     setUpPrAdapter();
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
-                                        requestPrListOnline(pageNumber);
+                                        requestPrListOnline(pageNumber,isFromSearch);
                                     }
                                     AppUtils.getInstance().showProgressBar(purchaseRelative, false);
 
@@ -261,7 +309,9 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         purchaseRequestListItems = realm.where(PurchaseRequestListItem.class)
                 .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
                 .contains("date", String.valueOf(passYear))
-                .contains("date", strMonth).findAllSortedAsync("id", Sort.DESCENDING);
+                .contains("purchaseRequestId", searchKey, Case.INSENSITIVE)
+                .contains("date", strMonth)
+                .findAllSortedAsync("id", Sort.DESCENDING);
         PurchaseRequestRvAdapter purchaseRequestRvAdapter = new PurchaseRequestRvAdapter(purchaseRequestListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView_commonListingView.setHasFixedSize(true);
@@ -296,7 +346,7 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
         if (requestCode == AppConstants.REQUEST_CODE_CREATE_PURCHASE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 pageNumber = 0;
-                requestPrListOnline(pageNumber);
+                requestPrListOnline(pageNumber, false);
             }
         }
     }
@@ -309,6 +359,27 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment");
         }
     }
+
+    @OnClick({R.id.clear_search, R.id.imageViewSearch})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.clear_search:
+                searchKey="";
+                editTextSearch.setText("");
+                requestPrListOnline(0,false);
+                break;
+            case R.id.imageViewSearch:
+                if(AppUtils.getInstance().checkNetworkState()){
+                    searchKey=editTextSearch.getText().toString();
+                    requestPrListOnline(0,true);
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PurchaseRequestListFragment.class");
+                }
+                break;
+        }
+
+    }
+
 
     @SuppressWarnings("WeakerAccess")
     protected class PurchaseRequestRvAdapter extends RealmRecyclerViewAdapter<PurchaseRequestListItem, PurchaseRequestRvAdapter.MyViewHolder> {
@@ -335,9 +406,9 @@ public class PurchaseRequestListFragment extends Fragment implements FragmentInt
             holder.textViewPurchaseRequestMaterials.setText(purchaseRequestListItem.getMaterials());
             holder.textView_purchase_request_new_status.setText(purchaseRequestListItem.getPurchaseRequestStatus());
             holder.textViewPurchaseRequestDate.setText("Created By " + purchaseRequestListItem.getCreatedBy() + " at " + AppUtils.getInstance().getTime("E, dd MMMM yyyy", getString(R.string.expected_time_format), purchaseRequestListItem.getDate()));
-            if(purchaseRequestListItem.isDisproved()){
+            if (purchaseRequestListItem.isDisproved()) {
                 holder.imageViewIsDisAppRedBatch.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.imageViewIsDisAppRedBatch.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(purchaseRequestListItem.getApprovedBy())) {

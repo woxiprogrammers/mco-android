@@ -6,9 +6,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.constro360.R;
@@ -29,7 +36,9 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Case;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
@@ -43,6 +52,18 @@ import timber.log.Timber;
 public class PurchaseTranListFragment extends Fragment implements FragmentInterface {
     /*@BindView(R.id.rv_trans_list)*/
     RecyclerView recyclerView_commonListingView;
+    @BindView(R.id.editTextSearch)
+    EditText editTextSearch;
+    @BindView(R.id.clear_search)
+    ImageView clearSearch;
+    @BindView(R.id.imageViewSearch)
+    ImageView imageViewSearch;
+    @BindView(R.id.search_grn)
+    LinearLayout searchGrn;
+    @BindView(R.id.grnListing)
+    RelativeLayout grnlisting;
+
+    Unbinder unbinder1;
     private Unbinder unbinder;
     private Context mContext;
     private Realm realm;
@@ -51,6 +72,7 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     private int intPrimaryKey;
     private View mParentView;
     private int pageNumber = 0, oldPageNumber;
+    private String searchKey;
 
     public PurchaseTranListFragment() {
         // Required empty public constructor
@@ -69,9 +91,36 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.layout_recycler_view_listing_for_bills, container, false);
-        recyclerView_commonListingView=mParentView.findViewById(R.id.rv_trans_list);
+        recyclerView_commonListingView = mParentView.findViewById(R.id.rv_trans_list);
+        unbinder1 = ButterKnife.bind(this, mParentView);
+
+
         initializeViews();
-        requestPrListOnline(pageNumber);
+        if (isFromPurchaseRequestHome){
+            searchGrn.setVisibility(View.VISIBLE);
+        }
+        editTextSearch.setHint("Search By GRN");
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length()==0){
+                    searchKey="";
+                    if(AppUtils.getInstance().checkNetworkState())
+                        requestPrListOnline(0,false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        requestPrListOnline(pageNumber,false);
         setUpTransactionAdapter();
         setHasOptionsMenu(true);
         return mParentView;
@@ -79,11 +128,9 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
 
     @Override
     public void fragmentBecameVisible() {
-        requestPrListOnline(pageNumber);
+        requestPrListOnline(pageNumber,false);
         if (isFromPurchaseRequestHome) {
-            if (getUserVisibleHint() /*&& ((PurchaseHomeActivity) mContext) != null*/) {
-                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-            }
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
         }
     }
 
@@ -101,9 +148,14 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
         realm = Realm.getDefaultInstance();
         Timber.d("Adapter setup called");
         if (isFromPurchaseRequestHome) {
-            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
+            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class)
+                    .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                    .contains("grn",searchKey, Case.INSENSITIVE)
+                    .findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
         } else {
-            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class).equalTo("purchaseOrderId", intPrimaryKey).findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
+            purchaseBillListItems = realm.where(PurchaseOrderTransactionListingItem.class)
+                    .equalTo("purchaseOrderId", intPrimaryKey)
+                    .findAllSortedAsync("purchaseOrderTransactionId", Sort.DESCENDING);
         }
         PurchaseTransAdapter purchaseBillRvAdapter = new PurchaseTransAdapter(purchaseBillListItems, true, true);
         recyclerView_commonListingView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -128,66 +180,79 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
                 }));
     }
 
-    private void requestPrListOnline(int pageId) {
-        JSONObject params = new JSONObject();
-        try {
-            if (isFromPurchaseRequestHome) {
-                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
-            } else {
-                params.put("purchase_order_id", intPrimaryKey);
+    private void requestPrListOnline(int pageId, final boolean isFromSearch) {
+        if (AppUtils.getInstance().checkNetworkState()) {
+            JSONObject params = new JSONObject();
+            AppUtils.getInstance().showProgressBar(grnlisting,true);
+            try {
+                if(isFromSearch){
+                    params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                    params.put("search_grn",searchKey);
+
+                } else {
+                    if (isFromPurchaseRequestHome) {
+                        params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                    } else {
+                        params.put("purchase_order_id", intPrimaryKey);
+                    }
+                }
+                params.put("page", pageId);
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            params.put("page", pageId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        AndroidNetworking.post(AppURL.API_PURCHASE_BILL_LIST + AppUtils.getInstance().getCurrentToken())
-                .addJSONObjectBody(params)
-                .addHeaders(AppUtils.getInstance().getApiHeaders())
-                .setPriority(Priority.MEDIUM)
-                .setTag("requestPrListOnline")
-                .build()
-                .getAsObject(DSPurchaseOrderTransactionResponse.class, new ParsedRequestListener<DSPurchaseOrderTransactionResponse>() {
-                    @Override
-                    public void onResponse(final DSPurchaseOrderTransactionResponse response) {
-                        realm = Realm.getDefaultInstance();
-                        if (!response.getPageId().equalsIgnoreCase("")) {
-                            pageNumber = Integer.parseInt(response.getPageId());
-                        }
-                        try {
-                            realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    realm.delete(DSPurchaseOrderTransactionResponse.class);
-                                    realm.insertOrUpdate(response);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    setUpTransactionAdapter();
-                                    Timber.d("Success");
-                                    if (oldPageNumber != pageNumber) {
-                                        oldPageNumber = pageNumber;
-                                        requestPrListOnline(pageNumber);
+            AndroidNetworking.post(AppURL.API_PURCHASE_BILL_LIST + AppUtils.getInstance().getCurrentToken())
+                    .addJSONObjectBody(params)
+                    .addHeaders(AppUtils.getInstance().getApiHeaders())
+                    .setPriority(Priority.MEDIUM)
+                    .setTag("requestPrListOnline")
+                    .build()
+                    .getAsObject(DSPurchaseOrderTransactionResponse.class, new ParsedRequestListener<DSPurchaseOrderTransactionResponse>() {
+                        @Override
+                        public void onResponse(final DSPurchaseOrderTransactionResponse response) {
+                            realm = Realm.getDefaultInstance();
+                            if (!response.getPageId().equalsIgnoreCase("")) {
+                                pageNumber = Integer.parseInt(response.getPageId());
+                            }
+                            try {
+                                realm.executeTransactionAsync(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        realm.delete(DSPurchaseOrderTransactionResponse.class);
+                                        realm.insertOrUpdate(response);
                                     }
+                                }, new Realm.Transaction.OnSuccess() {
+                                    @Override
+                                    public void onSuccess() {
+                                        setUpTransactionAdapter();
+                                        Timber.d("Success");
+                                        if (oldPageNumber != pageNumber) {
+                                            oldPageNumber = pageNumber;
+                                            requestPrListOnline(pageNumber,isFromSearch);
+                                        }
+                                        AppUtils.getInstance().showProgressBar(grnlisting,false);
+                                    }
+                                }, new Realm.Transaction.OnError() {
+                                    @Override
+                                    public void onError(Throwable error) {
+                                        AppUtils.getInstance().logRealmExecutionError(error);
+                                    }
+                                });
+                            } finally {
+                                if (realm != null) {
+                                    realm.close();
                                 }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    AppUtils.getInstance().logRealmExecutionError(error);
-                                }
-                            });
-                        } finally {
-                            if (realm != null) {
-                                realm.close();
                             }
                         }
-                    }
 
-                    @Override
-                    public void onError(ANError anError) {
-                        AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
-                    }
-                });
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "requestPrListOnline");
+                        }
+                    });
+        }
     }
 
     @Override
@@ -198,6 +263,27 @@ public class PurchaseTranListFragment extends Fragment implements FragmentInterf
             realm.close();
         }
 //        unbinder.unbind();
+        unbinder1.unbind();
+    }
+
+    @OnClick({R.id.clear_search, R.id.imageViewSearch})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.clear_search:
+                editTextSearch.setText("");
+                searchKey="";
+                requestPrListOnline(0,false);
+                break;
+            case R.id.imageViewSearch:
+                if(AppUtils.getInstance().checkNetworkState()){
+                    searchKey=editTextSearch.getText().toString();
+                    requestPrListOnline(0,true);
+                } else {
+                    AppUtils.getInstance().showOfflineMessage("PurchaseTranListFragment.class");
+                }
+
+                break;
+        }
     }
 
     @SuppressWarnings("WeakerAccess")

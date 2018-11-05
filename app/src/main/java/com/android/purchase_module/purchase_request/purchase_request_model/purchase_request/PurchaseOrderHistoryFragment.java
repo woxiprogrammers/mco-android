@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -79,9 +80,7 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
     @Override
     public void fragmentBecameVisible() {
         if (!isFromPurchaseRequest) {
-            if (getUserVisibleHint()) {
-                ((PurchaseHomeActivity) mContext).hideDateLayout(true);
-            }
+            ((PurchaseHomeActivity) mContext).hideDateLayout(true);
         }
     }
 
@@ -145,9 +144,10 @@ public class PurchaseOrderHistoryFragment extends Fragment implements FragmentIn
         realm = Realm.getDefaultInstance();
         purchaseOrderListItems = realm.where(PurchaseOrderListItem.class).
                 equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
-                .equalTo("purchaseOrderStatusSlug", "close").or()
-                .equalTo("purchaseOrderStatusSlug", "completed").
-                        findAllAsync();
+                .equalTo("purchaseOrderStatusSlug", "close")
+                .or()
+                .equalTo("purchaseOrderStatusSlug", "completed")
+                .findAllAsync();
         RecyclerViewClickListener recyclerItemClickListener = new RecyclerViewClickListener() {
             @Override
             public void onItemClick(View view, final int position) {

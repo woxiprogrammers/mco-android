@@ -11,7 +11,9 @@
         android:id="@+id/mainLinearLayoutMatRequest"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -55,6 +57,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout_searchMaterialRequest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dimen_5dp"

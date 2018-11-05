@@ -50,6 +50,17 @@ public class NotificationCountData extends RealmObject {
     @SerializedName("purchase_request_approved_count")
     private int purchaseRequestApprovedCount;
 
+    @SerializedName("asset_maintenance_request")
+    private int assetMaintenanceRequestCount;
+
+    public int getAssetMaintenanceRequestCount() {
+        return assetMaintenanceRequestCount;
+    }
+
+    public void setAssetMaintenanceRequestCount(int assetMaintenanceRequestCount) {
+        this.assetMaintenanceRequestCount = assetMaintenanceRequestCount;
+    }
+
     public int getSalaryRequestCount() {
         return salaryRequestCount;
     }

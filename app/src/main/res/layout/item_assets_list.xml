@@ -24,16 +24,46 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                >
 
                 <TextView
                     android:id="@+id/text_view_asset_list_name"
                     style="@style/TextViewTitleStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wood Cutter"/>
+                    android:layout_weight="0.5"
+                    android:text="Wood Cutter"
+                    />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="right"
+                    android:layout_weight="0.5"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/iv_fuel_dependent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_fuel_dependent"
+                        android:visibility="gone"/>
 
+                    <ImageView
+                        android:id="@+id/iv_electricity_dependent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_electricity_dependent"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/iv_other"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_other_asset"
+                        android:visibility="gone" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

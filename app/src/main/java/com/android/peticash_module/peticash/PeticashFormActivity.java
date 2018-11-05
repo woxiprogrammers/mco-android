@@ -210,6 +210,8 @@ public class PeticashFormActivity extends BaseActivity {
     LinearLayout linerLayoutBankName;
     @BindView(R.id.spinnerBankName)
     Spinner spinnerBankName;
+    @BindView(R.id.invalidQuantity)
+    TextView tv_invalidQuantity;
     private View layoutEmployeeInfo;
     private int primaryKey;
     private JSONArray jsonImageNameArray = new JSONArray();
@@ -217,7 +219,7 @@ public class PeticashFormActivity extends BaseActivity {
     private String str;
     private Context mContext;
     private Realm realm;
-    private int getPerWeges;
+    private String getPerWeges;
     private ArrayList<File> arrayImageFileList;
     private String flagForLayout = "";
     private float floatAmount, payableAmountForSalary;
@@ -241,7 +243,7 @@ public class PeticashFormActivity extends BaseActivity {
     private ProgressDialog progressDialog;
     private String approved_amount;
     private boolean isSalary;
-    private int intBalance;
+    private float floatBalance;
     private TextWatcher textWatcherSalaryAmount = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -279,6 +281,7 @@ public class PeticashFormActivity extends BaseActivity {
     private RealmResults<BanksItem> bankItemRealmResults;
     private int bankId;
     private boolean isBankSelected;
+    private String strItemQuantity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -487,7 +490,7 @@ public class PeticashFormActivity extends BaseActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 try{
                     if (!TextUtils.isEmpty(edittextWeihges.getText().toString()) && !TextUtils.isEmpty(charSequence.toString())) {
-                        floatAmount = getPerWeges * Float.parseFloat(charSequence.toString());
+                        floatAmount = Float.parseFloat(getPerWeges) * Float.parseFloat(charSequence.toString());
                         editTextSalaryAmount.setText(String.valueOf(floatAmount));
                         payableAmountForSalary = floatAmount - intAdvanceAmount;//intadvanceampunt
                     } else {
@@ -530,20 +533,59 @@ public class PeticashFormActivity extends BaseActivity {
             }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!TextUtils.isEmpty(charSequence.toString()) && !TextUtils.isEmpty(amountLimit)) {
-                    if (Long.parseLong(charSequence.toString()) > Long.parseLong(amountLimit)) {
-                        exceedAmount.setVisibility(View.VISIBLE);
-                        exceedAmount.setText("Amount should be below " + amountLimit);
-                        buttonGenerateGrn.setVisibility(View.GONE);
+                try{
+                    if(charSequence.toString().matches("\\d+\\.\\d+")
+                            || charSequence.toString().matches("\\d+")
+                            || charSequence.toString().matches("\\.\\d+")
+                            || charSequence.toString().matches("")){
+                        if (!TextUtils.isEmpty(charSequence.toString()) && !TextUtils.isEmpty(amountLimit)) {
+                            if (Double.parseDouble(charSequence.toString()) > Double.parseDouble(amountLimit)) {
+                                exceedAmount.setVisibility(View.VISIBLE);
+                                exceedAmount.setText("Amount should be below " + amountLimit);
+                                buttonGenerateGrn.setVisibility(View.GONE);
+                            } else {
+                                exceedAmount.setVisibility(View.GONE);
+                                buttonGenerateGrn.setVisibility(View.VISIBLE);
+                            }
+                        }
                     } else {
-                        exceedAmount.setVisibility(View.GONE);
-                        buttonGenerateGrn.setVisibility(View.VISIBLE);
+                        exceedAmount.setVisibility(View.VISIBLE);
+                        exceedAmount.setText("Please enter a valid bill amount.");
+                        buttonGenerateGrn.setVisibility(View.GONE);
                     }
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+            }
+        });
+        edittextQuantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String charSequence = s.toString();
+                if(charSequence.matches("\\d+\\.\\d+")
+                        || charSequence.matches("\\d+")
+                        || charSequence.matches("\\.\\d+")
+                        || charSequence.matches("")){
+                    tv_invalidQuantity.setVisibility(View.GONE);
+                    buttonGenerateGrn.setVisibility(View.VISIBLE);
+                } else {
+                    tv_invalidQuantity.setVisibility(View.VISIBLE);
+                    tv_invalidQuantity.setText("Please enter valid qunatity");
+                    buttonGenerateGrn.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
         editTextItemName.setOnClickListener(new View.OnClickListener() {
@@ -570,7 +612,7 @@ public class PeticashFormActivity extends BaseActivity {
             realm = Realm.getDefaultInstance();
             primaryKey = bundleExtras.getInt("employeeId");
             employeesearchdataItem = realm.where(EmployeeSearchDataItem.class).equalTo("employeeId", primaryKey).findFirst();
-            intBalance = employeesearchdataItem.getBalance();
+            floatBalance = employeesearchdataItem.getBalance();
             textViewEmployeeName.setText("( " + employeesearchdataItem.getFormatEmployeeId() + " ) " + employeesearchdataItem.getEmployeeName());
             textViewBalance.setText("Balance : " + employeesearchdataItem.getBalance());
             editTextEmpIdName.setText(employeesearchdataItem.getEmployeeName());
@@ -582,10 +624,11 @@ public class PeticashFormActivity extends BaseActivity {
     }
 
     private void validateEntries() {
-        String strItemQuantity = edittextQuantity.getText().toString();
+        strItemQuantity =edittextQuantity.getText().toString();
         String strBillNumber = editTextBillNumber.getText().toString();
         String strBillAmount = editTextBillamount.getText().toString();
         String purchaseRemark = editTextAddNote.getText().toString();
+
         if (TextUtils.isEmpty(strItemQuantity)) {
             edittextQuantity.setFocusableInTouchMode(true);
             edittextQuantity.requestFocus();
@@ -962,7 +1005,7 @@ public class PeticashFormActivity extends BaseActivity {
             }
             if (isSalary) {
                 params.put("type", "salary");
-                params.put("balance", intBalance);
+                params.put("balance", floatBalance);
                 params.put("employee_id", primaryKey);
                 params.put("per_day_wages", getPerWeges);
                 params.put("working_days", edittextDay.getText().toString());
