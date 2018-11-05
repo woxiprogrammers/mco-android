@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_8dp"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dimen_16dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutVendorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Vendor Name:-"
+                android:textColor="@color/colorTextLight"/>
+
+            <TextView
+                android:id="@+id/vendorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:textColor="@color/colorTextLight"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Edit"
+            android:visibility="gone"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Material Name:"
+                android:textColor="@color/colorTextLight"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLayout_materialSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/editbox_background">
+
+            <Spinner
+                android:id="@+id/spinner_select_material"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_materialName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edittext_setNameOfMaterial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:enabled="false"/>
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/radio_Group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/radioButtonUploadBill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Bill"/>
+
+            <RadioButton
+                android:id="@+id/radioButtonCreateAmmetment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Amendment"/>
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="Quantity:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/edittextQuantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:digits="0123456789"
+                    android:inputType="number"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="Unit:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <FrameLayout
+                    android:id="@+id/frameLayout_UnitSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background">
+
+                    <Spinner
+                        android:id="@+id/spinner_select_units"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/edittext_setUnit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:drawable/editbox_background_normal"
+                        android:enabled="false"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:fadeScrollbars="false">
+
+            <LinearLayout
+                android:id="@+id/llIm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Challan Number:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_Challan_Number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"/>
+        </LinearLayout>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/linearLayoutFirstImages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView_capture_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:drawableTop="@android:drawable/ic_menu_camera"
+                android:gravity="center_horizontal"
+                android:text="Capture Images"/>
+
+            <View
+                android:layout_width="@dimen/dimen_20dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/textView_pick_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:drawableTop="@android:drawable/ic_menu_gallery"
+                android:gravity="center_horizontal"
+                android:onClick="onViewClicked"
+                android:text="Choose Images"/>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:fadeScrollbars="false">
+
+            <LinearLayout
+                android:id="@+id/ll_addImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Vehicle Number:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_VehicleNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="In Date:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_InDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:focusable="false"
+                    android:inputType="date"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="In Time:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_InTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:focusable="false"
+                    android:inputType="time"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="Out Date:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_OutDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:focusable="false"
+                    android:inputType="date"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_3dp"
+                    android:text="Out Time:"
+                    android:textColor="@color/colorTextLight"/>
+
+                <EditText
+                    android:id="@+id/editText_OutTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background_normal"
+                    android:focusable="false"
+                    android:inputType="time"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="In Time:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:focusable="false"
+                android:onClick="onViewClicked"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Bill Amount:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_BillAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:inputType="number"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llgrnNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="GRN Number:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_grnNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutPaymentMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Payment Mode"
+                android:textColor="@color/colorTextLight"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background">
+
+                <Spinner
+                    android:id="@+id/spinner_paymentMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:entries="@array/payment_mode_array"/>
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_PayableAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Payable Amount:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_PayableAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutRefNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_3dp"
+                android:text="Reference Number:"
+                android:textColor="@color/colorTextLight"/>
+
+            <EditText
+                android:id="@+id/editText_refNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/editbox_background_normal"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/linearLayoutSecondImages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_16dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textView_capture_image1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:drawableTop="@android:drawable/ic_menu_camera"
+                android:gravity="center_horizontal"
+                android:text="Capture Images"/>
+
+            <View
+                android:layout_width="@dimen/dimen_20dp"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/textView_pick_image1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:drawableTop="@android:drawable/ic_menu_gallery"
+                android:gravity="center_horizontal"
+                android:onClick="onViewClicked"
+                android:text="Choose Images"/>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_4dp"
+            android:fadeScrollbars="false">
+
+            <LinearLayout
+                android:id="@+id/ll_PaymentImageLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:visibility="visible">
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <EditText
+                android:id="@+id/editext_tapToAddNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFD740"
+                android:hint="@string/tap_too_add_note"
+                android:onClick="addNote"
+                android:padding="@dimen/dimen_16dp"
+                android:textColor="@color/colorText"
+                android:textSize="@dimen/dimen_16dp"/>
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:id="@+id/buttonAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:text="Submit"
+            android:visibility="visible"/>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

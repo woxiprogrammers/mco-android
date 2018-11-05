@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dimen_10dp">
+
+    <ProgressBar
+        android:id="@+id/progressBarTrans"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/btnOk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_18dp"
+        android:text="Ok"/>
+
+    <TextView
+        android:id="@+id/textViewVenName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_4dp"/>
+
+    <TextView
+        android:id="@+id/mob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewVenName"
+        android:padding="@dimen/dimen_4dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerviewTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btnOk"
+        android:layout_below="@id/mob"
+        android:orientation="vertical"/>
+
+    <TextView
+        android:id="@+id/textViewNoTransactions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/progressBarTrans"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="No Transactions Found"
+        android:visibility="gone"/>
+</RelativeLayout>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_5dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="@dimen/dimen_4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/textviewItemName"
+            style="@style/TextViewTitleStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Wooden Ply Shaded Door"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textviewItemUnits"
+                style="@style/TextViewTitleStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:layout_weight="0.5"
+                android:singleLine="true"
+                android:text="357 units"/>
+
+            <TextView
+                android:id="@+id/textviewItemStatus"
+                style="@style/MyTextViewLabelStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="Approved"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textviewApprovedBy"
+            style="@style/TextViewChildStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/textview_Date"
+            style="@style/TextViewChildStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="30 July"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textViewMaterialHistory"
+                    style="@style/TextViewChildStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:background="@drawable/background_button_pressed"
+                    android:gravity="center"
+                    android:padding="@dimen/dimen_8dp"
+                    android:text="History"
+                    android:textColor="@color/colorAccent"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutApproveDisapprove"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right"
+                android:orientation="horizontal">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/drawable_background_circle">
+                <ImageView
+                    android:id="@+id/iv_approve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:background="@drawable/ic_approve"/>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="@dimen/dimen_16dp"
+                    android:layout_height="wrap_content">
+
+                </View>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/drawable_background_circle">
+
+                    <ImageView
+                        android:id="@+id/iv_disapprove"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimen_8dp"
+                        android:background="@drawable/ic_disapprove"/>
+                </FrameLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/button_move_to_indent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:background="#87cefa"
+            android:drawableRight="@drawable/ic_arrow_right"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dimen_4dp"
+            android:textColor="@color/black"
+            android:text="Move To Indent"
+            android:visibility="visible"/>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

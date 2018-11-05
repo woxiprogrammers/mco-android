@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dimen_8dp"
+    android:background="@android:drawable/editbox_background"
+    android:elevation="@dimen/dimen_10dp">
+
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="top|right"
+        android:background="@color/colorWhite"
+        android:onClick="onViewClicked"
+        android:src="@drawable/ic_action_more_vert"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/dimen_10dp"
+        android:layout_marginRight="@dimen/dimen_10dp"
+        android:padding="@dimen/dimen_3dp">
+        <FrameLayout
+            android:id="@+id/frameLayoutTypeForAsset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@android:drawable/editbox_background">
+
+            <Spinner
+                android:id="@+id/spinnerSelectType"
+                android:layout_width="match_parent"
+                android:entries="@array/selectTypeForAsset"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="00.3"
+                android:text="Start Reading:"/>
+
+            <EditText
+                android:id="@+id/editTextStartReading"
+                android:layout_width="0dp"
+                android:inputType="number"
+                android:digits="1234567890."
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:id="@+id/startRead"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="KM"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="00.3"
+                android:text="Start Time:"/>
+
+            <EditText
+                android:id="@+id/editTextStartTime"
+                android:layout_width="0dp"
+                android:focusable="false"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="AM/PM"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="Stop Reading:"/>
+
+            <EditText
+                android:id="@+id/editTextStopReading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:digits="1234567890."
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="KM"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="00.3"
+                android:text="Stop Time:"/>
+
+            <EditText
+                android:id="@+id/editTextStopTime"
+                android:layout_width="0dp"
+                android:focusable="false"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="AM/PM"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutTopUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="Top-Up:"/>
+
+            <EditText
+                android:id="@+id/editTextTopUp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:digits="1234567890."
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="Ltr"/>
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:id="@+id/linearLayoutTopUpTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="Top-Up Time:"/>
+
+            <EditText
+                android:id="@+id/editTextTopUpTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:focusable="false"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="AM/PM"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayoutLtrPerUnit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="00.3"
+                android:text="Litre Per Unit:"/>
+
+            <EditText
+                android:id="@+id/editTextLtrPerUnit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:digits="1234567890."
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayoutElePerUnit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_10dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="00.3"
+                android:text="Electric Per Unit:"/>
+
+            <EditText
+                android:id="@+id/editTextElePerUnit"
+                android:layout_width="0dp"
+                android:inputType="number"
+                android:digits="1234567890."
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:text="KM"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
