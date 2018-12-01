@@ -3,6 +3,7 @@ package com.android.peticash_module.peticash;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -72,11 +73,20 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     TextView mTextViewPurchaseAmount;
     @BindView(R.id.textView_remainingAmount)
     TextView mTextViewRemainingAmount;
+    @BindView(R.id.textView_SubContractorAmount)
+    TextView mTextViewSubContractorAmount;
+    @BindView(R.id.tvNote)
+    TextView mTextViewNote;
     @BindView(R.id.progressBarToLoadData)
     ProgressBar progressBarToLoadData;
+    @BindView(R.id.textView_assetAmount)
+    TextView textViewAssetAmount;
+    @BindView(R.id.tvLableAllocatedAmount)
+    TextView tvLableAllocatedAmount;
+    @BindView(R.id.tvLableRemainingAmount)
+    TextView tvLableRemainingAmount;
     private Context mContext;
     private int pageNumber = 0;
-    private int oldPageNumber;
     private Realm realm;
     private RealmResults<DatewiseTransactionsListItem> peticashTransactionsRealmResult;
     private String permissionList;
@@ -293,6 +303,9 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                 mFloatingAddButtonPeticash.setVisibility(View.VISIBLE);
             }
         }
+        mTextViewNote.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+        tvLableAllocatedAmount.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+        tvLableRemainingAmount.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
     }
 
     @Override
@@ -324,11 +337,13 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                     = realm.where(PeticashTransactionStatsData.class)
                     .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findFirst();
             if (peticashTransactionStatsData != null && peticashTransactionStatsData.isValid()) {
-                mTextViewAllocatedAmount.setText("₹ " + peticashTransactionStatsData.getAllocatedAmount());
-                mTextViewSalaryAmount.setText("₹ " + peticashTransactionStatsData.getTotalSalaryAmount());
-                mTextViewAdvanceAmount.setText("₹ " + peticashTransactionStatsData.getTotalAdvanceAmount());
-                mTextViewPurchaseAmount.setText("₹ " + peticashTransactionStatsData.getTotalPurchaseAmount());
-                mTextViewRemainingAmount.setText("₹ " + peticashTransactionStatsData.getRemainingAmount());
+                mTextViewAllocatedAmount.setText(peticashTransactionStatsData.getAllocatedAmount());
+                mTextViewSalaryAmount.setText(peticashTransactionStatsData.getTotalSalaryAmount());
+                mTextViewAdvanceAmount.setText(peticashTransactionStatsData.getTotalAdvanceAmount());
+                mTextViewPurchaseAmount.setText(peticashTransactionStatsData.getTotalPurchaseAmount());
+                mTextViewRemainingAmount.setText(peticashTransactionStatsData.getRemainingAmount());
+                mTextViewSubContractorAmount.setText(peticashTransactionStatsData.getTotalSubcontractorAmount());
+                textViewAssetAmount.setText(peticashTransactionStatsData.getTotalAssetAmount());
             }
         } finally {
             if (realm != null) realm.close();

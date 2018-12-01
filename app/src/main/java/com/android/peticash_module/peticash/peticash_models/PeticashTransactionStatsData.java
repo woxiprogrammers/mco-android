@@ -19,7 +19,27 @@ public class PeticashTransactionStatsData extends RealmObject {
     @SerializedName("total_advance_amount")
     private String totalAdvanceAmount;
     @SerializedName("total_salary_amount")
-    private float totalSalaryAmount;
+    private String totalSalaryAmount;
+    @SerializedName("total_subcontractor_amount")
+    private String totalSubcontractorAmount;
+    @SerializedName("total_asset_amount")
+    private String totalAssetAmount;
+
+    public String getTotalAssetAmount() {
+        return totalAssetAmount;
+    }
+
+    public void setTotalAssetAmount(String totalAssetAmount) {
+        this.totalAssetAmount = totalAssetAmount;
+    }
+
+    public String getTotalSubcontractorAmount() {
+        return totalSubcontractorAmount;
+    }
+
+    public void setTotalSubcontractorAmount(String totalSubcontractorAmount) {
+        this.totalSubcontractorAmount = totalSubcontractorAmount;
+    }
 
     public int getCurrentSiteId() {
         return currentSiteId;
@@ -43,37 +63,41 @@ public class PeticashTransactionStatsData extends RealmObject {
 
     public void setRemainingAmount(String remainingAmount) {
         this.remainingAmount = remainingAmount;
-    }
 
+    }
     public String getAllocatedAmount() {
         return allocatedAmount;
-    }
-
-    public void setAllocatedAmount(String allocatedAmount) {
-        this.allocatedAmount = allocatedAmount;
-    }
-
-    public String getTotalPurchaseAmount() {
-        return totalPurchaseAmount;
     }
 
     public void setTotalPurchaseAmount(String totalPurchaseAmount) {
         this.totalPurchaseAmount = totalPurchaseAmount;
     }
 
-    public String getTotalAdvanceAmount() {
-        return totalAdvanceAmount;
+    public void setAllocatedAmount(String allocatedAmount) {
+        this.allocatedAmount = allocatedAmount;
+
     }
+
+    public String getTotalPurchaseAmount() {
+        return totalPurchaseAmount;
+    }
+
 
     public void setTotalAdvanceAmount(String totalAdvanceAmount) {
         this.totalAdvanceAmount = totalAdvanceAmount;
     }
 
-    public float getTotalSalaryAmount() {
+
+    public String getTotalAdvanceAmount() {
+        return totalAdvanceAmount;
+    }
+
+    public void setTotalSalaryAmount(String totalSalaryAmount) {
+        this.totalSalaryAmount = totalSalaryAmount;
+    }
+
+    public String getTotalSalaryAmount() {
         return totalSalaryAmount;
     }
 
-    public void setTotalSalaryAmount(float totalSalaryAmount) {
-        this.totalSalaryAmount = totalSalaryAmount;
-    }
 }

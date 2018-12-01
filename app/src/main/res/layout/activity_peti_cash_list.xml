@@ -46,11 +46,12 @@
                         android:paddingBottom="@dimen/dimen_8dp">
 
                         <TextView
+                            android:id="@+id/tvLableAllocatedAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Allocated Amount: "
+                            android:text="Allocated Amount : "
                             android:textColor="@color/colorWhite"
-                            android:textSize="@dimen/text_size_20"
+                            android:textSize="@dimen/text_size_16"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -63,6 +64,9 @@
                             android:textStyle="bold"/>
                     </LinearLayout>
 
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -89,7 +93,7 @@
                                     android:layout_gravity="center"
                                     android:text="Salary"
                                     android:textColor="@color/colorTextLight"
-                                    android:textSize="@dimen/text_size_20"/>
+                                    android:textSize="@dimen/text_size_16"/>
 
                                 <TextView
                                     android:id="@+id/textView_salaryAmount"
@@ -98,6 +102,7 @@
                                     android:layout_gravity="center"
                                     android:layout_marginBottom="@dimen/dimen_2dp"
                                     android:layout_marginTop="@dimen/dimen_2dp"
+                                    android:textSize="@dimen/text_size_16"
                                     android:textStyle="bold"/>
                             </LinearLayout>
                         </RelativeLayout>
@@ -111,6 +116,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
+                                android:layout_marginBottom="@dimen/dimen_5dp"
+                                android:layout_marginEnd="@dimen/dimen_5dp"
+                                android:layout_marginLeft="@dimen/dimen_5dp"
+                                android:layout_marginRight="@dimen/dimen_5dp"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:layout_marginTop="@dimen/dimen_5dp"
                                 android:background="@drawable/background_circular_120"
                                 android:gravity="center"
                                 android:orientation="vertical">
@@ -121,7 +132,7 @@
                                     android:layout_gravity="center"
                                     android:text="Advance"
                                     android:textColor="@color/colorTextLight"
-                                    android:textSize="@dimen/text_size_20"/>
+                                    android:textSize="@dimen/text_size_16"/>
 
                                 <TextView
                                     android:id="@+id/textView_advanceAmount"
@@ -130,10 +141,10 @@
                                     android:layout_gravity="center"
                                     android:layout_marginBottom="@dimen/dimen_2dp"
                                     android:layout_marginTop="@dimen/dimen_2dp"
-                                    android:textStyle="bold"/>
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/text_size_16"/>
                             </LinearLayout>
                         </RelativeLayout>
-
                         <RelativeLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -143,7 +154,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
-                                android:layout_margin="@dimen/dimen_5dp"
+                                android:layout_marginBottom="@dimen/dimen_5dp"
+                                android:layout_marginEnd="@dimen/dimen_5dp"
+                                android:layout_marginLeft="@dimen/dimen_5dp"
+                                android:layout_marginRight="@dimen/dimen_5dp"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:layout_marginTop="@dimen/dimen_5dp"
                                 android:background="@drawable/background_circular_120"
                                 android:gravity="center"
                                 android:orientation="vertical">
@@ -154,7 +170,7 @@
                                     android:layout_gravity="center"
                                     android:text="Purchase"
                                     android:textColor="@color/colorTextLight"
-                                    android:textSize="@dimen/text_size_20"/>
+                                    android:textSize="@dimen/text_size_16" />
 
                                 <TextView
                                     android:id="@+id/textView_purchaseAmount"
@@ -163,11 +179,89 @@
                                     android:layout_gravity="center"
                                     android:layout_marginBottom="@dimen/dimen_2dp"
                                     android:layout_marginTop="@dimen/dimen_2dp"
-                                    android:textStyle="bold"/>
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/text_size_16"/>
+                            </LinearLayout>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginBottom="@dimen/dimen_5dp"
+                                android:layout_marginEnd="@dimen/dimen_5dp"
+                                android:layout_marginLeft="@dimen/dimen_5dp"
+                                android:layout_marginRight="@dimen/dimen_5dp"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:layout_marginTop="@dimen/dimen_5dp"
+                                android:background="@drawable/background_circular_120"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Subcontractor"
+                                    android:textColor="@color/colorTextLight"
+                                    android:textSize="@dimen/text_size_16"
+                                    android:textAlignment="center"/>
+
+                                <TextView
+                                    android:id="@+id/textView_SubContractorAmount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="@dimen/dimen_2dp"
+                                    android:layout_marginTop="@dimen/dimen_2dp"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/text_size_16"/>
+                            </LinearLayout>
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginBottom="@dimen/dimen_5dp"
+                                android:layout_marginEnd="@dimen/dimen_5dp"
+                                android:layout_marginLeft="@dimen/dimen_5dp"
+                                android:layout_marginRight="@dimen/dimen_5dp"
+                                android:layout_marginStart="@dimen/dimen_5dp"
+                                android:layout_marginTop="@dimen/dimen_5dp"
+                                android:background="@drawable/background_circular_120"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Asset"
+                                    android:textColor="@color/colorTextLight"
+                                    android:textSize="@dimen/text_size_16" />
+
+                                <TextView
+                                    android:id="@+id/textView_assetAmount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="@dimen/dimen_2dp"
+                                    android:layout_marginTop="@dimen/dimen_2dp"
+                                    android:textStyle="bold"
+                                    android:textSize="@dimen/text_size_16"/>
                             </LinearLayout>
                         </RelativeLayout>
                     </LinearLayout>
-
+                    </HorizontalScrollView>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -176,11 +270,12 @@
                         android:paddingBottom="@dimen/dimen_12dp">
 
                         <TextView
+                            android:id="@+id/tvLableRemainingAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Remaining Amount: "
+                            android:text="Remaining Amount : "
                             android:textColor="@color/colorWhite"
-                            android:textSize="@dimen/text_size_20"
+                            android:textSize="@dimen/text_size_16"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -192,7 +287,16 @@
                             android:textSize="@dimen/text_size_20"
                             android:textStyle="bold"/>
                     </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvNote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="**All the above amounts are in Indian National Rupee (INR)"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
+
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbarPeticash"
