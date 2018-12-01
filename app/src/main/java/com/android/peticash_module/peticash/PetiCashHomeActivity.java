@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -80,6 +79,8 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     TextView mTextViewNote;
     @BindView(R.id.progressBarToLoadData)
     ProgressBar progressBarToLoadData;
+    @BindView(R.id.textView_assetAmount)
+    TextView textViewAssetAmount;
     private Context mContext;
     private int pageNumber = 0;
     private Realm realm;
@@ -330,12 +331,13 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                     = realm.where(PeticashTransactionStatsData.class)
                     .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findFirst();
             if (peticashTransactionStatsData != null && peticashTransactionStatsData.isValid()) {
-                mTextViewAllocatedAmount.setText( peticashTransactionStatsData.getAllocatedAmount());
+                mTextViewAllocatedAmount.setText(peticashTransactionStatsData.getAllocatedAmount());
                 mTextViewSalaryAmount.setText(peticashTransactionStatsData.getTotalSalaryAmount());
                 mTextViewAdvanceAmount.setText(peticashTransactionStatsData.getTotalAdvanceAmount());
                 mTextViewPurchaseAmount.setText(peticashTransactionStatsData.getTotalPurchaseAmount());
                 mTextViewRemainingAmount.setText(peticashTransactionStatsData.getRemainingAmount());
                 mTextViewSubContractorAmount.setText(peticashTransactionStatsData.getTotalSubcontractorAmount());
+                textViewAssetAmount.setText(peticashTransactionStatsData.getTotalAssetAmount());
             }
         } finally {
             if (realm != null) realm.close();
