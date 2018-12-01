@@ -81,6 +81,10 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     ProgressBar progressBarToLoadData;
     @BindView(R.id.textView_assetAmount)
     TextView textViewAssetAmount;
+    @BindView(R.id.tvLableAllocatedAmount)
+    TextView tvLableAllocatedAmount;
+    @BindView(R.id.tvLableRemainingAmount)
+    TextView tvLableRemainingAmount;
     private Context mContext;
     private int pageNumber = 0;
     private Realm realm;
@@ -300,6 +304,8 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
             }
         }
         mTextViewNote.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+        tvLableAllocatedAmount.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+        tvLableRemainingAmount.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
     }
 
     @Override
