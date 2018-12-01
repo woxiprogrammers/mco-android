@@ -37,8 +37,8 @@ public class MyApplication extends Application {
         }
         AppUtils.initialize(getApplicationContext(), "app_preferences");
         new UCEHandler.Builder(this)
-                .addCommaSeparatedEmailAddresses("megha.woxi@gmail.com, sharvari.woxi@gmail.com," +
-                        " rohit.woxi@gmail.com")
+                .addCommaSeparatedEmailAddresses("anjali.woxi@gmail.com, sharvari.woxi@gmail.com," +
+                        " mayur.woxi@gmail.com")
                 .setTrackActivitiesEnabled(true)
                 .build();
     }

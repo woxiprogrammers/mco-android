@@ -41,18 +41,30 @@ public class PeticashTransactionStatsData extends RealmObject {
         this.totalSubcontractorAmount = totalSubcontractorAmount;
     }
 
-    public void setRemainingAmount(String remainingAmount) {
-        this.remainingAmount = remainingAmount;
+    public int getCurrentSiteId() {
+        return currentSiteId;
+    }
+
+    public void setCurrentSiteId(int currentSiteId) {
+        this.currentSiteId = currentSiteId;
+    }
+
+    public int getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(int primaryKey) {
+        this.primaryKey = primaryKey;
     }
 
     public String getRemainingAmount() {
         return remainingAmount;
     }
 
-    public void setAllocatedAmount(String allocatedAmount) {
-        this.allocatedAmount = allocatedAmount;
-    }
+    public void setRemainingAmount(String remainingAmount) {
+        this.remainingAmount = remainingAmount;
 
+    }
     public String getAllocatedAmount() {
         return allocatedAmount;
     }
@@ -61,13 +73,20 @@ public class PeticashTransactionStatsData extends RealmObject {
         this.totalPurchaseAmount = totalPurchaseAmount;
     }
 
+    public void setAllocatedAmount(String allocatedAmount) {
+        this.allocatedAmount = allocatedAmount;
+
+    }
+
     public String getTotalPurchaseAmount() {
         return totalPurchaseAmount;
     }
 
+
     public void setTotalAdvanceAmount(String totalAdvanceAmount) {
         this.totalAdvanceAmount = totalAdvanceAmount;
     }
+
 
     public String getTotalAdvanceAmount() {
         return totalAdvanceAmount;
@@ -80,4 +99,5 @@ public class PeticashTransactionStatsData extends RealmObject {
     public String getTotalSalaryAmount() {
         return totalSalaryAmount;
     }
+
 }

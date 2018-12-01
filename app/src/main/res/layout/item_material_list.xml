@@ -24,7 +24,16 @@
             android:layout_height="wrap_content"
             android:text="Electric Welding Machine Bits"/>
 
+        <TextView
+            android:id="@+id/tv_errorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Error Message"
+            android:textColor="#ff0000"
+            android:visibility="gone"/>
+
         <LinearLayout
+            android:id="@+id/ll_assetCounts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_8dp"

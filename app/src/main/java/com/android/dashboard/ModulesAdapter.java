@@ -94,7 +94,8 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
         } else if (moduleName.equalsIgnoreCase("Inventory")) {
 
             int intCount = notificationCountData.getMaterialSiteOutTransferApproveCount()
-                    + notificationCountData.getMaterialSiteOutTransferCreateCount();
+                    + notificationCountData.getMaterialSiteOutTransferCreateCount()
+                    + notificationCountData.getAssetMaintenanceRequestCount();
             if (intCount > 0) {
                 Timber.d("Purchase Count: " + intCount);
                 holder.moduleCount.setText(String.valueOf(intCount));
@@ -214,7 +215,15 @@ public class ModulesAdapter extends RealmRecyclerViewAdapter<ModulesItem, Module
                         Timber.d("Component Transfer: " + intCount);
                         currentTextView_Count.setVisibility(View.GONE);
                     }
-                } else {
+                } else if(strSumModuleName.equalsIgnoreCase("Asset Maintainance")){
+                    int intCount = notificationCountData.getAssetMaintenanceRequestCount();
+                    if (intCount > 0) {
+                        currentTextView_Count.setText(String.valueOf(intCount));
+                    } else {
+                        currentTextView_Count.setVisibility(View.GONE);
+                    }
+                }
+                else {
                     currentTextView_Count.setVisibility(View.GONE);
                 }
 

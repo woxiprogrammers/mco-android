@@ -1,5 +1,6 @@
 package com.android.inventory_module.material;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +8,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -32,6 +40,8 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -44,6 +54,15 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     RecyclerView rv_material_list;
     @BindView(R.id.mainRelativeList)
     RelativeLayout mainRelativeList;
+    @BindView(R.id.inventory_search)
+    LinearLayout inventory_search;
+    @BindView(R.id.editTextSearchInventory)
+    EditText editTextSearchInventory;
+    @BindView(R.id.imageViewSearchInventory)
+    ImageView imageViewSearchInventory;
+    @BindView(R.id.clear_search)
+    ImageView clearSearch;
+
     private MaterialListAdapter materialListAdapter;
     private View mParentView;
     private Context mContext;
@@ -53,6 +72,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     private int oldPageNumber;
     private String subModulesItemList;
     private boolean isCrateInOutTransfer;
+    private String searchKeyWord;
 
     public MaterialListFragment() {
         // Required empty public constructor
@@ -78,6 +98,9 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mParentView = inflater.inflate(R.layout.layout_common_recycler_view_listing, container, false);
         ButterKnife.bind(this, mParentView);
+        inventory_search.setVisibility(View.VISIBLE);
+        editTextSearchInventory.setHint("Search Material");
+        //searchKeyWord=editTextSearchInventory.getText().toString();
         Bundle bundle = getArguments();
         AppUtils.getInstance().initializeProgressBar(mainRelativeList, mContext);
         if (bundle != null) {
@@ -86,7 +109,29 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         if (subModulesItemList.contains(getString(R.string.create_inventory_in_out_transfer))) {
             isCrateInOutTransfer = true;
         }
+        editTextSearchInventory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()==0){
+                    searchKeyWord="";
+                    if(AppUtils.getInstance().checkNetworkState())
+                        requestInventoryResponse(0,false);
+                    setAdapterForMaterialList();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         setAdapterForMaterialList();
+        inventory_search.clearFocus(); //To close the keyboard when the framgemt is opened.
         return mParentView;
     }
 
@@ -96,6 +141,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
         if (realm != null) {
             realm.close();
         }
+
     }
 
     @Override
@@ -105,15 +151,21 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
 
     @Override
     public void onResume() {
-        if (AppUtils.getInstance().checkNetworkState()) {
-            requestInventoryResponse(pageNumber);
-        }
         super.onResume();
+        editTextSearchInventory.setText("");
+        if (AppUtils.getInstance().checkNetworkState()) {
+            requestInventoryResponse(pageNumber, false);
+        } else {
+            setAdapterForMaterialList();
+        }
     }
 
     private void setAdapterForMaterialList() {
         realm = Realm.getDefaultInstance();
-        materialListItems = realm.where(MaterialListItem.class).equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId()).findAllAsync();
+        final RealmResults<MaterialListItem> materialListItems = realm.where(MaterialListItem.class)
+                .equalTo("currentSiteId", AppUtils.getInstance().getCurrentSiteId())
+                .contains("materialName", searchKeyWord, Case.INSENSITIVE)
+                .findAll();
         materialListAdapter = new MaterialListAdapter(materialListItems, true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -136,14 +188,21 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
             public void onLongItemClick(View view, int position) {
             }
         }));
+
     }
 
-    private void requestInventoryResponse(int pageId) {
+    private void requestInventoryResponse(final int pageId, final boolean isFromSearch) {
         AppUtils.getInstance().showProgressBar(mainRelativeList, true);
         JSONObject params = new JSONObject();
         try {
-            params.put("page_id", pageId);
-            params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+            if(isFromSearch){
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("page_id", 0);
+                params.put("material_name",searchKeyWord);
+            } else {
+                params.put("project_site_id", AppUtils.getInstance().getCurrentSiteId());
+                params.put("page_id", pageId);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -172,7 +231,7 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                                 public void onSuccess() {
                                     if (oldPageNumber != pageNumber) {
                                         oldPageNumber = pageNumber;
-                                        requestInventoryResponse(pageNumber);
+                                        requestInventoryResponse(pageNumber, isFromSearch);
                                     }
                                     AppUtils.getInstance().showProgressBar(mainRelativeList, false);
                                 }
@@ -197,4 +256,28 @@ public class MaterialListFragment extends Fragment implements FragmentInterface 
                 });
     }
 
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @OnClick(R.id.imageViewSearchInventory)
+    public void getSearchKeyWord(View v) {
+        if(AppUtils.getInstance().checkNetworkState()){
+            searchKeyWord = editTextSearchInventory.getText().toString();
+            requestInventoryResponse(0, true);
+            setAdapterForMaterialList();
+        } else {
+            AppUtils.getInstance().showOfflineMessage("MaterialListFragment.class");
+        }
+
+    }
+
+    @OnClick(R.id.clear_search)
+    public void onViewClicked() {
+        editTextSearchInventory.setText("");
+        searchKeyWord="";
+        requestInventoryResponse(0, false);
+        setAdapterForMaterialList();
+    }
 }

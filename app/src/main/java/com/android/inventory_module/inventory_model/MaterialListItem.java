@@ -25,11 +25,21 @@ public class MaterialListItem extends RealmObject {
     private String quantityAvailable;
     @SerializedName("units")
     private RealmList<Units> unitsRealmList;
+    @SerializedName(("error_message"))
+    private String errorMessage;
     private boolean isSelected;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
     public boolean isSelected() {
         return isSelected;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public void setSelected(boolean selected) {
