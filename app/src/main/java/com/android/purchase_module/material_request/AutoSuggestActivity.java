@@ -10,7 +10,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +60,8 @@ public class AutoSuggestActivity extends BaseActivity {
 
     boolean isMaterial = false;
     boolean isForMaterial = false;
+    @BindView(R.id.btnMessage)
+    Button btnMessage;
     private Context mContext;
     private String mStrSearch;
     private Realm realm;
@@ -72,6 +73,7 @@ public class AutoSuggestActivity extends BaseActivity {
     private String blockCharacterSet = "$!@#";
 
     private InputFilter filter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,11 +109,12 @@ public class AutoSuggestActivity extends BaseActivity {
                 return null;
             }
         };
-        mEditTextAutoSuggest.setFilters(new InputFilter[] { filter });
+        mEditTextAutoSuggest.setFilters(new InputFilter[]{filter});
         mEditTextAutoSuggest.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mStrSearch = s.toString();
@@ -319,12 +322,13 @@ public class AutoSuggestActivity extends BaseActivity {
 
     private void setUpAddNewButton(boolean isVisible) {
         if (isVisible) {
-            mButtonAddAsNewItem.setVisibility(View.VISIBLE);
-            mButtonAddAsNewItem.setText(getString(R.string.add_as_new_item, "\"" + mStrSearch + "\""));
-
+            mButtonAddAsNewItem.setVisibility(View.GONE);
+            btnMessage.setVisibility(View.VISIBLE);
+            btnMessage.setText("Please contact admin to "+getString(R.string.add_as_new_item, "\"" + mStrSearch + "\""));
             mRecyclerViewSearchResultList.setVisibility(View.GONE);
         } else {
             mButtonAddAsNewItem.setVisibility(View.GONE);
+            btnMessage.setVisibility(View.GONE);
             mRecyclerViewSearchResultList.setVisibility(View.VISIBLE);
         }
     }
