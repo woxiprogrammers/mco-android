@@ -35,5 +35,19 @@
         android:layout_marginTop="@dimen/dimen_20dp"
         android:background="@color/colorAccent"
         android:text="@string/add_as_new_item"/>
+
+    <Button
+        android:id="@+id/btnMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextAutoSuggestFrame"
+        android:text="asasdasd"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:background="@color/colorAccent"
+        android:textColor="@color/colorWhite"
+        android:visibility="gone"
+        android:textAlignment="center"/>
+
 </RelativeLayout>
 
