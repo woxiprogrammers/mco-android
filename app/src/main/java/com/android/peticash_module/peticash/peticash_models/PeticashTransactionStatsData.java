@@ -24,6 +24,16 @@ public class PeticashTransactionStatsData extends RealmObject {
     private String totalSubcontractorAmount;
     @SerializedName("total_asset_amount")
     private String totalAssetAmount;
+    @SerializedName("total_po_amount")
+    private String totalPOAmount;
+
+    public String getTotalPOAmount() {
+        return totalPOAmount;
+    }
+
+    public void setTotalPOAmount(String totalPOAmount) {
+        this.totalPOAmount = totalPOAmount;
+    }
 
     public String getTotalAssetAmount() {
         return totalAssetAmount;

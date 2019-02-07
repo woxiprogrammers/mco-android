@@ -91,6 +91,8 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
     private RealmResults<DatewiseTransactionsListItem> peticashTransactionsRealmResult;
     private String permissionList;
     private String purchaseAmountLimit;
+    @BindView(R.id.textView_poAmount)
+    TextView mTextViewPOAmount;
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int i2) {
@@ -344,6 +346,7 @@ public class PetiCashHomeActivity extends BaseActivity implements DatePickerDial
                 mTextViewRemainingAmount.setText(peticashTransactionStatsData.getRemainingAmount());
                 mTextViewSubContractorAmount.setText(peticashTransactionStatsData.getTotalSubcontractorAmount());
                 textViewAssetAmount.setText(peticashTransactionStatsData.getTotalAssetAmount());
+                mTextViewPOAmount.setText(peticashTransactionStatsData.getTotalPOAmount());
             }
         } finally {
             if (realm != null) realm.close();
