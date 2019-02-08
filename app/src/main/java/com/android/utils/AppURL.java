@@ -11,6 +11,7 @@ public class AppURL {
     private static final String BASE_URL = BuildConfig.BASE_URL;
     public static final String API_PURCHASE_REQUEST_LIST = BASE_URL + "purchase/purchase-request/listing?token=";
     public static final String API_USER_LOGIN = BASE_URL + "login";
+    public static final String API_USER_LOGOUT = BASE_URL + "logout?token=";
     public static final String API_USER_DASHBOARD = BASE_URL + "dashboard?token=";
     public static final String API_PURCHASE_ORDER_LIST = BASE_URL + "purchase/purchase-order/listing?token=";
     public static final String API_PURCHASE_BILL_LIST = BASE_URL + "purchase/purchase-order/transaction-listing?token=";
