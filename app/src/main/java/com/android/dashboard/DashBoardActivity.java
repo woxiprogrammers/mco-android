@@ -129,7 +129,7 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
         int id = item.getItemId();
         switch (id) {
             case R.id.actionLogout:
-                logoutAndClearAllData();
+                requestLogout();
                 break;
             case R.id.actionSetting:
             case R.id.actionAbout:
@@ -157,6 +157,31 @@ public class DashBoardActivity extends BaseActivity implements NavigationView.On
             });
         } catch (Exception e) {
             Timber.d(e.getMessage());
+        }
+    }
+
+    private void requestLogout() {
+        Log.i("@@", "requestLogout: "+AppURL.API_USER_LOGOUT + AppUtils.getInstance().getCurrentToken());
+        if (AppUtils.getInstance().checkNetworkState()){
+            AndroidNetworking.post(AppURL.API_USER_LOGOUT + AppUtils.getInstance().getCurrentToken())
+                    //.addBodyParameter("logged_out_at", AppUtils.getInstance().getLoggedInAt())
+                    .setTag("logout")
+                    .setPriority(Priority.MEDIUM)
+                    .build()
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            logoutAndClearAllData();
+                        }
+
+                        @Override
+                        public void onError(ANError anError) {
+                            AppUtils.getInstance().logApiError(anError, "requestLogout");
+                        }
+                    });
+        } else {
+            AppUtils.getInstance().showOfflineMessage("SplashActivity");
+
         }
     }
 
