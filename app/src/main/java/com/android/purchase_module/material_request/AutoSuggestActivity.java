@@ -300,7 +300,6 @@ public class AutoSuggestActivity extends BaseActivity {
                     switch (viewId){
                         case R.id.ivSearchImage:
                             String materialImageUrl = BuildConfig.BASE_URL_MEDIA + searchMaterialListItem.getMaterialImage();
-                            Log.i("@@", "onItemClick: "+materialImageUrl);
                             openImageZoomFragment(materialImageUrl);
                             return;
 
