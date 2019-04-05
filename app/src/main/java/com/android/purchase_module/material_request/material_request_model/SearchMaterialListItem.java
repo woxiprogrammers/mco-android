@@ -15,6 +15,8 @@ public class SearchMaterialListItem extends RealmObject implements Serializable 
     private int materialRequestComponentTypeId;
     @SerializedName("material_name")
     private String materialName;
+    @SerializedName("material_image")
+    private String materialImage;
     @SerializedName("unit_quantity")
     private RealmList<UnitQuantityItem> unitQuantity;
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
@@ -49,5 +51,13 @@ public class SearchMaterialListItem extends RealmObject implements Serializable 
 
     public void setUnitQuantity(RealmList<UnitQuantityItem> unitQuantity) {
         this.unitQuantity = unitQuantity;
+    }
+
+    public String getMaterialImage() {
+        return materialImage;
+    }
+
+    public void setMaterialImage(String materialImage) {
+        this.materialImage = materialImage;
     }
 }
