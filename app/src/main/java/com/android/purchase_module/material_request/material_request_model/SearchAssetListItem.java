@@ -20,9 +20,18 @@ public class SearchAssetListItem extends RealmObject implements Serializable {
     private int assetUnitId;
     @SerializedName("material_request_component_type_id")
     private int materialRequestComponentTypeId;
-
     @SerializedName("asset_type_slug")
     private String assetTypeSlug;
+    @SerializedName("asset_image")
+    private String assetImage;
+
+    public String getAssetImage() {
+        return assetImage;
+    }
+
+    public void setAssetImage(String assetImage) {
+        this.assetImage = assetImage;
+    }
 
     private int currentSiteId = AppUtils.getInstance().getInt("projectId", -1);
 
